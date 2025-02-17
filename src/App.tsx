@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.pcss";
-import MobileApp from "./pages/mobileApp/MobileAppHome.tsx";
+import AppRouter from "./pages/app/AppRouter.tsx";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MobileApp />} />
+        <Route path="/" element={<AppRouter />} />
       </Routes>
     </Router>
   );

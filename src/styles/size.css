@@ -17,6 +17,8 @@
   --size-1200: 6rem;
   --size-1600: 8rem;
 
+  --app-max-width: 420px;
+
   --border-width-default: 0.0625rem;
   --border-width-thick: 0.125rem;
   --border-width-thicker: 0.25rem;

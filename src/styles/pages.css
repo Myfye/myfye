@@ -12,8 +12,10 @@
   .app-layout {
     display: grid;
     grid-template-rows: 4rem 1fr 4.5rem;
+    height: 100vh;
+    height: 100svh;
     max-height: 100vh;
-    max-height: 100dvh;
+    max-height: 100svh;
     max-width: 420px;
     margin-inline: auto;
   }

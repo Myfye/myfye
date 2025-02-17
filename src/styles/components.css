@@ -45,12 +45,6 @@
 
     border-radius: var(--_border-radius);
 
-    &:hover {
-      background-color: var(--_background-color-active);
-      border-color: var(--_border-color-active);
-      color: var(--_color-active);
-    }
-
     /* Variants */
     &[data-variant="primary"] {
       &[data-color="accent"] {
