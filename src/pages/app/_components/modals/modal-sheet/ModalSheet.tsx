@@ -7,14 +7,13 @@ import {
   useMotionValueEvent,
   useTransform,
 } from "framer-motion";
-import {
-  Button,
-  Dialog,
-  Heading,
-  Modal,
-  ModalOverlay,
-} from "react-aria-components";
-import { useState } from "react";
+import { Dialog, Heading, Modal, ModalOverlay } from "react-aria-components";
+import { useId, useState } from "react";
+
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+import Button from "@/components/ui/button/Button";
+import { X } from "@phosphor-icons/react";
 
 // Wrap React Aria modal components so they support framer-motion values.
 const MotionModal = motion(Modal);
@@ -41,6 +40,8 @@ const ModalSheet = ({ title, description }) => {
   let bgOpacity = useTransform(y, [0, h], [0.4, 0]);
   let bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
 
+  const id = useId();
+
   return (
     <>
       <Button onPress={() => setOpen(true)}>Open sheet</Button>
@@ -50,11 +51,22 @@ const ModalSheet = ({ title, description }) => {
             // Force the modal to be open when AnimatePresence renders it.
             isOpen
             onOpenChange={setOpen}
-            className="fixed inset-0 z-10"
+            css={css`
+              position: fixed;
+              inset: 0;
+              z-index: var(--z-index-overlay);
+            `}
             style={{ backgroundColor: bg as any }}
           >
             <MotionModal
-              className="bg-[--page-background] absolute bottom-0 w-full rounded-t-xl shadow-lg will-change-transform"
+              css={css`
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                border-radius: var(--border-radius-medium);
+                box-shadow: var(--box-shadow-modal);
+                will-change: transform;
+              `}
               initial={{ y: h }}
               animate={{ y: 0 }}
               exit={{ y: h }}
@@ -76,29 +88,37 @@ const ModalSheet = ({ title, description }) => {
               }}
             >
               {/* drag affordance */}
-              <div className="mx-auto w-12 mt-2 h-1.5 rounded-full bg-gray-400" />
-              <Dialog className="px-4 pb-4 outline-none">
-                <div className="flex justify-end">
+              <div
+                css={css`
+                  margin-inline: auto;
+                  width: var(--size-400);
+                  height: var(--size-100);
+                  background-color: var(--clr-surface-lowered);
+                `}
+              />
+              <Dialog
+                css={css`
+                  padding: var(--size-300) var(--size-300);
+                `}
+                aria-labelledby={id}
+              >
+                <div
+                  css={css`
+                    display: flex;
+                    justify-content: flex-end;
+                  `}
+                >
                   <Button
-                    className="text-blue-600 text-lg font-semibold mb-8 outline-none rounded bg-transparent border-none pressed:text-blue-700 focus-visible:ring"
                     onPress={() => setOpen(false)}
-                  >
-                    Done
-                  </Button>
+                    iconOnly
+                    variant="transparent"
+                    icon={X}
+                  ></Button>
                 </div>
-                <Heading slot="title" className="text-3xl font-semibold mb-4">
+                <p className="heading-x-large" id={id}>
                   {title}
-                </Heading>
-                <p>{description}</p>
-                <p>
-                  This is a dialog with a custom modal overlay built with React
-                  Aria Components and Framer Motion.
                 </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean sit amet nisl blandit, pellentesque eros eu,
-                  scelerisque eros. Sed cursus urna at nunc lacinia dapibus.
-                </p>
+                {children}
               </Dialog>
             </MotionModal>
           </MotionModalOverlay>

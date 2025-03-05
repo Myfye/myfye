@@ -2,9 +2,23 @@
 import { css } from "@emotion/react";
 import CoinIcon from "./CoinIcon";
 import { useMemo } from "react";
-import { ButtonContext, useContextProps } from "react-aria-components";
-import { useButton } from "react-aria";
-import { motion } from "motion/react";
+import {
+  MenuTrigger,
+  Button as AriaButton,
+  Popover,
+  MenuItem,
+  Menu,
+} from "react-aria-components";
+import Button from "@/components/ui/button/Button";
+// import Menu from "@/components/ui/menu/Menu";
+import {
+  ArrowCircleDown,
+  ArrowCircleUp,
+  ArrowLineDown,
+  ArrowLineUp,
+  DotsThree,
+  DotsThreeVertical,
+} from "@phosphor-icons/react";
 
 const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
   const formattedBalance = useMemo(
@@ -18,21 +32,9 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
     [balance]
   );
 
-  const [restPropsButton, refButton] = useContextProps(
-    restProps,
-    ref,
-    ButtonContext
-  );
-
-  let { buttonProps, isPressed } = useButton(restPropsButton, refButton);
-
   return (
-    <motion.button
-      {...buttonProps}
+    <div
       ref={ref}
-      animate={{
-        scale: isPressed ? 0.98 : 1,
-      }}
       className="coin-card"
       css={css`
         display: grid;
@@ -46,48 +48,166 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
       <div
         className="content"
         css={css`
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          align-self: center;
+          display: grid;
+          grid-template-columns: 1fr auto;
+          align-items: center;
+          gap: var(--size-200);
         `}
       >
         <div
-          className="title"
           css={css`
             display: flex;
             align-items: flex-start;
-            justify-content: flex-start;
-            flex-direction: column;
+            justify-content: space-between;
+            align-self: center;
           `}
         >
+          <div
+            className="title"
+            css={css`
+              display: flex;
+              align-items: flex-start;
+              justify-content: flex-start;
+              flex-direction: column;
+            `}
+          >
+            <p
+              css={css`
+                font-weight: var(--fw-active);
+              `}
+            >
+              {title}
+            </p>
+            <p
+              css={css`
+                font-size: var(--fs-small);
+                color: var(--clr-text-neutral);
+                text-transform: uppercase;
+                margin-block-start: var(--size-050);
+              `}
+            >
+              {currency}
+            </p>
+          </div>
           <p
             css={css`
               font-weight: var(--fw-active);
             `}
           >
-            {title}
-          </p>
-          <p
-            css={css`
-              font-size: var(--fs-small);
-              color: var(--clr-text-neutral);
-              text-transform: uppercase;
-              margin-block-start: var(--size-050);
-            `}
-          >
-            {currency}
+            {formattedBalance}
           </p>
         </div>
-        <p
-          css={css`
-            font-weight: var(--fw-active);
-          `}
-        >
-          {formattedBalance}
-        </p>
+        <MenuTrigger>
+          <AriaButton aria-label="Menu">
+            <Button
+              icon={DotsThreeVertical}
+              iconOnly
+              size="small"
+              variant="transparent"
+            ></Button>
+          </AriaButton>
+          <Popover placement="bottom end">
+            <Menu
+              css={css`
+                padding: var(--size-075);
+                width: 12rem;
+                border-radius: var(--border-radius-medium);
+                background-color: var(--clr-surface);
+                box-shadow: var(--box-shadow-popout);
+                overflow: auto;
+                font-size: var(--fs-medium);
+                user-select: none;
+              `}
+            >
+              <MenuItem
+                css={css`
+                  display: flex;
+                  align-items: center;
+                  border-radius: var(--border-radius-medium);
+                  padding: var(--size-150) var(--size-150);
+                  width: 100%;
+                  &[data-hovered="true"] {
+                    background-color: var(--clr-surface-raised);
+                  }
+                `}
+                onAction={() => alert("Deposit")}
+              >
+                <ArrowCircleUp
+                  size="1rem"
+                  css={css`
+                    margin-inline-end: var(--size-100);
+                  `}
+                />
+                Send
+              </MenuItem>
+              <MenuItem
+                css={css`
+                  display: flex;
+                  align-items: center;
+                  border-radius: var(--border-radius-medium);
+                  padding: var(--size-150) var(--size-150);
+                  width: 100%;
+                  &[data-hovered="true"] {
+                    background-color: var(--clr-surface-raised);
+                  }
+                `}
+                onAction={() => alert("Withdraw")}
+              >
+                <ArrowCircleDown
+                  size="1rem"
+                  css={css`
+                    margin-inline-end: var(--size-100);
+                  `}
+                />
+                Receive
+              </MenuItem>
+              <MenuItem
+                css={css`
+                  display: flex;
+                  align-items: center;
+                  border-radius: var(--border-radius-medium);
+                  padding: var(--size-150) var(--size-150);
+                  width: 100%;
+                  &[data-hovered="true"] {
+                    background-color: var(--clr-surface-raised);
+                  }
+                `}
+                onAction={() => alert("Send")}
+              >
+                <ArrowLineDown
+                  size="1rem"
+                  css={css`
+                    margin-inline-end: var(--size-100);
+                  `}
+                />
+                Deposit
+              </MenuItem>
+              <MenuItem
+                css={css`
+                  display: flex;
+                  align-items: center;
+                  border-radius: var(--border-radius-medium);
+                  padding: var(--size-150) var(--size-150);
+                  width: 100%;
+                  &[data-hovered="true"] {
+                    background-color: var(--clr-surface-raised);
+                  }
+                `}
+                onAction={() => alert("Receive")}
+              >
+                <ArrowLineUp
+                  size="1rem"
+                  css={css`
+                    margin-inline-end: var(--size-100);
+                  `}
+                />
+                Withdraw
+              </MenuItem>
+            </Menu>
+          </Popover>
+        </MenuTrigger>
       </div>
-    </motion.button>
+    </div>
   );
 };
 

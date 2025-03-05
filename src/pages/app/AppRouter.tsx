@@ -333,7 +333,9 @@ function WebAppInner() {
           <div
             className="loading-screen"
             css={css`
-              height: 100%;
+              display: grid;
+              place-items: center;
+              height: 100dvh;
               background-color: var(--clr-accent);
             `}
           >
@@ -341,6 +343,9 @@ function WebAppInner() {
               src="https://lottie.host/744ea5d2-8d13-4f4c-b0a0-11e94caef4c2/2xZe6NoQB2.lottie"
               loop
               autoplay
+              className={css`
+                width: 6rem;
+              `}
             />
           </div>
         )}
@@ -392,7 +397,7 @@ function WebAppInner() {
                 text-align: center;
               `}
             >
-              <h1 className="heading-large" css={css``}>
+              <h1 className="heading-x-large" css={css``}>
                 Welcome to MyFye
               </h1>
               <p
@@ -411,10 +416,11 @@ function WebAppInner() {
               size="large"
               expand={true}
               isDisabled={disableLogin}
-              onClick={login}
+              onPress={() => login()}
             >
               Get started
             </Button>
+            <button onClick={login}>login test</button>
           </LoginFooter>
         </LoginPage>
       </>

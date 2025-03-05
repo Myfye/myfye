@@ -29,7 +29,7 @@ const BalanceTitle = ({ balance, currency = "usd" }) => {
         Total Balance
       </h1>
       <p
-        className="heading-large"
+        className="heading-x-large"
         css={css`
           margin-block-start: var(--size-100);
         `}

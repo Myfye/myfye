@@ -12,21 +12,91 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import DashboardPanel from "./panels/dashboard/DashboardPanel";
 import CashPanel from "./panels/cash/CashPanel";
 import CryptoPanel from "./panels/crypto/CryptoPanel";
-
-let tabs = [
-  { id: "dashboard", label: "Dashboard", panel: DashboardPanel },
-  { id: "cash", label: "Cash", panel: CashPanel },
-  { id: "crypto", label: "Crypto", panel: CryptoPanel },
+import { useSelector } from "react-redux";
+const tabs = [
+  { id: "dashboard", label: "Dashboard" },
+  { id: "cash", label: "Cash" },
+  { id: "crypto", label: "Crypto" },
 ];
-
 const Tabs = () => {
+  /* Crypto */
+
+  // BTC
+  const btcSolBalance = useSelector(
+    (state: any) => state.userWalletData.btcSolBalance
+  );
+  const priceOfBTCinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfBTCinUSDC
+  );
+  const btcBalanceInUSD = useMemo(
+    () => btcSolBalance * priceOfBTCinUSDC,
+    [btcSolBalance, priceOfBTCinUSDC]
+  );
+
+  // SOL
+  const solBalance = useSelector(
+    (state: any) => state.userWalletData.solBalance
+  );
+  const priceOfSolinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfSolinUSDC
+  );
+  const solBalanceInUSD = useMemo(
+    () => solBalance * /*priceOfSolinUSDC*/ 1,
+    [solBalance, priceOfSolinUSDC]
+  );
+
+  const cryptoBalance = useMemo(
+    () => btcBalanceInUSD + solBalanceInUSD,
+    [btcBalanceInUSD, solBalanceInUSD]
+  );
+
+  /* Cash */
+
+  // USDT
+  const usdtSolBalance = useSelector(
+    (state: any) => state.userWalletData.usdtSolBalance
+  );
+
+  // EURC
+  const eurcSolBalance = useSelector(
+    (state: any) => state.userWalletData.eurcSolBalance
+  );
+  const priceOfEURCinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfEURCinUSDC
+  );
+  const eurcBalanceInUSD = useMemo(
+    () => eurcSolBalance * priceOfEURCinUSDC,
+    [eurcSolBalance, priceOfEURCinUSDC]
+  );
+
+  // USDY
+  const usdySolBalance = useSelector(
+    (state: any) => state.userWalletData.usdySolBalance
+  );
+  const priceOfUSDYinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfUSDYinUSDC
+  );
+  const usdyBalanceInUSD = useMemo(
+    () => usdySolBalance * priceOfUSDYinUSDC,
+    [eurcSolBalance, priceOfUSDYinUSDC]
+  );
+
+  const cashBalance = useMemo(
+    () => usdtSolBalance + eurcBalanceInUSD + usdyBalanceInUSD,
+    [btcBalanceInUSD, solBalanceInUSD]
+  );
+
+  const wallet = useSelector((state: any) => state.userWalletData);
+
+  console.log(wallet);
+
   let [selectedKey, setSelectedKey] = useState(tabs[0].id);
 
   let tabListRef = useRef(null!);
@@ -202,7 +272,26 @@ const Tabs = () => {
                 scroll-snap-align: start;
               `}
             >
-              {tab?.panel()}
+              {tab.id === "dashboard" && (
+                <DashboardPanel
+                  cashBalanceInUSD={cashBalance}
+                  cryptoBalanceInUSD={cryptoBalance}
+                />
+              )}
+              {tab.id === "cash" && (
+                <CashPanel
+                  usdBalance={usdtSolBalance}
+                  eurcBalanceInUSD={eurcBalanceInUSD}
+                  eurcBalance={eurcSolBalance}
+                  usdyBalanceInUSD={usdyBalanceInUSD}
+                />
+              )}
+              {tab.id === "crypto" && (
+                <CryptoPanel
+                  solBalanceInUSD={solBalanceInUSD}
+                  btcBalanceInUSD={btcBalanceInUSD}
+                />
+              )}
             </TabPanel>
           )}
         </Collection>

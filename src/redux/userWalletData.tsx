@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import User from '../functions/UserInterface.tsx';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import User from "../functions/UserInterface.tsx";
 
 interface UserWalletDataState {
-  wallet: any,
+  wallet: any;
   currentUserID: string;
   currentUserFirstName: string;
   currentUserLastName: string;
@@ -10,58 +10,58 @@ interface UserWalletDataState {
   isConnected: boolean;
   type: string;
   pubKey: string;
-  totalInvestingValue: number,
-  solBalance: number,
-  usdcSolBalance: number,
-  usdtSolBalance: number,
-  pyusdSolBalance: number,
-  eurcSolBalance: number,
-  busdSolBalance: number,
-  usdySolBalance: number,
-  btcSolBalance: number,
-  usdcEthBalance: number,
-  usdtEthBalance: number,
-  busdEthBalance: number,
-  currentUserKYCVerified: boolean,
-  swapWithdrawTransactionStatus: string,
-  swapDepositTransactionStatus: string,
-  swapFXTransactionStatus: string,
-  updatingBalance: boolean,
-  hotBalanceUSDY: number,
-  shouldShowBottomNav: boolean,
-  showPayPage: boolean,
-  showContactsPage: boolean,
-  showSendPage: boolean,
-  showWithdrawStablecoinPage: boolean,
-  showDepositStablecoinPage: boolean,
-  showBanxaPopUp: boolean,
-  showEarnPage: boolean,
-  showCryptoPage: boolean,
-  showWalletPage: boolean,
-  showMainDepositPage: boolean,
-  showAccountHistory: boolean,
-  newUserHasPreviousBalance: boolean,
-  showRequestPage: boolean,
-  showProfileMenu: boolean,
-  showSwapWithdrawPage: boolean,
-  showSwapDepositPage: boolean,
-  priceOfUSDYinUSDC: number,
-  priceOfBTCinUSDC: number,
-  priceOfEURCinUSDC: number,
-  recentlyUsedSolanaAddresses: string[],
-  showContactPopup: boolean,
-  selectedLanguageCode: string,
+  totalInvestingValue: number;
+  solBalance: number;
+  usdcSolBalance: number;
+  usdtSolBalance: number;
+  pyusdSolBalance: number;
+  eurcSolBalance: number;
+  busdSolBalance: number;
+  usdySolBalance: number;
+  btcSolBalance: number;
+  usdcEthBalance: number;
+  usdtEthBalance: number;
+  busdEthBalance: number;
+  currentUserKYCVerified: boolean;
+  swapWithdrawTransactionStatus: string;
+  swapDepositTransactionStatus: string;
+  swapFXTransactionStatus: string;
+  updatingBalance: boolean;
+  hotBalanceUSDY: number;
+  shouldShowBottomNav: boolean;
+  showPayPage: boolean;
+  showContactsPage: boolean;
+  showSendPage: boolean;
+  showWithdrawStablecoinPage: boolean;
+  showDepositStablecoinPage: boolean;
+  showBanxaPopUp: boolean;
+  showEarnPage: boolean;
+  showCryptoPage: boolean;
+  showWalletPage: boolean;
+  showMainDepositPage: boolean;
+  showAccountHistory: boolean;
+  newUserHasPreviousBalance: boolean;
+  showRequestPage: boolean;
+  showProfileMenu: boolean;
+  showSwapWithdrawPage: boolean;
+  showSwapDepositPage: boolean;
+  priceOfUSDYinUSDC: number;
+  priceOfBTCinUSDC: number;
+  priceOfEURCinUSDC: number;
+  recentlyUsedSolanaAddresses: string[];
+  showContactPopup: boolean;
+  selectedLanguageCode: string;
   depositWithdrawProductType: string;
   passKeyState: string;
   privyWalletReady: boolean;
-  users: User[]
+  users: User[];
 }
 
 const initialUserWalletData: UserWalletDataState = {
   wallet: false,
   isConnected: false,
-  type: '',
-  pubKey: '',
+  type: "",
+  pubKey: "",
   totalInvestingValue: 0,
   solBalance: 0,
   usdcSolBalance: 0,
@@ -75,12 +75,12 @@ const initialUserWalletData: UserWalletDataState = {
   usdtEthBalance: 0,
   busdEthBalance: 0,
   currentUserKYCVerified: true, // true for Development, false for Deployment
-  currentUserFirstName: '',
-  currentUserLastName: '',
-  currentUserEmail: '',
-  swapWithdrawTransactionStatus: '',
-  swapDepositTransactionStatus: '',
-  swapFXTransactionStatus: '',
+  currentUserFirstName: "",
+  currentUserLastName: "",
+  currentUserEmail: "",
+  swapWithdrawTransactionStatus: "",
+  swapDepositTransactionStatus: "",
+  swapFXTransactionStatus: "",
   updatingBalance: false,
   hotBalanceUSDY: 0,
   shouldShowBottomNav: true,
@@ -105,18 +105,16 @@ const initialUserWalletData: UserWalletDataState = {
   priceOfEURCinUSDC: 0,
   recentlyUsedSolanaAddresses: [],
   showContactPopup: false,
-  selectedLanguageCode: '',
-  currentUserID: '',
-  depositWithdrawProductType: 'Earn',
-  passKeyState: 'initial',
+  selectedLanguageCode: "",
+  currentUserID: "",
+  depositWithdrawProductType: "Earn",
+  passKeyState: "initial",
   privyWalletReady: false,
-  users: []
+  users: [],
 };
 
-
-
 export const userWalletDataSlice = createSlice({
-  name: 'userWalletData',
+  name: "userWalletData",
   initialState: initialUserWalletData,
   reducers: {
     setWallet: (state, action: PayloadAction<any>) => {
@@ -174,150 +172,175 @@ export const userWalletDataSlice = createSlice({
     setcurrentUserID: (state, action: PayloadAction<string>) => {
       state.currentUserID = action.payload;
     },
-  setcurrentUserFirstName: (state, action: PayloadAction<string>) => {
-    state.currentUserFirstName = action.payload;
-  },
+    setcurrentUserFirstName: (state, action: PayloadAction<string>) => {
+      state.currentUserFirstName = action.payload;
+    },
 
-  setcurrentUserLastName: (state, action: PayloadAction<string>) => {
-    state.currentUserLastName = action.payload;
-  },
+    setcurrentUserLastName: (state, action: PayloadAction<string>) => {
+      state.currentUserLastName = action.payload;
+    },
 
-  setcurrentUserEmail: (state, action: PayloadAction<string>) => {
-    state.currentUserEmail = action.payload;
-  },
-  setSwapWithdrawTransactionStatus: (state, action: PayloadAction<string>) => {
-    state.swapWithdrawTransactionStatus = action.payload;
-  },
-  setSwapDepositTransactionStatus: (state, action: PayloadAction<string>) => {
-    state.swapDepositTransactionStatus = action.payload;
-  },
-  setSwapFXTransactionStatus: (state, action: PayloadAction<string>) => {
-    state.swapFXTransactionStatus = action.payload;
-  },
-  setUpdatingBalance: (state, action: PayloadAction<boolean>) => {
-    state.updatingBalance = action.payload;
-  },
-  setHotBalanceUSDY: (state, action: PayloadAction<number>) => {
-    state.hotBalanceUSDY = action.payload;
-  },
-  setShouldShowBottomNav: (state, action: PayloadAction<boolean>) => {
-    state.shouldShowBottomNav = action.payload;
-  },
-  setShowPayPage: (state, action: PayloadAction<boolean>) => {
-    state.showPayPage = action.payload;
-  },
-  setShowContactsPage: (state, action: PayloadAction<boolean>) => {
-    state.showContactsPage = action.payload;
-  },
-  setShowSendPage: (state, action: PayloadAction<boolean>) => {
-    state.showSendPage = action.payload;
-  },
-  setShowRequestPage: (state, action: PayloadAction<boolean>) => {
-    state.showRequestPage = action.payload;
-  },
-  setShowWithdrawStablecoinPage: (state, action: PayloadAction<boolean>) => {
-    state.showWithdrawStablecoinPage = action.payload;
-  },
-  setShowBanxaPopUp: (state, action: PayloadAction<boolean>) => {
-    state.showBanxaPopUp = action.payload;
-  },
-  setShowDepositStablecoinPage: (state, action: PayloadAction<boolean>) => {
-    state.showDepositStablecoinPage= action.payload;
-  },
-  setShowEarnPage: (state, action: PayloadAction<boolean>) => {
-    state.showEarnPage = action.payload;
-  },
-  setShowCryptoPage: (state, action: PayloadAction<boolean>) => {
-    state.showCryptoPage = action.payload;
-  },
-  setShowWalletPage: (state, action: PayloadAction<boolean>) => {
-    state.showWalletPage = action.payload;
-  },
-  setShowMainDepositPage: (state, action: PayloadAction<boolean>) => {
-    state.showMainDepositPage = action.payload;
-  },
-  setShowAccountHistory: (state, action: PayloadAction<boolean>) => {
-    state.showAccountHistory= action.payload;
-  },
-  setNewUserHasPreviousBalance: (state, action: PayloadAction<boolean>) => {
-    state.newUserHasPreviousBalance = action.payload;
-  },
-  setShowProfileMenu: (state, action: PayloadAction<boolean>) => {
-    state.showProfileMenu = action.payload;
-  },
-  setShowSwapWithdrawPage: (state, action: PayloadAction<boolean>) => {
-    state.showSwapWithdrawPage = action.payload;
-  },
-  setShowSwapDepositPage: (state, action: PayloadAction<boolean>) => {
-    state.showSwapDepositPage = action.payload;
-  },
-  setPriceOfUSDYinUSDC: (state, action: PayloadAction<number>) => {
-    state.priceOfUSDYinUSDC = action.payload;
-  },
-  setPriceOfBTCinUSDC: (state, action: PayloadAction<number>) => {
-    state.priceOfBTCinUSDC = action.payload;
-  },
-  setPriceOfEURCinUSDC: (state, action: PayloadAction<number>) => {
-    state.priceOfEURCinUSDC = action.payload;
-  },
-  setRecentlyUsedSolanaAddresses: (state, action: PayloadAction<string[]>) => {
-    state.recentlyUsedSolanaAddresses = action.payload;
-  },
-  setShowContactPopup: (state, action: PayloadAction<boolean>) => {
-    state.showContactPopup = action.payload;
-  },
-  setSelectedLanguageCode: (state, action: PayloadAction<string>) => {
-    state.selectedLanguageCode= action.payload;
-  },
-  setDepositWithdrawProductType: (state, action: PayloadAction<string>) => {
-    state.depositWithdrawProductType= action.payload;
-  },
-  setPassKeyState: (state, action: PayloadAction<string>) => {
-    state.passKeyState= action.payload;
-  }, 
-  setPrivyWalletReady: (state, action: PayloadAction<boolean>) => {
-    state.privyWalletReady= action.payload;
-  }, 
-  setUsers: (state, action: PayloadAction<User[]>) => {
-    state.users= action.payload;
-  }, 
+    setcurrentUserEmail: (state, action: PayloadAction<string>) => {
+      state.currentUserEmail = action.payload;
+    },
+    setSwapWithdrawTransactionStatus: (
+      state,
+      action: PayloadAction<string>
+    ) => {
+      state.swapWithdrawTransactionStatus = action.payload;
+    },
+    setSwapDepositTransactionStatus: (state, action: PayloadAction<string>) => {
+      state.swapDepositTransactionStatus = action.payload;
+    },
+    setSwapFXTransactionStatus: (state, action: PayloadAction<string>) => {
+      state.swapFXTransactionStatus = action.payload;
+    },
+    setUpdatingBalance: (state, action: PayloadAction<boolean>) => {
+      state.updatingBalance = action.payload;
+    },
+    setHotBalanceUSDY: (state, action: PayloadAction<number>) => {
+      state.hotBalanceUSDY = action.payload;
+    },
+    setShouldShowBottomNav: (state, action: PayloadAction<boolean>) => {
+      state.shouldShowBottomNav = action.payload;
+    },
+    setShowPayPage: (state, action: PayloadAction<boolean>) => {
+      state.showPayPage = action.payload;
+    },
+    setShowContactsPage: (state, action: PayloadAction<boolean>) => {
+      state.showContactsPage = action.payload;
+    },
+    setShowSendPage: (state, action: PayloadAction<boolean>) => {
+      state.showSendPage = action.payload;
+    },
+    setShowRequestPage: (state, action: PayloadAction<boolean>) => {
+      state.showRequestPage = action.payload;
+    },
+    setShowWithdrawStablecoinPage: (state, action: PayloadAction<boolean>) => {
+      state.showWithdrawStablecoinPage = action.payload;
+    },
+    setShowBanxaPopUp: (state, action: PayloadAction<boolean>) => {
+      state.showBanxaPopUp = action.payload;
+    },
+    setShowDepositStablecoinPage: (state, action: PayloadAction<boolean>) => {
+      state.showDepositStablecoinPage = action.payload;
+    },
+    setShowEarnPage: (state, action: PayloadAction<boolean>) => {
+      state.showEarnPage = action.payload;
+    },
+    setShowCryptoPage: (state, action: PayloadAction<boolean>) => {
+      state.showCryptoPage = action.payload;
+    },
+    setShowWalletPage: (state, action: PayloadAction<boolean>) => {
+      state.showWalletPage = action.payload;
+    },
+    setShowMainDepositPage: (state, action: PayloadAction<boolean>) => {
+      state.showMainDepositPage = action.payload;
+    },
+    setShowAccountHistory: (state, action: PayloadAction<boolean>) => {
+      state.showAccountHistory = action.payload;
+    },
+    setNewUserHasPreviousBalance: (state, action: PayloadAction<boolean>) => {
+      state.newUserHasPreviousBalance = action.payload;
+    },
+    setShowProfileMenu: (state, action: PayloadAction<boolean>) => {
+      state.showProfileMenu = action.payload;
+    },
+    setShowSwapWithdrawPage: (state, action: PayloadAction<boolean>) => {
+      state.showSwapWithdrawPage = action.payload;
+    },
+    setShowSwapDepositPage: (state, action: PayloadAction<boolean>) => {
+      state.showSwapDepositPage = action.payload;
+    },
+    setPriceOfUSDYinUSDC: (state, action: PayloadAction<number>) => {
+      state.priceOfUSDYinUSDC = action.payload;
+    },
+    setPriceOfBTCinUSDC: (state, action: PayloadAction<number>) => {
+      state.priceOfBTCinUSDC = action.payload;
+    },
+    setPriceOfEURCinUSDC: (state, action: PayloadAction<number>) => {
+      state.priceOfEURCinUSDC = action.payload;
+    },
+    setRecentlyUsedSolanaAddresses: (
+      state,
+      action: PayloadAction<string[]>
+    ) => {
+      state.recentlyUsedSolanaAddresses = action.payload;
+    },
+    setShowContactPopup: (state, action: PayloadAction<boolean>) => {
+      state.showContactPopup = action.payload;
+    },
+    setSelectedLanguageCode: (state, action: PayloadAction<string>) => {
+      state.selectedLanguageCode = action.payload;
+    },
+    setDepositWithdrawProductType: (state, action: PayloadAction<string>) => {
+      state.depositWithdrawProductType = action.payload;
+    },
+    setPassKeyState: (state, action: PayloadAction<string>) => {
+      state.passKeyState = action.payload;
+    },
+    setPrivyWalletReady: (state, action: PayloadAction<boolean>) => {
+      state.privyWalletReady = action.payload;
+    },
+    setUsers: (state, action: PayloadAction<User[]>) => {
+      state.users = action.payload;
+    },
   },
 });
 
-export const { 
-  setWallet, setWalletConnected, 
-  setWalletType, setWalletPubKey,
+export const {
+  setWallet,
+  setWalletConnected,
+  setWalletType,
+  setWalletPubKey,
   settotalInvestingValue,
-  setsolValue, setusdcSolValue, setusdtSolValue, setpyusdSolValue, 
-  seteurcSolValue, setbusdSolValue, setusdySolValue,
+  setsolValue,
+  setusdcSolValue,
+  setusdtSolValue,
+  setpyusdSolValue,
+  seteurcSolValue,
+  setbusdSolValue,
+  setusdySolValue,
   setbtcSolValue,
-  setusdcEthValue, setusdtEthValue, setbusdEthValue, 
+  setusdcEthValue,
+  setusdtEthValue,
+  setbusdEthValue,
   setCurrentUserKYCVerified,
-  setcurrentUserFirstName, setcurrentUserLastName,
-  setcurrentUserEmail, 
+  setcurrentUserFirstName,
+  setcurrentUserLastName,
+  setcurrentUserEmail,
   setSwapWithdrawTransactionStatus,
   setSwapDepositTransactionStatus,
   setSwapFXTransactionStatus,
-   setUpdatingBalance,
-  setShouldShowBottomNav, setShowPayPage, setShowSendPage,
-  setShowWithdrawStablecoinPage, setShowBanxaPopUp,
-  setShowDepositStablecoinPage, setShowEarnPage, setShowCryptoPage,
-  setShowWalletPage, setShowMainDepositPage, setShowAccountHistory,
-  setNewUserHasPreviousBalance, setShowRequestPage,
-  setShowProfileMenu, setShowSwapWithdrawPage,
-  setShowSwapDepositPage, setHotBalanceUSDY,
-  setPriceOfUSDYinUSDC, 
+  setUpdatingBalance,
+  setShouldShowBottomNav,
+  setShowPayPage,
+  setShowSendPage,
+  setShowWithdrawStablecoinPage,
+  setShowBanxaPopUp,
+  setShowDepositStablecoinPage,
+  setShowEarnPage,
+  setShowCryptoPage,
+  setShowWalletPage,
+  setShowMainDepositPage,
+  setShowAccountHistory,
+  setNewUserHasPreviousBalance,
+  setShowRequestPage,
+  setShowProfileMenu,
+  setShowSwapWithdrawPage,
+  setShowSwapDepositPage,
+  setHotBalanceUSDY,
+  setPriceOfUSDYinUSDC,
   setPriceOfBTCinUSDC,
   setPriceOfEURCinUSDC,
-  setRecentlyUsedSolanaAddresses, 
-  setShowContactPopup, setSelectedLanguageCode,
-  setcurrentUserID, setDepositWithdrawProductType,
+  setRecentlyUsedSolanaAddresses,
+  setShowContactPopup,
+  setSelectedLanguageCode,
+  setcurrentUserID,
+  setDepositWithdrawProductType,
   setPassKeyState,
   setPrivyWalletReady,
-  setUsers
-  
+  setUsers,
 } = userWalletDataSlice.actions;
 
 export default userWalletDataSlice.reducer;
-
-

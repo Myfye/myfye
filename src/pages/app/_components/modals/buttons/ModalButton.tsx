@@ -31,15 +31,26 @@ const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
         column-gap: var(--size-150);
         line-height: var(--line-height-tight);
         width: 100%;
+        box-shadow: var(--box-shadow-card);
+        padding: var(--size-200);
+        border-radius: var(--border-radius-medium);
       `}
     >
-      <div className="icon-wrapper">
-        <Icon></Icon>
+      <div
+        className="icon-wrapper"
+        css={css`
+          padding: var(--size-100);
+          background-color: var(--clr-green-100);
+          border-radius: var(--border-radius-medium);
+        `}
+      >
+        <Icon size="var(--size-400)" color="var(--clr-accent)"></Icon>
       </div>
       <div
         className="content"
         css={css`
           display: flex;
+          flex-direction: column;
           align-items: flex-start;
           justify-content: space-between;
           align-self: center;
@@ -57,12 +68,11 @@ const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
           className="description"
           css={css`
             font-size: var(--fs-small);
-            color: var(--clr-text-neutral);
-            text-transform: uppercase;
+            color: var(--clr-text-weak);
             margin-block-start: var(--size-050);
           `}
         >
-          {currency}
+          {description}
         </p>
       </div>
     </motion.button>

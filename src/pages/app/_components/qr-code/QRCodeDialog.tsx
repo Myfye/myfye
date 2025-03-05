@@ -20,6 +20,7 @@ import {
   X as XIcon,
 } from "@phosphor-icons/react";
 import QRCode from "./QRCode";
+import { useSelector } from "react-redux";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);
@@ -39,9 +40,7 @@ const QRCodeDialog = () => {
 
   const [isQRCodeVisible, setQRCodeVisible] = useState(false);
 
-  const [btcAddress, setBTCAddress] = useState(
-    "1Lbcfr7sAHTD9CgdQo3HTMTkV8LK4ZnX71"
-  );
+  const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
 
   const id = useId();
 
@@ -94,7 +93,7 @@ const QRCodeDialog = () => {
                 css={css`
                   display: grid;
                   grid-template-rows: 4rem 1fr;
-                  height: ${window.screen.height}px;
+                  height: 100dvh;
                   overflow-y: auto;
                 `}
                 aria-labelledby={id}
@@ -151,7 +150,7 @@ const QRCodeDialog = () => {
                   <hgroup>
                     <p
                       slot="title"
-                      className="heading-large"
+                      className="heading-x-large"
                       id={id}
                       css={css`
                         color: var(--clr-text-on-accent);
@@ -175,7 +174,7 @@ const QRCodeDialog = () => {
                     </p>
                   </hgroup>
                   <section className="qr-container">
-                    <QRCode visible={isQRCodeVisible} />
+                    <QRCode visible={isQRCodeVisible} data={pubKey} />
                     {!isQRCodeVisible && <QrReader />}
                   </section>
                   <section
@@ -189,10 +188,15 @@ const QRCodeDialog = () => {
                         color: var(--clr-neutral-300);
                         text-align: center;
                         margin-block-end: var(--size-500);
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        max-width: 40ch;
+                        margin-inline: auto;
                       `}
                     >
                       {isQRCodeVisible
-                        ? btcAddress
+                        ? pubKey
                         : "Only send money to a wallet you trust"}
                     </p>
 
@@ -202,7 +206,7 @@ const QRCodeDialog = () => {
                       color="invert"
                       onPress={() => {
                         if (isQRCodeVisible)
-                          return navigator.clipboard.writeText(btcAddress);
+                          return navigator.clipboard.writeText(pubKey);
                         if (!isQRCodeVisible) setQRCodeVisible(true);
                       }}
                     >

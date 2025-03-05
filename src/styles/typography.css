@@ -23,15 +23,19 @@
 
 .heading-display {
   line-height: var(--line-height-heading);
-  height: calc(var(--fs-xxx-large) * var(--line-height-heading));
   font-size: var(--fs-xxx-large);
+  font-weight: var(--fw-heading);
+}
+
+.heading-x-large {
+  line-height: var(--line-height-heading);
+  font-size: var(--fs-xx-large);
   font-weight: var(--fw-heading);
 }
 
 .heading-large {
   line-height: var(--line-height-heading);
-  height: calc(var(--fs-xx-large) * var(--line-height-heading));
-  font-size: var(--fs-xx-large);
+  font-size: var(--fs-x-large);
   font-weight: var(--fw-heading);
 }
 

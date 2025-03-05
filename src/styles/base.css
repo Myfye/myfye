@@ -1,1 +1,7 @@
 @layer reset, base, theme, components, utilities;
+
+.site-layout {
+  font-family: var(--font-family);
+  font-size: var(--fs-medium);
+  font-family: Inter, sans-serif;
+}
