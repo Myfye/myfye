@@ -54,6 +54,7 @@ import LoginMain from "./login/_components/LoginMain.tsx";
 import LoginFooter from "./login/_components/LoginFooter.tsx";
 import LoginPage from "./login/_components/LoginPage.tsx";
 import Home from "./home/Home.tsx";
+import Router from "./_components/router/Router.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -318,16 +319,7 @@ function WebAppInner() {
       <div className="app-layout">
         {userDataLoaded ? (
           <>
-            <Header>
-              <NavMenu></NavMenu>
-              <QRCodeDialog />
-            </Header>
-            <Main>
-              <Home></Home>
-            </Main>
-            <Footer>
-              <AppNavDrawer></AppNavDrawer>
-            </Footer>
+            <Router />
           </>
         ) : (
           <div
@@ -412,15 +404,21 @@ function WebAppInner() {
             </section>
           </LoginMain>
           <LoginFooter>
-            <Button
-              size="large"
-              expand={true}
-              isDisabled={disableLogin}
-              onPress={() => login()}
+            <button
+              data-variant="primary"
+              data-size="large"
+              data-color="accent"
+              data-expand="true"
+              className="button"
+              css={css`
+                width: 100%;
+              `}
+              type="button"
+              disabled={disableLogin}
+              onClick={() => login()}
             >
               Get started
-            </Button>
-            <button onClick={login}>login test</button>
+            </button>
           </LoginFooter>
         </LoginPage>
       </>

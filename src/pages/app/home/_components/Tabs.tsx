@@ -93,10 +93,6 @@ const Tabs = () => {
     [btcBalanceInUSD, solBalanceInUSD]
   );
 
-  const wallet = useSelector((state: any) => state.userWalletData);
-
-  console.log(wallet);
-
   let [selectedKey, setSelectedKey] = useState(tabs[0].id);
 
   let tabListRef = useRef(null!);

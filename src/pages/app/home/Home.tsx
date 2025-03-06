@@ -1,3 +1,6 @@
+import Header from "../_components/layout/header/Header";
+import NavMenu from "../_components/layout/header/nav-menu/NavMenu";
+import QRCodeDialog from "../_components/qr-code/QRCodeDialog";
 import Tabs from "./_components/Tabs";
 
 /** @jsxImportSource @emotion/react */

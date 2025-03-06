@@ -4,10 +4,12 @@ import CoinIcon from "./CoinIcon";
 import { useMemo } from "react";
 import {
   MenuTrigger,
-  Button as AriaButton,
   Popover,
   MenuItem,
   Menu,
+  useContextProps,
+  ButtonContext,
+  Button as AriaButton,
 } from "react-aria-components";
 import Button from "@/components/ui/button/Button";
 // import Menu from "@/components/ui/menu/Menu";
@@ -30,6 +32,17 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
         }`,
       }).format(balance),
     [balance]
+  );
+
+  const [buttonProps, buttonRef] = useContextProps(
+    {
+      icon: DotsThreeVertical,
+      iconOnly: true,
+      size: "small",
+      variant: "transparent",
+    },
+    ref,
+    ButtonContext
   );
 
   return (
@@ -98,13 +111,9 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
           </p>
         </div>
         <MenuTrigger>
-          <AriaButton aria-label="Menu">
-            <Button
-              icon={DotsThreeVertical}
-              iconOnly
-              size="small"
-              variant="transparent"
-            ></Button>
+          {/* <Button {...buttonProps} ref={buttonRef}></Button> */}
+          <AriaButton>
+            <DotsThreeVertical size="1.25rem" />
           </AriaButton>
           <Popover placement="bottom end">
             <Menu

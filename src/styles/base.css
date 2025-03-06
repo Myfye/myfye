@@ -5,3 +5,7 @@
   font-size: var(--fs-medium);
   font-family: Inter, sans-serif;
 }
+
+* {
+  overscroll-behavior: none !important;
+}

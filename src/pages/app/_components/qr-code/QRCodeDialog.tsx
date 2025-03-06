@@ -15,6 +15,7 @@ import QrReader from "./QRReader";
 import Button from "@/components/ui/button/Button";
 import {
   CaretLeft as CaretLeftIcon,
+  Copy,
   QuestionMark as QuestionMarkIcon,
   Scan as ScanIcon,
   X as XIcon,
@@ -204,13 +205,14 @@ const QRCodeDialog = () => {
                       expand
                       size="large"
                       color="invert"
+                      icon={Copy}
                       onPress={() => {
                         if (isQRCodeVisible)
                           return navigator.clipboard.writeText(pubKey);
-                        if (!isQRCodeVisible) setQRCodeVisible(true);
+                        return setQRCodeVisible(true);
                       }}
                     >
-                      {isQRCodeVisible ? "Copy wallet address" : "View QR Code"}
+                      {isQRCodeVisible ? "Copy address" : "View QR Code"}
                     </Button>
                   </section>
                 </div>

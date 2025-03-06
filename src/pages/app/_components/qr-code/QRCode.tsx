@@ -6,12 +6,18 @@ import QRCodeStyling from "qr-code-styling";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const QRCode = ({ data = "https://qr-code-styling.com", visible }) => {
+const QRCode = ({
+  data = "https://qr-code-styling.com",
+  visible = "true",
+  color = "#f8fbfc",
+  size = 300,
+  className = "",
+}) => {
   const qrCode = new QRCodeStyling({
     type: "svg",
     shape: "square",
-    width: 300,
-    height: 300,
+    width: size,
+    height: size,
     data: data,
     margin: 0,
     qrOptions: {
@@ -25,38 +31,38 @@ const QRCode = ({ data = "https://qr-code-styling.com", visible }) => {
       imageSize: 0.5,
       margin: 0,
     },
-    dotsOptions: { type: "classy", color: "#f8fbfc", roundSize: true },
-    backgroundOptions: { round: 0, color: "#000407", gradient: null },
+    dotsOptions: { type: "dots", color: color, roundSize: true },
+    backgroundOptions: { round: 0, color: "transparent", gradient: null },
     image: logo,
     dotsOptionsHelper: {
       colorType: { single: true, gradient: false },
       gradient: {
         linear: true,
         radial: false,
-        color1: "#f8fbfc",
-        color2: "#f8fbfc",
+        color1: color,
+        color2: color,
         rotation: "0",
       },
     },
-    cornersSquareOptions: { type: "extra-rounded", color: "#f8fbfc" },
+    cornersSquareOptions: { type: "extra-rounded", color: color },
     cornersSquareOptionsHelper: {
       colorType: { single: true, gradient: false },
       gradient: {
         linear: true,
         radial: false,
-        color1: "#f8fbfc",
-        color2: "#f8fbfc",
+        color1: color,
+        color2: color,
         rotation: "0",
       },
     },
-    cornersDotOptions: { type: "", color: "#f8fbfc" },
+    cornersDotOptions: { type: "", color: color },
     cornersDotOptionsHelper: {
       colorType: { single: true, gradient: false },
       gradient: {
         linear: true,
         radial: false,
-        color1: "#f8fbfc",
-        color2: "#f8fbfc",
+        color1: color,
+        color2: color,
         rotation: "0",
       },
     },
@@ -65,8 +71,8 @@ const QRCode = ({ data = "https://qr-code-styling.com", visible }) => {
       gradient: {
         linear: true,
         radial: false,
-        color1: "#f8fbfc",
-        color2: "#f8fbfc",
+        color1: color,
+        color2: color,
         rotation: "0",
       },
     },
@@ -81,6 +87,7 @@ const QRCode = ({ data = "https://qr-code-styling.com", visible }) => {
   return (
     <div
       ref={ref}
+      className={`qr-code | ${className}`}
       css={css`
         display: ${visible ? "block" : "none"};
       `}

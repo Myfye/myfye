@@ -36,7 +36,7 @@ const SHEET_HEIGHT = 500;
 
 const SendModal = ({ title, buttonProps }) => {
   let [isOpen, setOpen] = useState(false);
-  let h = SHEET_HEIGHT;
+  let h = Math.min(window.innerHeight, SHEET_HEIGHT);
   let y = useMotionValue(h);
   let bgOpacity = useTransform(y, [0, h], [0.4, 0]);
   let bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
