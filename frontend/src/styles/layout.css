@@ -1,0 +1,31 @@
+:root {
+  --z-index-deep: -9999;
+  --z-index-default: 1;
+  --z-index-masked: 100;
+  --z-index-mask: 200;
+  --z-index-sticky: 300;
+  --z-index-nav: 400;
+  --z-index-header: 500;
+  --z-index-overlay: 600;
+  --z-index-spinner: 700;
+  --z-index-popout: 800;
+  --z-index-toast: 900;
+  --z-index-modal: 1000;
+}
+
+.controls {
+  --_gap: var(--controls-gap-m);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: fit-content;
+  gap: var(--_gap);
+}
+
+.aspect-ratio-square {
+  aspect-ratio: 1;
+}
+
+.aspect-ratio-16-9 {
+  aspect-ratio: 16/9;
+}

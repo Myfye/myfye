@@ -1,0 +1,73 @@
+:root {
+  --size-0: 0;
+  --size-025: 0.125rem;
+  --size-050: 0.25rem;
+  --size-075: 0.375rem;
+  --size-100: 0.5rem;
+  --size-150: 0.75rem;
+  --size-200: 1rem;
+  --size-250: 1.25rem;
+  --size-300: 1.5rem;
+  --size-400: 2rem;
+  --size-500: 2.5rem;
+  --size-600: 3rem;
+  --size-700: 3.5rem;
+  --size-800: 4rem;
+  --size-1000: 5rem;
+  --size-1200: 6rem;
+  --size-1600: 8rem;
+
+  --app-max-width: 420px;
+
+  --border-width-default: 0.0625rem;
+  --border-width-thick: 0.125rem;
+  --border-width-thicker: 0.25rem;
+
+  --border-radius-x-small: 0.02em;
+  --border-radius-small: 0.25rem;
+  --border-radius-medium: 0.5rem;
+  --border-radius-pill: 999px;
+  --border-radius-circle: 50%;
+
+  --outline-focus-offset: -0.125rem;
+  --outline-focus-width: 0.125rem;
+
+  --breakpoint-x-small: 320px;
+  --breakpoint-small: 544px;
+  --breakpoint-medium: 768px;
+  --breakpoint-large: 1012px;
+  --breakpoint-x-large: 1280px;
+  --breakpoint-xx-large: 1400px;
+
+  --stack-gap-small: 0.5rem;
+  --stack-gap-medium: 1rem;
+  --stack-gap-large: 1.5rem;
+
+  --stack-padding-small: var(--space-100);
+  --stack-padding-medium: var(--space-200);
+  --stack-padding-large: var(--space-300);
+
+  --control-gap-x-small: var(--size-050);
+  --control-padding-block-x-small: var(--size-025);
+  --control-padding-inline-x-small: var(--size-050);
+  --control-size-x-small: var(--size-250);
+
+  --control-gap-small: var(--size-100);
+  --control-padding-block-small: var(--size-0);
+  --control-padding-inline-small: var(--size-150);
+  --control-size-small: var(--size-400);
+
+  --control-gap-medium: var(--size-100);
+  --control-padding-block-medium: var(--size-0);
+  --control-padding-inline-medium: var(--size-300);
+  --control-size-medium: var(--size-500);
+
+  --control-gap-large: var(--size-100);
+  --control-padding-block-large: var(--size-0);
+  --control-padding-inline-large: var(--size-400);
+  --control-size-large: var(--size-600);
+
+  --controls-gap-small: var(--size-100);
+  --controls-gap-medium: var(--size-150);
+  --controls-gap-large: var(--size-100);
+}

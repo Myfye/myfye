@@ -1,0 +1,122 @@
+:root {
+  --clr-white: #f8fbfc;
+  --clr-black: #000407;
+
+  --clr-neutral-100: #f3f6f8;
+  --clr-neutral-200: #dde4e8;
+  --clr-neutral-300: #b6bec3;
+  --clr-neutral-400: #929ba1;
+  --clr-neutral-500: #5f696f;
+  --clr-neutral-600: #48535a;
+  --clr-neutral-700: #36424a;
+  --clr-neutral-800: #273138;
+  --clr-neutral-900: #202c33;
+
+  --clr-purple-100: #f4ebf7;
+  --clr-purple-200: #e4cded;
+  --clr-purple-300: #be88d4;
+  --clr-purple-400: #a352c4;
+  --clr-purple-500: #68138a;
+  --clr-purple-600: #520a6f;
+  --clr-purple-700: #3e0555;
+  --clr-purple-800: #35034a;
+  --clr-purple-900: #2a023b;
+
+  --clr-red-100: #f7ece9;
+  --clr-red-200: #f2cfc5;
+  --clr-red-300: #d8917b;
+  --clr-red-400: #cb7054;
+  --clr-red-500: #8f2c0e;
+  --clr-red-600: #742007;
+  --clr-red-700: #541502;
+  --clr-red-800: #481202;
+  --clr-red-900: #3b0f02;
+
+  --clr-yellow-100: #f7f5eb;
+  --clr-yellow-200: #e9e2be;
+  --clr-yellow-300: #cbc382;
+  --clr-yellow-400: #b0a44a;
+  --clr-yellow-500: #786b0c;
+  --clr-yellow-600: #625706;
+  --clr-yellow-700: #484003;
+  --clr-yellow-800: #393203;
+  --clr-yellow-900: #2c2702;
+
+  --clr-blue-100: #ecf0f8;
+  --clr-blue-200: #cdd7f0;
+  --clr-blue-300: #8ba2d4;
+  --clr-blue-400: #5f7dc0;
+  --clr-blue-500: #143886;
+  --clr-blue-600: #0f2e72;
+  --clr-blue-700: #0a245c;
+  --clr-blue-800: #061b4a;
+  --clr-blue-900: #051842;
+
+  --clr-green-100: #ecfaf2;
+  --clr-green-200: #caebd6;
+  --clr-green-300: #84d0a1;
+  --clr-green-400: #4fb878;
+  --clr-green-500: #117e3b;
+  --clr-green-600: #0a662d;
+  --clr-green-700: #055122;
+  --clr-green-800: #023f1a;
+  --clr-green-900: #023315;
+
+  --clr-accent: var(--clr-green-500);
+  --clr-accent-active: var(--clr-green-600);
+
+  --clr-text: var(--clr-neutral-900);
+  --clr-text-link: var(--clr-green-500);
+  --clr-text-weak: var(--clr-neutral-700);
+  --clr-text-weaker: var(--clr-neutral-500);
+  --clr-text-weakest: var(--clr-neutral-300);
+  --clr-text-on-accent: var(--clr-white);
+  --clr-text-error: var(--clr-red-500);
+  --clr-text-danger: var(--clr-red-500);
+  --clr-text-success: var(--clr-green-500);
+  --clr-text-neutral: var(--clr-neutral-500);
+  --clr-text-neutral-strong: var(--clr-neutral-700);
+  --clr-text-warning: var(--clr-yellow-500);
+  --clr-text-warning-strong: var(--clr-yellow-700);
+  --clr-text-highlight: var(--clr-purple-500);
+  --clr-text-info: var(--clr-blue-500);
+  --clr-text-progress: var(--clr-green-500);
+
+  --clr-surface: var(--clr-white);
+  --clr-surface-raised: var(--clr-neutral-100);
+  --clr-surface-lowered: var(--clr-neutral-200);
+
+  --clr-border-divider: var(--clr-neutral-200);
+  --clr-border-neutral: var(--clr-neutral-200);
+  --clr-border-strong: var(--clr-neutral-300);
+  --clr-border-success: var(--clr-green-200);
+  --clr-border-warning: var(--clr-yellow-200);
+  --clr-border-danger: var(--clr-red-200);
+  --clr-border-info: var(--clr-blue-200);
+  --clr-border-progress: var(--clr-green-200);
+  --clr-border-hover: var(--clr-neutral-300);
+
+  --clr-status-neutral: var(--clr-white);
+  --clr-status-success: var(--clr-green-500);
+  --clr-status-warning: var(--clr-yellow-500);
+  --clr-status-danger: var(--clr-red-500);
+  --clr-status-info: var(--clr-blue-500);
+  --clr-status-highlight: var(--clr-purple-500);
+  --clr-status-notification: var(--clr-green-500);
+
+  --clr-status-neutral-active: var(--clr-neutral-100);
+  --clr-status-success-active: var(--clr-green-600);
+  --clr-status-warning-active: var(--clr-yellow-600);
+  --clr-status-danger-active: var(--clr-red-600);
+  --clr-status-info-active: var(--clr-blue-600);
+  --clr-status-highlight-active: var(--clr-purple-600);
+  --clr-status-notification-active: var(--clr-green-600);
+
+  --clr-status-neutral-weak: var(--clr-neutral-100);
+  --clr-status-success-weak: var(--clr-green-100);
+  --clr-status-warning-weak: var(--clr-yellow-100);
+  --clr-status-danger-weak: var(--clr-red-100);
+  --clr-status-info-weak: var(--clr-blue-100);
+  --clr-status-highlight-weak: var(--clr-purple-100);
+  --clr-status-notification-weak: var(--clr-green-100);
+}

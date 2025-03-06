@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - nvm install 20
+      - nvm use 20
+      - node -v
+      - npm -v
+
+  build:
+    commands:
+      - npm install --legacy-peer-deps
+      - npm audit fix --force
+      - npm run build
+      - aws s3 sync build/ s3://dev-myfye-com --delete
