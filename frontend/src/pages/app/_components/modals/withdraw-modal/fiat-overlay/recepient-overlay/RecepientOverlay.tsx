@@ -1,10 +1,4 @@
-import {
-  AnimatePresence,
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useTransform,
-} from "motion/react";
+import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import {
   Dialog,
   Input,
@@ -14,26 +8,13 @@ import {
   SearchField,
   Button as AriaButton,
 } from "react-aria-components";
-import { useEffect, useId, useMemo, useState } from "react";
+import { useId } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import QrReader from "./QRReader";
-import {
-  CaretLeft as CaretLeftIcon,
-  Copy,
-  QuestionMark as QuestionMarkIcon,
-  Scan as ScanIcon,
-  X as XIcon,
-} from "@phosphor-icons/react";
-import QRCode from "./QRCode";
-import { useSelector } from "react-redux";
-import CoinCardList from "./coin-card/CoinCardList";
+import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";
 
-import usDollarCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
-import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
-import usdyCoinIcon from "@/assets/svgs/coins/usdy-coin.svg";
 import ContactList from "./contacts/ContactList";
 import Button from "@/components/ui/button/Button";
 
