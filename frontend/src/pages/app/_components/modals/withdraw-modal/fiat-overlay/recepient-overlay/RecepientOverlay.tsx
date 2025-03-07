@@ -94,7 +94,8 @@ const RecepientOverlay = ({ isOpen, onOpenChange, onOpen, onClose, coin }) => {
                   display: grid;
                   grid-template-rows: 4rem 1fr;
                   height: 100dvh;
-                  width: var(--app-max-width);
+                  max-width: var(--app-max-width);
+                  width: 100vw;
                 `}
                 aria-labelledby={id}
               >

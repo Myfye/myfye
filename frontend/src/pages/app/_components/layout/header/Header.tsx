@@ -10,6 +10,7 @@ const Header = ({ children }) => {
           align-items: center;
           justify-content: space-between;
           height: 100%;
+          padding-inline: var(--size-100);
         `}
       >
         {children}

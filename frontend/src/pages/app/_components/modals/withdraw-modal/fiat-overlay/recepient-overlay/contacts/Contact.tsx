@@ -9,6 +9,7 @@ const Contact = ({ name = "", walletAddress = "" }) => {
         display: grid;
         grid-template-columns: auto 1fr;
         gap: var(--size-100);
+        width: 100%;
       `}
     >
       <div
@@ -19,7 +20,7 @@ const Contact = ({ name = "", walletAddress = "" }) => {
           background-color: var(--clr-surface-lowered);
         `}
       >
-        <img src="" alt=""></img>
+        {/* <img src={""} alt=""></img> */}
       </div>
       <div
         className="content"

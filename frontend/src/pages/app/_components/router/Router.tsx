@@ -163,6 +163,7 @@ const Router = () => {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
+            container: page / size;
           `}
         >
           <Collection items={tabs}>
@@ -174,6 +175,7 @@ const Router = () => {
                   flex-shrink: 0;
                   scroll-snap-align: start;
                 `}
+                id={tab.id}
               >
                 {tab.id === "home" && <Home />}
                 {tab.id === "wallet" && <div></div>}

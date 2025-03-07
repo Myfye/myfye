@@ -11,8 +11,8 @@ const Home = () => {
     <div
       className="home"
       css={css`
-        container: home / size;
-        height: 100%;
+        height: 100cqh;
+        overflow-y: auto;
       `}
     >
       <Tabs></Tabs>

@@ -370,7 +370,7 @@ function WebAppInner() {
                   css={css`
                     display: grid;
                     place-items: center;
-                    width: 80%;
+                    width: 50%;
                     border: 1px solid var(--clr-neutral-200);
                     border-radius: var(--border-radius-medium);
                     aspect-ratio: 1;
