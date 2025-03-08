@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const getUserBalancesRoute = require('./routes/getUserBalances');
+
 router.get('/get_balance', (req, res) => {
     const balance = {
         address: "YourWalletAddress",

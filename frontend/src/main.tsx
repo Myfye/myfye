@@ -24,7 +24,7 @@ root.render(
           theme: "light",
           accentColor: "#447E26",
           logo: "https://project-eli-lewitt.s3.us-west-2.amazonaws.com/logo512.png",
-          walletChainType: "solana-only",
+          walletChainType: "ethereum-and-solana",
         },
         embeddedWallets: {
           createOnLogin: "off",
