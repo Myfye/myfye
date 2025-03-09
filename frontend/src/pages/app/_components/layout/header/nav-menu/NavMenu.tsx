@@ -37,12 +37,12 @@ const NavMenu = () => {
     const atIndex = email.indexOf('@');
     if (atIndex === -1) return email; // Not a valid email format
     
-    const username = email.substring(0, atIndex);
+    const userEmail = email.substring(0, atIndex);
     const domain = email.substring(atIndex);
     
-    // If username is longer than 16 characters, truncate it
-    if (username.length > 16) {
-      return `${username.substring(0, 5)}...${domain}`;
+    // If username is long, truncate it
+    if (userEmail.length > 8) {
+      return `${userEmail.substring(0, 5)}...${domain}`;
     }
     
     return email;
