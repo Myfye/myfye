@@ -7,16 +7,24 @@ import {
   useMotionValueEvent,
   useTransform,
 } from "framer-motion";
-import { Dialog, Heading, Modal, ModalOverlay } from "react-aria-components";
-import { useId, useState } from "react";
+import {
+  Dialog,
+  Heading,
+  Modal as AriaModal,
+  ModalOverlay,
+} from "react-aria-components";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
-import { X } from "@phosphor-icons/react";
+import { Bank, Copy, Wallet, X } from "@phosphor-icons/react";
+import ModalButton from "../../app/modals/buttons/ModalButton";
+import QRCode from "../../app/qr-code/QRCode";
+import { useSelector } from "react-redux";
 
 // Wrap React Aria modal components so they support framer-motion values.
-const MotionModal = motion(Modal);
+const MotionModal = motion(AriaModal);
 const MotionModalOverlay = motion(ModalOverlay);
 
 const inertiaTransition = {
@@ -31,49 +39,59 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const SHEET_MARGIN = 34;
-
-const ModalSheet = ({ title, description }) => {
-  let [isOpen, setOpen] = useState(false);
-  let h = window.innerHeight - SHEET_MARGIN;
-  let y = useMotionValue(h);
-  let bgOpacity = useTransform(y, [0, h], [0.4, 0]);
-  let bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
+const Modal = ({
+  isOpen,
+  onOpenChange,
+  height = 400,
+  title = "",
+  children,
+  ...restProps
+}) => {
+  const top = window.innerHeight - height > 0 ? window.innerHeight - height : 0;
+  const h = Math.min(window.innerHeight, height);
+  const y = useMotionValue(h);
+  const bgOpacity = useTransform(y, [0, h], [0.4, 0]);
+  const bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
 
   const id = useId();
 
   return (
     <>
-      <Button onPress={() => setOpen(true)}>Open sheet</Button>
       <AnimatePresence>
         {isOpen && (
           <MotionModalOverlay
             // Force the modal to be open when AnimatePresence renders it.
             isOpen
-            onOpenChange={setOpen}
+            onOpenChange={onOpenChange}
             css={css`
               position: fixed;
               inset: 0;
-              z-index: var(--z-index-overlay);
+              z-index: var(--z-index-modal);
+              isolation: isolate;
             `}
             style={{ backgroundColor: bg as any }}
           >
             <MotionModal
               css={css`
                 position: absolute;
-                bottom: 0;
+                inset: 0;
+                top: auto;
+                margin-inline: auto;
+                max-width: var(--app-max-width);
                 width: 100%;
                 border-radius: var(--border-radius-medium);
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
+                background-color: var(--clr-surface);
+                z-index: 1;
               `}
               initial={{ y: h }}
               animate={{ y: 0 }}
               exit={{ y: h }}
               transition={staticTransition}
               style={{
-                y,
-                top: SHEET_MARGIN,
+                y: y,
+                top: top,
                 // Extra padding at the bottom to account for rubber band scrolling.
                 paddingBottom: window.screen.height,
               }}
@@ -81,44 +99,58 @@ const ModalSheet = ({ title, description }) => {
               dragConstraints={{ top: 0 }}
               onDragEnd={(e, { offset, velocity }) => {
                 if (offset.y > window.innerHeight * 0.75 || velocity.y > 10) {
-                  setOpen(false);
+                  onOpenChange(false);
                 } else {
                   animate(y, 0, { ...inertiaTransition, min: 0, max: 0 });
                 }
               }}
+              {...restProps}
             >
-              {/* drag affordance */}
               <div
+                data-drag-affordance
                 css={css`
                   margin-inline: auto;
-                  width: var(--size-400);
-                  height: var(--size-100);
-                  background-color: var(--clr-surface-lowered);
+                  width: var(--size-1000);
+                  height: var(--size-075);
+                  background-color: var(--clr-neutral-300);
+                  margin-block-start: var(--size-200);
+                  border-radius: var(--border-radius-pill);
                 `}
               />
               <Dialog
                 css={css`
-                  padding: var(--size-300) var(--size-300);
+                  padding: var(--size-200);
                 `}
                 aria-labelledby={id}
               >
-                <div
+                <header
                   css={css`
-                    display: flex;
-                    justify-content: flex-end;
+                    position: relative;
                   `}
                 >
+                  <p
+                    className="heading-medium"
+                    css={css`
+                      text-align: center;
+                    `}
+                    id={id}
+                  >
+                    {title}
+                  </p>
                   <Button
-                    onPress={() => setOpen(false)}
+                    onPress={() => onOpenChange(false)}
                     iconOnly
                     variant="transparent"
                     icon={X}
+                    css={css`
+                      position: absolute;
+                      inset: 0;
+                      left: auto;
+                      margin: auto;
+                    `}
                   ></Button>
-                </div>
-                <p className="heading-x-large" id={id}>
-                  {title}
-                </p>
-                {children}
+                </header>
+                <main>{children}</main>
               </Dialog>
             </MotionModal>
           </MotionModalOverlay>
@@ -128,4 +160,4 @@ const ModalSheet = ({ title, description }) => {
   );
 };
 
-export default ModalSheet;
+export default Modal;

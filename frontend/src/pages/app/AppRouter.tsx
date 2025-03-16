@@ -19,7 +19,7 @@ import appLogo from "@/assets/myfyeleaf.png";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import QRCodeModal from "../../components/app/qr-code/QRCodeModal.tsx";
+import QRCodeModal from "../../components/app/modals/qr-code-modal/QRCodeModal.tsx";
 import LoginHeader from "../../components/app/login/_components/LoginHeader.tsx";
 import LoginMain from "../../components/app/login/_components/LoginMain.tsx";
 import LoginFooter from "../../components/app/login/_components/LoginFooter.tsx";
@@ -36,6 +36,8 @@ import {
   setSendModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers.tsx";
+import WithdrawCryptoOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/WithdrawCryptoOverlay.tsx";
+import { setWithdrawCryptoOverlayOpen } from "@/redux/overlayReducers.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -120,21 +122,49 @@ function WebAppInner() {
   }, [state]);
 
   const isSendModalOpen = useSelector((state: any) => state.sendModal.isOpen);
-
   const isReceiveModalOpen = useSelector(
     (state: any) => state.receiveModal.isOpen
   );
-
   const isDepositModalOpen = useSelector(
     (state: any) => state.depositModal.isOpen
   );
-
   const isWithdrawModalOpen = useSelector(
     (state: any) => state.withdrawModal.isOpen
   );
-
   const isQRCodeModalOpen = useSelector(
     (state: any) => state.QRCodeModal.isOpen
+  );
+  const isAddContactModalOpen = useSelector(
+    (state: any) => state.addContactModal.isOpen
+  );
+
+  // Overlays
+  const isWithdrawFiatOverlayOpen = useSelector(
+    (state: any) => state.withdrawFiatOverlay.isOpen
+  );
+  const isWithdrawCryptoOverlayOpen = useSelector(
+    (state: any) => state.withdrawCryptoOverlay.isOpen
+  );
+  const isCashBalanceOverlayOpen = useSelector(
+    (state: any) => state.cashBalanceOverlay.isOpen
+  );
+  const isCryptoBalanceOverlayOpen = useSelector(
+    (state: any) => state.cryptoBalanceOverlay.isOpen
+  );
+  const isSendOverlayOpen = useSelector(
+    (state: any) => state.sendOverlay.isOpen
+  );
+  const isRequestOverlayOpen = useSelector(
+    (state: any) => state.requestOverlay.isOpen
+  );
+  const isDepositFiatOverlayOpen = useSelector(
+    (state: any) => state.depositFiatOverlay.isOpen
+  );
+  const isUserInfoOverlayOpen = useSelector(
+    (state: any) => state.userInfoOverlay.isOpen
+  );
+  const isSettingsOverlayOpen = useSelector(
+    (state: any) => state.settingsOverlay.isOpen
   );
 
   if (authenticated) {
@@ -143,6 +173,7 @@ function WebAppInner() {
         {userDataLoaded ? (
           <>
             <Router />
+            {/* Modals */}
             <SendModal
               isOpen={isSendModalOpen}
               onOpenChange={(e) => dispatch(setSendModalOpen(e))}
@@ -162,6 +193,11 @@ function WebAppInner() {
             <QRCodeModal
               isOpen={isQRCodeModalOpen}
               onOpenChange={(e) => dispatch(setQRCodeModalOpen(e))}
+            />
+            {/* Overlays */}
+            <WithdrawCryptoOverlay
+              isOpen={isWithdrawCryptoOverlayOpen}
+              onOpenChange={(e) => dispatch(setWithdrawCryptoOverlayOpen(e))}
             />
           </>
         ) : (

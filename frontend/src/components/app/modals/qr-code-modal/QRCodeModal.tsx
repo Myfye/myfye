@@ -6,22 +6,22 @@ import {
   useTransform,
 } from "motion/react";
 import { Dialog, Modal, ModalOverlay } from "react-aria-components";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import QrReader from "./QRReader";
+import QrReader from "../../qr-code/QRReader";
 import Button from "@/components/ui/button/Button";
 import {
   CaretLeft as CaretLeftIcon,
-  Copy,
+  Copy as CopyIcon,
   QuestionMark as QuestionMarkIcon,
-  Scan as ScanIcon,
   X as XIcon,
 } from "@phosphor-icons/react";
-import QRCode from "./QRCode";
-import { useSelector } from "react-redux";
+import QRCode from "../../qr-code/QRCode";
+import { useDispatch, useSelector } from "react-redux";
+import { setQRCodeModalOpen } from "@/redux/modalReducers";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);
@@ -66,10 +66,10 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                 position: absolute;
                 bottom: 0;
                 width: 100%;
-                border-radius: var(--border-radius-medium);
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
                 height: 100dvh;
+                z-index: 1;
               `}
               initial={{ y: h }}
               animate={{ y: 0 }}
@@ -81,6 +81,9 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                 // Extra padding at the bottom to account for rubber band scrolling.
                 paddingBottom: window.screen.height,
               }}
+              onAnimationComplete={() => {
+                setQRCodeVisible(false);
+              }}
             >
               <Dialog
                 css={css`
@@ -88,9 +91,22 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                   grid-template-rows: 4rem 1fr;
                   height: 100dvh;
                   overflow-y: auto;
+                  position: relative;
                 `}
                 aria-labelledby={id}
               >
+                {!isQRCodeVisible && (
+                  <section
+                    css={css`
+                      position: absolute;
+                      z-index: -1;
+                      width: 100%;
+                      height: 100%;
+                    `}
+                  >
+                    <QrReader />
+                  </section>
+                )}
                 <div
                   css={css`
                     display: flex;
@@ -166,10 +182,11 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                         : "Scan a QR Code to send tokens to another wallet"}
                     </p>
                   </hgroup>
-                  <section className="qr-container">
-                    <QRCode visible={isQRCodeVisible} data={pubKey} />
-                    {!isQRCodeVisible && <QrReader />}
-                  </section>
+                  {isQRCodeVisible && (
+                    <section className="qr-container">
+                      <QRCode visible={isQRCodeVisible} data={pubKey} />
+                    </section>
+                  )}
                   <section
                     css={css`
                       margin-block-start: var(--size-400);
@@ -181,11 +198,10 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                         color: var(--clr-neutral-300);
                         text-align: center;
                         margin-block-end: var(--size-500);
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        max-width: 40ch;
+                        max-width: 35ch;
                         margin-inline: auto;
+                        word-break: break-all;
+                        white-space: normal;
                       `}
                     >
                       {isQRCodeVisible
@@ -193,19 +209,32 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                         : "Only send money to a wallet you trust"}
                     </p>
 
-                    <Button
-                      expand
-                      size="large"
-                      color="invert"
-                      icon={Copy}
-                      onPress={() => {
-                        if (isQRCodeVisible)
-                          return navigator.clipboard.writeText(pubKey);
-                        return setQRCodeVisible(true);
-                      }}
-                    >
-                      {isQRCodeVisible ? "Copy address" : "View QR Code"}
-                    </Button>
+                    {isQRCodeVisible ? (
+                      <Button
+                        expand
+                        size="large"
+                        color="invert"
+                        icon={CopyIcon}
+                        onPress={() => {
+                          navigator.clipboard.writeText(pubKey);
+                          onOpenChange(false);
+                          // dispatch toaster to confirm copy
+                        }}
+                      >
+                        Copy Wallet Address
+                      </Button>
+                    ) : (
+                      <Button
+                        expand
+                        size="large"
+                        color="invert"
+                        onPress={() => {
+                          setQRCodeVisible(true);
+                        }}
+                      >
+                        View QR Code
+                      </Button>
+                    )}
                   </section>
                 </div>
               </Dialog>

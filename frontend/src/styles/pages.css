@@ -1,18 +1,22 @@
 @layer components {
+  * {
+    font-family: var(--font-family);
+  }
   .page {
-    min-height: 100dvh;
+    min-height: 100svh;
     margin: auto;
   }
   .site-layout {
-    min-height: 100dvh;
+    min-height: 100svh;
     background-color: var(--clr-surface);
   }
   .app-layout {
     display: grid;
     grid-template-rows: 4rem 1fr 4.5rem;
-    height: 100dvh;
-    max-height: 100dvh;
+    height: 100svh;
+    max-height: 100svh;
     max-width: 420px;
     margin-inline: auto;
+    font-family: var(--font-family);
   }
 }

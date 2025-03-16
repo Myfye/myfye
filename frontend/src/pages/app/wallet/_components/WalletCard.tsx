@@ -68,14 +68,14 @@ const WalletCard = ({
       }}
     >
       <p
-        className="heading-medium"
+        className="heading-small"
         css={css`
           margin-block-end: var(--size-150);
         `}
       >
         {title}
       </p>
-      {Icon && <Icon size={"var(--size-600)"} color="var(--clr-accent)" />}
+      {Icon && <Icon size={48} color="var(--clr-accent)" />}
       {!isNaN(balance) ? (
         <>
           <p

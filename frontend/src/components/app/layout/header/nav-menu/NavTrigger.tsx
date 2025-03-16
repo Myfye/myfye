@@ -7,7 +7,7 @@ const NavTrigger = ({ ...restProps }) => {
       iconOnly
       icon={ListIcon}
       color="transparent"
-      data-size="large"
+      size="large"
       {...restProps}
     ></Button>
   );

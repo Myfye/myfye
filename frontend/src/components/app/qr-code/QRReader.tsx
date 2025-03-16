@@ -72,6 +72,8 @@ const QrReader = ({ onClose, ...restProps }) => {
       className="qr-reader"
       css={css`
         position: relative;
+        width: 100%;
+        height: 100svh;
       `}
       {...restProps}
     >
@@ -79,10 +81,13 @@ const QrReader = ({ onClose, ...restProps }) => {
         className="qr-video-wrapper"
         css={css`
           display: grid;
+          place-items: center;
           aspect-ratio: 0.9;
           border-radius: var(--border-radius-medium);
           color: var(--clr-white);
           overflow: hidden;
+          width: 100%;
+          height: 100svh;
         `}
       >
         <video
@@ -91,15 +96,16 @@ const QrReader = ({ onClose, ...restProps }) => {
             object-fit: cover;
             grid-area: 1/1;
             width: 100%;
-            height: 100%;
+            height: 100svh;
           `}
         ></video>
         <img
+          ref={qrBoxEl}
           src={qrScanOutline}
           alt=""
           css={css`
             width: 100%;
-            height: 100%;
+            aspect-ratio: 1;
             grid-area: 1/1;
             pointer-events: none;
             object-fit: contain;

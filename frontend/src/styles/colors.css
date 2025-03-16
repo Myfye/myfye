@@ -119,4 +119,6 @@
   --clr-status-info-weak: var(--clr-blue-100);
   --clr-status-highlight-weak: var(--clr-purple-100);
   --clr-status-notification-weak: var(--clr-green-100);
+
+  --clr-icon: var(--clr-neutral-500);
 }

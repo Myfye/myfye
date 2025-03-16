@@ -124,7 +124,7 @@ const NavMenu = () => {
                     onPress={closeMenu}
                     icon={XIcon}
                     color="transparent"
-                    data-size="large"
+                    size="large"
                   ></Button>
                 </header>
                 {/* Menu content goes here */}
@@ -157,10 +157,7 @@ const NavMenu = () => {
                       {currentUserEmail && (
                         <p>{formatEmail(currentUserEmail)}</p>
                       )}
-                      <CaretRight
-                        size="var(--size-300)"
-                        color="var(--clr-text)"
-                      />
+                      <CaretRight size={24} color="var(--clr-text)" />
                     </div>
                   </button>
                   <section

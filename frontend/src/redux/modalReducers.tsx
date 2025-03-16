@@ -9,11 +9,6 @@ export const sendModalSlice = createSlice({
     },
   },
 });
-
-const sendModalReducer = sendModalSlice.reducer;
-
-export const { setOpen: setSendModalOpen } = sendModalSlice.actions;
-
 export const receiveModalSlice = createSlice({
   name: "receiveModal",
   initialState: { isOpen: false },
@@ -23,11 +18,6 @@ export const receiveModalSlice = createSlice({
     },
   },
 });
-
-const receiveModalReducer = receiveModalSlice.reducer;
-
-export const { setOpen: setReceiveModalOpen } = receiveModalSlice.actions;
-
 export const depositModalSlice = createSlice({
   name: "depositModal",
   initialState: { isOpen: false },
@@ -37,11 +27,6 @@ export const depositModalSlice = createSlice({
     },
   },
 });
-
-const depositModalReducer = depositModalSlice.reducer;
-
-export const { setOpen: setDepositModalOpen } = depositModalSlice.actions;
-
 export const withdrawModalSlice = createSlice({
   name: "withdrawModal",
   initialState: { isOpen: false },
@@ -51,11 +36,6 @@ export const withdrawModalSlice = createSlice({
     },
   },
 });
-
-const withdrawModalReducer = withdrawModalSlice.reducer;
-
-export const { setOpen: setWithdrawModalOpen } = withdrawModalSlice.actions;
-
 export const QRCodeModalSlice = createSlice({
   name: "QRCodeModal",
   initialState: { isOpen: false },
@@ -65,15 +45,26 @@ export const QRCodeModalSlice = createSlice({
     },
   },
 });
+export const addContactModalSlice = createSlice({
+  name: "addContactModal",
+  initialState: { isOpen: false },
+  reducers: {
+    setOpen: (state, action) => {
+      state.isOpen = action.payload;
+    },
+  },
+});
 
-const QRCodeModalReducer = QRCodeModalSlice.reducer;
+export const sendModalReducer = sendModalSlice.reducer;
+export const receiveModalReducer = receiveModalSlice.reducer;
+export const depositModalReducer = depositModalSlice.reducer;
+export const withdrawModalReducer = withdrawModalSlice.reducer;
+export const QRCodeModalReducer = QRCodeModalSlice.reducer;
+export const addContactModalReducer = addContactModalSlice.reducer;
 
+export const { setOpen: setSendModalOpen } = sendModalSlice.actions;
+export const { setOpen: setReceiveModalOpen } = receiveModalSlice.actions;
+export const { setOpen: setDepositModalOpen } = depositModalSlice.actions;
+export const { setOpen: setWithdrawModalOpen } = withdrawModalSlice.actions;
 export const { setOpen: setQRCodeModalOpen } = QRCodeModalSlice.actions;
-
-export {
-  sendModalReducer,
-  receiveModalReducer,
-  depositModalReducer,
-  withdrawModalReducer,
-  QRCodeModalReducer,
-};
+export const { setOpen: setAddContactModalOpen } = addContactModalSlice.actions;

@@ -1,8 +1,9 @@
-import CoinCardList from "../../CoinCardList";
-import usDollarCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
-import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
-import usdyCoinIcon from "@/assets/svgs/coins/usdy-coin.svg";
-import BalanceTitle from "../../../../../../components/ui/balance-title/BalanceTitle";
+import CoinCardList from "../../../../../../components/ui/coin-card/CoinCardList";
+
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+
+import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import { useMemo } from "react";
 
 const CashPanel = ({
@@ -20,23 +21,20 @@ const CashPanel = ({
       {
         title: "US Dollar",
         currency: "usd",
-        type: "usd",
+        type: "usdt",
         balance: usdBalance,
-        img: usDollarCoinIcon,
       },
       {
         title: "Euro",
         currency: "eur",
-        type: "eur",
+        type: "eurc",
         balance: eurcBalance,
-        img: euroCoinIcon,
       },
       {
         title: "US Treasury Bonds",
         currency: "usd",
         type: "usdy",
         balance: usdyBalanceInUSD,
-        img: usdyCoinIcon,
       },
     ],
     [usdBalance, usdyBalanceInUSD, eurcBalanceInUSD]
@@ -47,7 +45,11 @@ const CashPanel = ({
       <section className="balance-container">
         <BalanceTitle balance={totalBalance} />
       </section>
-      <section className="coins-container">
+      <section
+        css={css`
+          padding: 0 var(--size-250);
+        `}
+      >
         <CoinCardList coins={coins} />
       </section>
     </div>

@@ -3,20 +3,44 @@ import { configureStore } from "@reduxjs/toolkit";
 import userWalletDataReducer from "./userWalletData.tsx";
 import {
   QRCodeModalReducer,
+  addContactModalReducer,
   depositModalReducer,
   receiveModalReducer,
   sendModalReducer,
   withdrawModalReducer,
 } from "./modalReducers.tsx";
+import {
+  cashBalanceOverlayReducer,
+  cryptoBalanceOverlayReducer,
+  depositFiatOverlayReducer,
+  requestOverlayReducer,
+  sendOverlayReducer,
+  settingsOverlayReducer,
+  userInfoOverlayReducer,
+  withdrawCryptoOverlayReducer,
+  withdrawFiatOverlayReducer,
+} from "./overlayReducers.tsx";
 
 const store = configureStore({
   reducer: {
     userWalletData: userWalletDataReducer,
+    // Modals
     sendModal: sendModalReducer,
     receiveModal: receiveModalReducer,
     depositModal: depositModalReducer,
     withdrawModal: withdrawModalReducer,
     QRCodeModal: QRCodeModalReducer,
+    addContactModal: addContactModalReducer,
+    // Overlays
+    withdrawFiatOverlay: withdrawFiatOverlayReducer,
+    withdrawCryptoOverlay: withdrawCryptoOverlayReducer,
+    cashBalanceOverlay: cashBalanceOverlayReducer,
+    cryptoBalanceOverlay: cryptoBalanceOverlayReducer,
+    sendOverlay: sendOverlayReducer,
+    requestOverlay: requestOverlayReducer,
+    depositFiatOverlay: depositFiatOverlayReducer,
+    userInfoOverlay: userInfoOverlayReducer,
+    settingsOverlay: settingsOverlayReducer,
   },
 });
 

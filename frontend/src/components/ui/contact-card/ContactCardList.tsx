@@ -1,11 +1,12 @@
-import CoinCard from "./CoinCard";
+import Contact from "./ContactCard";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const CoinCardList = ({ coins }) => {
+const ContactCardList = ({ contacts }) => {
   return (
     <ul
+      className="contact-card-list"
       css={css`
         display: flex;
         flex-direction: column;
@@ -15,26 +16,19 @@ const CoinCardList = ({ coins }) => {
         padding: 0 var(--size-250);
       `}
     >
-      {coins.map((coin, i) => (
+      {contacts.map((contact) => (
         <li
-          className="coin-card-wrapper"
+          className="contact-card-wrapper"
           css={css`
             display: block;
             width: 100%;
           `}
-          key={`coin-card-${i}`}
         >
-          <CoinCard
-            title={coin.title}
-            type={coin.type}
-            currency={coin.currency}
-            balance={coin.balance}
-            img={coin.img}
-          />
+          <Contact name={contact.name} walletAddress={contact.walletAddress} />
         </li>
       ))}
     </ul>
   );
 };
 
-export default CoinCardList;
+export default ContactCardList;

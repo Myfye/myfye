@@ -11,7 +11,6 @@ import {
   Wallet as WalletIcon,
   ArrowsLeftRight as PayIcon,
   ClockCounterClockwise as ActivityIcon,
-  IconContext,
   Scan as ScanIcon,
 } from "@phosphor-icons/react";
 
@@ -19,10 +18,8 @@ import {
 import { css } from "@emotion/react";
 import Footer from "./layout/footer/Footer";
 import NavMenu from "./layout/header/nav-menu/NavMenu";
-import QRCodeDialog from "./qr-code/QRCodeModal";
 import Header from "./layout/header/Header";
 import Wallet from "@/pages/app/wallet/Wallet";
-import { AnimatePresence, motion } from "motion/react";
 import { useDispatch } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../ui/button/Button";
@@ -54,7 +51,7 @@ const Router = () => {
           icon={ScanIcon}
           onPress={() => dispatch(setQRCodeModalOpen(true))}
           color="transparent"
-          data-size="large"
+          size="large"
         ></Button>
       </Header>
       <AriaTabs
@@ -102,7 +99,7 @@ const Router = () => {
                         : "var(--clr-neutral-700)"
                     }
                     weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={"var(--size-400)"}
+                    size={32}
                     css={css`
                       margin: 0 auto;
                     `}
@@ -116,7 +113,7 @@ const Router = () => {
                         : "var(--clr-neutral-700)"
                     }
                     weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={"var(--size-400)"}
+                    size={32}
                     css={css`
                       margin: 0 auto;
                     `}
@@ -130,7 +127,7 @@ const Router = () => {
                         : "var(--clr-neutral-700)"
                     }
                     weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={"var(--size-400)"}
+                    size={32}
                     css={css`
                       margin: 0 auto;
                     `}
@@ -144,7 +141,7 @@ const Router = () => {
                         : "var(--clr-neutral-700)"
                     }
                     weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={"var(--size-400)"}
+                    size={32}
                     css={css`
                       margin: 0 auto;
                     `}

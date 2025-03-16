@@ -44,7 +44,7 @@ const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
           border-radius: var(--border-radius-medium);
         `}
       >
-        <Icon size="var(--size-400)" color="var(--clr-accent)"></Icon>
+        <Icon size={32} color="var(--clr-accent)"></Icon>
       </div>
       <div
         className="content"
