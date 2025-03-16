@@ -11,16 +11,22 @@ import {
   ButtonContext,
   Button as AriaButton,
 } from "react-aria-components";
-import Button from "@/components/ui/button/Button";
+// import Button from "@/components/ui/button/Button";
 // import Menu from "@/components/ui/menu/Menu";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
   ArrowLineDown,
   ArrowLineUp,
-  DotsThree,
   DotsThreeVertical,
 } from "@phosphor-icons/react";
+import { useDispatch } from "react-redux";
+import {
+  setDepositModalOpen,
+  setReceiveModalOpen,
+  setSendModalOpen,
+  setWithdrawModalOpen,
+} from "@/redux/modalReducers";
 
 const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
   const formattedBalance = useMemo(
@@ -44,6 +50,8 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
     ref,
     ButtonContext
   );
+
+  const dispatch = useDispatch();
 
   return (
     <div
@@ -139,7 +147,7 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
                     background-color: var(--clr-surface-raised);
                   }
                 `}
-                onAction={() => alert("Deposit")}
+                onAction={() => dispatch(setSendModalOpen(true))}
               >
                 <ArrowCircleUp
                   size="1rem"
@@ -160,7 +168,7 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
                     background-color: var(--clr-surface-raised);
                   }
                 `}
-                onAction={() => alert("Withdraw")}
+                onAction={() => dispatch(setReceiveModalOpen(true))}
               >
                 <ArrowCircleDown
                   size="1rem"
@@ -181,7 +189,7 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
                     background-color: var(--clr-surface-raised);
                   }
                 `}
-                onAction={() => alert("Send")}
+                onAction={() => dispatch(setDepositModalOpen(true))}
               >
                 <ArrowLineDown
                   size="1rem"
@@ -202,7 +210,7 @@ const CoinCard = ({ title, currency, balance, img, ref, ...restProps }) => {
                     background-color: var(--clr-surface-raised);
                   }
                 `}
-                onAction={() => alert("Receive")}
+                onAction={() => dispatch(setWithdrawModalOpen(true))}
               >
                 <ArrowLineUp
                   size="1rem"

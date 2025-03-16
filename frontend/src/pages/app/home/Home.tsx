@@ -1,7 +1,4 @@
-import Header from "../_components/layout/header/Header";
-import NavMenu from "../_components/layout/header/nav-menu/NavMenu";
-import QRCodeDialog from "../_components/qr-code/QRCodeDialog";
-import Tabs from "./_components/Tabs";
+import HomeTabs from "./_components/HomeTabs";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -15,7 +12,7 @@ const Home = () => {
         overflow-y: auto;
       `}
     >
-      <Tabs></Tabs>
+      <HomeTabs></HomeTabs>
     </div>
   );
 };

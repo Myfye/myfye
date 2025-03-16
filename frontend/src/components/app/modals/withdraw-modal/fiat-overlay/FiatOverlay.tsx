@@ -1,26 +1,17 @@
-import {
-  AnimatePresence,
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useTransform,
-} from "motion/react";
-import { Dialog, Heading, Modal, ModalOverlay } from "react-aria-components";
-import { useEffect, useId, useMemo, useState } from "react";
+import { AnimatePresence, motion, useMotionValue } from "motion/react";
+import { Dialog, Modal, ModalOverlay } from "react-aria-components";
+import { useId, useMemo, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import QrReader from "./QRReader";
 import Button from "@/components/ui/button/Button";
 import {
   CaretLeft as CaretLeftIcon,
-  Copy,
   QuestionMark as QuestionMarkIcon,
   Scan as ScanIcon,
   X as XIcon,
 } from "@phosphor-icons/react";
-import QRCode from "./QRCode";
 import { useSelector } from "react-redux";
 import CoinCardList from "./coin-card/CoinCardList";
 

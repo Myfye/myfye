@@ -27,8 +27,8 @@ const CTACarousel = ({ slides }) => {
         --swiper-pagination-bullet-inactive-opacity: 1;
       `}
     >
-      {slides.map((slide) => (
-        <SwiperSlide>
+      {slides.map((slide, i) => (
+        <SwiperSlide key={`slide=${i}`}>
           <div
             className="slide-inner"
             css={css`

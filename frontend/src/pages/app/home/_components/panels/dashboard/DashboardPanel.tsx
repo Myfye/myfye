@@ -9,19 +9,50 @@ import {
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import PieChart from "./pie-chart/PieChart";
-import BalanceTitle from "../../BalanceTitle";
+import BalanceTitle from "../../../../../../components/ui/balance-title/BalanceTitle";
 import CTACarousel from "./cta-carousel/CTACarousel";
 import { useEffect, useMemo } from "react";
-import DepositModal from "@/pages/app/_components/modals/deposit-modal/DepositModal";
-import WithdrawModal from "@/pages/app/_components/modals/withdraw-modal/WithdrawModal";
-import SendModal from "@/pages/app/_components/modals/send-modal/SendModal";
-import ReceiveModal from "@/pages/app/_components/modals/receive-modal/ReceiveModal";
+import DepositModal from "@/components/app/modals/deposit-modal/DepositModal";
+import WithdrawModal from "@/components/app/modals/withdraw-modal/WithdrawModal";
+import SendModal from "@/components/app/modals/send-modal/SendModal";
+import ReceiveModal from "@/components/app/modals/receive-modal/ReceiveModal";
+import {
+  setDepositModalOpen,
+  setReceiveModalOpen,
+  setSendModalOpen,
+  setWithdrawModalOpen,
+} from "@/redux/modalReducers";
+import { useDispatch } from "react-redux";
 
 const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
+  const dispatch = useDispatch();
   const totalBalance = useMemo(
     () => cryptoBalanceInUSD + cashBalanceInUSD,
     [cryptoBalanceInUSD, cashBalanceInUSD]
   );
+
+  const pieChartData = useMemo(() => {
+    const data = [];
+    if (cashBalanceInUSD > 0) {
+      const cashData = {
+        id: "Cash",
+        label: "Cash",
+        value: cashBalanceInUSD,
+        color: "var(--clr-green-300)",
+      };
+      data.push(cashData);
+    }
+    if (cryptoBalanceInUSD > 0) {
+      const cryptoData = {
+        id: "Crypto",
+        label: "Crypto",
+        value: cryptoBalanceInUSD,
+        color: "var(--clr-green-400)",
+      };
+      data.push(cryptoData);
+    }
+    return data;
+  });
 
   return (
     <div
@@ -53,28 +84,48 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
           `}
         >
           <li>
-            <SendModal
-              buttonProps={{ size: "small", icon: ArrowCircleUpIcon }}
-              title="Send"
-            />
+            <Button
+              size="small"
+              icon={ArrowCircleUpIcon}
+              onPress={() => {
+                dispatch(setSendModalOpen(true));
+              }}
+            >
+              Send
+            </Button>
           </li>
           <li>
-            <ReceiveModal
-              buttonProps={{ size: "small", icon: ArrowCircleDownIcon }}
-              title="Receive"
-            />
+            <Button
+              size="small"
+              icon={ArrowCircleDownIcon}
+              onPress={() => {
+                dispatch(setReceiveModalOpen(true));
+              }}
+            >
+              Receive
+            </Button>
           </li>
           <li>
-            <DepositModal
-              buttonProps={{ size: "small", icon: ArrowLineDownIcon }}
-              title="Deposit"
-            />
+            <Button
+              size="small"
+              icon={ArrowLineUpIcon}
+              onPress={() => {
+                dispatch(setDepositModalOpen(true));
+              }}
+            >
+              Deposit
+            </Button>
           </li>
           <li>
-            <WithdrawModal
-              buttonProps={{ size: "small", icon: ArrowLineUpIcon }}
-              title="Withdraw"
-            />
+            <Button
+              size="small"
+              icon={ArrowLineDownIcon}
+              onPress={() => {
+                dispatch(setWithdrawModalOpen(true));
+              }}
+            >
+              Withdraw
+            </Button>
           </li>
         </menu>
       </section>
@@ -133,22 +184,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
               height: 100%;
             `}
           >
-            <PieChart
-              data={[
-                {
-                  id: "Cash",
-                  label: "Cash",
-                  value: cashBalanceInUSD,
-                  color: "var(--clr-green-300)",
-                },
-                {
-                  id: "Crypto",
-                  label: "Crypto",
-                  value: cryptoBalanceInUSD,
-                  color: "var(--clr-green-400)",
-                },
-              ]}
-            ></PieChart>
+            <PieChart data={pieChartData}></PieChart>
           </div>
         )}
       </section>

@@ -8,15 +8,13 @@ import {
   useTransform,
 } from "framer-motion";
 import { Dialog, Heading, Modal, ModalOverlay } from "react-aria-components";
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
-import { Bank, Copy as CopyIcon, Wallet, X } from "@phosphor-icons/react";
-import ModalButton from "../buttons/ModalButton";
-import QRCode from "../../qr-code/QRCode";
-import { useSelector } from "react-redux";
+import { X } from "@phosphor-icons/react";
+import NumberPad from "@/components/ui/number-pad/NumberPad";
 
 // Wrap React Aria modal components so they support framer-motion values.
 const MotionModal = motion(Modal);
@@ -34,28 +32,24 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const SHEET_HEIGHT = 600;
+const SHEET_HEIGHT = 900;
 
-const ReceiveModal = ({ title, buttonProps }) => {
-  let [isOpen, setOpen] = useState(false);
+const SendModal = ({ isOpen, onOpenChange }) => {
   let h = Math.min(window.innerHeight, SHEET_HEIGHT);
   let y = useMotionValue(h);
   let bgOpacity = useTransform(y, [0, h], [0.4, 0]);
   let bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
 
   const id = useId();
-  const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
+
   return (
     <>
-      <Button onPress={() => setOpen(true)} {...buttonProps}>
-        {title}
-      </Button>
       <AnimatePresence>
         {isOpen && (
           <MotionModalOverlay
             // Force the modal to be open when AnimatePresence renders it.
             isOpen
-            onOpenChange={setOpen}
+            onOpenChange={onOpenChange}
             css={css`
               position: fixed;
               inset: 0;
@@ -91,7 +85,7 @@ const ReceiveModal = ({ title, buttonProps }) => {
               dragConstraints={{ top: 0 }}
               onDragEnd={(e, { offset, velocity }) => {
                 if (offset.y > window.innerHeight * 0.75 || velocity.y > 10) {
-                  setOpen(false);
+                  onOpenChange(false);
                 } else {
                   animate(y, 0, { ...inertiaTransition, min: 0, max: 0 });
                 }
@@ -126,10 +120,10 @@ const ReceiveModal = ({ title, buttonProps }) => {
                     `}
                     id={id}
                   >
-                    Receive
+                    Send
                   </p>
                   <Button
-                    onPress={() => setOpen(false)}
+                    onPress={() => onOpenChange(false)}
                     iconOnly
                     variant="transparent"
                     icon={X}
@@ -142,44 +136,7 @@ const ReceiveModal = ({ title, buttonProps }) => {
                   ></Button>
                 </div>
                 <div>
-                  <div
-                    className="qr-code-container"
-                    css={css`
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                      justify-content: center;
-                      margin-block-start: var(--size-400);
-                    `}
-                  >
-                    <QRCode data={pubKey} color="#000407" />
-                    <p
-                      css={css`
-                        margin-block-start: var(--size-400);
-                        color: var(--clr-text);
-                        max-width: 40ch;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        font-size: var(--fs-small);
-                      `}
-                    >
-                      {pubKey}
-                    </p>
-                    <Button
-                      expand
-                      size="x-large"
-                      icon={CopyIcon}
-                      css={css`
-                        margin-block-start: var(--size-500);
-                      `}
-                      onPress={() => {
-                        navigator.clipboard.writeText(pubKey);
-                        return setOpen(false);
-                      }}
-                    >
-                      Copy address
-                    </Button>
-                  </div>
+                  <NumberPad />
                 </div>
               </Dialog>
             </MotionModal>
@@ -190,4 +147,4 @@ const ReceiveModal = ({ title, buttonProps }) => {
   );
 };
 
-export default ReceiveModal;
+export default SendModal;

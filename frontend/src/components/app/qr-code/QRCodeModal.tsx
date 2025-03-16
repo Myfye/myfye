@@ -5,8 +5,8 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import { Dialog, Heading, Modal, ModalOverlay } from "react-aria-components";
-import { useEffect, useId, useState } from "react";
+import { Dialog, Modal, ModalOverlay } from "react-aria-components";
+import { useId, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -32,8 +32,7 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const QRCodeDialog = () => {
-  let [isOpen, setOpen] = useState(false);
+const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
   let h = window.innerHeight;
   let y = useMotionValue(h);
   let bgOpacity = useTransform(y, [0, h], [0.4, 0]);
@@ -47,18 +46,11 @@ const QRCodeDialog = () => {
 
   return (
     <>
-      <Button
-        iconOnly
-        icon={ScanIcon}
-        onPress={() => setOpen(true)}
-        color="transparent"
-        data-size="large"
-      ></Button>
       <AnimatePresence>
         {isOpen && (
           <MotionModalOverlay
             isOpen
-            onOpenChange={setOpen}
+            onOpenChange={onOpenChange}
             css={css`
               position: fixed;
               inset: 0;
@@ -124,7 +116,7 @@ const QRCodeDialog = () => {
                         icon={QuestionMarkIcon}
                         color="transparent-invert"
                         size="large"
-                        onPress={() => setOpen(false)}
+                        onPress={() => onOpenChange(false)}
                       ></Button>
                     </>
                   ) : (
@@ -133,7 +125,7 @@ const QRCodeDialog = () => {
                       icon={XIcon}
                       color="transparent-invert"
                       size="large"
-                      onPress={() => setOpen(false)}
+                      onPress={() => onOpenChange(false)}
                     ></Button>
                   )}
                 </div>
@@ -225,4 +217,4 @@ const QRCodeDialog = () => {
   );
 };
 
-export default QRCodeDialog;
+export default QRCodeModal;

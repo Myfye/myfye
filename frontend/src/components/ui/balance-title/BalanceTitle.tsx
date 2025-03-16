@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import { useMemo } from "react";
 
-const BalanceTitle = ({ balance, currency = "usd" }) => {
+const BalanceTitle = ({ balance = 0, currency = "usd" }) => {
   const formattedBalance = useMemo(
     () =>
       new Intl.NumberFormat("en-EN", {

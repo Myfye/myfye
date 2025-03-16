@@ -8,13 +8,15 @@ import {
   useTransform,
 } from "framer-motion";
 import { Dialog, Heading, Modal, ModalOverlay } from "react-aria-components";
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
-import { Bank, Wallet, X } from "@phosphor-icons/react";
+import { Bank, Copy, Wallet, X } from "@phosphor-icons/react";
 import ModalButton from "../buttons/ModalButton";
+import QRCode from "../../qr-code/QRCode";
+import { useSelector } from "react-redux";
 
 // Wrap React Aria modal components so they support framer-motion values.
 const MotionModal = motion(Modal);
@@ -32,28 +34,37 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const SHEET_HEIGHT = 500;
-
-const SendModal = ({ title, buttonProps }) => {
-  let [isOpen, setOpen] = useState(false);
-  let h = Math.min(window.innerHeight, SHEET_HEIGHT);
-  let y = useMotionValue(h);
-  let bgOpacity = useTransform(y, [0, h], [0.4, 0]);
-  let bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
+const DepositModal = ({ isOpen, onOpenChange }) => {
+  const sheetHeight = useMotionValue(400);
+  const top = useTransform(() => window.innerHeight - sheetHeight.get());
+  const h = Math.min(window.innerHeight, sheetHeight.get());
+  const y = useMotionValue(h);
+  const bgOpacity = useTransform(y, [0, h], [0.4, 0]);
+  const bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
 
   const id = useId();
+  const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
+
+  const [isWalletOpen, setWalletOpen] = useState(false);
+
+  const resetModal = () => {
+    setWalletOpen(false);
+    sheetHeight.set(400);
+  };
+
+  const openWallet = () => {
+    setWalletOpen(true);
+    sheetHeight.set(600);
+  };
 
   return (
     <>
-      <Button onPress={() => setOpen(true)} {...buttonProps}>
-        {title}
-      </Button>
       <AnimatePresence>
         {isOpen && (
           <MotionModalOverlay
             // Force the modal to be open when AnimatePresence renders it.
             isOpen
-            onOpenChange={setOpen}
+            onOpenChange={onOpenChange}
             css={css`
               position: fixed;
               inset: 0;
@@ -81,7 +92,7 @@ const SendModal = ({ title, buttonProps }) => {
               transition={staticTransition}
               style={{
                 y,
-                top: window.innerHeight - SHEET_HEIGHT,
+                top,
                 // Extra padding at the bottom to account for rubber band scrolling.
                 paddingBottom: window.screen.height,
               }}
@@ -89,10 +100,13 @@ const SendModal = ({ title, buttonProps }) => {
               dragConstraints={{ top: 0 }}
               onDragEnd={(e, { offset, velocity }) => {
                 if (offset.y > window.innerHeight * 0.75 || velocity.y > 10) {
-                  setOpen(false);
+                  onOpenChange(false);
                 } else {
                   animate(y, 0, { ...inertiaTransition, min: 0, max: 0 });
                 }
+              }}
+              onAnimationComplete={() => {
+                if (isOpen) resetModal();
               }}
             >
               {/* drag affordance */}
@@ -124,10 +138,10 @@ const SendModal = ({ title, buttonProps }) => {
                     `}
                     id={id}
                   >
-                    Send
+                    Deposit
                   </p>
                   <Button
-                    onPress={() => setOpen(false)}
+                    onPress={() => onOpenChange(false)}
                     iconOnly
                     variant="transparent"
                     icon={X}
@@ -139,7 +153,74 @@ const SendModal = ({ title, buttonProps }) => {
                     `}
                   ></Button>
                 </div>
-                <div></div>
+                <div>
+                  {!isWalletOpen && (
+                    <menu
+                      css={css`
+                        margin-block-start: var(--size-500);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size-200);
+                      `}
+                    >
+                      <li>
+                        <ModalButton
+                          icon={Wallet}
+                          title="Wallet"
+                          description="Deposit via wallet address"
+                          onPress={openWallet}
+                        ></ModalButton>
+                      </li>
+                      <li>
+                        <ModalButton
+                          icon={Bank}
+                          title="Fiat"
+                          description="Deposit via bank transfer"
+                        ></ModalButton>
+                      </li>
+                    </menu>
+                  )}
+                  {isWalletOpen && (
+                    <div
+                      className="qr-code-container"
+                      css={css`
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        margin-block-start: var(--size-400);
+                      `}
+                    >
+                      <QRCode data={pubKey} color="#000407" />
+                      <p
+                        css={css`
+                          margin-block-start: var(--size-400);
+                          color: var(--clr-text);
+                          max-width: 40ch;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          font-size: var(--fs-small);
+                        `}
+                      >
+                        {pubKey}
+                      </p>
+                      <Button
+                        expand
+                        size="x-large"
+                        icon={Copy}
+                        css={css`
+                          margin-block-start: var(--size-500);
+                        `}
+                        onPress={() => {
+                          navigator.clipboard.writeText(pubKey);
+                          return onOpenChange(false);
+                        }}
+                      >
+                        Copy address
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </Dialog>
             </MotionModal>
           </MotionModalOverlay>
@@ -149,4 +230,4 @@ const SendModal = ({ title, buttonProps }) => {
   );
 };
 
-export default SendModal;
+export default DepositModal;

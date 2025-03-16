@@ -2,7 +2,7 @@ import CoinCardList from "../../CoinCardList";
 import usDollarCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
 import usdyCoinIcon from "@/assets/svgs/coins/usdy-coin.svg";
-import BalanceTitle from "../../BalanceTitle";
+import BalanceTitle from "../../../../../../components/ui/balance-title/BalanceTitle";
 import { useMemo } from "react";
 
 const CashPanel = ({

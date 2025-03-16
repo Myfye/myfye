@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import CoinCardList from "../../CoinCardList";
 import btcCoinIcon from "@/assets/svgs/coins/btc-coin.svg";
 import solCoinIcon from "@/assets/svgs/coins/sol-coin.svg";
-import BalanceTitle from "../../BalanceTitle";
+import BalanceTitle from "../../../../../../components/ui/balance-title/BalanceTitle";
 import { useMemo } from "react";
 
 const CryptoPanel = ({ btcBalanceInUSD, solBalanceInUSD }) => {
