@@ -49,7 +49,7 @@ const Tab = ({ icon, active, title, ref, ...restProps }: TabProps) => {
             active ? "var(--clr-accent)" : "var(--clr-text-neutral-strong)"
           }
           weight={active ? "fill" : "regular"}
-          size={"var(--size-400)"}
+          size={32}
         />
         <p
           css={css`

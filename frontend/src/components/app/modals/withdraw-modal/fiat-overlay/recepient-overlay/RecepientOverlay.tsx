@@ -15,7 +15,7 @@ import { css } from "@emotion/react";
 
 import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";
 
-import ContactList from "./contacts/ContactList";
+import ContactList from "../../../../../ui/contact-card/ContactCardList";
 import Button from "@/components/ui/button/Button";
 
 // Wrap React Aria modal components so they support motion values.
