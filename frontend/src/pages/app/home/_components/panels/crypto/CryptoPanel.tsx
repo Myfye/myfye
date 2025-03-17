@@ -1,10 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import CoinCardList from "../../CoinCardList";
-import btcCoinIcon from "@/assets/svgs/coins/btc-coin.svg";
-import solCoinIcon from "@/assets/svgs/coins/sol-coin.svg";
-import BalanceTitle from "../../BalanceTitle";
+import CoinCardList from "@/components/ui/coin-card/CoinCardList";
+import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import { useMemo } from "react";
 
 const CryptoPanel = ({ btcBalanceInUSD, solBalanceInUSD }) => {
@@ -20,14 +18,12 @@ const CryptoPanel = ({ btcBalanceInUSD, solBalanceInUSD }) => {
         currency: "btc",
         type: "btc",
         balance: btcBalanceInUSD,
-        img: btcCoinIcon,
       },
       {
         title: "Solana",
         currency: "sol",
         type: "sol",
         balance: solBalanceInUSD,
-        img: solCoinIcon,
       },
     ],
     [btcBalanceInUSD, solBalanceInUSD]
@@ -38,8 +34,12 @@ const CryptoPanel = ({ btcBalanceInUSD, solBalanceInUSD }) => {
       <section className="balance-container">
         <BalanceTitle balance={totalBalance} />
       </section>
-      <section className="coins-container">
-        <CoinCardList coins={coins} />
+      <section
+        css={css`
+          padding: 0 var(--size-250);
+        `}
+      >
+        <CoinCardList coins={coins} showOptions={true} />
       </section>
     </div>
   );

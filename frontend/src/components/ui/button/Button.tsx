@@ -2,7 +2,7 @@ import type { ButtonProps as AriaButtonProps } from "react-aria-components";
 import { ButtonContext, useContextProps } from "react-aria-components";
 import { useButton } from "react-aria";
 import { motion } from "motion/react";
-import { ReactNode, Ref } from "react";
+import { ReactNode, Ref, useCallback } from "react";
 
 interface ButtonProps extends AriaButtonProps {
   ref: Ref<HTMLButtonElement | null>;
@@ -29,6 +29,25 @@ const Button = ({
 }: ButtonProps) => {
   const Icon = icon;
 
+  const getIconSize = useCallback(
+    (size: string, iconOnly: boolean) => {
+      switch (size) {
+        case "small": {
+          return !iconOnly ? 16 : 20;
+        }
+        case "medium": {
+          return !iconOnly ? 16 : 24;
+        }
+        case "large": {
+          return !iconOnly ? 20 : 32;
+        }
+      }
+    },
+    [size]
+  );
+
+  const iconSize = getIconSize(size, iconOnly);
+
   const [restPropsButton, refButton] = useContextProps(
     restProps,
     ref,
@@ -51,7 +70,7 @@ const Button = ({
         scale: isPressed ? 0.9 : 1,
       }}
     >
-      {Icon && <Icon size={"var(--_icon-size)"} />}
+      {Icon && <Icon size={iconSize} />}
       {children}
     </motion.button>
   );

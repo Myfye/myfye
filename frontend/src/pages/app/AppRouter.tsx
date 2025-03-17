@@ -1,24 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import ProfilePage from "../mobileApp/ProfilePage.tsx";
-import EarnPage from "../mobileApp/EarnPage.tsx";
-import CryptoPage from "../mobileApp/CryptoPage.tsx";
 import { useSelector } from "react-redux";
 import { Buffer } from "buffer";
-import LoadingAnimation from "../../components/LoadingAnimation.tsx";
-import myfyelogo from "../../assets/MyFyeLogo2.png";
-import Language from "../mobileApp/LanguagePage.tsx";
-import Support from "../mobileApp/Support.tsx";
-import WalletTile from "../../components/mobileApp/WalletTile.tsx";
-import EarnTile from "../../components/mobileApp/EarnTile.tsx";
-import CryptoTile from "../../components/mobileApp/CryptoTile.tsx";
-import BottomNav from "../../components/mobileApp/BottomNavigation.tsx";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import "../../styles/components.css";
-import {
-  setShowRequestPage,
-  setShowSendPage,
-} from "../../redux/userWalletData.tsx";
 import {
   usePrivy,
   useLoginWithPasskey,
@@ -29,32 +14,30 @@ import {
   UpdatePasskey,
   getUsers,
 } from "../../functions/HandleUserLogIn.tsx";
-import WalletPage from "../mobileApp/WalletPage.tsx";
-import MainDepositPage from "../../components/mobileApp/wallet/MainDepositPage.tsx";
-import SwapDeposit from "../mobileApp/SwapPages/SwapDepositPage.tsx";
-import SwapWithdraw from "../mobileApp/SwapPages/SwapWithdrawPage.tsx";
-import PrivyUseSolanaWallets from "../../components/PrivyUseSolanaWallets.tsx";
-import SendPage from "../mobileApp/SendPage.tsx";
-import RequestPage from "../mobileApp/RequestPage.tsx";
-import Button from "@/components/ui/button/Button.tsx";
 
 import appLogo from "@/assets/myfyeleaf.png";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import AppNavDrawer from "./_components/layout/footer/AppNavDrawer.tsx";
-import Footer from "./_components/layout/footer/Footer.tsx";
-import Header from "./_components/layout/header/Header.tsx";
-import QRCodeDialog from "./_components/qr-code/QRCodeDialog.tsx";
-import NavMenu from "./_components/layout/header/nav-menu/NavMenu.tsx";
-import Main from "./_components/layout/main/Main.tsx";
-import HomePage from "./home/Home.tsx";
-import LoginHeader from "./login/_components/LoginHeader.tsx";
-import LoginMain from "./login/_components/LoginMain.tsx";
-import LoginFooter from "./login/_components/LoginFooter.tsx";
-import LoginPage from "./login/_components/LoginPage.tsx";
-import Home from "./home/Home.tsx";
-import Router from "./_components/router/Router.tsx";
+import QRCodeModal from "../../components/app/modals/qr-code-modal/QRCodeModal.tsx";
+import LoginHeader from "../../components/app/login/_components/LoginHeader.tsx";
+import LoginMain from "../../components/app/login/_components/LoginMain.tsx";
+import LoginFooter from "../../components/app/login/_components/LoginFooter.tsx";
+import LoginPage from "../../components/app/login/_components/LoginPage.tsx";
+import Router from "../../components/app/Router.tsx";
+import SendModal from "@/components/app/modals/send-modal/SendModal.tsx";
+import ReceiveModal from "@/components/app/modals/receive-modal/ReceiveModal.tsx";
+import DepositModal from "@/components/app/modals/deposit-modal/DepositModal.tsx";
+import WithdrawModal from "@/components/app/modals/withdraw-modal/WithdrawModal.tsx";
+import {
+  setDepositModalOpen,
+  setQRCodeModalOpen,
+  setReceiveModalOpen,
+  setSendModalOpen,
+  setWithdrawModalOpen,
+} from "@/redux/modalReducers.tsx";
+import WithdrawCryptoOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/WithdrawCryptoOverlay.tsx";
+import { setWithdrawCryptoOverlayOpen } from "@/redux/overlayReducers.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -138,188 +121,84 @@ function WebAppInner() {
     }
   }, [state]);
 
-  const handleSendPageClick = () => {
-    dispatch(setShowSendPage(true));
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  };
+  const isSendModalOpen = useSelector((state: any) => state.sendModal.isOpen);
+  const isReceiveModalOpen = useSelector(
+    (state: any) => state.receiveModal.isOpen
+  );
+  const isDepositModalOpen = useSelector(
+    (state: any) => state.depositModal.isOpen
+  );
+  const isWithdrawModalOpen = useSelector(
+    (state: any) => state.withdrawModal.isOpen
+  );
+  const isQRCodeModalOpen = useSelector(
+    (state: any) => state.QRCodeModal.isOpen
+  );
+  const isAddContactModalOpen = useSelector(
+    (state: any) => state.addContactModal.isOpen
+  );
 
-  const handleRequestPageClick = () => {
-    dispatch(setShowRequestPage(true));
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  };
+  // Overlays
+  const isWithdrawFiatOverlayOpen = useSelector(
+    (state: any) => state.withdrawFiatOverlay.isOpen
+  );
+  const isWithdrawCryptoOverlayOpen = useSelector(
+    (state: any) => state.withdrawCryptoOverlay.isOpen
+  );
+  const isCashBalanceOverlayOpen = useSelector(
+    (state: any) => state.cashBalanceOverlay.isOpen
+  );
+  const isCryptoBalanceOverlayOpen = useSelector(
+    (state: any) => state.cryptoBalanceOverlay.isOpen
+  );
+  const isSendOverlayOpen = useSelector(
+    (state: any) => state.sendOverlay.isOpen
+  );
+  const isRequestOverlayOpen = useSelector(
+    (state: any) => state.requestOverlay.isOpen
+  );
+  const isDepositFiatOverlayOpen = useSelector(
+    (state: any) => state.depositFiatOverlay.isOpen
+  );
+  const isUserInfoOverlayOpen = useSelector(
+    (state: any) => state.userInfoOverlay.isOpen
+  );
+  const isSettingsOverlayOpen = useSelector(
+    (state: any) => state.settingsOverlay.isOpen
+  );
 
   if (authenticated) {
     return (
-      // <div style={{ overflowX: "hidden", backgroundColor: "#ffffff" }}>
-      //   {userDataLoaded ? (
-      //     <>
-      //       {ANNOUNCMENT_MESSAGE && (
-      //         <div
-      //           style={{
-      //             textAlign: "center",
-      //             fontSize: "14px",
-      //             color: "#ffffff",
-      //             whiteSpace: "nowrap",
-      //             width: "100vw",
-      //             background: "#2E7D32",
-      //             marginBottom: "-10px",
-      //           }}
-      //         >
-      //           {ANNOUNCMENT_MESSAGE}
-      //         </div>
-      //       )}
-
-      //       <div
-      //         style={{
-      //           display: "flex",
-      //           flexDirection: "row",
-      //           justifyContent: "space-between",
-      //           marginTop: "15px",
-      //           marginLeft: "10px",
-      //           alignItems: "center",
-      //           paddingLeft: "10px",
-      //           paddingRight: "10px",
-      //         }}
-      //       >
-      //         <div
-      //           style={{
-      //             fontSize: "25px",
-      //             fontWeight: "bold",
-      //             width: "70vw",
-      //             maxWidth: "550px",
-      //             color: "#222222",
-      //           }}
-      //         >
-      //           {selectedLanguageCode === "en" && `Welcome! ${firstNameUI}`}
-      //           {selectedLanguageCode === "es" && `Hola, ${firstNameUI}`}
-      //         </div>
-
-      //         <div style={{ display: "flex", gap: "10px" }}>
-      //           <Language />
-      //           <Support />
-
-      //           <PrivyUseSolanaWallets />
-      //         </div>
-      //       </div>
-
-      //       {KYCVerifired ? (
-      //         <div>
-      //           {userPassKeyState === "done" ? (
-      //             <div>
-      //               {enrolledInMFA ? (
-      //                 <div>
-      //                   <div
-      //                     style={{
-      //                       display: "flex",
-      //                       alignItems: "center",
-      //                       flexDirection: "column",
-      //                       color: "#222222",
-      //                       justifyContent: "space-around",
-      //                       overflowX: "hidden",
-      //                     }}
-      //                   >
-      //                     <WalletTile />
-      //                     <EarnTile />
-      //                     <CryptoTile />
-
-      //                     <div
-      //                       style={{
-      //                         display: "flex",
-      //                         justifyContent: "space-around",
-      //                         width: "90vw",
-      //                         marginTop: "35px",
-      //                         marginBottom: "120px",
-      //                       }}
-      //                     >
-      //                       <div
-      //                         style={{
-      //                           color: "#ffffff",
-      //                           background: "#2E7D32", // gray '#999999',
-      //                           borderRadius: "10px",
-      //                           border: "2px solid #2E7D32",
-      //                           fontWeight: "bold",
-      //                           height: "40px",
-      //                           width: "130px",
-      //                           display: "flex", // Makes this div also a flex container
-      //                           justifyContent: "center", // Centers the text horizontally inside the button
-      //                           alignItems: "center", // Centers the text vertically inside the button
-      //                           cursor: "pointer",
-      //                           fontSize: "20px",
-      //                         }}
-      //                         onClick={handleSendPageClick}
-      //                       >
-      //                         {selectedLanguageCode === "en" && `Send`}
-      //                         {selectedLanguageCode === "es" && `Enviar`}
-      //                       </div>
-      //                       <div
-      //                         style={{
-      //                           color: "#ffffff",
-      //                           background: "#2E7D32", // gray '#999999',
-      //                           borderRadius: "10px",
-      //                           border: "2px solid #2E7D32",
-      //                           fontWeight: "bold",
-      //                           height: "40px",
-      //                           width: "130px",
-      //                           display: "flex", // Makes this div also a flex container
-      //                           justifyContent: "center", // Centers the text horizontally inside the button
-      //                           alignItems: "center", // Centers the text vertically inside the button
-      //                           cursor: "pointer",
-      //                           fontSize: "20px",
-      //                         }}
-      //                         onClick={handleRequestPageClick}
-      //                       >
-      //                         {selectedLanguageCode === "en" && `Request`}
-      //                         {selectedLanguageCode === "es" && `Pedido`}
-      //                       </div>
-
-      //                     <BottomNav />
-      //               ) : (
-      //
-      //                       <button
-      //                         onClick={showMfaEnrollmentModal}
-      //                         style={{
-      //                           color: "#ffffff",
-      //                           fontSize: "25px",
-      //                           fontWeight: "bold",
-      //                           background: "#447E26",
-      //                           borderRadius: "10px",
-      //                           border: "3px solid #ffffff",
-      //                           padding: "15px",
-      //                           cursor: "pointer",
-      //                         }}
-      //                       >
-      //                         Enroll in MFA
-      //                       </button>
-      //
-      //               )}
-      //             </div>
-      //           ) : (
-      //
-      //                   <button
-      //                     onClick={linkPasskey}
-      //                     style={{
-      //                       color: "#ffffff",
-      //                       fontSize: "25px",
-      //                       fontWeight: "bold",
-      //                       background: "#447E26",
-      //                       borderRadius: "10px",
-      //                       border: "3px solid #ffffff",
-      //                       padding: "15px",
-      //                       cursor: "pointer",
-      //                     }}
-      //                   >
-      //                     Create A Passkey
-      //                   </button>
-      //
-      //       ) : (
-      //         <div>{/*<PersonaKYC/>*/}</div>
-      //       )}
-      //     </>
-
       <div className="app-layout">
         {userDataLoaded ? (
           <>
             <Router />
+            {/* Modals */}
+            <SendModal
+              isOpen={isSendModalOpen}
+              onOpenChange={(e) => dispatch(setSendModalOpen(e))}
+            />
+            <ReceiveModal
+              isOpen={isReceiveModalOpen}
+              onOpenChange={(e) => dispatch(setReceiveModalOpen(e))}
+            />
+            <DepositModal
+              isOpen={isDepositModalOpen}
+              onOpenChange={(e) => dispatch(setDepositModalOpen(e))}
+            />
+            <WithdrawModal
+              isOpen={isWithdrawModalOpen}
+              onOpenChange={(e) => dispatch(setWithdrawModalOpen(e))}
+            />
+            <QRCodeModal
+              isOpen={isQRCodeModalOpen}
+              onOpenChange={(e) => dispatch(setQRCodeModalOpen(e))}
+            />
+            {/* Overlays */}
+            <WithdrawCryptoOverlay
+              isOpen={isWithdrawCryptoOverlayOpen}
+              onOpenChange={(e) => dispatch(setWithdrawCryptoOverlayOpen(e))}
+            />
           </>
         ) : (
           <div
@@ -370,7 +249,7 @@ function WebAppInner() {
                   css={css`
                     display: grid;
                     place-items: center;
-                    width: 80%;
+                    width: 50%;
                     border: 1px solid var(--clr-neutral-200);
                     border-radius: var(--border-radius-medium);
                     aspect-ratio: 1;
@@ -435,3 +314,169 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
+
+// <div style={{ overflowX: "hidden", backgroundColor: "#ffffff" }}>
+//   {userDataLoaded ? (
+//     <>
+//       {ANNOUNCMENT_MESSAGE && (
+//         <div
+//           style={{
+//             textAlign: "center",
+//             fontSize: "14px",
+//             color: "#ffffff",
+//             whiteSpace: "nowrap",
+//             width: "100vw",
+//             background: "#2E7D32",
+//             marginBottom: "-10px",
+//           }}
+//         >
+//           {ANNOUNCMENT_MESSAGE}
+//         </div>
+//       )}
+
+//       <div
+//         style={{
+//           display: "flex",
+//           flexDirection: "row",
+//           justifyContent: "space-between",
+//           marginTop: "15px",
+//           marginLeft: "10px",
+//           alignItems: "center",
+//           paddingLeft: "10px",
+//           paddingRight: "10px",
+//         }}
+//       >
+//         <div
+//           style={{
+//             fontSize: "25px",
+//             fontWeight: "bold",
+//             width: "70vw",
+//             maxWidth: "550px",
+//             color: "#222222",
+//           }}
+//         >
+//           {selectedLanguageCode === "en" && `Welcome! ${firstNameUI}`}
+//           {selectedLanguageCode === "es" && `Hola, ${firstNameUI}`}
+//         </div>
+
+//         <div style={{ display: "flex", gap: "10px" }}>
+//           <Language />
+//           <Support />
+
+//           <PrivyUseSolanaWallets />
+//         </div>
+//       </div>
+
+//       {KYCVerifired ? (
+//         <div>
+//           {userPassKeyState === "done" ? (
+//             <div>
+//               {enrolledInMFA ? (
+//                 <div>
+//                   <div
+//                     style={{
+//                       display: "flex",
+//                       alignItems: "center",
+//                       flexDirection: "column",
+//                       color: "#222222",
+//                       justifyContent: "space-around",
+//                       overflowX: "hidden",
+//                     }}
+//                   >
+//                     <WalletTile />
+//                     <EarnTile />
+//                     <CryptoTile />
+
+//                     <div
+//                       style={{
+//                         display: "flex",
+//                         justifyContent: "space-around",
+//                         width: "90vw",
+//                         marginTop: "35px",
+//                         marginBottom: "120px",
+//                       }}
+//                     >
+//                       <div
+//                         style={{
+//                           color: "#ffffff",
+//                           background: "#2E7D32", // gray '#999999',
+//                           borderRadius: "10px",
+//                           border: "2px solid #2E7D32",
+//                           fontWeight: "bold",
+//                           height: "40px",
+//                           width: "130px",
+//                           display: "flex", // Makes this div also a flex container
+//                           justifyContent: "center", // Centers the text horizontally inside the button
+//                           alignItems: "center", // Centers the text vertically inside the button
+//                           cursor: "pointer",
+//                           fontSize: "20px",
+//                         }}
+//                         onClick={handleSendPageClick}
+//                       >
+//                         {selectedLanguageCode === "en" && `Send`}
+//                         {selectedLanguageCode === "es" && `Enviar`}
+//                       </div>
+//                       <div
+//                         style={{
+//                           color: "#ffffff",
+//                           background: "#2E7D32", // gray '#999999',
+//                           borderRadius: "10px",
+//                           border: "2px solid #2E7D32",
+//                           fontWeight: "bold",
+//                           height: "40px",
+//                           width: "130px",
+//                           display: "flex", // Makes this div also a flex container
+//                           justifyContent: "center", // Centers the text horizontally inside the button
+//                           alignItems: "center", // Centers the text vertically inside the button
+//                           cursor: "pointer",
+//                           fontSize: "20px",
+//                         }}
+//                         onClick={handleRequestPageClick}
+//                       >
+//                         {selectedLanguageCode === "en" && `Request`}
+//                         {selectedLanguageCode === "es" && `Pedido`}
+//                       </div>
+
+//                     <BottomNav />
+//               ) : (
+//
+//                       <button
+//                         onClick={showMfaEnrollmentModal}
+//                         style={{
+//                           color: "#ffffff",
+//                           fontSize: "25px",
+//                           fontWeight: "bold",
+//                           background: "#447E26",
+//                           borderRadius: "10px",
+//                           border: "3px solid #ffffff",
+//                           padding: "15px",
+//                           cursor: "pointer",
+//                         }}
+//                       >
+//                         Enroll in MFA
+//                       </button>
+//
+//               )}
+//             </div>
+//           ) : (
+//
+//                   <button
+//                     onClick={linkPasskey}
+//                     style={{
+//                       color: "#ffffff",
+//                       fontSize: "25px",
+//                       fontWeight: "bold",
+//                       background: "#447E26",
+//                       borderRadius: "10px",
+//                       border: "3px solid #ffffff",
+//                       padding: "15px",
+//                       cursor: "pointer",
+//                     }}
+//                   >
+//                     Create A Passkey
+//                   </button>
+//
+//       ) : (
+//         <div>{/*<PersonaKYC/>*/}</div>
+//       )}
+//     </>

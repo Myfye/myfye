@@ -1,9 +1,59 @@
+import useBalance from "@/hooks/useBalance";
 import { ResponsivePie } from "@nivo/pie";
+import { useMemo } from "react";
+
+const balanceStyle = {
+  fontWeight: "500",
+  fontFamily: "Inter",
+  fill: "var(--clr-text)",
+  fontSize: 18,
+};
+const netWorthStyle = {
+  fontWeight: "normal",
+  fontFamily: "Inter",
+  fill: "var(--clr-text-weaker)",
+  fontSize: 14,
+};
+
+const Title = ({ centerX, centerY }) => {
+  const { totalBalanceInUSD } = useBalance();
+
+  const formattedBalance = useMemo(
+    () =>
+      new Intl.NumberFormat("en-EN", {
+        style: "currency",
+        currency: "usd",
+      }).format(totalBalanceInUSD),
+    [totalBalanceInUSD]
+  );
+
+  return (
+    <>
+      <text
+        textAnchor="middle"
+        x={centerX}
+        y={centerY - 4}
+        style={balanceStyle}
+      >
+        {formattedBalance}
+      </text>
+      <text
+        textAnchor="middle"
+        x={centerX}
+        y={centerY + 21}
+        style={netWorthStyle}
+      >
+        Net worth
+      </text>
+    </>
+  );
+};
 
 const PieChart = ({ data }) => (
   <ResponsivePie
     data={data}
-    margin={{ top: 30, right: 0, bottom: 60, left: 0 }}
+    layers={["arcs", "arcLinkLabels", "arcLabels", "legends", Title]}
+    margin={{ top: 30, right: 90, bottom: 60, left: 0 }}
     valueFormat=" >-$"
     innerRadius={0.5}
     padAngle={0.7}
@@ -11,6 +61,7 @@ const PieChart = ({ data }) => (
     activeOuterRadiusOffset={8}
     colors={[...data.map((item) => item.color)]}
     enableArcLinkLabels={false}
+    enableArcLabels={false}
     arcLinkLabelsSkipAngle={10}
     arcLinkLabelsTextColor="#333333"
     arcLinkLabelsThickness={2}
@@ -28,27 +79,19 @@ const PieChart = ({ data }) => (
     }}
     legends={[
       {
-        anchor: "bottom",
-        direction: "row",
+        anchor: "right",
+        direction: "column",
         justify: false,
-        translateX: 0,
-        translateY: 48,
+        translateX: 120,
+        translateY: 0,
         itemsSpacing: 0,
         itemWidth: 100,
         itemHeight: 18,
-        itemTextColor: "var(--clr-text-neutral)",
+        itemTextColor: "#999",
         itemDirection: "left-to-right",
         itemOpacity: 1,
-        symbolSize: 20,
+        symbolSize: 18,
         symbolShape: "circle",
-        effects: [
-          {
-            on: "hover",
-            style: {
-              itemTextColor: "var(--clr-text)",
-            },
-          },
-        ],
       },
     ]}
     theme={{
