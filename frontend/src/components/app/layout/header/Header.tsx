@@ -3,7 +3,11 @@ import { css } from "@emotion/react";
 
 const Header = ({ children }) => {
   return (
-    <header>
+    <header
+      css={css`
+        height: var(--size-700);
+      `}
+    >
       <div
         css={css`
           display: flex;

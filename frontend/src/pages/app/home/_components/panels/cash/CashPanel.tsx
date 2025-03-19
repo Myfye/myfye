@@ -5,6 +5,8 @@ import { css } from "@emotion/react";
 
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import { useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { addCurrentCoin } from "@/redux/coinReducer";
 
 const CashPanel = ({
   usdBalance,
@@ -12,8 +14,11 @@ const CashPanel = ({
   eurcBalance,
   eurcBalanceInUSD,
 }) => {
+  const dispatch = useDispatch();
+
   const totalBalance = useMemo(
-    () => usdBalance + usdyBalanceInUSD + eurcBalanceInUSD
+    () => usdBalance + usdyBalanceInUSD + eurcBalanceInUSD,
+    [usdBalance, usdyBalanceInUSD, eurcBalanceInUSD]
   );
 
   const coins = useMemo(
@@ -42,7 +47,12 @@ const CashPanel = ({
 
   return (
     <div className="cash-panel">
-      <section className="balance-container">
+      <section
+        className="balance-container"
+        css={css`
+          margin-block-start: var(--size-200);
+        `}
+      >
         <BalanceTitle balance={totalBalance} />
       </section>
       <section
@@ -50,7 +60,7 @@ const CashPanel = ({
           padding: 0 var(--size-250);
         `}
       >
-        <CoinCardList coins={coins} />
+        <CoinCardList coins={coins} showOptions={true} />
       </section>
     </div>
   );

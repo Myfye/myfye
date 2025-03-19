@@ -68,7 +68,7 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                 width: 100%;
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
-                height: 100dvh;
+                height: 100svh;
                 z-index: 1;
               `}
               initial={{ y: h }}
@@ -89,7 +89,7 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                 css={css`
                   display: grid;
                   grid-template-rows: 4rem 1fr;
-                  height: 100dvh;
+                  height: 100svh;
                   overflow-y: auto;
                   position: relative;
                 `}

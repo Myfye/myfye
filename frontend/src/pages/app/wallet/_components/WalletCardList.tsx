@@ -49,14 +49,14 @@ const WalletCardList = ({ ...restProps }) => {
           gap: var(--size-200);
         `}
       >
-        {cards.map((card) => (
+        {cards.map((card, i) => (
           <li className="wallet-card" css={css``}>
             <WalletCard
               title={card.label}
               icon={card.icon}
               balance={card.balance}
               percentChange={card.percentChange}
-              key={card.id}
+              key={`wallet-card-${i}`}
             />
           </li>
         ))}

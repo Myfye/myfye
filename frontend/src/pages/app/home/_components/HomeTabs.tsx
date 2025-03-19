@@ -153,9 +153,8 @@ const HomeTabs = () => {
       css={css`
         display: grid;
         grid-template-rows: auto 1fr;
-        min-height: 100cqh;
-        height: fit-content;
-        overflow-y: auto;
+        height: 100%;
+        container: home-tabs / size;
       `}
     >
       <div
@@ -163,6 +162,7 @@ const HomeTabs = () => {
         css={css`
           position: relative;
           padding: 0 var(--size-250);
+          height: 100%;
         `}
       >
         <TabList
@@ -179,9 +179,12 @@ const HomeTabs = () => {
               css={css`
                 font-size: var(--fs-medium);
                 font-weight: var(--fw-active);
-                padding-block: var(--size-150);
+                padding-block: var(--size-300);
                 cursor: pointer;
                 color: var(--clr-text-neutral-strong);
+                &:hover {
+                  color: var(--clr-accent);
+                }
                 &[data-selected="true"] {
                   color: var(--clr-accent);
                 }
@@ -196,7 +199,7 @@ const HomeTabs = () => {
           css={css`
             position: absolute;
             left: 0;
-            bottom: 0;
+            bottom: var(--size-150);
             z-index: var(--z-index-modal);
             background-color: var(--clr-accent);
             height: 3px;
@@ -209,7 +212,7 @@ const HomeTabs = () => {
         className="no-scrollbar"
         css={css`
           display: flex;
-          overflow-x: auto;
+          overflow: auto;
           scroll-snap-type: x mandatory;
         `}
       >

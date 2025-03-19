@@ -38,7 +38,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
         id: "Cash",
         label: "Cash",
         value: cashBalanceInUSD,
-        color: "var(--clr-green-300)",
+        color: "var(--clr-pie-chart-1)",
       };
       data.push(cashData);
     }
@@ -47,7 +47,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
         id: "Crypto",
         label: "Crypto",
         value: cryptoBalanceInUSD,
-        color: "var(--clr-green-400)",
+        color: "var(--clr-pie-chart-2)",
       };
       data.push(cryptoData);
     }
@@ -70,7 +70,12 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
         padding-bottom: var(--size-250);
       `}
     >
-      <section className="balance-container">
+      <section
+        className="balance-container"
+        css={css`
+          margin-block-start: var(--size-200);
+        `}
+      >
         <BalanceTitle balance={totalBalance} />
         <menu
           className="no-scrollbar"
@@ -188,7 +193,12 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
           </div>
         )}
       </section>
-      <section className="cta-carousel-container">
+      <section
+        className="cta-carousel-container"
+        css={css`
+          padding-block-end: var(--size-200);
+        `}
+      >
         <CTACarousel
           slides={[
             {

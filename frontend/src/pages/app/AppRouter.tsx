@@ -37,7 +37,11 @@ import {
   setWithdrawModalOpen,
 } from "@/redux/modalReducers.tsx";
 import WithdrawCryptoOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/WithdrawCryptoOverlay.tsx";
-import { setWithdrawCryptoOverlayOpen } from "@/redux/overlayReducers.tsx";
+import {
+  setSelectContactOverlayOpen,
+  setWithdrawCryptoOverlayOpen,
+} from "@/redux/overlayReducers.tsx";
+import SelectContactOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/select-contact-overlay/SelectContactOverlay.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -166,6 +170,9 @@ function WebAppInner() {
   const isSettingsOverlayOpen = useSelector(
     (state: any) => state.settingsOverlay.isOpen
   );
+  const isSelectContactOverlayOpen = useSelector(
+    (state: any) => state.selectContactOverlay.isOpen
+  );
 
   if (authenticated) {
     return (
@@ -199,6 +206,10 @@ function WebAppInner() {
               isOpen={isWithdrawCryptoOverlayOpen}
               onOpenChange={(e) => dispatch(setWithdrawCryptoOverlayOpen(e))}
             />
+            <SelectContactOverlay
+              isOpen={isSelectContactOverlayOpen}
+              onOpenChange={(e) => dispatch(setSelectContactOverlayOpen(e))}
+            />
           </>
         ) : (
           <div
@@ -206,7 +217,7 @@ function WebAppInner() {
             css={css`
               display: grid;
               place-items: center;
-              height: 100dvh;
+              height: 100svh;
               background-color: var(--clr-accent);
             `}
           >
@@ -214,8 +225,8 @@ function WebAppInner() {
               src="https://lottie.host/744ea5d2-8d13-4f4c-b0a0-11e94caef4c2/2xZe6NoQB2.lottie"
               loop
               autoplay
-              className={css`
-                width: 6rem;
+              css={css`
+                width: 4rem;
               `}
             />
           </div>

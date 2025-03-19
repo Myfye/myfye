@@ -14,7 +14,7 @@ const Footer = ({ children }) => {
       <div
         css={css`
           align-content: center;
-          padding: 0 var(--size-250);
+          padding: 0 var(--size-500);
           height: 100%;
         `}
       >

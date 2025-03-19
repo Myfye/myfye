@@ -19,41 +19,42 @@ const Wallet = () => {
       className="wallet"
       css={css`
         height: 100cqh;
-        overflow-y: auto;
       `}
     >
-      <h1
-        className="heading-x-large"
-        css={css`
-          margin-block-start: var(--size-150);
-          padding-inline: var(--size-250);
-        `}
-      >
-        Wallet
-      </h1>
-      <BalanceTitle balance={totalBalanceInUSD} currency="usd" />
-      <menu
-        css={css`
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          gap: var(--controls-gap-small);
-          padding: 0 var(--size-250);
-        `}
-      >
-        <Button
-          size="medium"
-          onPress={() => dispatch(setDepositModalOpen(true))}
+      <section>
+        <h1
+          className="heading-x-large"
+          css={css`
+            padding-block-start: var(--size-150);
+            padding-inline: var(--size-250);
+          `}
         >
-          Add money
-        </Button>
-        <Button
-          size="medium"
-          onPress={() => dispatch(setWithdrawModalOpen(true))}
+          Wallet
+        </h1>
+        <BalanceTitle balance={totalBalanceInUSD} currency="usd" />
+        <menu
+          css={css`
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: var(--controls-gap-small);
+            padding: 0 var(--size-250);
+          `}
         >
-          Withdraw
-        </Button>
-      </menu>
+          <Button
+            size="medium"
+            onPress={() => dispatch(setDepositModalOpen(true))}
+          >
+            Add money
+          </Button>
+          <Button
+            size="medium"
+            onPress={() => dispatch(setWithdrawModalOpen(true))}
+          >
+            Withdraw
+          </Button>
+        </menu>
+      </section>
       <section>
         <h2
           className="heading-large"

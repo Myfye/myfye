@@ -65,6 +65,9 @@
   --clr-accent: var(--clr-green-500);
   --clr-accent-active: var(--clr-green-600);
 
+  --clr-pie-chart-1: var(--clr-green-400);
+  --clr-pie-chart-2: #c48f52;
+
   --clr-text: var(--clr-neutral-900);
   --clr-text-link: var(--clr-green-500);
   --clr-text-weak: var(--clr-neutral-700);
