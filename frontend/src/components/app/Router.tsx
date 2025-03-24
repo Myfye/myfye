@@ -37,7 +37,7 @@ const Router = () => {
 
   useEffect(() => {
     console.log(selectedKey);
-  });
+  }, [selectedKey]);
 
   return (
     <div
@@ -62,7 +62,6 @@ const Router = () => {
             icon={ScanIcon}
             onPress={() => dispatch(setQRCodeModalOpen(true))}
             color="transparent"
-            size="large"
           ></Button>
         </Header>
         <main
@@ -99,11 +98,11 @@ const Router = () => {
           >
             {(tab) => (
               <AriaTab
-                className="aspect-ratio-square"
                 css={css`
                   display: block;
                   align-content: center;
-                  width: var(--size-700);
+                  width: var(--size-800);
+                  height: 3.25rem;
                 `}
                 key={`tab-${tab.id}`}
               >

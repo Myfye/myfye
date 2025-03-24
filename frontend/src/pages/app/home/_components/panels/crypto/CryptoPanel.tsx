@@ -41,6 +41,7 @@ const CryptoPanel = ({ btcBalanceInUSD, solBalanceInUSD }) => {
       </section>
       <section
         css={css`
+          margin-block-start: var(--size-400);
           padding: 0 var(--size-250);
         `}
       >

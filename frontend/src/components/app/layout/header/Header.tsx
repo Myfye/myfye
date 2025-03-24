@@ -5,7 +5,7 @@ const Header = ({ children }) => {
   return (
     <header
       css={css`
-        height: var(--size-700);
+        height: var(--size-600);
       `}
     >
       <div
@@ -14,7 +14,7 @@ const Header = ({ children }) => {
           align-items: center;
           justify-content: space-between;
           height: 100%;
-          padding-inline: var(--size-100);
+          padding-inline: 0.625rem;
         `}
       >
         {children}

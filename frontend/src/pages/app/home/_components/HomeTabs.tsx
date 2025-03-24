@@ -177,9 +177,14 @@ const HomeTabs = () => {
           {(tab) => (
             <Tab
               css={css`
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: flex-end;
                 font-size: var(--fs-medium);
                 font-weight: var(--fw-active);
-                padding-block: var(--size-300);
+                height: 3rem;
+                padding-block-end: 1.25rem;
                 cursor: pointer;
                 color: var(--clr-text-neutral-strong);
                 &:hover {
@@ -199,7 +204,7 @@ const HomeTabs = () => {
           css={css`
             position: absolute;
             left: 0;
-            bottom: var(--size-150);
+            bottom: var(--size-100);
             z-index: var(--z-index-modal);
             background-color: var(--clr-accent);
             height: 3px;

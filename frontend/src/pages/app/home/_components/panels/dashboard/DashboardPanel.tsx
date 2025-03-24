@@ -73,7 +73,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
       <section
         className="balance-container"
         css={css`
-          margin-block-start: var(--size-200);
+          margin-block-start: var(--size-150);
         `}
       >
         <BalanceTitle balance={totalBalance} />
@@ -86,6 +86,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
             gap: var(--controls-gap-small);
             overflow-x: auto;
             padding: 0 var(--size-250);
+            margin-block-start: var(--size-250);
           `}
         >
           <li>
@@ -137,9 +138,8 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
       <section
         className="pie-chart-container"
         css={css`
-          min-height: ${totalBalance === 0 ? "auto" : "22.75rem"};
-          height: ${totalBalance === 0 ? "auto" : "22.75rem"};
-          margin-block-start: var(--size-200);
+          min-height: ${totalBalance === 0 ? "auto" : "20rem"};
+          height: ${totalBalance === 0 ? "auto" : "20rem"};
           padding: 0 var(--size-250);
         `}
       >
@@ -193,12 +193,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
           </div>
         )}
       </section>
-      <section
-        className="cta-carousel-container"
-        css={css`
-          padding-block-end: var(--size-200);
-        `}
-      >
+      <section className="cta-carousel-container" css={css``}>
         <CTACarousel
           slides={[
             {

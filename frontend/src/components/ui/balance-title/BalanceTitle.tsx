@@ -15,7 +15,6 @@ const BalanceTitle = ({ balance = 0, currency = "usd" }) => {
     <hgroup
       css={css`
         text-align: start;
-        margin-block-end: var(--size-300);
         padding: 0 var(--size-250);
       `}
     >

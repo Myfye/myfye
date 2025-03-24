@@ -90,18 +90,30 @@ export const settingsOverlaySlice = createSlice({
   },
 });
 
-// export const selectCoinOverlaySlice = createSlice({
-//   name: "selectCoinOverlay",
-//   initialState: { isOpen: false },
-//   reducers: {
-//     setOpen: (state, action) => {
-//       state.isOpen = action.payload;
-//     },
-//   },
-// });
-
 export const selectContactOverlaySlice = createSlice({
   name: "selectContactOverlay",
+  initialState: { isOpen: false },
+  reducers: {
+    setOpen: (state, action) => {
+      state.isOpen = action.payload;
+    },
+  },
+});
+
+// Wallet Page
+
+export const cryptoSummaryOverlay = createSlice({
+  name: "cryptoSummaryOverlay",
+  initialState: { isOpen: false },
+  reducers: {
+    setOpen: (state, action) => {
+      state.isOpen = action.payload;
+    },
+  },
+});
+
+export const earnSummaryOverlay = createSlice({
+  name: "earnSummaryOverlay",
   initialState: { isOpen: false },
   reducers: {
     setOpen: (state, action) => {

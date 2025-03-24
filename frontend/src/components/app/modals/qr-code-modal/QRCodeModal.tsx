@@ -124,14 +124,12 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                         iconOnly
                         icon={CaretLeftIcon}
                         color="transparent-invert"
-                        size="large"
                         onPress={() => setQRCodeVisible(false)}
                       ></Button>
                       <Button
                         iconOnly
                         icon={QuestionMarkIcon}
                         color="transparent-invert"
-                        size="large"
                         onPress={() => onOpenChange(false)}
                       ></Button>
                     </>
@@ -140,7 +138,6 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                       iconOnly
                       icon={XIcon}
                       color="transparent-invert"
-                      size="large"
                       onPress={() => onOpenChange(false)}
                     ></Button>
                   )}
@@ -212,7 +209,6 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                     {isQRCodeVisible ? (
                       <Button
                         expand
-                        size="large"
                         color="invert"
                         icon={CopyIcon}
                         onPress={() => {
@@ -226,7 +222,6 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                     ) : (
                       <Button
                         expand
-                        size="large"
                         color="invert"
                         onPress={() => {
                           setQRCodeVisible(true);

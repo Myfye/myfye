@@ -25,35 +25,46 @@ const Wallet = () => {
         <h1
           className="heading-x-large"
           css={css`
-            padding-block-start: var(--size-150);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
             padding-inline: var(--size-250);
+            height: var(--size-700);
           `}
         >
           Wallet
         </h1>
-        <BalanceTitle balance={totalBalanceInUSD} currency="usd" />
-        <menu
+        <section
+          className="balance-container"
           css={css`
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: var(--controls-gap-small);
-            padding: 0 var(--size-250);
+            margin-block-start: var(--size-400);
           `}
         >
-          <Button
-            size="medium"
-            onPress={() => dispatch(setDepositModalOpen(true))}
+          <BalanceTitle balance={totalBalanceInUSD} currency="usd" />
+          <menu
+            css={css`
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              gap: var(--controls-gap-small);
+              padding: 0 var(--size-250);
+            `}
           >
-            Add money
-          </Button>
-          <Button
-            size="medium"
-            onPress={() => dispatch(setWithdrawModalOpen(true))}
-          >
-            Withdraw
-          </Button>
-        </menu>
+            <Button
+              size="medium"
+              onPress={() => dispatch(setDepositModalOpen(true))}
+            >
+              Add money
+            </Button>
+            <Button
+              size="medium"
+              onPress={() => dispatch(setWithdrawModalOpen(true))}
+            >
+              Withdraw
+            </Button>
+          </menu>
+        </section>
       </section>
       <section>
         <h2
