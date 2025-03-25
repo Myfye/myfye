@@ -35,43 +35,58 @@ const Router = () => {
   const dispatch = useDispatch();
   let [selectedKey, setSelectedKey] = useState(tabs[0].id);
 
+  useEffect(() => {
+    console.log(selectedKey);
+  }, [selectedKey]);
+
   return (
     <div
       className="router"
       css={css`
         height: 100cqh;
-        display: grid;
-        grid-template-rows: var(--size-800) 1fr;
       `}
     >
-      <Header>
-        <NavMenu></NavMenu>
-        <Button
-          iconOnly
-          icon={ScanIcon}
-          onPress={() => dispatch(setQRCodeModalOpen(true))}
-          color="transparent"
-          size="large"
-        ></Button>
-      </Header>
       <AriaTabs
         selectedKey={selectedKey}
         onSelectionChange={setSelectedKey}
         css={css`
           display: grid;
-          grid-template-rows: 1fr 4.5rem;
-          height: 100%;
+          grid-template-rows: auto 1fr auto;
+          height: 100cqh;
         `}
       >
-        {tabs.map((tab) => (
-          <AriaTabPanel id={tab.id} key={`tab-panel-${tab.id}`}>
-            {tab.id === "home" && <Home />}
-            {tab.id === "wallet" && <Wallet />}
-            {tab.id === "pay" && <div></div>}
-            {tab.id === "activity" && <div></div>}
-          </AriaTabPanel>
-        ))}
-
+        <Header>
+          <NavMenu></NavMenu>
+          <Button
+            iconOnly
+            icon={ScanIcon}
+            onPress={() => dispatch(setQRCodeModalOpen(true))}
+            color="transparent"
+          ></Button>
+        </Header>
+        <main
+          onScroll={() => console.log("scroll")}
+          css={css`
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+          `}
+        >
+          {tabs.map((tab) => (
+            <AriaTabPanel
+              id={tab.id}
+              key={`tab-panel-${tab.id}`}
+              css={css`
+                container: tab / size;
+                min-height: 100%;
+              `}
+            >
+              {tab.id === "home" && <Home />}
+              {tab.id === "wallet" && <Wallet />}
+              {tab.id === "pay" && <div></div>}
+              {tab.id === "activity" && <div></div>}
+            </AriaTabPanel>
+          ))}
+        </main>
         <Footer>
           <AriaTabList
             css={css`
@@ -83,11 +98,11 @@ const Router = () => {
           >
             {(tab) => (
               <AriaTab
-                className="aspect-ratio-square"
                 css={css`
                   display: block;
                   align-content: center;
-                  width: var(--size-700);
+                  width: var(--size-800);
+                  height: 3.25rem;
                 `}
                 key={`tab-${tab.id}`}
               >
@@ -99,7 +114,7 @@ const Router = () => {
                         : "var(--clr-neutral-700)"
                     }
                     weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={32}
+                    size={24}
                     css={css`
                       margin: 0 auto;
                     `}
@@ -113,7 +128,7 @@ const Router = () => {
                         : "var(--clr-neutral-700)"
                     }
                     weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={32}
+                    size={24}
                     css={css`
                       margin: 0 auto;
                     `}
@@ -127,7 +142,7 @@ const Router = () => {
                         : "var(--clr-neutral-700)"
                     }
                     weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={32}
+                    size={24}
                     css={css`
                       margin: 0 auto;
                     `}
@@ -141,7 +156,7 @@ const Router = () => {
                         : "var(--clr-neutral-700)"
                     }
                     weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={32}
+                    size={24}
                     css={css`
                       margin: 0 auto;
                     `}
@@ -151,12 +166,15 @@ const Router = () => {
                   css={css`
                     margin-top: var(--size-025);
                     font-weight: var(--fw-active);
-                    font-size: var(--fs-small);
+                    font-size: var(--fs-x-small);
                     text-align: center;
-                    color: ${selectedKey === tab.id
-                      ? "var(--clr-accent)"
-                      : "var(--clr-neutral-700)"};
                   `}
+                  style={{
+                    color:
+                      selectedKey === tab.id
+                        ? "var(--clr-accent)"
+                        : "var(--clr-neutral-700)",
+                  }}
                 >
                   {tab.label}
                 </p>

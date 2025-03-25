@@ -3,7 +3,7 @@ import Contact from "./ContactCard";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const ContactCardList = ({ contacts }) => {
+const ContactCardList = ({ contacts, onContactSelect }) => {
   return (
     <ul
       className="contact-card-list"
@@ -13,7 +13,6 @@ const ContactCardList = ({ contacts }) => {
         align-items: flex-start;
         justify-content: center;
         gap: var(--size-300);
-        padding: 0 var(--size-250);
       `}
     >
       {contacts.map((contact) => (
@@ -24,7 +23,11 @@ const ContactCardList = ({ contacts }) => {
             width: 100%;
           `}
         >
-          <Contact name={contact.name} walletAddress={contact.walletAddress} />
+          <Contact
+            name={contact.name}
+            walletAddress={contact.walletAddress}
+            onPress={() => onContactSelect(contact)}
+          />
         </li>
       ))}
     </ul>

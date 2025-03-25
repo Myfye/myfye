@@ -27,8 +27,17 @@ import {
   setSendModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers";
+import CoinCardController from "./CoinCardController";
 
-const CoinCard = ({ title, currency, type, balance, ref, showOptions }) => {
+const CoinCard = ({
+  title,
+  currency,
+  type,
+  balance,
+  ref,
+  showOptions,
+  ...restProps
+}) => {
   const formattedBalance = useMemo(
     () =>
       new Intl.NumberFormat("en-EN", {
@@ -40,194 +49,73 @@ const CoinCard = ({ title, currency, type, balance, ref, showOptions }) => {
     [balance]
   );
 
-  const [buttonProps, buttonRef] = useContextProps(
-    {
-      icon: DotsThreeVertical,
-      iconOnly: true,
-      size: "small",
-      variant: "transparent",
-    },
-    ref,
-    ButtonContext
-  );
-
-  const dispatch = useDispatch();
-
   return (
-    <div
-      ref={ref}
-      className="coin-card"
-      css={css`
-        display: grid;
-        grid-template-columns: auto 1fr;
-        column-gap: var(--size-150);
-        line-height: var(--line-height-tight);
-        width: 100%;
-        user-select: none;
-      `}
-    >
-      <Coin type={type} />
+    <CoinCardController {...restProps} ref={ref}>
       <div
-        className="content"
+        className="coin-card"
         css={css`
           display: grid;
-          grid-template-columns: 1fr auto;
-          align-items: center;
-          gap: var(--size-200);
+          grid-template-columns: auto 1fr;
+          column-gap: var(--size-150);
+          line-height: var(--line-height-tight);
+          width: 100%;
+          user-select: none;
         `}
       >
+        <Coin type={type} />
         <div
+          className="content"
           css={css`
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            align-self: center;
+            align-items: center;
+            gap: var(--size-200);
           `}
         >
           <div
-            className="title"
             css={css`
               display: flex;
               align-items: flex-start;
-              justify-content: flex-start;
-              flex-direction: column;
+              justify-content: space-between;
+              align-self: center;
             `}
           >
+            <div
+              className="title"
+              css={css`
+                display: flex;
+                align-items: flex-start;
+                justify-content: flex-start;
+                flex-direction: column;
+              `}
+            >
+              <p
+                css={css`
+                  font-weight: var(--fw-active);
+                `}
+              >
+                {title}
+              </p>
+              <p
+                css={css`
+                  font-size: var(--fs-small);
+                  color: var(--clr-text-neutral);
+                  text-transform: uppercase;
+                  margin-block-start: var(--size-050);
+                `}
+              >
+                {currency}
+              </p>
+            </div>
             <p
               css={css`
                 font-weight: var(--fw-active);
               `}
             >
-              {title}
-            </p>
-            <p
-              css={css`
-                font-size: var(--fs-small);
-                color: var(--clr-text-neutral);
-                text-transform: uppercase;
-                margin-block-start: var(--size-050);
-              `}
-            >
-              {currency}
+              {formattedBalance}
             </p>
           </div>
-          <p
-            css={css`
-              font-weight: var(--fw-active);
-            `}
-          >
-            {formattedBalance}
-          </p>
         </div>
-        {showOptions && (
-          <MenuTrigger>
-            {/* <Button {...buttonProps} ref={buttonRef}></Button> */}
-            <AriaButton>
-              <DotsThreeVertical size={24} />
-            </AriaButton>
-            <Popover placement="bottom end">
-              <Menu
-                css={css`
-                  padding: var(--size-075);
-                  width: 12rem;
-                  border-radius: var(--border-radius-medium);
-                  background-color: var(--clr-surface);
-                  box-shadow: var(--box-shadow-popout);
-                  overflow: auto;
-                  font-size: var(--fs-medium);
-                  user-select: none;
-                `}
-              >
-                <MenuItem
-                  css={css`
-                    display: flex;
-                    align-items: center;
-                    border-radius: var(--border-radius-medium);
-                    padding: var(--size-150) var(--size-150);
-                    width: 100%;
-                    &[data-hovered="true"] {
-                      background-color: var(--clr-surface-raised);
-                    }
-                  `}
-                  onAction={() => dispatch(setSendModalOpen(true))}
-                >
-                  <ArrowCircleUp
-                    size={16}
-                    css={css`
-                      margin-inline-end: var(--size-100);
-                    `}
-                  />
-                  Send
-                </MenuItem>
-                <MenuItem
-                  css={css`
-                    display: flex;
-                    align-items: center;
-                    border-radius: var(--border-radius-medium);
-                    padding: var(--size-150) var(--size-150);
-                    width: 100%;
-                    &[data-hovered="true"] {
-                      background-color: var(--clr-surface-raised);
-                    }
-                  `}
-                  onAction={() => dispatch(setReceiveModalOpen(true))}
-                >
-                  <ArrowCircleDown
-                    size={16}
-                    css={css`
-                      margin-inline-end: var(--size-100);
-                    `}
-                  />
-                  Receive
-                </MenuItem>
-                <MenuItem
-                  css={css`
-                    display: flex;
-                    align-items: center;
-                    border-radius: var(--border-radius-medium);
-                    padding: var(--size-150) var(--size-150);
-                    width: 100%;
-                    &[data-hovered="true"] {
-                      background-color: var(--clr-surface-raised);
-                    }
-                  `}
-                  onAction={() => dispatch(setDepositModalOpen(true))}
-                >
-                  <ArrowLineDown
-                    size={16}
-                    css={css`
-                      margin-inline-end: var(--size-100);
-                    `}
-                  />
-                  Deposit
-                </MenuItem>
-                <MenuItem
-                  css={css`
-                    display: flex;
-                    align-items: center;
-                    border-radius: var(--border-radius-medium);
-                    padding: var(--size-150) var(--size-150);
-                    width: 100%;
-                    &[data-hovered="true"] {
-                      background-color: var(--clr-surface-raised);
-                    }
-                  `}
-                  onAction={() => dispatch(setWithdrawModalOpen(true))}
-                >
-                  <ArrowLineUp
-                    size={16}
-                    css={css`
-                      margin-inline-end: var(--size-100);
-                    `}
-                  />
-                  Withdraw
-                </MenuItem>
-              </Menu>
-            </Popover>
-          </MenuTrigger>
-        )}
       </div>
-    </div>
+    </CoinCardController>
   );
 };
 

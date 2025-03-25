@@ -13,7 +13,6 @@ const Home = () => {
       className="home"
       css={css`
         height: 100cqh;
-        overflow-y: auto;
       `}
     >
       <PrivyUseSolanaWallets />

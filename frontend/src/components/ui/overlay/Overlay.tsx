@@ -18,7 +18,7 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const Overlay = ({ isOpen, onOpenChange, children }) => {
+const Overlay = ({ isOpen, onOpenChange, children, title }) => {
   let w = window.innerWidth;
   let x = useMotionValue(w);
 
@@ -47,7 +47,7 @@ const Overlay = ({ isOpen, onOpenChange, children }) => {
                 bottom: 0;
                 width: 100%;
                 will-change: transform;
-                height: 100dvh;
+                height: 100svh;
                 z-index: 1;
               `}
               initial={{ x: w }}
@@ -99,7 +99,7 @@ const Overlay = ({ isOpen, onOpenChange, children }) => {
                         left: var(--size-100);
                       `}
                     ></Button>
-                    <h1 className="heading-medium">Select Coin</h1>
+                    <h1 className="heading-medium">{title}</h1>
                   </div>
                 </header>
                 <main

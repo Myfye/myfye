@@ -14,16 +14,20 @@ import {
   cryptoBalanceOverlayReducer,
   depositFiatOverlayReducer,
   requestOverlayReducer,
+  selectContactOverlayReducer,
   sendOverlayReducer,
   settingsOverlayReducer,
   userInfoOverlayReducer,
   withdrawCryptoOverlayReducer,
   withdrawFiatOverlayReducer,
 } from "./overlayReducers.tsx";
+import { currentCoinReducer } from "./coinReducer.tsx";
+import { currentContactReducer } from "./contactReducer.tsx";
 
 const store = configureStore({
   reducer: {
     userWalletData: userWalletDataReducer,
+
     // Modals
     sendModal: sendModalReducer,
     receiveModal: receiveModalReducer,
@@ -31,6 +35,7 @@ const store = configureStore({
     withdrawModal: withdrawModalReducer,
     QRCodeModal: QRCodeModalReducer,
     addContactModal: addContactModalReducer,
+
     // Overlays
     withdrawFiatOverlay: withdrawFiatOverlayReducer,
     withdrawCryptoOverlay: withdrawCryptoOverlayReducer,
@@ -41,6 +46,11 @@ const store = configureStore({
     depositFiatOverlay: depositFiatOverlayReducer,
     userInfoOverlay: userInfoOverlayReducer,
     settingsOverlay: settingsOverlayReducer,
+    selectContactOverlay: selectContactOverlayReducer,
+
+    // Current coin/contact for sending/receiving
+    currentCoin: currentCoinReducer,
+    currentContact: currentContactReducer,
   },
 });
 

@@ -124,7 +124,6 @@ const NavMenu = () => {
                     onPress={closeMenu}
                     icon={XIcon}
                     color="transparent"
-                    size="large"
                   ></Button>
                 </header>
                 {/* Menu content goes here */}

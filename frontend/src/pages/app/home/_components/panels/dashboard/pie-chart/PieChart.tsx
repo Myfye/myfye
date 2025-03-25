@@ -32,7 +32,7 @@ const Title = ({ centerX, centerY }) => {
       <text
         textAnchor="middle"
         x={centerX}
-        y={centerY - 4}
+        y={centerY - 2}
         style={balanceStyle}
       >
         {formattedBalance}
@@ -40,7 +40,7 @@ const Title = ({ centerX, centerY }) => {
       <text
         textAnchor="middle"
         x={centerX}
-        y={centerY + 21}
+        y={centerY + 20}
         style={netWorthStyle}
       >
         Net worth
@@ -84,7 +84,7 @@ const PieChart = ({ data }) => (
         justify: false,
         translateX: 120,
         translateY: 0,
-        itemsSpacing: 0,
+        itemsSpacing: 8,
         itemWidth: 100,
         itemHeight: 18,
         itemTextColor: "#999",

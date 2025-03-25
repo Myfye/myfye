@@ -5,7 +5,7 @@ import { Wallet } from "@phosphor-icons/react";
 const Avatar = ({ src = "", size = "var(--size-600)" }) => {
   return (
     <div
-      className="coin-wrapper | aspect-ratio-square"
+      className="avatar-wrapper | aspect-ratio-square"
       css={css`
         border-radius: var(--border-radius-circle);
         width: ${size};
@@ -24,6 +24,9 @@ const Avatar = ({ src = "", size = "var(--size-600)" }) => {
       ) : (
         <div
           css={css`
+            display: grid;
+            place-items: center;
+            height: 100%;
             background-color: var(--clr-surface-lowered);
           `}
         >

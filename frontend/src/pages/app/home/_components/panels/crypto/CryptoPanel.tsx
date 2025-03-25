@@ -31,11 +31,17 @@ const CryptoPanel = ({ btcBalanceInUSD, solBalanceInUSD }) => {
 
   return (
     <div className="crypto-panel" css={css``}>
-      <section className="balance-container">
+      <section
+        className="balance-container"
+        css={css`
+          margin-block-start: var(--size-200);
+        `}
+      >
         <BalanceTitle balance={totalBalance} />
       </section>
       <section
         css={css`
+          margin-block-start: var(--size-400);
           padding: 0 var(--size-250);
         `}
       >

@@ -5,12 +5,18 @@ import { css } from "@emotion/react";
 import { Bank, Wallet } from "@phosphor-icons/react";
 import ModalButton from "../buttons/ModalButton";
 import Modal from "@/components/ui/modal/Modal";
-import { useDispatch } from "react-redux";
-import { setWithdrawCryptoOverlayOpen } from "@/redux/overlayReducers";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSelectContactOverlayOpen,
+  setWithdrawCryptoOverlayOpen,
+} from "@/redux/overlayReducers";
+import { addCurrentCoin } from "@/redux/coinReducer";
 
 const WithdrawModal = ({ isOpen, onOpenChange }) => {
-  const [height, setHeight] = useState(360);
+  const [height] = useState(360);
   const dispatch = useDispatch();
+
+  const currentCoin = useSelector((state: any) => state.currentCoin);
   return (
     <>
       <Modal
@@ -32,7 +38,11 @@ const WithdrawModal = ({ isOpen, onOpenChange }) => {
               icon={Wallet}
               title="To wallet"
               description="Send money to crypto wallet"
-              onPress={() => dispatch(setWithdrawCryptoOverlayOpen(true))}
+              onPress={() => {
+                if (currentCoin)
+                  return dispatch(setSelectContactOverlayOpen(true));
+                dispatch(setWithdrawCryptoOverlayOpen(true));
+              }}
             ></ModalButton>
           </li>
           <li>
