@@ -26,6 +26,9 @@ async function createUser(userData) {
 
     try {
         const result = await pool.query(query, values);
+        if (result.rows.length === 0) {
+            throw new Error('Failed to create user');
+        }
         return result.rows[0];
     } catch (error) {
         console.error('Error creating user:', error);
@@ -37,7 +40,18 @@ async function getUserByEmail(email) {
     const query = 'SELECT * FROM users WHERE email = $1';
     try {
         const result = await pool.query(query, [email]);
-        return result.rows[0];
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error getting user:', error);
+        throw error;
+    }
+}
+
+async function getUserByPrivyId(privyId) {
+    const query = 'SELECT * FROM users WHERE privy_user_id = $1';
+    try {
+        const result = await pool.query(query, [privyId]);
+        return result.rows[0] || null;
     } catch (error) {
         console.error('Error getting user:', error);
         throw error;
@@ -62,8 +76,51 @@ async function updateBlindPayIds(email, blindPayReceiverId, blindPayEvmWalletId)
     }
 }
 
+async function updateEvmPubKey(privyUserId, evmPubKey) {
+    const query = `
+        UPDATE users 
+        SET evm_pub_key = $2
+        WHERE privy_user_id = $1
+        RETURNING *
+    `;
+    try {
+        const result = await pool.query(query, [privyUserId, evmPubKey]);
+        if (result.rows.length === 0) {
+            throw new Error('User not found');
+        }
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error updating EVM public key:', error);
+        throw error;
+    }
+}
+
+async function updateSolanaPubKey(privyUserId, solanaPubKey) {
+    const query = `
+        UPDATE users 
+        SET solana_pub_key = $2
+        WHERE privy_user_id = $1
+        RETURNING *
+    `;
+    try {
+        console.log('Attempting to update Solana pub key with:', { privyUserId, solanaPubKey });
+        const result = await pool.query(query, [privyUserId, solanaPubKey]);
+        console.log('Update result:', result.rows);
+        if (result.rows.length === 0) {
+            throw new Error('User not found');
+        }
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error updating Solana public key:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     createUser,
     getUserByEmail,
-    updateBlindPayIds
+    updateBlindPayIds,
+    updateEvmPubKey,
+    updateSolanaPubKey,
+    getUserByPrivyId
 }; 

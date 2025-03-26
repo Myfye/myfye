@@ -1,10 +1,25 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const PORT = 3001; 
 const { create_new_on_ramp_path } = require('./routes/newUser');
 const { get_payin_quote } = require('./routes/getPayinQuote');
 const { create_new_payin } = require('./routes/createNewPayin');
+const { 
+    createUser, 
+    getUserByEmail, 
+    updateEvmPubKey, 
+    updateSolanaPubKey, 
+    getUserByPrivyId } = require('./routes/userDb');
+
+// Add CORS middleware
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow requests from frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow specific methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+    credentials: true // Allow credentials (cookies, authorization headers, etc.)
+}));
 
 // Add middleware logging
 app.use((req, res, next) => {
@@ -14,6 +29,76 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+/* User management endpoints */
+app.post('/create_user', async (req, res) => {
+    console.log("\n=== New User Creation Request Received ===");
+    
+    try {
+        const userData = req.body;
+        const result = await createUser(userData);
+        console.log("User creation result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /create_user endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/get_user_by_email', async (req, res) => {
+    console.log("\n=== User Lookup Request Received ===");
+    
+    try {
+        const { email } = req.body;
+        const result = await getUserByEmail(email);
+        console.log("User lookup result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_user_by_email endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/get_user_by_privy_id', async (req, res) => {
+    console.log("\n=== User Lookup Request Received ===");
+    
+    try {
+        const { privyUserId } = req.body;
+        const result = await getUserByPrivyId(privyUserId);
+        console.log("User lookup result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_user_by_privy_id endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/update_evm_pub_key', async (req, res) => {
+    console.log("\n=== Update EVM Public Key Request Received ===");
+    
+    try {
+        const { privyUserId, evmPubKey } = req.body;
+        const result = await updateEvmPubKey(privyUserId, evmPubKey);
+        console.log("EVM public key update result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /update_evm_pub_key endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/update_solana_pub_key', async (req, res) => {
+    console.log("\n=== Update Solana Public Key Request Received ===");
+    
+    try {
+        const { privyUserId, solanaPubKey } = req.body;
+        const result = await updateSolanaPubKey(privyUserId, solanaPubKey);
+        console.log("Solana public key update result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /update_solana_pub_key endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 /* Blind pay API */
 app.post('/new_on_ramp', async (req, res) => {
