@@ -7,7 +7,7 @@ import {
  } from '../redux/userWalletData.tsx';
 import { useDispatch } from 'react-redux';
 import {useSolanaWallets} from '@privy-io/react-auth/solana';
-
+import { updateUserSolanaPubKey } from '../functions/HandleUserLogIn';
 
 function PrivyUseSolanaWallets() {
     /*
@@ -21,24 +21,36 @@ function PrivyUseSolanaWallets() {
     */
     const {createWallet, ready, wallets} = useSolanaWallets();
     const dispatch = useDispatch();
+    const currentUser = useSelector((state: any) => state.userWalletData.currentUserEmail);
+    const privyUserId = useSelector((state: any) => state.userWalletData.privyUserId);
 
     useEffect(() => { 
         if (!wallets) {
-            createWalletAsync(); // Call the async function
+            createWalletAsync();
         }
     }, []);
+
+    useEffect(() => {
+        console.log('ready', ready);
+    }, [ready]);
 
 
     useEffect(() => {
         console.log('solana wallets', wallets);
         if (Array.isArray(wallets) && wallets.length > 0 && wallets[0].address) {
-            dispatch(setSolanaPubKey(wallets[0].address));
+            const solanaAddress = wallets[0].address;
+            dispatch(setSolanaPubKey(solanaAddress));
+            
+            // Save the Solana public key to the database
+            if (privyUserId) {
+                updateUserSolanaPubKey(privyUserId, solanaAddress)
+                    .catch(error => console.error('Error saving Solana public key:', error));
+            }
         } else {
             console.log('no wallets found:', wallets, 'creating...');
             createWalletAsync();
         }
-    }, [wallets]);
-
+    }, [wallets, privyUserId]);
 
     useEffect(() => {
         // The wallet is ready to be used for signing 
@@ -50,7 +62,7 @@ function PrivyUseSolanaWallets() {
     const createWalletAsync = async () => {
         try {
             console.log('creating wallet');
-            await createWallet(); // Await the async function
+            await createWallet();
         } catch (error) {
             console.error('Error ', error);
         }

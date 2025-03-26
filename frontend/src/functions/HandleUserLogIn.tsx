@@ -15,6 +15,8 @@ import {
   setPriceOfUSDYinUSDC,
   setPriceOfBTCinUSDC,
   setPriceOfEURCinUSDC,
+  setCurrentUserID,
+  setPrivyUserId,
   setUsers
   } from '../redux/userWalletData.tsx';
 import { 
@@ -32,6 +34,120 @@ import { getFunctions, httpsCallable, HttpsCallableResult } from 'firebase/funct
 import User from './UserInterface.tsx';
 import { HELIUS_API_KEY } from "../env.ts";
 
+const userCreationInProgress = new Set();
+
+export const getUser = async (email: string, privyUserId?: string): Promise<any> => {
+  if (userCreationInProgress.has(email)) {
+    return null;
+  }
+
+  try {
+    const checkUserResponse = await fetch('http://localhost:3001/get_user_by_privy_id', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+    
+    const existingUser = await checkUserResponse.json();
+
+    console.log('existingUser', existingUser);
+    
+    if (!existingUser) {
+      userCreationInProgress.add(email);
+      
+      try {
+        const newUser = await createUser(email, privyUserId);
+        return newUser;
+      } finally {
+        userCreationInProgress.delete(email);
+      }
+    }
+    
+    return existingUser;
+  } catch (error) {
+    console.error('Error in getUser:', error);
+    throw error;
+  }
+};
+
+export const createUser = async (email: string, privyUserId: string): Promise<any> => {
+  try {
+    const createUserResponse = await fetch('http://localhost:3001/create_user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        phoneNumber: null,
+        firstName: null,
+        lastName: null,
+        country: null,
+        evmPubKey: null,
+        solanaPubKey: null,
+        privyUserId,
+        personaAccountId: null,
+        blindPayReceiverId: null,
+        blindPayEvmWalletId: null
+      }),
+    });
+    
+    const newUser = await createUserResponse.json();
+    console.log('Created new user:', newUser);
+    return newUser;
+  } catch (error) {
+    console.error('Error in createUser:', error);
+    throw error;
+  }
+};
+
+export const updateUserEvmPubKey = async (privyUserId: string, evmPubKey: string): Promise<any> => {
+  try {
+    const response = await fetch('http://localhost:3001/update_evm_pub_key', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        privyUserId,
+        evmPubKey
+      }),
+    });
+    
+    const result = await response.json();
+    console.log('Updated EVM public key:', result);
+    return result;
+  } catch (error) {
+    console.error('Error updating EVM public key:', error);
+    throw error;
+  }
+};
+
+export const updateUserSolanaPubKey = async (privyUserId: string, solanaPubKey: string): Promise<any> => {
+  console.log('updating solana pub key', privyUserId, solanaPubKey);
+  try {
+    const response = await fetch('http://localhost:3001/update_solana_pub_key', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        privyUserId,
+        solanaPubKey
+      }),
+    });
+    
+    const result = await response.json();
+    console.log('Updated Solana public key:', result);
+    return result;
+  } catch (error) {
+    console.error('Error updating Solana public key:', error);
+    throw error;
+  }
+};
+
 const HandleUserLogIn = async (
 user: any, 
 dispatch: Function,
@@ -39,13 +155,34 @@ priceOfUSDYinUSDC: number,
 priceOfBTCinUSDC: number,
 priceOfEURCinUSDC: number ): Promise<{ success: boolean;}> => {
 
-  // Set some user
-  
   dispatch(setcurrentUserEmail(user.email.address))
-
+  dispatch(setPrivyUserId(user.id))
   console.log('user', user);
-  console.log('got base wallet', user.wallet);
-  dispatch(setEvmPubKey(user.wallet.address));
+
+  if (user) {
+    try {
+      const dbUser = await getUser(user.email.address, user.id);
+
+      console.log('dbUser', dbUser);
+      if (dbUser && dbUser.id) {
+        dispatch(setCurrentUserID(dbUser.id));
+      }
+    } catch (error) {
+      console.error('Error handling user:', error);
+    }
+  }
+
+  if (user.wallet) {
+    console.log('got base wallet', user.wallet);
+    dispatch(setEvmPubKey(user.wallet.address));
+    
+    // Update the EVM public key in the database
+    try {
+      await updateUserEvmPubKey(user.id, user.wallet.address);
+    } catch (error) {
+      console.error('Error updating EVM public key:', error);
+    }
+  }
   
   // Check if the user has set up a pass key
   for (const linkedAccount of user.linkedAccounts) {

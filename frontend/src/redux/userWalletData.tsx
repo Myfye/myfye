@@ -101,6 +101,7 @@ const initialUserWalletData: UserWalletDataState = {
   showContactPopup: false,
   selectedLanguageCode: '',
   currentUserID: '',
+  privyUserId: '',
   depositWithdrawProductType: 'Earn',
   passKeyState: 'initial',
   privySolanaWalletReady: false,
@@ -159,8 +160,11 @@ export const userWalletDataSlice = createSlice({
       state.currentUserKYCVerified = action.payload;
     },
 
-    setcurrentUserID: (state, action: PayloadAction<string>) => {
+    setCurrentUserID: (state, action: PayloadAction<string>) => {
       state.currentUserID = action.payload;
+    },
+    setPrivyUserId: (state, action: PayloadAction<string>) => {
+      state.privyUserId = action.payload;
     },
   setcurrentUserFirstName: (state, action: PayloadAction<string>) => {
     state.currentUserFirstName = action.payload;
@@ -298,7 +302,7 @@ export const {
   setPriceOfEURCinUSDC,
   setRecentlyUsedSolanaAddresses, 
   setShowContactPopup, setSelectedLanguageCode,
-  setcurrentUserID, setDepositWithdrawProductType,
+  setCurrentUserID, setPrivyUserId, setDepositWithdrawProductType,
   setPassKeyState,
   setPrivySolanaWalletReady,
   setUsers
