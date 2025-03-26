@@ -11,8 +11,11 @@ import {
 } from "./modalReducers.tsx";
 import {
   cashBalanceOverlayReducer,
+  coinSummaryOverlayReducer,
   cryptoBalanceOverlayReducer,
+  cryptoSummaryOverlayReducer,
   depositFiatOverlayReducer,
+  earnSummaryOverlayReducer,
   requestOverlayReducer,
   selectContactOverlayReducer,
   sendOverlayReducer,
@@ -51,6 +54,14 @@ const store = configureStore({
     // Current coin/contact for sending/receiving
     currentCoin: currentCoinReducer,
     currentContact: currentContactReducer,
+
+    // Wallet overlays
+
+    earnSummaryOverlay: earnSummaryOverlayReducer,
+    cryptoSummaryOverlay: cryptoSummaryOverlayReducer,
+
+    // Coin overlay
+    coinSummaryOverlay: coinSummaryOverlayReducer,
   },
 });
 

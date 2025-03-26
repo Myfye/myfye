@@ -18,17 +18,17 @@ import NumberPadButton from "./NumberPadButton";
 
 const NumberPad = ({ value, onChange, decimal }) => {
   const buttons = [
-    { icon: NumberOne },
-    { icon: NumberTwo },
-    { icon: NumberThree },
-    { icon: NumberFour },
-    { icon: NumberFive },
-    { icon: NumberSix },
-    { icon: NumberSeven },
-    { icon: NumberEight },
-    { icon: NumberNine },
-    { icon: Dot },
-    { icon: NumberZero },
+    { icon: "1" },
+    { icon: "2" },
+    { icon: "3" },
+    { icon: "4" },
+    { icon: "5" },
+    { icon: "6" },
+    { icon: "7" },
+    { icon: "8" },
+    { icon: "9" },
+    { icon: "." },
+    { icon: "0" },
     { icon: Backspace },
   ];
 

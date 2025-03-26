@@ -60,7 +60,7 @@
   --control-gap-medium: var(--size-100);
   --control-padding-block-medium: var(--size-0);
   --control-padding-inline-medium: var(--size-300);
-  --control-size-medium: var(--size-500);
+  --control-size-medium: 2.75rem;
 
   --control-gap-large: var(--size-100);
   --control-padding-block-large: var(--size-0);

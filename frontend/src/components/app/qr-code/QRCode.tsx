@@ -8,9 +8,9 @@ import { css } from "@emotion/react";
 
 const QRCode = ({
   data = "https://qr-code-styling.com",
-  visible = "true",
+  visible = true,
   color = "#f8fbfc",
-  size = 300,
+  size = 264,
   className = "",
 }) => {
   const qrCode = new QRCodeStyling({

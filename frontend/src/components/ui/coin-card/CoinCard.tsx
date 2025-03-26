@@ -99,7 +99,7 @@ const CoinCard = ({
                   font-size: var(--fs-small);
                   color: var(--clr-text-neutral);
                   text-transform: uppercase;
-                  margin-block-start: var(--size-050);
+                  margin-block-start: var(--size-075);
                 `}
               >
                 {currency}

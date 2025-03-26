@@ -15,21 +15,20 @@ const BalanceTitle = ({ balance = 0, currency = "usd" }) => {
     <hgroup
       css={css`
         text-align: start;
-        padding: 0 var(--size-250);
       `}
     >
       <h1
         css={css`
           font-size: var(--fs-small);
-          color: var(--clr-text-neutral);
+          color: var(--clr-text-weak);
         `}
       >
-        Total Balance
+        Balance
       </h1>
       <p
         className="heading-x-large"
         css={css`
-          margin-block-start: var(--size-100);
+          margin-block-start: var(--size-050);
         `}
       >
         {formattedBalance}

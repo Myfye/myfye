@@ -39,10 +39,18 @@ const NumberPadButton = ({ ref, icon, ...restProps }: ButtonProps) => {
         user-select: none;
         width: 100%;
         height: 100%;
+        line-height: var(--line-height-tight);
+        font-weight: var(--fw-active);
+        color: var(--clr-text);
+        font-size: 24px;
       `}
       type="button"
     >
-      {icon && <Icon size={24} color="var(--clr-text)" weight="bold" />}
+      {typeof icon !== "string" ? (
+        <Icon size={24} weight="bold" />
+      ) : (
+        <span>icon</span>
+      )}
     </motion.button>
   );
 };

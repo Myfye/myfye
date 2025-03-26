@@ -65,8 +65,11 @@
   --clr-accent: var(--clr-green-500);
   --clr-accent-active: var(--clr-green-600);
 
-  --clr-pie-chart-1: var(--clr-green-400);
-  --clr-pie-chart-2: #c48f52;
+  --clr-pie-chart-usdt: var(--clr-green-300);
+  --clr-pie-chart-eurc: var(--clr-blue-300);
+  --clr-pie-chart-usdy: var(--clr-purple-300);
+  --clr-pie-chart-btc: #c48f52;
+  --clr-pie-chart-sol: var(--clr-purple-300);
 
   --clr-text: var(--clr-neutral-900);
   --clr-text-link: var(--clr-green-500);
@@ -85,8 +88,8 @@
   --clr-text-info: var(--clr-blue-500);
   --clr-text-progress: var(--clr-green-500);
 
-  --clr-surface: var(--clr-white);
-  --clr-surface-raised: var(--clr-neutral-100);
+  --clr-surface: var(--clr-neutral-100);
+  --clr-surface-raised: var(--clr-white);
   --clr-surface-lowered: var(--clr-neutral-200);
 
   --clr-border-divider: var(--clr-neutral-200);

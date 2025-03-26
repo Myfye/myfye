@@ -22,6 +22,7 @@ import {
 import QRCode from "../../qr-code/QRCode";
 import { useDispatch, useSelector } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
+import Header from "../../layout/header/Header";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);
@@ -37,12 +38,22 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
   let y = useMotionValue(h);
   let bgOpacity = useTransform(y, [0, h], [0.4, 0]);
   let bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
+  const dispatch = useDispatch();
 
   const [isQRCodeVisible, setQRCodeVisible] = useState(false);
 
   const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
 
   const id = useId();
+
+  const onScanSuccess = ({ data }) => {
+    console.log(data);
+    dispatch(setQRCodeModalOpen(false));
+  };
+
+  const onScanFail = (err) => {
+    console.log(err);
+  };
 
   return (
     <>
@@ -88,7 +99,7 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
               <Dialog
                 css={css`
                   display: grid;
-                  grid-template-rows: 4rem 1fr;
+                  grid-template-rows: auto 1fr;
                   height: 100svh;
                   overflow-y: auto;
                   position: relative;
@@ -104,20 +115,13 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                       height: 100%;
                     `}
                   >
-                    <QrReader />
+                    <QrReader
+                      onScanFail={onScanFail}
+                      onScanSuccess={onScanSuccess}
+                    />
                   </section>
                 )}
-                <div
-                  css={css`
-                    display: flex;
-                    justify-content: ${isQRCodeVisible
-                      ? "space-between"
-                      : "flex-end"};
-                    align-items: center;
-                    height: 4rem;
-                    padding: 0 var(--size-100);
-                  `}
-                >
+                <Header>
                   {isQRCodeVisible ? (
                     <>
                       <Button
@@ -139,9 +143,12 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                       icon={XIcon}
                       color="transparent-invert"
                       onPress={() => onOpenChange(false)}
+                      css={css`
+                        margin-left: auto;
+                      `}
                     ></Button>
                   )}
-                </div>
+                </Header>
                 <div
                   className="content"
                   css={css`
@@ -153,32 +160,36 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                     padding-bottom: var(--size-250);
                   `}
                 >
-                  <hgroup>
-                    <p
-                      slot="title"
-                      className="heading-x-large"
-                      id={id}
-                      css={css`
-                        color: var(--clr-text-on-accent);
-                        text-align: center;
-                        margin-block-start: var(--size-200);
-                      `}
-                    >
-                      {isQRCodeVisible ? "Receive tokens" : "Send tokens"}
-                    </p>
-                    <p
-                      css={css`
-                        color: var(--clr-text-on-accent);
-                        text-align: center;
-                        margin-block-start: var(--size-200);
-                        margin-block-end: var(--size-500);
-                      `}
-                    >
-                      {isQRCodeVisible
-                        ? "Share this wallet address to receive tokens"
-                        : "Scan a QR Code to send tokens to another wallet"}
-                    </p>
-                  </hgroup>
+                  <section
+                    css={css`
+                      margin-block-end: var(--size-400);
+                    `}
+                  >
+                    <hgroup>
+                      <p
+                        slot="title"
+                        className="heading-x-large"
+                        id={id}
+                        css={css`
+                          color: var(--clr-text-on-accent);
+                          text-align: center;
+                        `}
+                      >
+                        {isQRCodeVisible ? "Receive tokens" : "Send tokens"}
+                      </p>
+                      <p
+                        css={css`
+                          color: var(--clr-text-on-accent);
+                          text-align: center;
+                          margin-block-start: var(--size-200);
+                        `}
+                      >
+                        {isQRCodeVisible
+                          ? "Share this wallet address to receive tokens"
+                          : "Scan a QR Code to send tokens to another wallet"}
+                      </p>
+                    </hgroup>
+                  </section>
                   {isQRCodeVisible && (
                     <section className="qr-container">
                       <QRCode visible={isQRCodeVisible} data={pubKey} />
@@ -194,7 +205,7 @@ const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
                       css={css`
                         color: var(--clr-neutral-300);
                         text-align: center;
-                        margin-block-end: var(--size-500);
+                        margin-block-end: var(--size-400);
                         max-width: 35ch;
                         margin-inline: auto;
                         word-break: break-all;

@@ -102,7 +102,7 @@ export const selectContactOverlaySlice = createSlice({
 
 // Wallet Page
 
-export const cryptoSummaryOverlay = createSlice({
+export const cryptoSummaryOverlaySlice = createSlice({
   name: "cryptoSummaryOverlay",
   initialState: { isOpen: false },
   reducers: {
@@ -112,8 +112,18 @@ export const cryptoSummaryOverlay = createSlice({
   },
 });
 
-export const earnSummaryOverlay = createSlice({
+export const earnSummaryOverlaySlice = createSlice({
   name: "earnSummaryOverlay",
+  initialState: { isOpen: false },
+  reducers: {
+    setOpen: (state, action) => {
+      state.isOpen = action.payload;
+    },
+  },
+});
+
+export const coinSummaryOverlaySlice = createSlice({
+  name: "coinSummaryOverlay",
   initialState: { isOpen: false },
   reducers: {
     setOpen: (state, action) => {
@@ -133,6 +143,9 @@ export const depositFiatOverlayReducer = depositFiatOverlaySlice.reducer;
 export const userInfoOverlayReducer = userInfoOverlaySlice.reducer;
 export const settingsOverlayReducer = settingsOverlaySlice.reducer;
 export const selectContactOverlayReducer = selectContactOverlaySlice.reducer;
+export const earnSummaryOverlayReducer = earnSummaryOverlaySlice.reducer;
+export const cryptoSummaryOverlayReducer = cryptoSummaryOverlaySlice.reducer;
+export const coinSummaryOverlayReducer = coinSummaryOverlaySlice.reducer;
 
 // Actions
 export const { setOpen: setWithdrawFiatOverlayOpen } =
@@ -151,3 +164,9 @@ export const { setOpen: setUserInfoOverlayOpen } = userInfoOverlaySlice.actions;
 export const { setOpen: setSettingsOverlayOpen } = settingsOverlaySlice.actions;
 export const { setOpen: setSelectContactOverlayOpen } =
   selectContactOverlaySlice.actions;
+export const { setOpen: setEarnSummaryOverlayOpen } =
+  earnSummaryOverlaySlice.actions;
+export const { setOpen: setCryptoSummaryOverlayOpen } =
+  cryptoSummaryOverlaySlice.actions;
+export const { setOpen: setCoinSummaryOverlayOpen } =
+  coinSummaryOverlaySlice.actions;

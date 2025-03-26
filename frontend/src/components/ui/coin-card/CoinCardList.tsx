@@ -68,7 +68,7 @@ const CoinCardList = ({ coins, showOptions = false, onCoinSelect }) => {
                     padding: var(--size-075);
                     width: 12rem;
                     border-radius: var(--border-radius-medium);
-                    background-color: var(--clr-surface);
+                    background-color: var(--clr-surface-raised);
                     box-shadow: var(--box-shadow-popout);
                     overflow: auto;
                     font-size: var(--fs-medium);

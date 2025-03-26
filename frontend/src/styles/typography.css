@@ -48,7 +48,7 @@
 .heading-small {
   line-height: var(--line-height-heading);
   font-size: var(--fs-medium);
-  font-weight: var(--fw-heading);
+  font-weight: var(--fw-active);
 }
 
 .subtitle {
