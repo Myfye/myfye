@@ -8,9 +8,11 @@ import NumberPad from "@/components/ui/number-pad/NumberPad";
 import SwapController from "./SwapController";
 import Button from "@/components/ui/button/Button";
 import { setSwapOverlayOpen } from "@/redux/overlayReducers";
+import SwapOverlay from "../../overlays/swap-overlay/SwapOverlay";
 
 const SwapModal = ({ isOpen, onOpenChange }) => {
-  const [height] = useState(700);
+  const [height] = useState(667);
+  const [isSwapOverlayOpen, setSwapOverlayOpen] = useState(false);
 
   return (
     <>
@@ -23,26 +25,34 @@ const SwapModal = ({ isOpen, onOpenChange }) => {
       >
         <div
           css={css`
+            margin-inline: var(--size-200);
             margin-block-start: var(--size-500);
             display: flex;
             flex-direction: column;
-            height: fit-content;
-            gap: var(--size-500);
+            min-height: fit-content;
+            height: ${height};
+            gap: var(--size-400);
           `}
         >
-          <section css={css``}>
+          <section>
             <SwapController />
           </section>
           <section>
-            <Button expand onPress={() => void setSwapOverlayOpen(true)}>
+            <Button expand onPress={() => setSwapOverlayOpen(true)}>
               Confirm
             </Button>
           </section>
-          <section css={css``}>
+          <section>
             <NumberPad />
           </section>
         </div>
       </Modal>
+      <SwapOverlay
+        isOpen={isSwapOverlayOpen}
+        onOpenChange={(e) => setSwapOverlayOpen(e)}
+        buyCoin="btc"
+        sellCoin="usdt"
+      ></SwapOverlay>
     </>
   );
 };

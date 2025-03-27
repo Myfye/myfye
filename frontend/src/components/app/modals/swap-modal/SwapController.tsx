@@ -2,9 +2,110 @@ import { ArrowDown, CaretRight } from "@phosphor-icons/react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useRef, useState } from "react";
+import { useMemo, useState } from "react";
+import { ButtonContext, useContextProps } from "react-aria-components";
+import { useButton } from "react-aria";
+import { motion } from "motion/react";
 
-const SwapControl = ({ type }) => {
+import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
+
+type Coin = {
+  id: string;
+  label: string;
+  currency: "sol" | "btc" | "usdt" | "usdy" | "eurc";
+  balance: number;
+  usdBalance: number;
+  iconSrc: string;
+};
+
+const CoinSelectButton = ({ ref, coin, ...restProps }) => {
+  const [restPropsButton, refButton] = useContextProps(
+    restProps,
+    ref,
+    ButtonContext
+  );
+
+  let { buttonProps, isPressed } = useButton(restPropsButton, refButton);
+
+  const colorScheme = useMemo(() => {
+    switch (coin) {
+      case "btc": {
+        return {
+          color: "var(--clr-green-500)",
+          iconColor: "var(--clr-green-500)",
+          backgroundColor: "var(--clr-green-100)",
+          borderColor: "var(--clr-green-200)",
+        };
+      }
+
+      default: {
+        return {
+          color: "var(--clr-text)",
+          iconColor: "var(--clr-icon)",
+          backgroundColor: "var(--clr-neutral-100)",
+          borderColor: "var(--clr-neutral-200)",
+        };
+      }
+    }
+  }, [coin]);
+
+  return (
+    <motion.button
+      className="coin-select-button"
+      css={css`
+        display: inline-flex;
+        align-items: center;
+        height: 3rem;
+        min-height: 3rem;
+        gap: var(--control-gap-medium);
+        position: absolute;
+        inset: 0;
+        left: auto;
+        right: var(--size-200);
+        margin: auto;
+        background-color: ${colorScheme.backgroundColor};
+        border: 1px solid ${colorScheme.borderColor};
+        color: ${colorScheme.color};
+        font-weight: var(--fw-active);
+        border-radius: var(--border-radius-medium);
+        padding: var(--size-100);
+      `}
+      {...buttonProps}
+      ref={ref}
+      animate={{
+        scale: isPressed ? 0.95 : 1,
+      }}
+    >
+      {coin ? (
+        <>
+          <img
+            src={btcIcon}
+            alt=""
+            css={css`
+              width: var(--size-400);
+              aspect-ratio: 1;
+              border-radius: var(--border-radius-circle);
+            `}
+          ></img>
+          <span>Bitcoin</span>
+        </>
+      ) : (
+        <span>Select coin</span>
+      )}
+      <CaretRight color={colorScheme.iconColor} size={16} weight="bold" />
+    </motion.button>
+  );
+};
+
+const MaxButton = () => {};
+
+const SwapControl = ({
+  swapState,
+  coin,
+}: {
+  swapState: "buy" | "sell";
+  coin: string;
+}) => {
   const [value, setValue] = useState(0);
   return (
     <div
@@ -25,9 +126,10 @@ const SwapControl = ({ type }) => {
             line-height: var(--line-height-tight);
           `}
         >
-          {type === "buy" ? "Buy" : "Sell"}
+          {swapState === "buy" ? "Buy" : "Sell"}
         </p>
         <input
+          readOnly
           value={value}
           onChange={(e) => setValue(e.target.value)}
           type="text"
@@ -49,20 +151,7 @@ const SwapControl = ({ type }) => {
           $0
         </p>
       </div>
-      <button
-        className="select-coin"
-        css={css`
-          display: inline-flex;
-          width: fit-content;
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          right: var(--size-200);
-        `}
-      >
-        <span>Bitcoin</span>
-        <CaretRight />
-      </button>
+      <CoinSelectButton coin={coin}></CoinSelectButton>
     </div>
   );
 };
@@ -78,7 +167,7 @@ const SwapController = () => {
         position: relative;
       `}
     >
-      <SwapControl type="buy" />
+      <SwapControl swapState="buy" coin="btc" />
       <div
         className="icon-wrapper"
         css={css`
@@ -95,7 +184,7 @@ const SwapController = () => {
       >
         <ArrowDown size={24} color="var(--clr-icon)" />
       </div>
-      <SwapControl type="sell" />
+      <SwapControl swapState="sell" />
     </div>
   );
 };

@@ -73,6 +73,8 @@ const Modal = ({
           >
             <MotionModal
               css={css`
+                display: grid;
+                grid-template-rows: auto 1fr;
                 position: absolute;
                 inset: 0;
                 top: auto;
@@ -117,15 +119,12 @@ const Modal = ({
                   border-radius: var(--border-radius-pill);
                 `}
               />
-              <Dialog
-                css={css`
-                  padding: var(--size-200);
-                `}
-                aria-labelledby={id}
-              >
+              <Dialog aria-labelledby={id}>
                 <header
                   css={css`
                     position: relative;
+                    padding-inline: var(--size-200);
+                    padding-block-start: var(--size-200);
                   `}
                 >
                   <p
@@ -145,7 +144,9 @@ const Modal = ({
                     css={css`
                       position: absolute;
                       inset: 0;
+                      top: var(--size-200);
                       left: auto;
+                      right: var(--size-100);
                       margin: auto;
                     `}
                   ></Button>

@@ -43,7 +43,6 @@ const NumberPadButton = ({ ref, icon, ...restProps }: ButtonProps) => {
         font-weight: var(--fw-active);
         color: var(--clr-text);
         font-size: 24px;
-        padding-block: var(--size-200);
       `}
       type="button"
     >
