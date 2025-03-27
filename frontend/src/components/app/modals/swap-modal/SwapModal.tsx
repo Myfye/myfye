@@ -27,7 +27,7 @@ const SwapModal = ({ isOpen, onOpenChange }) => {
   );
 
   const buyValueStr = useMemo(() => buyValueArr.join(""), [buyValueArr]);
-  const sellValueStr = useMemo(() => sellValueArr.join(""), [buyValueArr]);
+  const sellValueStr = useMemo(() => sellValueArr.join(""), [sellValueArr]);
   const buyGhostValueStr = useMemo(
     () => buyGhostValueArr.join(""),
     [buyGhostValueArr]
@@ -37,9 +37,6 @@ const SwapModal = ({ isOpen, onOpenChange }) => {
     [sellGhostValueArr]
   );
 
-  useEffect(() => {
-    console.log(buyValueArr, sellValueArr);
-  }, [buyValueArr, sellValueArr]);
   const [focusedSwapControl, setFocusedSwapControl] =
     useState<SwapState>("buy");
 
@@ -48,13 +45,14 @@ const SwapModal = ({ isOpen, onOpenChange }) => {
   };
 
   const handleNumpadChange = (e) => {
-    if (focusedSwapControl === "buy") {
-      setBuyValueArr((arr) => formatValue(e, arr));
-    } else {
-      setSellValueArr((arr) => formatValue(e, arr));
-    }
+    focusedSwapControl === "buy"
+      ? setBuyValueArr((arr) => formatValue(e, arr))
+      : setSellValueArr((arr) => formatValue(e, arr));
   };
 
+  useEffect(() => {
+    console.log(buyValueArr, sellValueArr, focusedSwapControl);
+  }, [buyValueArr, sellValueArr, focusedSwapControl]);
   return (
     <>
       <Modal
@@ -114,7 +112,12 @@ function formatValue(input, valArr) {
         return ["0"];
       }
       valArr.pop();
-      return valArr.length === 0 ? ["0"] : [...valArr];
+      if (!valArr.includes(","))
+        return valArr.length === 0 ? ["0"] : [...valArr];
+
+      const newArr = formatValueArray(valArr);
+      if (newArr) return newArr;
+      return valArr;
     }
     case ".": {
       if (!valArr.includes(".")) return [...valArr, "."];
@@ -149,7 +152,7 @@ function generateGhostValueArr(arr) {
   }
 }
 
-function formatValueArray(arr) {
+function formatValueArray(arr: string[]) {
   const strValue = arr.join("").replace(",", "");
 
   const num = new Intl.NumberFormat("en-EN").format(strValue);
