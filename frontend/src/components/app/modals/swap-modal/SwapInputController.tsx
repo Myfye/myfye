@@ -8,6 +8,9 @@ import { useButton } from "react-aria";
 import { motion } from "motion/react";
 
 import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
+import { SwapState } from "./SwapModal";
+
+import { z } from "zod";
 
 type Coin = {
   id: string;
@@ -100,13 +103,17 @@ const CoinSelectButton = ({ ref, coin, ...restProps }) => {
 const MaxButton = () => {};
 
 const SwapControl = ({
+  inputRef,
   swapState,
   coin,
+  onInputClick,
+  inputProps,
+  value,
+  ghostValue,
 }: {
   swapState: "buy" | "sell";
   coin: string;
 }) => {
-  const [value, setValue] = useState(0);
   return (
     <div
       className="swap-control"
@@ -128,18 +135,45 @@ const SwapControl = ({
         >
           {swapState === "buy" ? "Buy" : "Sell"}
         </p>
-        <input
-          readOnly
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          type="text"
+        <div
+          className="input-wrapper"
           css={css`
             margin-block-start: var(--size-050);
+            position: relative;
+            isolation: isolate;
+            color: var(--clr-text);
             font-size: var(--fs-x-large);
             line-height: var(--line-height-tight);
             font-weight: var(--fw-active);
+            font-family: var(--font-family-mono);
           `}
-        />
+        >
+          <span
+            aria-hidden="true"
+            css={css`
+              position: absolute;
+              top: 50%;
+              left: 0;
+              transform: translateY(-50%);
+              color: var(--clr-text-weakest);
+            `}
+          >
+            {ghostValue}
+          </span>
+          <input
+            css={css`
+              position: relative;
+              width: 100%;
+              z-index: 1;
+            `}
+            onClick={onInputClick}
+            readOnly
+            value={value}
+            ref={inputRef}
+            type="text"
+            {...inputProps}
+          />
+        </div>
         <p
           css={css`
             margin-block-start: var(--size-050);
@@ -156,7 +190,21 @@ const SwapControl = ({
   );
 };
 
-const SwapController = () => {
+const SwapInputController = ({
+  focusedSwapControl,
+  onFocusedSwapControlChange,
+  buyValue,
+  sellValue,
+  buyGhostValue,
+  sellGhostValue,
+}: {
+  focusedSwapControl: SwapState;
+  onFocusedSwapControlChange: (_: SwapState) => void;
+  buyValue: string;
+  sellValue: string;
+  buyGhostValue: string;
+  sellGhostValue: string;
+}) => {
   return (
     <div
       className="swap-controller"
@@ -167,7 +215,13 @@ const SwapController = () => {
         position: relative;
       `}
     >
-      <SwapControl swapState="buy" coin="btc" />
+      <SwapControl
+        swapState="buy"
+        coin="btc"
+        value={buyValue}
+        ghostValue={buyGhostValue}
+        onInputClick={() => void onFocusedSwapControlChange("buy")}
+      />
       <div
         className="icon-wrapper"
         css={css`
@@ -184,9 +238,14 @@ const SwapController = () => {
       >
         <ArrowDown size={24} color="var(--clr-icon)" />
       </div>
-      <SwapControl swapState="sell" />
+      <SwapControl
+        swapState="sell"
+        value={sellValue}
+        ghostValue={sellGhostValue}
+        onInputClick={() => void onFocusedSwapControlChange("sell")}
+      />
     </div>
   );
 };
 
-export default SwapController;
+export default SwapInputController;
