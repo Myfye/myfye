@@ -31,7 +31,7 @@ const NumberPadButton = ({ ref, icon, ...restProps }: ButtonProps) => {
       {...buttonProps}
       ref={ref}
       animate={{
-        scale: isPressed ? 0.9 : 1,
+        scale: isPressed ? 0.96 : 1,
       }}
       css={css`
         display: grid;
@@ -43,13 +43,14 @@ const NumberPadButton = ({ ref, icon, ...restProps }: ButtonProps) => {
         font-weight: var(--fw-active);
         color: var(--clr-text);
         font-size: 24px;
+        padding-block: var(--size-200);
       `}
       type="button"
     >
       {typeof icon !== "string" ? (
         <Icon size={24} weight="bold" />
       ) : (
-        <span>icon</span>
+        <span>{icon}</span>
       )}
     </motion.button>
   );

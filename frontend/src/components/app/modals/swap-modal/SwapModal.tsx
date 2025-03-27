@@ -2,23 +2,16 @@ import { useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Bank, Wallet } from "@phosphor-icons/react";
-import ModalButton from "../buttons/ModalButton";
 import Modal from "@/components/ui/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setSelectContactOverlayOpen,
-  setWithdrawCryptoOverlayOpen,
-} from "@/redux/overlayReducers";
 import NumberPad from "@/components/ui/number-pad/NumberPad";
 import SwapController from "./SwapController";
 import Button from "@/components/ui/button/Button";
+import { setSwapOverlayOpen } from "@/redux/overlayReducers";
 
 const SwapModal = ({ isOpen, onOpenChange }) => {
-  const [height] = useState(360);
-  const dispatch = useDispatch();
+  const [height] = useState(700);
 
-  const currentCoin = useSelector((state: any) => state.currentCoin);
   return (
     <>
       <Modal
@@ -28,15 +21,27 @@ const SwapModal = ({ isOpen, onOpenChange }) => {
         subtitle="Swap crypto to cash, and more!"
         height={height}
       >
-        <section>
-          <SwapController />
-        </section>
-        <section>
-          <Button expand>Confirm</Button>
-        </section>
-        <section>
-          <NumberPad />
-        </section>
+        <div
+          css={css`
+            margin-block-start: var(--size-500);
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            gap: var(--size-500);
+          `}
+        >
+          <section css={css``}>
+            <SwapController />
+          </section>
+          <section>
+            <Button expand onPress={() => void setSwapOverlayOpen(true)}>
+              Confirm
+            </Button>
+          </section>
+          <section css={css``}>
+            <NumberPad />
+          </section>
+        </div>
       </Modal>
     </>
   );

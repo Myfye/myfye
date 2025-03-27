@@ -34,6 +34,7 @@ import {
   setQRCodeModalOpen,
   setReceiveModalOpen,
   setSendModalOpen,
+  setSwapModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers.tsx";
 import WithdrawCryptoOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/WithdrawCryptoOverlay.tsx";
@@ -42,12 +43,15 @@ import {
   setCryptoSummaryOverlayOpen,
   setEarnSummaryOverlayOpen,
   setSelectContactOverlayOpen,
+  setSwapOverlayOpen,
   setWithdrawCryptoOverlayOpen,
 } from "@/redux/overlayReducers.tsx";
 import SelectContactOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/select-contact-overlay/SelectContactOverlay.tsx";
 import EarnSummaryOverlay from "@/components/app/overlays/earn-summary-overlay/EarnSummaryOverlay.tsx";
 import CryptoSummaryOverlay from "@/components/app/overlays/crypto-summary-overlay/CryptoSummaryOverlay.tsx";
 import CoinSummaryOverlay from "@/components/app/overlays/coin-overlay/CoinSummaryOverlay.tsx";
+import SwapModal from "@/components/app/modals/swap-modal/SwapModal.tsx";
+import SwapOverlay from "@/components/app/overlays/swap-overlay/SwapOverlay.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -188,6 +192,9 @@ function WebAppInner() {
   const isCoinSummaryOverlayOpen = useSelector(
     (state: any) => state.coinSummaryOverlay.isOpen
   );
+  const isSwapOverlayOpen = useSelector(
+    (state: any) => state.coinSummaryOverlay.isOpen
+  );
 
   if (authenticated) {
     return (
@@ -216,6 +223,10 @@ function WebAppInner() {
               isOpen={isQRCodeModalOpen}
               onOpenChange={(e) => dispatch(setQRCodeModalOpen(e))}
             />
+            <SwapModal
+              isOpen={true}
+              onOpenChange={(e) => dispatch(setSwapModalOpen(e))}
+            ></SwapModal>
             {/* Overlays */}
             <WithdrawCryptoOverlay
               isOpen={isWithdrawCryptoOverlayOpen}
@@ -237,6 +248,10 @@ function WebAppInner() {
               isOpen={isCoinSummaryOverlayOpen}
               onOpenChange={(e) => dispatch(setCoinSummaryOverlayOpen(e))}
             />
+            <SwapOverlay
+              isOpen={isSwapOverlayOpen}
+              onOpenChange={(e) => dispatch(setSwapOverlayOpen(e))}
+            ></SwapOverlay>
           </>
         ) : (
           <div

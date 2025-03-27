@@ -8,6 +8,7 @@ import {
   receiveModalReducer,
   sendModalReducer,
   withdrawModalReducer,
+  swapModalReducer,
 } from "./modalReducers.tsx";
 import {
   cashBalanceOverlayReducer,
@@ -20,6 +21,7 @@ import {
   selectContactOverlayReducer,
   sendOverlayReducer,
   settingsOverlayReducer,
+  swapOverlayReducer,
   userInfoOverlayReducer,
   withdrawCryptoOverlayReducer,
   withdrawFiatOverlayReducer,
@@ -38,6 +40,7 @@ const store = configureStore({
     withdrawModal: withdrawModalReducer,
     QRCodeModal: QRCodeModalReducer,
     addContactModal: addContactModalReducer,
+    swapModal: swapModalReducer,
 
     // Overlays
     withdrawFiatOverlay: withdrawFiatOverlayReducer,
@@ -50,6 +53,7 @@ const store = configureStore({
     userInfoOverlay: userInfoOverlayReducer,
     settingsOverlay: settingsOverlayReducer,
     selectContactOverlay: selectContactOverlayReducer,
+    swapOverlay: swapOverlayReducer,
 
     // Current coin/contact for sending/receiving
     currentCoin: currentCoinReducer,
