@@ -11,6 +11,7 @@ import SelectCoinOverlay from "./SelectCoinOverlay";
 import { useSelector } from "react-redux";
 import { SwapState, changeAmount, toggleModal } from "./swapSlice";
 import SwapController from "./SwapController";
+import { RootState } from "@/redux/store";
 
 type SwapControlState = "buy" | "sell";
 
@@ -24,14 +25,12 @@ const SwapModal = () => {
     setFocusedSwapControl(state);
   };
 
-  const isOpen = useSelector((state: SwapState) => state.modal.isOpen);
-  const buyAmount = useSelector((state: SwapState) => state.buy.amount);
-  const sellAmount = useSelector((state: SwapState) => state.sell.amount);
+  const isOpen = useSelector((state: RootState) => state.swap.modal.isOpen);
 
   const handleNumpadChange = (e) => {
     changeAmount({
       type: focusedSwapControl,
-      amount: focusedSwapControl === "buy" ? formatValue() : formatValue(),
+      input: e,
     });
   };
 

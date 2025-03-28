@@ -1,57 +1,47 @@
-function formatAmount(amount: number, num: number) {
-  const str = String(num);
+export const formatAmount = (amount: string, input: string) => {
   switch (input) {
     case "delete": {
-      if (valArr.length === 1) {
-        return ["0"];
+      if (amount.length === 1) {
+        return 0;
       }
-      valArr.pop();
-      if (!valArr.includes(","))
-        return valArr.length === 0 ? ["0"] : [...valArr];
+      let newStr = amount.slice(0, -1);
+      if (!newStr.includes(",")) return newStr.length === 0 ? "0" : newStr;
 
-      const newArr = formatValueArray(valArr);
-      if (newArr) return newArr;
-      return valArr;
+      return amount;
     }
     case ".": {
-      if (!valArr.includes(".")) return [...valArr, "."];
-      return valArr;
+      if (!amount.includes(".")) return [...amount, "."];
+      return amount;
     }
     default:
-      if (valArr.length === 1 && valArr[0] === "0") {
-        return [input];
+      if (amount.length === 1 && amount[0] === "0") {
+        return input;
       }
-      const newArr = formatValueArray([...valArr, input]);
-      if (newArr) return newArr;
-      return valArr;
+      return amount;
   }
-}
+};
 
-function generateGhostValueArr(arr) {
-  switch (arr.length) {
+export const formatGhostAmount = (amount: string) => {
+  switch (amount.length) {
     case 0:
-      return ["0", ".", "0", "0"];
+      return "0.00";
     case 1:
-      return arr[0] !== "0" ? [arr[0], ".", "0", "0"] : ["0", ".", "0", "0"];
+      return amount[0] !== "0" ? `${amount[0]}.00` : "0.00";
     case 2:
-      return arr[1] !== "." ? arr : [arr[0], ".", "0", "0"];
+      return amount[1] !== "." ? amount : `${amount[0]}.00`;
     case 3:
-      return arr[1] === "." ? [arr[0], ".", arr[2], "0"] : ["0", ".", "0", "0"];
-    case 4:
-      return arr[1] === "."
-        ? [arr[0], ".", arr[2], arr[3]]
-        : ["0", ".", "0", "0"];
+      return amount[1] === "." ? `${amount[0]}.${amount[2]}0` : amount;
     default:
-      return arr;
+      return "";
   }
-}
+};
 
-function formatValueArray(arr: string[]) {
-  const strValue = arr.join("").replace(",", "");
+// function formatAmountInDigits(amount: string) {
+//   const strValue = arr.join("").replace(",", "");
 
-  const num = new Intl.NumberFormat("en-EN").format(strValue);
+//   const num = new Intl.NumberFormat("en-EN").format(strValue);
 
-  if (num === "NaN") return false;
+//   if (num === "NaN") return false;
 
-  return num.split("");
-}
+//   return num.split("");
+// }

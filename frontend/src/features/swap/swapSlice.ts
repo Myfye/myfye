@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { formatAmount } from "./utils";
 
 interface Transaction {
-  amount: number;
+  amount: string;
   coin: string | null;
 }
 
@@ -34,11 +35,11 @@ const initialState: SwapState = {
   },
   overlays: {
     selectCoin: { isOpen: false },
-    confirmSwap: { isOpen: false, buyCoin: null, sellCoin: null },
+    confirmSwap: { isOpen: false },
     processingTransaction: { isOpen: false },
   },
-  buy: { amount: 0, coin: "btc" },
-  sell: { amount: 0, coin: null },
+  buy: { amount: "", coin: "btc" },
+  sell: { amount: "", coin: null },
 };
 
 const swapSlice = createSlice({
@@ -64,9 +65,12 @@ const swapSlice = createSlice({
     },
     changeAmount(
       state,
-      action: PayloadAction<{ type: "buy" | "sell"; amount: number }>
+      action: PayloadAction<{ type: "buy" | "sell"; amount: string }>
     ) {
-      state[action.payload.type].amount = action.payload.amount;
+      state[action.payload.type].amount = formatAmount(
+        action.payload.amount,
+        input
+      );
     },
     setCoin(
       state,

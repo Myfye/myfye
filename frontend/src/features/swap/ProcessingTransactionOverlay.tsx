@@ -3,12 +3,34 @@ import { css } from "@emotion/react";
 import HeadlessOverlay from "@/components/ui/overlay/HeadlessOverlay";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Button from "@/components/ui/button/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { SwapState, toggleOverlay, unmount } from "./swapSlice";
+import { useMemo } from "react";
 
 const ProcessingTransactionOverlay = () => {
   const dispatch = useDispatch();
+
+  const isOpen = useSelector(
+    (state: SwapState) => state.overlays.processingTransaction.isOpen
+  );
+  const handleOpen = (e: boolean) => {
+    toggleOverlay({ type: "processingTransaction", isOpen: e });
+  };
+
+  const buyInfo = useSelector((state: SwapState) => state.buy);
+  const sellInfo = useSelector((state: SwapState) => state.buy);
+
+  const formatAmount = (amount: number) =>
+    new Intl.NumberFormat("en-EN", {
+      style: "currency",
+      currency: "USD",
+    }).format(amount);
+
+  const buyAmount = useMemo(() => formatAmount(buyInfo.amount), [buyInfo]);
+  const sellAmount = useMemo(() => formatAmount(buyInfo.amount), [sellInfo]);
+
   return (
-    <HeadlessOverlay>
+    <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen}>
       <div
         css={css`
           display: flex;
@@ -52,7 +74,7 @@ const ProcessingTransactionOverlay = () => {
                 color: var(--clr-text);
               `}
             >
-              You're swapping $2.00 USDC for CBBTC on Base
+              You're swapping {buyAmount} {buyInfo.coin} for CBBTC on Base
             </p>
             <p
               css={css`
