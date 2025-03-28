@@ -186,10 +186,7 @@ const SwapControl = ({
         <li>
           <CoinSelectButton
             coin={coin}
-            onPress={() => {
-              dispatch(setActiveControl(control));
-              dispatch(toggleOverlay({ type: "selectCoin", isOpen: true }));
-            }}
+            onPress={onSelectCoinClick}
           ></CoinSelectButton>
         </li>
         <li>
@@ -232,6 +229,10 @@ const SwapController = () => {
         coin={buyCoin}
         value={buyAmount}
         onInputClick={() => void dispatch(setActiveControl("buy"))}
+        onSelectCoinClick={() => {
+          dispatch(setActiveControl("buy"));
+          dispatch(toggleOverlay({ type: "selectCoin", isOpen: true }));
+        }}
       />
       <div
         className="icon-wrapper"

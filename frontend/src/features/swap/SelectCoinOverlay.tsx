@@ -4,7 +4,7 @@ import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setCoin, toggleOverlay } from "./swapSlice";
 
-const SelectCoinOverlay = () => {
+const SelectCoinOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(
@@ -20,7 +20,12 @@ const SelectCoinOverlay = () => {
   };
 
   return (
-    <Overlay title="Select coin" isOpen={isOpen} onOpenChange={handleOpen}>
+    <Overlay
+      title="Select coin"
+      isOpen={isOpen}
+      onOpenChange={handleOpen}
+      zIndex={zIndex}
+    >
       <div>
         <section className="cash">
           <CoinCardList onCoinSelect={onCoinSelect}></CoinCardList>

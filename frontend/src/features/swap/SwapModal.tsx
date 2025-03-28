@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeAmount, toggleModal, toggleOverlay } from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
+import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
+import SelectCoinOverlay from "./SelectCoinOverlay";
+import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
 
 const SwapModal = () => {
   const [height] = useState(667);
@@ -21,6 +24,10 @@ const SwapModal = () => {
     (state: RootState) => state.swap.activeControl
   );
 
+  const handleOpen = (e: boolean) => {
+    dispatch(toggleModal({ isOpen: e }));
+  };
+
   const handleNumpadChange = (e: string) => {
     changeAmount({
       type: activeControl,
@@ -32,7 +39,7 @@ const SwapModal = () => {
     <>
       <Modal
         isOpen={isOpen}
-        onOpenChange={toggleModal}
+        onOpenChange={handleOpen}
         title="Swap"
         subtitle="Swap crypto to cash, and more!"
         height={height}
@@ -66,9 +73,9 @@ const SwapModal = () => {
           </section>
         </div>
       </Modal>
-      {/* <SelectCoinOverlay />
-      <ConfirmSwapOverlay />
-      <ProcessingTransactionOverlay /> */}
+      <ConfirmSwapOverlay zIndex={2000} />
+      <SelectCoinOverlay zIndex={2000} />
+      <ProcessingTransactionOverlay zIndex={3000} />
     </>
   );
 };

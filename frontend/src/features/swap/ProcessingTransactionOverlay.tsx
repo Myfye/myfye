@@ -6,9 +6,8 @@ import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
-import { unmount } from "./swapSlice";
 
-const ProcessingTransactionOverlay = () => {
+const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(
@@ -22,7 +21,7 @@ const ProcessingTransactionOverlay = () => {
   const sellInfo = useSelector((state: RootState) => state.swap.sell);
 
   return (
-    <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen}>
+    <HeadlessOverlay isOpen={true} onOpenChange={handleOpen} zIndex={zIndex}>
       <div
         css={css`
           display: flex;
@@ -37,18 +36,14 @@ const ProcessingTransactionOverlay = () => {
           `}
         >
           <DotLottieReact
-            css={css`
-              width: var(--size-600);
-              height: auto;
-            `}
-            src="@/assets/lottie/leaf-loading.lottie"
+            src="src/assets/lottie/leaf-loader.lottie"
             loop
             autoplay
           />
         </section>
         <section
           css={css`
-            margin-block-start: var(--size-800);
+            margin-block-start: var(--size-600);
           `}
         >
           <hgroup>
@@ -56,6 +51,8 @@ const ProcessingTransactionOverlay = () => {
               className="heading-x-large"
               css={css`
                 color: var(--clr-text);
+                text-align: center;
+                margin-block-end: var(--size-200);
               `}
             >
               Swapping
@@ -64,13 +61,17 @@ const ProcessingTransactionOverlay = () => {
               className="heading-large"
               css={css`
                 color: var(--clr-text);
+                text-align: center;
               `}
             >
-              You're swapping $2.00 {buyInfo.coin} for CBBTC on Base
+              You're swapping $2.00 {buyInfo.coin} for USD on Base
             </p>
             <p
+              className="caption"
               css={css`
+                margin-block-start: var(--size-200);
                 color: var(--clr-text-weak);
+                text-align: center;
               `}
             >
               This transaction may take a few minutes on the blockchain, then it
@@ -78,7 +79,11 @@ const ProcessingTransactionOverlay = () => {
             </p>
           </hgroup>
         </section>
-        <section>
+        <section
+          css={css`
+            margin-block-start: var(--size-600);
+          `}
+        >
           <menu
             css={css`
               display: flex;
@@ -97,7 +102,9 @@ const ProcessingTransactionOverlay = () => {
               </Button>
             </li>
             <li>
-              <Button expand variant="neutral" href="/"></Button>
+              <Button expand color="neutral" href="/">
+                View transaction
+              </Button>
             </li>
           </menu>
         </section>

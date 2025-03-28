@@ -8,11 +8,11 @@ import { RootState } from "@/redux/store";
 import SwapCoinSummary from "./SwapCoinSummary";
 import { toggleOverlay } from "./swapSlice";
 
-const ConfirmSwapOverlay = () => {
+const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(
-    (state: RootState) => state.swap.overlays.confirmSwap
+    (state: RootState) => state.swap.overlays.confirmSwap.isOpen
   );
 
   const handleOpen = (e: boolean) => {
@@ -21,7 +21,12 @@ const ConfirmSwapOverlay = () => {
 
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={handleOpen} title="Confirm Swap">
+      <Overlay
+        isOpen={isOpen}
+        onOpenChange={handleOpen}
+        title="Confirm Swap"
+        zIndex={zIndex}
+      >
         <div>
           <section>
             <SwapCoinSummary />

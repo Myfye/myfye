@@ -48,8 +48,12 @@ const swapSlice = createSlice({
   name: "swap",
   initialState,
   reducers: {
-    toggleModal(state, action: PayloadAction<boolean>) {
-      state.modal.isOpen = action.payload;
+    toggleModal(
+      state,
+      action: PayloadAction<{ isOpen: boolean; coin?: string }>
+    ) {
+      state.modal.isOpen = action.payload.isOpen;
+      if (action.payload?.coin) state.buy.coin = action.payload.coin;
     },
     toggleOverlay(
       state,
@@ -58,12 +62,7 @@ const swapSlice = createSlice({
       state.overlays[action.payload.type].isOpen = action.payload.isOpen;
     },
     unmount(state) {
-      state.modal.isOpen = false;
-      state.overlays = {
-        selectCoin: { isOpen: false },
-        confirmSwap: { isOpen: false },
-        processingTransaction: { isOpen: false },
-      };
+      state = initialState;
     },
     changeAmount(
       state,

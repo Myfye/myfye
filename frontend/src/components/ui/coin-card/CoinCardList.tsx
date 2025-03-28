@@ -130,7 +130,9 @@ const CoinCardList = ({ coins, showOptions = false, onCoinSelect }) => {
                       }
                     `}
                     onAction={() => {
-                      dispatch(toggleSwapModal(true));
+                      dispatch(
+                        toggleSwapModal({ isOpen: true, coin: coin.type })
+                      );
                     }}
                   >
                     <ArrowLineDown
