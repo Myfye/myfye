@@ -65,11 +65,14 @@ const swapSlice = createSlice({
     },
     changeAmount(
       state,
-      action: PayloadAction<{ type: "buy" | "sell"; amount: string }>
+      action: PayloadAction<{
+        type: "buy" | "sell";
+        input: string;
+      }>
     ) {
       state[action.payload.type].amount = formatAmount(
-        action.payload.amount,
-        input
+        state[action.payload.type].amount,
+        action.payload.input
       );
     },
     setCoin(

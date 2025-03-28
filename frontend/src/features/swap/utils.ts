@@ -2,15 +2,14 @@ export const formatAmount = (amount: string, input: string) => {
   switch (input) {
     case "delete": {
       if (amount.length === 1) {
-        return 0;
+        return "0";
       }
-      let newStr = amount.slice(0, -1);
+      const newStr = amount.slice(0, -1);
       if (!newStr.includes(",")) return newStr.length === 0 ? "0" : newStr;
-
       return amount;
     }
     case ".": {
-      if (!amount.includes(".")) return [...amount, "."];
+      if (!amount.includes(".")) return amount + "";
       return amount;
     }
     default:
@@ -35,13 +34,3 @@ export const formatGhostAmount = (amount: string) => {
       return "";
   }
 };
-
-// function formatAmountInDigits(amount: string) {
-//   const strValue = arr.join("").replace(",", "");
-
-//   const num = new Intl.NumberFormat("en-EN").format(strValue);
-
-//   if (num === "NaN") return false;
-
-//   return num.split("");
-// }

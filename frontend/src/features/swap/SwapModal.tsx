@@ -8,8 +8,13 @@ import Button from "@/components/ui/button/Button";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
 import SelectCoinOverlay from "./SelectCoinOverlay";
-import { useSelector } from "react-redux";
-import { SwapState, changeAmount, toggleModal } from "./swapSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  SwapState,
+  changeAmount,
+  toggleModal,
+  toggleOverlay,
+} from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
 
@@ -17,6 +22,8 @@ type SwapControlState = "buy" | "sell";
 
 const SwapModal = () => {
   const [height] = useState(667);
+
+  const dispatch = useDispatch();
 
   const [focusedSwapControl, setFocusedSwapControl] =
     useState<SwapControlState>("buy");
@@ -27,7 +34,7 @@ const SwapModal = () => {
 
   const isOpen = useSelector((state: RootState) => state.swap.modal.isOpen);
 
-  const handleNumpadChange = (e) => {
+  const handleNumpadChange = (e: string) => {
     changeAmount({
       type: focusedSwapControl,
       input: e,
@@ -61,7 +68,12 @@ const SwapModal = () => {
             />
           </section>
           <section>
-            <Button expand onPress={() => {}}>
+            <Button
+              expand
+              onPress={() => {
+                dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
+              }}
+            >
               Confirm
             </Button>
           </section>
