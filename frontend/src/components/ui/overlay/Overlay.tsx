@@ -35,7 +35,7 @@ const Overlay = ({ isOpen, onOpenChange, title, zIndex = 1000, children }) => {
             css={css`
               position: fixed;
               inset: 0;
-              z-index: ${zIndex}
+              z-index: ${zIndex};
               max-width: 420px;
               margin-inline: auto;
               isolation: isolate;

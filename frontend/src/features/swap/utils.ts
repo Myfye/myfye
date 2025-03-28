@@ -1,36 +1,43 @@
-export const formatAmount = (amount: string, input: string) => {
+export const formatAmountLabel = (amountLabel: string, input: string) => {
+  console.log(amountLabel, input);
   switch (input) {
     case "delete": {
-      if (amount.length === 1) {
+      if (amountLabel.length === 1) {
         return "0";
       }
-      const newStr = amount.slice(0, -1);
+      const newStr = amountLabel.slice(0, -1);
       if (!newStr.includes(",")) return newStr.length === 0 ? "0" : newStr;
-      return amount;
+      return amountLabel;
     }
     case ".": {
-      if (!amount.includes(".")) return amount + "";
-      return amount;
+      if (!amountLabel.includes(".")) return amountLabel + ".";
+      return amountLabel;
     }
     default:
-      if (amount.length === 1 && amount[0] === "0") {
+      if (amountLabel.length === 1 && amountLabel[0] === "0") {
         return input;
       }
-      return amount;
+      return amountLabel + input;
   }
 };
 
-export const formatGhostAmount = (amount: string) => {
-  switch (amount.length) {
+export const formatGhostAmountLabel = (amountLabel: string) => {
+  switch (amountLabel.length) {
     case 0:
       return "0.00";
     case 1:
-      return amount[0] !== "0" ? `${amount[0]}.00` : "0.00";
+      return amountLabel[0] !== "0" ? `${amountLabel[0]}.00` : "0.00";
     case 2:
-      return amount[1] !== "." ? amount : `${amount[0]}.00`;
+      return amountLabel[1] !== "." ? amountLabel : `${amountLabel[0]}.00`;
     case 3:
-      return amount[1] === "." ? `${amount[0]}.${amount[2]}0` : amount;
+      return amountLabel[1] === "."
+        ? `${amountLabel[0]}.${amountLabel[2]}0`
+        : amountLabel;
     default:
       return "";
   }
+};
+
+export const parseAmountLabel = (amountLabel: string) => {
+  return parseFloat(amountLabel.replace(/,/g, ""));
 };

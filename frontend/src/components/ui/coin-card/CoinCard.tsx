@@ -2,31 +2,10 @@
 import { css } from "@emotion/react";
 import Coin from "./Coin";
 import { useMemo } from "react";
-import {
-  MenuTrigger,
-  Popover,
-  MenuItem,
-  Menu,
-  useContextProps,
-  ButtonContext,
-  Button as AriaButton,
-} from "react-aria-components";
+
 // import Button from "@/components/ui/button/Button";
 // import Menu from "@/components/ui/menu/Menu";
-import {
-  ArrowCircleDown,
-  ArrowCircleUp,
-  ArrowLineDown,
-  ArrowLineUp,
-  DotsThreeVertical,
-} from "@phosphor-icons/react";
-import { useDispatch } from "react-redux";
-import {
-  setDepositModalOpen,
-  setReceiveModalOpen,
-  setSendModalOpen,
-  setWithdrawModalOpen,
-} from "@/redux/modalReducers";
+
 import CoinCardController from "./CoinCardController";
 
 const CoinCard = ({
@@ -36,6 +15,7 @@ const CoinCard = ({
   balance,
   ref,
   showOptions,
+  showBalance,
   ...restProps
 }) => {
   const formattedBalance = useMemo(
@@ -105,13 +85,15 @@ const CoinCard = ({
                 {currency}
               </p>
             </div>
-            <p
-              css={css`
-                font-weight: var(--fw-active);
-              `}
-            >
-              {formattedBalance}
-            </p>
+            {showBalance && (
+              <p
+                css={css`
+                  font-weight: var(--fw-active);
+                `}
+              >
+                {formattedBalance}
+              </p>
+            )}
           </div>
         </div>
       </div>

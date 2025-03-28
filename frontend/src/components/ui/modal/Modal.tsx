@@ -44,6 +44,7 @@ const Modal = ({
   onOpenChange,
   height = 400,
   title = "",
+  zIndex = 1000,
   children,
   ...restProps
 }) => {
@@ -66,7 +67,7 @@ const Modal = ({
             css={css`
               position: fixed;
               inset: 0;
-              z-index: var(--z-index-modal);
+              z-index: ${zIndex};
               isolation: isolate;
             `}
             style={{ backgroundColor: bg as any }}

@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { formatAmount } from "./utils";
+import { formatAmountLabel } from "./utils";
 
 interface Transaction {
-  amount: string;
+  amount: number;
+  amountLabel: string;
   coin: string | null;
 }
 
@@ -39,9 +40,9 @@ const initialState: SwapState = {
     confirmSwap: { isOpen: false },
     processingTransaction: { isOpen: false },
   },
-  activeControl: "buy",
-  buy: { amount: "", coin: "btc" },
-  sell: { amount: "", coin: null },
+  activeControl: "sell",
+  buy: { amount: 0, amountLabel: "0", coin: null },
+  sell: { amount: 0, amountLabel: "0", coin: null },
 };
 
 const swapSlice = createSlice({
@@ -53,7 +54,7 @@ const swapSlice = createSlice({
       action: PayloadAction<{ isOpen: boolean; coin?: string }>
     ) {
       state.modal.isOpen = action.payload.isOpen;
-      if (action.payload?.coin) state.buy.coin = action.payload.coin;
+      if (action.payload?.coin) state.sell.coin = action.payload.coin;
     },
     toggleOverlay(
       state,
@@ -64,17 +65,29 @@ const swapSlice = createSlice({
     unmount(state) {
       state = initialState;
     },
-    changeAmount(
+    changeAmountLabel(
       state,
       action: PayloadAction<{
         type: "buy" | "sell";
         input: string;
+        replace: true;
       }>
     ) {
-      state[action.payload.type].amount = formatAmount(
-        state[action.payload.type].amount,
-        action.payload.input
-      );
+      state[action.payload.type].amountLabel = action.payload.replace
+        ? action.payload.input
+        : formatAmountLabel(
+            state[action.payload.type].amountLabel,
+            action.payload.input
+          );
+    },
+    changeAmount(
+      state,
+      action: PayloadAction<{
+        type: "buy" | "sell";
+        amount: number;
+      }>
+    ) {
+      state[action.payload.type].amount = action.payload.amount;
     },
     setCoin(
       state,
@@ -95,5 +108,6 @@ export const {
   setCoin,
   unmount,
   setActiveControl,
+  changeAmountLabel,
 } = swapSlice.actions;
 export default swapSlice.reducer;

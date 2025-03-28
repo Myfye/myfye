@@ -27,12 +27,107 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
         title="Confirm Swap"
         zIndex={zIndex}
       >
-        <div>
-          <section>
+        <div
+          css={css`
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+          `}
+        >
+          <section
+            css={css`
+              margin-block-start: var(--size-400);
+              margin-inline: var(--size-250);
+            `}
+          >
             <SwapCoinSummary />
           </section>
-          <section></section>
-          <section>
+          <section
+            css={css`
+              margin-inline: var(--size-250);
+              margin-block-start: var(--size-400);
+            `}
+          >
+            <ul
+              css={css`
+                width: 100%;
+                color: var(--clr-text);
+                line-height: var(--line-height-tight);
+                > * + * {
+                  margin-block-start: var(--size-200);
+                }
+              `}
+            >
+              <li
+                css={css`
+                  display: flex;
+                  justify-content: space-between;
+                `}
+              >
+                <span className="heading-small">CBBTC contract</span>
+                <span
+                  css={css`
+                    margin-inline-start: auto;
+                    color: var(--clr-text);
+                  `}
+                >
+                  0xcbb7...3bf
+                </span>
+              </li>
+              <li
+                css={css`
+                  display: flex;
+                  justify-content: space-between;
+                `}
+              >
+                <span className="heading-small">Slippage tolerance</span>{" "}
+                <span
+                  css={css`
+                    color: var(--clr-text);
+                  `}
+                >
+                  3%
+                </span>
+              </li>
+              <li
+                css={css`
+                  display: flex;
+                  justify-content: space-between;
+                `}
+              >
+                <span className="heading-small">Coinbase fee</span>{" "}
+                <span
+                  css={css`
+                    color: var(--clr-text);
+                  `}
+                >
+                  $0.02
+                </span>
+              </li>
+              <li
+                css={css`
+                  display: flex;
+                  justify-content: space-between;
+                `}
+              >
+                <span className="heading-small">Network fee</span>{" "}
+                <span
+                  css={css`
+                    color: var(--clr-text);
+                  `}
+                >
+                  $0.09 - $0.10
+                </span>
+              </li>
+            </ul>
+          </section>
+          <section
+            css={css`
+              margin-block-start: auto;
+              margin-bottom: var(--size-250);
+              margin-inline: var(--size-250);
+            `}
+          >
             <menu
               css={css`
                 display: grid;
@@ -43,7 +138,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
               <li>
                 <Button
                   expand
-                  variant="neutral"
+                  color="neutral"
                   onPress={() =>
                     void dispatch(
                       toggleOverlay({ type: "confirmSwap", isOpen: false })
@@ -54,7 +149,19 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
                 </Button>
               </li>
               <li>
-                <Button expand>Confirm</Button>
+                <Button
+                  expand
+                  onPress={() =>
+                    void dispatch(
+                      toggleOverlay({
+                        type: "processingTransaction",
+                        isOpen: true,
+                      })
+                    )
+                  }
+                >
+                  Confirm
+                </Button>
               </li>
             </menu>
           </section>

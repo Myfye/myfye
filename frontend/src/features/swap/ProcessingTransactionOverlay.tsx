@@ -7,6 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
 
+import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
+import solIcon from "@/assets/svgs/coins/sol-coin.svg";
+import eurcCoin from "@/assets/svgs/coins/eur-coin.svg";
+import usdCoin from "@/assets/svgs/coins/usd-coin.svg";
+import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
+
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
@@ -21,7 +27,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const sellInfo = useSelector((state: RootState) => state.swap.sell);
 
   return (
-    <HeadlessOverlay isOpen={true} onOpenChange={handleOpen} zIndex={zIndex}>
+    <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
       <div
         css={css`
           display: flex;

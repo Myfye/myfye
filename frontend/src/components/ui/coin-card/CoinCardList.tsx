@@ -26,7 +26,12 @@ import {
 import { addCurrentCoin } from "@/redux/coinReducer";
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 
-const CoinCardList = ({ coins, showOptions = false, onCoinSelect }) => {
+const CoinCardList = ({
+  coins,
+  showOptions = false,
+  onCoinSelect,
+  showBalance = true,
+}) => {
   const dispatch = useDispatch();
   return (
     <ul
@@ -47,7 +52,6 @@ const CoinCardList = ({ coins, showOptions = false, onCoinSelect }) => {
             gap: ${showOptions ? "var(--size-200)" : "0"};
             width: 100%;
           `}
-          key={`coin-card-${i}`}
         >
           <CoinCard
             title={coin.title}
@@ -56,6 +60,8 @@ const CoinCardList = ({ coins, showOptions = false, onCoinSelect }) => {
             balance={coin.balance}
             showOptions={showOptions}
             onPress={() => onCoinSelect && onCoinSelect(coin)}
+            key={`coin-card-${i}`}
+            showBalance={showBalance}
           />
           {showOptions && (
             <MenuTrigger>
