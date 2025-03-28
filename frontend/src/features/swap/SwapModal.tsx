@@ -5,21 +5,10 @@ import { css } from "@emotion/react";
 import Modal from "@/components/ui/modal/Modal";
 import NumberPad from "@/components/ui/number-pad/NumberPad";
 import Button from "@/components/ui/button/Button";
-import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
-import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
-import SelectCoinOverlay from "./SelectCoinOverlay";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  SwapState,
-  changeAmount,
-  setActiveControl,
-  toggleModal,
-  toggleOverlay,
-} from "./swapSlice";
+import { changeAmount, toggleModal, toggleOverlay } from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
-
-type SwapControlState = "buy" | "sell";
 
 const SwapModal = () => {
   const [height] = useState(667);
@@ -77,9 +66,9 @@ const SwapModal = () => {
           </section>
         </div>
       </Modal>
-      <SelectCoinOverlay />
+      {/* <SelectCoinOverlay />
       <ConfirmSwapOverlay />
-      <ProcessingTransactionOverlay />
+      <ProcessingTransactionOverlay /> */}
     </>
   );
 };

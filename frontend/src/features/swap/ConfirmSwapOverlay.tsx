@@ -3,11 +3,25 @@ import { css } from "@emotion/react";
 
 import Overlay from "@/components/ui/overlay/Overlay";
 import Button from "@/components/ui/button/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import SwapCoinSummary from "./SwapCoinSummary";
+import { toggleOverlay } from "./swapSlice";
 
 const ConfirmSwapOverlay = () => {
+  const dispatch = useDispatch();
+
+  const isOpen = useSelector(
+    (state: RootState) => state.swap.overlays.confirmSwap
+  );
+
+  const handleOpen = (e: boolean) => {
+    dispatch(toggleOverlay({ type: "confirmSwap", isOpen: e }));
+  };
+
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Confirm Swap">
+      <Overlay isOpen={isOpen} onOpenChange={handleOpen} title="Confirm Swap">
         <div>
           <section>
             <SwapCoinSummary />
@@ -25,7 +39,11 @@ const ConfirmSwapOverlay = () => {
                 <Button
                   expand
                   variant="neutral"
-                  onPress={() => void onOpenChange(false)}
+                  onPress={() =>
+                    void dispatch(
+                      toggleOverlay({ type: "confirmSwap", isOpen: false })
+                    )
+                  }
                 >
                   Cancel
                 </Button>

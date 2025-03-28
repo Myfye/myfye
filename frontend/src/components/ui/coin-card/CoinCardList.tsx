@@ -24,6 +24,7 @@ import {
   setWithdrawModalOpen,
 } from "@/redux/modalReducers";
 import { addCurrentCoin } from "@/redux/coinReducer";
+import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 
 const CoinCardList = ({ coins, showOptions = false, onCoinSelect }) => {
   const dispatch = useDispatch();
@@ -129,8 +130,7 @@ const CoinCardList = ({ coins, showOptions = false, onCoinSelect }) => {
                       }
                     `}
                     onAction={() => {
-                      dispatch(addCurrentCoin(coin));
-                      dispatch(setDepositModalOpen(true));
+                      dispatch(toggleSwapModal(true));
                     }}
                   >
                     <ArrowLineDown
@@ -139,31 +139,7 @@ const CoinCardList = ({ coins, showOptions = false, onCoinSelect }) => {
                         margin-inline-end: var(--size-100);
                       `}
                     />
-                    Deposit
-                  </MenuItem>
-                  <MenuItem
-                    css={css`
-                      display: flex;
-                      align-items: center;
-                      border-radius: var(--border-radius-medium);
-                      padding: var(--size-150) var(--size-150);
-                      width: 100%;
-                      &[data-hovered="true"] {
-                        background-color: var(--clr-surface-raised);
-                      }
-                    `}
-                    onAction={() => {
-                      dispatch(addCurrentCoin(coin));
-                      dispatch(setWithdrawModalOpen(true));
-                    }}
-                  >
-                    <ArrowLineUp
-                      size={16}
-                      css={css`
-                        margin-inline-end: var(--size-100);
-                      `}
-                    />
-                    Withdraw
+                    Swap
                   </MenuItem>
                 </Menu>
               </Popover>

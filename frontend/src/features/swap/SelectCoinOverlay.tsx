@@ -1,21 +1,26 @@
 import CoinCardList from "@/components/ui/coin-card/CoinCardList";
 import Overlay from "@/components/ui/overlay/Overlay";
 import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setCoin, toggleOverlay } from "./swapSlice";
 
 const SelectCoinOverlay = () => {
-  const dispatch = useSelector();
+  const dispatch = useDispatch();
 
   const isOpen = useSelector(
     (state: RootState) => state.swap.overlays.selectCoin.isOpen
   );
 
+  const handleOpen = (e: boolean) => {
+    dispatch(toggleOverlay({ type: "selectCoin", isOpen: e }));
+  };
+
   const onCoinSelect = (coin) => {
-    dispatch(set);
+    console.log(coin);
   };
 
   return (
-    <Overlay title="Select coin" isOpen={}>
+    <Overlay title="Select coin" isOpen={isOpen} onOpenChange={handleOpen}>
       <div>
         <section className="cash">
           <CoinCardList onCoinSelect={onCoinSelect}></CoinCardList>

@@ -5,7 +5,6 @@ import { formatAmount } from "./utils";
 interface Transaction {
   amount: string;
   coin: string | null;
-  isActive: boolean;
 }
 
 interface ModalState {

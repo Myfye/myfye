@@ -2,26 +2,26 @@ import { ArrowDown, CaretRight } from "@phosphor-icons/react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useMemo, useState } from "react";
-import { ButtonContext, useContextProps } from "react-aria-components";
+import { useMemo } from "react";
+import { Button, ButtonContext, useContextProps } from "react-aria-components";
 import { useButton } from "react-aria";
 import { motion } from "motion/react";
 
 import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
-import { SwapState } from "./SwapModal";
 
-import { z } from "zod";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { formatGhostAmount } from "./utils";
+import { setActiveControl, toggleOverlay } from "./swapSlice";
 
-type Coin = {
-  id: string;
-  label: string;
-  currency: "sol" | "btc" | "usdt" | "usdy" | "eurc";
-  balance: number;
-  usdBalance: number;
-  iconSrc: string;
-};
+// type Coin = {
+//   id: string;
+//   label: string;
+//   currency: "sol" | "btc" | "usdt" | "usdy" | "eurc";
+//   balance: number;
+//   usdBalance: number;
+//   iconSrc: string;
+// };
 
 const CoinSelectButton = ({ ref, coin, ...restProps }) => {
   const [restPropsButton, refButton] = useContextProps(
@@ -63,11 +63,6 @@ const CoinSelectButton = ({ ref, coin, ...restProps }) => {
         height: 3rem;
         min-height: 3rem;
         gap: var(--control-gap-medium);
-        position: absolute;
-        inset: 0;
-        left: auto;
-        right: var(--size-200);
-        margin: auto;
         background-color: ${colorScheme.backgroundColor};
         border: 1px solid ${colorScheme.borderColor};
         color: ${colorScheme.color};
@@ -103,17 +98,13 @@ const CoinSelectButton = ({ ref, coin, ...restProps }) => {
 };
 
 const SwapControl = ({
-  inputRef,
-  activeControl,
-  coin,
+  control,
   onInputClick,
-  inputProps,
+  onSelectCoinClick,
   value,
-  ghostValue,
-}: {
-  activeControl: "buy" | "sell";
-  coin: string;
+  coin,
 }) => {
+  const ghostValue = useMemo(() => formatGhostAmount(value), [value]);
   return (
     <div
       className="swap-control"
@@ -133,7 +124,7 @@ const SwapControl = ({
             line-height: var(--line-height-tight);
           `}
         >
-          {swapState === "buy" ? "Buy" : "Sell"}
+          {control === "buy" ? "Buy" : "Sell"}
         </p>
         <div
           className="input-wrapper"
@@ -169,9 +160,7 @@ const SwapControl = ({
             onClick={onInputClick}
             readOnly
             value={value}
-            ref={inputRef}
             type="text"
-            {...inputProps}
           />
         </div>
         <p
@@ -185,19 +174,49 @@ const SwapControl = ({
           $0
         </p>
       </div>
-      <menu>
-        <li></li>
-        {activeControl && <MaxButton></MaxButton>}
-        <li></li>
+      <menu
+        css={css`
+          position: absolute;
+          inset: 0;
+          left: auto;
+          right: var(--size-200);
+          margin: auto;
+        `}
+      >
+        <li>
+          <CoinSelectButton
+            coin={coin}
+            onPress={() => {
+              dispatch(setActiveControl(control));
+              dispatch(toggleOverlay({ type: "selectCoin", isOpen: true }));
+            }}
+          ></CoinSelectButton>
+        </li>
+        <li>
+          {control === "buy" && (
+            <Button
+              onPress={() => {
+                console.log("select max");
+              }}
+            >
+              MAX
+            </Button>
+          )}
+        </li>
       </menu>
-      <CoinSelectButton coin={coin}></CoinSelectButton>
     </div>
   );
 };
 
 const SwapController = () => {
+  const dispatch = useDispatch();
+
   const buyAmount = useSelector((state: RootState) => state.swap.buy.amount);
   const sellAmount = useSelector((state: RootState) => state.swap.sell.amount);
+
+  const buyCoin = useSelector((state: RootState) => state.swap.buy.coin);
+  const sellCoin = useSelector((state: RootState) => state.swap.sell.coin);
+
   return (
     <div
       className="swap-controller"
@@ -209,11 +228,10 @@ const SwapController = () => {
       `}
     >
       <SwapControl
-        swapState="buy"
-        coin="btc"
-        value={buyValue}
-        ghostValue={buyGhostValue}
-        onInputClick={() => void onFocusedSwapControlChange("buy")}
+        control="buy"
+        coin={buyCoin}
+        value={buyAmount}
+        onInputClick={() => void dispatch(setActiveControl("buy"))}
       />
       <div
         className="icon-wrapper"
@@ -232,10 +250,10 @@ const SwapController = () => {
         <ArrowDown size={24} color="var(--clr-icon)" />
       </div>
       <SwapControl
-        swapState="sell"
-        value={sellValue}
-        ghostValue={sellGhostValue}
-        onInputClick={() => void onFocusedSwapControlChange("sell")}
+        control="sell"
+        coin={sellCoin}
+        value={sellAmount}
+        onInputClick={() => void dispatch(setActiveControl("sell"))}
       />
     </div>
   );

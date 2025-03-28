@@ -217,7 +217,7 @@ function WebAppInner() {
               isOpen={isQRCodeModalOpen}
               onOpenChange={(e) => dispatch(setQRCodeModalOpen(e))}
             />
-            <SwapModal></SwapModal>
+            <SwapModal />
             {/* Overlays */}
             <WithdrawCryptoOverlay
               isOpen={isWithdrawCryptoOverlayOpen}
