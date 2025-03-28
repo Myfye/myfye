@@ -5,7 +5,7 @@ import Overlay from "@/components/ui/overlay/Overlay";
 import Button from "@/components/ui/button/Button";
 import SwapCoinSummary from "./SwapCoinSummary";
 
-const SwapOverlay = ({ isOpen, onOpenChange, buyCoin, sellCoin }) => {
+const ConfirmSwapOverlay = ({ isOpen, onOpenChange }) => {
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Confirm Swap">
@@ -42,4 +42,4 @@ const SwapOverlay = ({ isOpen, onOpenChange, buyCoin, sellCoin }) => {
   );
 };
 
-export default SwapOverlay;
+export default ConfirmSwapOverlay;

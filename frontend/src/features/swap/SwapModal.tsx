@@ -5,8 +5,10 @@ import { css } from "@emotion/react";
 import Modal from "@/components/ui/modal/Modal";
 import NumberPad from "@/components/ui/number-pad/NumberPad";
 import Button from "@/components/ui/button/Button";
-import SwapOverlay from "./swap-overlay/SwapOverlay";
 import SwapInputController from "./SwapController";
+import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
+import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
+import SelectCoinOverlay from "./SelectCoinOverlay";
 
 export type SwapState = "buy" | "sell";
 
@@ -75,12 +77,9 @@ const SwapModal = ({
           </section>
         </div>
       </Modal>
-      <SwapOverlay
-        isOpen={isSwapOverlayOpen}
-        onOpenChange={(e) => setSwapOverlayOpen(e)}
-        buyCoin="btc"
-        sellCoin="usdt"
-      ></SwapOverlay>
+      <ConfirmSwapOverlay />
+      <ProcessingTransactionOverlay />
+      <SelectCoinOverlay />
     </>
   );
 };
