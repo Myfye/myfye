@@ -190,7 +190,7 @@ const SwapControl = ({
   );
 };
 
-const SwapInputController = ({
+const SwapController = ({
   focusedSwapControl,
   onFocusedSwapControlChange,
   buyValue,
@@ -248,4 +248,4 @@ const SwapInputController = ({
   );
 };
 
-export default SwapInputController;
+export default SwapController;

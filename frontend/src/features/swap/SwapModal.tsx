@@ -5,37 +5,22 @@ import { css } from "@emotion/react";
 import Modal from "@/components/ui/modal/Modal";
 import NumberPad from "@/components/ui/number-pad/NumberPad";
 import Button from "@/components/ui/button/Button";
-import SwapOverlay from "../../overlays/swap-overlay/SwapOverlay";
-import SwapInputController from "./SwapInputController";
+import SwapOverlay from "./swap-overlay/SwapOverlay";
+import SwapInputController from "./SwapController";
 
 export type SwapState = "buy" | "sell";
 
-const SwapModal = ({ isOpen, onOpenChange }) => {
+const SwapModal = ({
+  isOpen,
+  onOpenChange,
+  coin,
+}: {
+  isOpen: boolean;
+  onOpenChange: () => void;
+  coin: string;
+}) => {
   const [height] = useState(667);
   const [isSwapOverlayOpen, setSwapOverlayOpen] = useState(false);
-
-  const [buyValueArr, setBuyValueArr] = useState(["0"]);
-  const [sellValueArr, setSellValueArr] = useState(["0"]);
-
-  const sellGhostValueArr = useMemo(
-    () => generateGhostValueArr(sellValueArr),
-    [buyValueArr]
-  );
-  const buyGhostValueArr = useMemo(
-    () => generateGhostValueArr(buyValueArr),
-    [buyValueArr]
-  );
-
-  const buyValueStr = useMemo(() => buyValueArr.join(""), [buyValueArr]);
-  const sellValueStr = useMemo(() => sellValueArr.join(""), [sellValueArr]);
-  const buyGhostValueStr = useMemo(
-    () => buyGhostValueArr.join(""),
-    [buyGhostValueArr]
-  );
-  const sellGhostValueStr = useMemo(
-    () => sellGhostValueArr.join(""),
-    [sellGhostValueArr]
-  );
 
   const [focusedSwapControl, setFocusedSwapControl] =
     useState<SwapState>("buy");
@@ -44,15 +29,12 @@ const SwapModal = ({ isOpen, onOpenChange }) => {
     setFocusedSwapControl(state);
   };
 
-  const handleNumpadChange = (e) => {
-    focusedSwapControl === "buy"
-      ? setBuyValueArr((arr) => formatValue(e, arr))
-      : setSellValueArr((arr) => formatValue(e, arr));
-  };
+  // const handleNumpadChange = (e) => {
+  //   focusedSwapControl === "buy"
+  //     ? setBuyValueArr((arr) => formatValue(e, arr))
+  //     : setSellValueArr((arr) => formatValue(e, arr));
+  // };
 
-  useEffect(() => {
-    console.log(buyValueArr, sellValueArr, focusedSwapControl);
-  }, [buyValueArr, sellValueArr, focusedSwapControl]);
   return (
     <>
       <Modal

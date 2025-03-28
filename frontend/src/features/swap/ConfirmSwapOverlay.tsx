@@ -8,7 +8,7 @@ import SwapCoinSummary from "./SwapCoinSummary";
 const SwapOverlay = ({ isOpen, onOpenChange, buyCoin, sellCoin }) => {
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Review swap">
+      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Confirm Swap">
         <div>
           <section>
             <SwapCoinSummary />
