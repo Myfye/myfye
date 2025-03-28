@@ -4,15 +4,6 @@ import { useButton } from "react-aria";
 import { motion } from "motion/react";
 import { ReactNode, Ref, useCallback } from "react";
 
-interface ButtonProps extends AriaButtonProps {
-  ref: Ref<HTMLButtonElement | null>;
-  variant: string;
-  size: string;
-  color: string;
-  className: string;
-  children: ReactNode;
-  expand: boolean;
-}
 const Button = ({
   ref,
   variant = "primary",
@@ -27,7 +18,7 @@ const Button = ({
   href,
   children,
   ...restProps
-}: ButtonProps) => {
+}) => {
   const Icon = icon;
 
   const getIconSize = useCallback(
@@ -59,14 +50,15 @@ const Button = ({
 
   return href ? (
     <motion.a
+      {...buttonProps}
       data-variant={variant}
       data-size={size}
       data-color={color}
       data-expand={expand}
       data-icon-only={iconOnly}
       className={`button ${className}`}
-      {...buttonProps}
       ref={ref}
+      href={href}
       animate={{
         scale: isPressed ? 0.9 : 1,
       }}

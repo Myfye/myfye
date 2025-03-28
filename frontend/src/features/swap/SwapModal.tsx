@@ -5,43 +5,41 @@ import { css } from "@emotion/react";
 import Modal from "@/components/ui/modal/Modal";
 import NumberPad from "@/components/ui/number-pad/NumberPad";
 import Button from "@/components/ui/button/Button";
-import SwapInputController from "./SwapController";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
 import SelectCoinOverlay from "./SelectCoinOverlay";
+import { useSelector } from "react-redux";
+import { SwapState, changeAmount, toggleModal } from "./swapSlice";
+import SwapController from "./SwapController";
 
-export type SwapState = "buy" | "sell";
+type SwapControlState = "buy" | "sell";
 
-const SwapModal = ({
-  isOpen,
-  onOpenChange,
-  coin,
-}: {
-  isOpen: boolean;
-  onOpenChange: () => void;
-  coin: string;
-}) => {
+const SwapModal = () => {
   const [height] = useState(667);
-  const [isSwapOverlayOpen, setSwapOverlayOpen] = useState(false);
 
   const [focusedSwapControl, setFocusedSwapControl] =
-    useState<SwapState>("buy");
+    useState<SwapControlState>("buy");
 
-  const onFocusedSwapControlChange = (state: SwapState) => {
+  const onFocusedSwapControlChange = (state: SwapControlState) => {
     setFocusedSwapControl(state);
   };
 
-  // const handleNumpadChange = (e) => {
-  //   focusedSwapControl === "buy"
-  //     ? setBuyValueArr((arr) => formatValue(e, arr))
-  //     : setSellValueArr((arr) => formatValue(e, arr));
-  // };
+  const isOpen = useSelector((state: SwapState) => state.modal.isOpen);
+  const buyAmount = useSelector((state: SwapState) => state.buy.amount);
+  const sellAmount = useSelector((state: SwapState) => state.sell.amount);
+
+  const handleNumpadChange = (e) => {
+    changeAmount({
+      type: focusedSwapControl,
+      amount: focusedSwapControl === "buy" ? formatValue() : formatValue(),
+    });
+  };
 
   return (
     <>
       <Modal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={toggleModal}
         title="Swap"
         subtitle="Swap crypto to cash, and more!"
         height={height}
@@ -58,17 +56,13 @@ const SwapModal = ({
           `}
         >
           <section>
-            <SwapInputController
+            <SwapController
               focusedSwapControl={focusedSwapControl}
               onFocusedSwapControlChange={onFocusedSwapControlChange}
-              buyValue={buyValueStr}
-              buyGhostValue={buyGhostValueStr}
-              sellValue={sellValueStr}
-              sellGhostValue={sellGhostValueStr}
             />
           </section>
           <section>
-            <Button expand onPress={() => setSwapOverlayOpen(true)}>
+            <Button expand onPress={() => {}}>
               Confirm
             </Button>
           </section>
@@ -77,68 +71,11 @@ const SwapModal = ({
           </section>
         </div>
       </Modal>
+      <SelectCoinOverlay />
       <ConfirmSwapOverlay />
       <ProcessingTransactionOverlay />
-      <SelectCoinOverlay />
     </>
   );
 };
 
 export default SwapModal;
-
-function formatValue(input, valArr) {
-  switch (input) {
-    case "delete": {
-      if (valArr.length === 1) {
-        return ["0"];
-      }
-      valArr.pop();
-      if (!valArr.includes(","))
-        return valArr.length === 0 ? ["0"] : [...valArr];
-
-      const newArr = formatValueArray(valArr);
-      if (newArr) return newArr;
-      return valArr;
-    }
-    case ".": {
-      if (!valArr.includes(".")) return [...valArr, "."];
-      return valArr;
-    }
-    default:
-      if (valArr.length === 1 && valArr[0] === "0") {
-        return [input];
-      }
-      const newArr = formatValueArray([...valArr, input]);
-      if (newArr) return newArr;
-      return valArr;
-  }
-}
-
-function generateGhostValueArr(arr) {
-  switch (arr.length) {
-    case 0:
-      return ["0", ".", "0", "0"];
-    case 1:
-      return arr[0] !== "0" ? [arr[0], ".", "0", "0"] : ["0", ".", "0", "0"];
-    case 2:
-      return arr[1] !== "." ? arr : [arr[0], ".", "0", "0"];
-    case 3:
-      return arr[1] === "." ? [arr[0], ".", arr[2], "0"] : ["0", ".", "0", "0"];
-    case 4:
-      return arr[1] === "."
-        ? [arr[0], ".", arr[2], arr[3]]
-        : ["0", ".", "0", "0"];
-    default:
-      return arr;
-  }
-}
-
-function formatValueArray(arr: string[]) {
-  const strValue = arr.join("").replace(",", "");
-
-  const num = new Intl.NumberFormat("en-EN").format(strValue);
-
-  if (num === "NaN") return false;
-
-  return num.split("");
-}

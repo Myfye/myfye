@@ -19,7 +19,13 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const HeadlessOverlay = ({ isOpen, onOpenChange, backgroundColor ="var(--clr-surface)" children }) => {
+const HeadlessOverlay = ({
+  isOpen,
+  onOpenChange,
+  backgroundColor = "var(--clr-surface)",
+  zIndex = 1000,
+  children,
+}) => {
   let w = window.innerWidth;
   let x = useMotionValue(w);
 
@@ -35,7 +41,7 @@ const HeadlessOverlay = ({ isOpen, onOpenChange, backgroundColor ="var(--clr-sur
             css={css`
               position: fixed;
               inset: 0;
-              z-index: var(--z-index-overlay);
+              z-index: ${zIndex};
               max-width: 420px;
               margin-inline: auto;
               isolation: isolate;

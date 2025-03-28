@@ -20,7 +20,7 @@ interface OverlayState extends OverlayMap {
   extraProperty?: string; // Add any additional properties here
 }
 
-interface CounterState {
+export interface SwapState {
   modal: ModalState;
   overlays: OverlayState;
   buy: Transaction;
@@ -28,7 +28,7 @@ interface CounterState {
 }
 
 // Define the initial state
-const initialState: CounterState = {
+const initialState: SwapState = {
   modal: {
     isOpen: false,
   },
@@ -77,6 +77,6 @@ const swapSlice = createSlice({
   },
 });
 
-export const { toggleModal, toggleOverlay, changeAmount, setCoin } =
+export const { toggleModal, toggleOverlay, changeAmount, setCoin, unmount } =
   swapSlice.actions;
 export default swapSlice.reducer;

@@ -19,7 +19,7 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const Overlay = ({ isOpen, onOpenChange, children, title }) => {
+const Overlay = ({ isOpen, onOpenChange, title, zIndex = 1000, children }) => {
   let w = window.innerWidth;
   let x = useMotionValue(w);
 
@@ -35,7 +35,7 @@ const Overlay = ({ isOpen, onOpenChange, children, title }) => {
             css={css`
               position: fixed;
               inset: 0;
-              z-index: var(--z-index-overlay);
+              z-index: ${zIndex}
               max-width: 420px;
               margin-inline: auto;
               isolation: isolate;
