@@ -3,9 +3,8 @@ import { css } from "@emotion/react";
 
 import Overlay from "@/components/ui/overlay/Overlay";
 import Button from "@/components/ui/button/Button";
-import SwapCoinSummary from "./SwapCoinSummary";
 
-const ConfirmSwapOverlay = ({ isOpen, onOpenChange }) => {
+const ConfirmSwapOverlay = () => {
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Confirm Swap">

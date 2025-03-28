@@ -14,6 +14,7 @@ const ProcessingTransactionOverlay = () => {
           display: flex;
           flex-direction: column;
           padding: var(--size-250);
+          height: 100svh;
         `}
       >
         <section
@@ -75,7 +76,7 @@ const ProcessingTransactionOverlay = () => {
               <Button
                 expand
                 onPress={() => {
-                  dispatch;
+                  dispatch(unmount);
                 }}
               >
                 Done
