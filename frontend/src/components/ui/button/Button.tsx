@@ -24,6 +24,7 @@ const Button = ({
   iconLeft = icon,
   iconRight,
   expand = false,
+  href,
   children,
   ...restProps
 }: ButtonProps) => {
@@ -56,7 +57,24 @@ const Button = ({
 
   let { buttonProps, isPressed } = useButton(restPropsButton, refButton);
 
-  return (
+  return href ? (
+    <motion.a
+      data-variant={variant}
+      data-size={size}
+      data-color={color}
+      data-expand={expand}
+      data-icon-only={iconOnly}
+      className={`button ${className}`}
+      {...buttonProps}
+      ref={ref}
+      animate={{
+        scale: isPressed ? 0.9 : 1,
+      }}
+    >
+      {Icon && <Icon size={iconSize} />}
+      {children}
+    </motion.a>
+  ) : (
     <motion.button
       data-variant={variant}
       data-size={size}
