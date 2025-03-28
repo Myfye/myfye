@@ -5,6 +5,7 @@ import { formatAmount } from "./utils";
 interface Transaction {
   amount: string;
   coin: string | null;
+  isActive: boolean;
 }
 
 interface ModalState {
@@ -14,7 +15,7 @@ interface ModalState {
 type OverlayType = "selectCoin" | "confirmSwap" | "processingTransaction";
 
 type OverlayMap = {
-  [key in OverlayType]: { isOpen: boolean; buyCoin?: null; sellCoin?: null };
+  [key in OverlayType]: { isOpen: boolean };
 };
 
 interface OverlayState extends OverlayMap {
@@ -26,6 +27,7 @@ export interface SwapState {
   overlays: OverlayState;
   buy: Transaction;
   sell: Transaction;
+  activeControl: "buy" | "sell";
 }
 
 // Define the initial state
@@ -38,6 +40,7 @@ const initialState: SwapState = {
     confirmSwap: { isOpen: false },
     processingTransaction: { isOpen: false },
   },
+  activeControl: "buy",
   buy: { amount: "", coin: "btc" },
   sell: { amount: "", coin: null },
 };
@@ -59,7 +62,7 @@ const swapSlice = createSlice({
       state.modal.isOpen = false;
       state.overlays = {
         selectCoin: { isOpen: false },
-        confirmSwap: { isOpen: false, buyCoin: null, sellCoin: null },
+        confirmSwap: { isOpen: false },
         processingTransaction: { isOpen: false },
       };
     },
@@ -81,9 +84,18 @@ const swapSlice = createSlice({
     ) {
       state[action.payload.type].coin = action.payload.coin;
     },
+    setActiveControl(state, action: PayloadAction<"buy" | "sell">) {
+      state.activeControl = action.payload;
+    },
   },
 });
 
-export const { toggleModal, toggleOverlay, changeAmount, setCoin, unmount } =
-  swapSlice.actions;
+export const {
+  toggleModal,
+  toggleOverlay,
+  changeAmount,
+  setCoin,
+  unmount,
+  setActiveControl,
+} = swapSlice.actions;
 export default swapSlice.reducer;

@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   SwapState,
   changeAmount,
+  setActiveControl,
   toggleModal,
   toggleOverlay,
 } from "./swapSlice";
@@ -25,18 +26,15 @@ const SwapModal = () => {
 
   const dispatch = useDispatch();
 
-  const [focusedSwapControl, setFocusedSwapControl] =
-    useState<SwapControlState>("buy");
-
-  const onFocusedSwapControlChange = (state: SwapControlState) => {
-    setFocusedSwapControl(state);
-  };
-
   const isOpen = useSelector((state: RootState) => state.swap.modal.isOpen);
+
+  const activeControl = useSelector(
+    (state: RootState) => state.swap.activeControl
+  );
 
   const handleNumpadChange = (e: string) => {
     changeAmount({
-      type: focusedSwapControl,
+      type: activeControl,
       input: e,
     });
   };
@@ -62,10 +60,7 @@ const SwapModal = () => {
           `}
         >
           <section>
-            <SwapController
-              focusedSwapControl={focusedSwapControl}
-              onFocusedSwapControlChange={onFocusedSwapControlChange}
-            />
+            <SwapController />
           </section>
           <section>
             <Button

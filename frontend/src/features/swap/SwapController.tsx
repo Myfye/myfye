@@ -11,6 +11,8 @@ import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
 import { SwapState } from "./SwapModal";
 
 import { z } from "zod";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 type Coin = {
   id: string;
@@ -100,18 +102,16 @@ const CoinSelectButton = ({ ref, coin, ...restProps }) => {
   );
 };
 
-const MaxButton = () => {};
-
 const SwapControl = ({
   inputRef,
-  swapState,
+  activeControl,
   coin,
   onInputClick,
   inputProps,
   value,
   ghostValue,
 }: {
-  swapState: "buy" | "sell";
+  activeControl: "buy" | "sell";
   coin: string;
 }) => {
   return (
@@ -185,26 +185,19 @@ const SwapControl = ({
           $0
         </p>
       </div>
+      <menu>
+        <li></li>
+        {activeControl && <MaxButton></MaxButton>}
+        <li></li>
+      </menu>
       <CoinSelectButton coin={coin}></CoinSelectButton>
     </div>
   );
 };
 
-const SwapController = ({
-  focusedSwapControl,
-  onFocusedSwapControlChange,
-  buyValue,
-  sellValue,
-  buyGhostValue,
-  sellGhostValue,
-}: {
-  focusedSwapControl: SwapState;
-  onFocusedSwapControlChange: (_: SwapState) => void;
-  buyValue: string;
-  sellValue: string;
-  buyGhostValue: string;
-  sellGhostValue: string;
-}) => {
+const SwapController = () => {
+  const buyAmount = useSelector((state: RootState) => state.swap.buy.amount);
+  const sellAmount = useSelector((state: RootState) => state.swap.sell.amount);
   return (
     <div
       className="swap-controller"
