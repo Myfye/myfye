@@ -6,6 +6,7 @@ const PORT = 3001;
 const { create_new_on_ramp_path } = require('./routes/newUser');
 const { get_payin_quote } = require('./routes/getPayinQuote');
 const { create_new_payin } = require('./routes/createNewPayin');
+const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
 const { 
     createUser, 
     getUserByEmail, 
@@ -154,6 +155,25 @@ app.get('/get_balance', (req, res) => {
         balance: "11"
     };
     res.json(balance);
+});
+
+app.get('/bridge_swap', async (req, res) => {
+    console.log("\n=== Bridge Swap Request Received ===");
+    try {
+        const result = await bridge_swap({
+            toAddress: "DR5s8mAdygzmHihziLzDBwjuux1R131ydAG2rjYhpAmn",
+            inToken: "USDC",
+            inChain: "solana",
+            outToken: "USDC",
+            outChain: "base",
+            amount: "1000000" // 1 USDC
+        });
+        console.log("Bridge swap result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /bridge_swap endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.listen(PORT, () => {
