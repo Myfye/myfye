@@ -64,13 +64,7 @@ const Router = () => {
             color="transparent"
           ></Button>
         </Header>
-        <main
-          onScroll={() => console.log("scroll")}
-          css={css`
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-          `}
-        >
+        <main>
           {tabs.map((tab) => (
             <AriaTabPanel
               id={tab.id}
@@ -102,7 +96,9 @@ const Router = () => {
                   display: block;
                   align-content: center;
                   width: var(--size-800);
-                  height: 3.25rem;
+                  padding-block-start: var(--size-075);
+                  padding-block-end: var(--size-025);
+                  user-select: none;
                 `}
                 key={`tab-${tab.id}`}
               >

@@ -1,11 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const Header = ({ children }) => {
+const Header = ({ children, color = "transparent" }) => {
   return (
     <header
       css={css`
         height: var(--size-600);
+        background-color: ${color};
+        position: relative;
+        width: 100%;
       `}
     >
       <div

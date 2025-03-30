@@ -1,7 +1,4 @@
 @layer components {
-  * {
-    font-family: var(--font-family);
-  }
   .page {
     min-height: 100svh;
     margin: auto;
@@ -9,6 +6,7 @@
   .site-layout {
     min-height: 100svh;
     background-color: var(--clr-surface);
+    font-family: var(--font-family);
   }
   .app-layout {
     display: grid;

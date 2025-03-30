@@ -83,6 +83,7 @@ const WithdrawCryptoOverlay = ({ isOpen, onOpenChange }) => {
         <section
           css={css`
             margin-block-start: var(--size-600);
+            padding: 0 var(--size-250);
           `}
         >
           <p
@@ -103,6 +104,7 @@ const WithdrawCryptoOverlay = ({ isOpen, onOpenChange }) => {
         <section
           css={css`
             margin-block-start: var(--size-700);
+            padding: 0 var(--size-250);
           `}
         >
           <p

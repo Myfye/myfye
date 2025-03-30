@@ -8,14 +8,10 @@ import {
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import PieChart from "./pie-chart/PieChart";
+import PieChart from "../../../../../../components/ui/pie-chart/PieChart";
 import BalanceTitle from "../../../../../../components/ui/balance-title/BalanceTitle";
 import CTACarousel from "./cta-carousel/CTACarousel";
-import { useEffect, useMemo } from "react";
-import DepositModal from "@/components/app/modals/deposit-modal/DepositModal";
-import WithdrawModal from "@/components/app/modals/withdraw-modal/WithdrawModal";
-import SendModal from "@/components/app/modals/send-modal/SendModal";
-import ReceiveModal from "@/components/app/modals/receive-modal/ReceiveModal";
+import { useMemo } from "react";
 import {
   setDepositModalOpen,
   setReceiveModalOpen,
@@ -38,7 +34,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
         id: "Cash",
         label: "Cash",
         value: cashBalanceInUSD,
-        color: "var(--clr-pie-chart-1)",
+        color: "var(--clr-pie-chart-usdt)",
       };
       data.push(cashData);
     }
@@ -47,7 +43,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
         id: "Crypto",
         label: "Crypto",
         value: cryptoBalanceInUSD,
-        color: "var(--clr-pie-chart-2)",
+        color: "var(--clr-pie-chart-btc)",
       };
       data.push(cryptoData);
     }
@@ -67,16 +63,23 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
         > * {
           width: 100%;
         }
-        padding-bottom: var(--size-250);
+        padding-bottom: var(--size-150);
       `}
     >
       <section
         className="balance-container"
         css={css`
-          margin-block-start: var(--size-150);
+          margin-block-start: var(--size-250);
         `}
       >
-        <BalanceTitle balance={totalBalance} />
+        <div
+          className="balance-wrapper"
+          css={css`
+            padding: 0 var(--size-250);
+          `}
+        >
+          <BalanceTitle balance={totalBalance} />
+        </div>
         <menu
           className="no-scrollbar"
           css={css`
@@ -86,7 +89,8 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
             gap: var(--controls-gap-small);
             overflow-x: auto;
             padding: 0 var(--size-250);
-            margin-block-start: var(--size-250);
+            margin-block-start: var(--size-200);
+            background-color: var(--clr-surface);
           `}
         >
           <li>
@@ -135,14 +139,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
           </li>
         </menu>
       </section>
-      <section
-        className="pie-chart-container"
-        css={css`
-          min-height: ${totalBalance === 0 ? "auto" : "20rem"};
-          height: ${totalBalance === 0 ? "auto" : "20rem"};
-          padding: 0 var(--size-250);
-        `}
-      >
+      <section className="pie-chart-container" css={css``}>
         {totalBalance === 0 ? (
           <div
             css={css`
@@ -182,18 +179,10 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
             </Button>
           </div>
         ) : (
-          <div
-            className="pie-chart-wrapper"
-            css={css`
-              width: 100%;
-              height: 100%;
-            `}
-          >
-            <PieChart data={pieChartData}></PieChart>
-          </div>
+          <PieChart data={pieChartData}></PieChart>
         )}
       </section>
-      <section className="cta-carousel-container" css={css``}>
+      <section className="cta-carousel-container">
         <CTACarousel
           slides={[
             {

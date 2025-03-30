@@ -8,6 +8,7 @@ import { css } from "@emotion/react";
 import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";
 
 import Button from "@/components/ui/button/Button";
+import Header from "@/components/app/layout/header/Header";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);
@@ -18,7 +19,7 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const Overlay = ({ isOpen, onOpenChange, children, title }) => {
+const Overlay = ({ isOpen, onOpenChange, title, zIndex = 1000, children }) => {
   let w = window.innerWidth;
   let x = useMotionValue(w);
 
@@ -34,7 +35,7 @@ const Overlay = ({ isOpen, onOpenChange, children, title }) => {
             css={css`
               position: fixed;
               inset: 0;
-              z-index: var(--z-index-overlay);
+              z-index: ${zIndex};
               max-width: 420px;
               margin-inline: auto;
               isolation: isolate;
@@ -64,51 +65,37 @@ const Overlay = ({ isOpen, onOpenChange, children, title }) => {
               <Dialog
                 css={css`
                   display: grid;
-                  grid-template-rows: 4rem 1fr;
+                  grid-template-rows: auto 1fr;
                   height: 100svh;
                   max-width: var(--app-max-width);
                   width: 100vw;
                 `}
                 aria-labelledby={id}
               >
-                <header
-                  css={css`
-                    width: 100%;
-                    align-content: center;
-                  `}
-                >
-                  <div
-                    css={css`
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                      padding-inline: var(--size-250);
-                      position: relative;
-                    `}
-                  >
-                    <Button
-                      iconOnly
-                      icon={CaretLeftIcon}
-                      onPress={() => onOpenChange(false)}
-                      variant="transparent"
+                <Header>
+                  <Button
+                    iconOnly
+                    icon={CaretLeftIcon}
+                    onPress={() => onOpenChange(false)}
+                    variant="transparent"
+                  ></Button>
+                  {title && (
+                    <h1
                       css={css`
+                        font-weight: var(--fw-active);
+                        font-size: var(--fs-medium);
+                        line-height: var(--line-height-heading);
                         position: absolute;
-                        top: 0;
-                        bottom: 0;
-                        margin-block: auto;
-                        left: var(--size-100);
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
                       `}
-                    ></Button>
-                    <h1 className="heading-medium">{title}</h1>
-                  </div>
-                </header>
-                <main
-                  css={css`
-                    padding: 0 var(--size-250);
-                  `}
-                >
-                  {children}
-                </main>
+                    >
+                      {title}
+                    </h1>
+                  )}
+                </Header>
+                <main css={css``}>{children}</main>
               </Dialog>
             </MotionModal>
           </MotionModalOverlay>

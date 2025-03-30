@@ -50,7 +50,8 @@ const CashPanel = ({
       <section
         className="balance-container"
         css={css`
-          margin-block-start: var(--size-150);
+          margin-block-start: var(--size-250);
+          padding: 0 var(--size-250);
         `}
       >
         <BalanceTitle balance={totalBalance} />

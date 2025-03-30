@@ -18,70 +18,68 @@ const Wallet = () => {
     <div
       className="wallet"
       css={css`
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         height: 100cqh;
+        overflow-y: auto;
+        background-color: var(--clr-surface);
       `}
     >
       <section>
         <h1
-          className="heading-x-large"
+          className="heading-large"
           css={css`
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            justify-content: flex-end;
+            justify-content: center;
             padding-inline: var(--size-250);
-            height: var(--size-700);
+            height: var(--size-600);
           `}
         >
           Wallet
         </h1>
-        <section
-          className="balance-container"
-          css={css`
-            margin-block-start: var(--size-400);
-          `}
-        >
-          <BalanceTitle balance={totalBalanceInUSD} currency="usd" />
-          <menu
-            css={css`
-              display: flex;
-              align-items: center;
-              justify-content: flex-start;
-              gap: var(--controls-gap-small);
-              padding: 0 var(--size-250);
-            `}
-          >
-            <Button
-              size="medium"
-              onPress={() => dispatch(setDepositModalOpen(true))}
-            >
-              Add money
-            </Button>
-            <Button
-              size="medium"
-              onPress={() => dispatch(setWithdrawModalOpen(true))}
-            >
-              Withdraw
-            </Button>
-          </menu>
-        </section>
       </section>
-      <section>
-        <h2
-          className="heading-large"
+      <section
+        css={css`
+          padding-inline: var(--size-250);
+          margin-block-start: var(--size-300);
+          margin-block-end: auto;
+        `}
+      >
+        <WalletCardList />
+      </section>
+      <section
+        css={css`
+          margin-block-start: var(--size-400);
+          margin-block-end: var(--size-300);
+          margin-inline: var(--size-250);
+        `}
+      >
+        <menu
           css={css`
-            margin-inline: var(--size-250);
-            margin-block-start: var(--size-600);
-            margin-block-end: var(--size-300);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            justify-content: center;
+            gap: var(--controls-gap-small);
           `}
         >
-          Portfolio
-        </h2>
-        <WalletCardList
-          css={css`
-            margin-inline: var(--size-250);
-          `}
-        />
+          <Button
+            size="medium"
+            expand
+            onPress={() => dispatch(setDepositModalOpen(true))}
+          >
+            Add money
+          </Button>
+          <Button
+            size="medium"
+            expand
+            onPress={() => dispatch(setWithdrawModalOpen(true))}
+          >
+            Withdraw
+          </Button>
+        </menu>
       </section>
     </div>
   );

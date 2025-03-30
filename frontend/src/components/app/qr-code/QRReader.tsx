@@ -9,25 +9,12 @@ import qrScanOutline from "@/assets/svgs/qr-scan-outline.svg";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const QrReader = ({ onClose, ...restProps }) => {
+const QrReader = ({ onClose, onScanSuccess, onScanFail, ...restProps }) => {
   const scanner = useRef<QrScanner>();
   const videoEl = useRef<HTMLVideoElement>(null);
   const qrBoxEl = useRef<HTMLDivElement>(null);
 
   const [qrOn, setQrOn] = useState<boolean>(true);
-
-  const [scannedResult, setScannedResult] = useState<string | undefined>("");
-
-  // Success
-  const onScanSuccess = (result: QrScanner.ScanResult) => {
-    console.log(result);
-    setScannedResult(result?.data);
-  };
-
-  // Fail
-  const onScanFail = (err: string | Error) => {
-    console.log(err);
-  };
 
   useEffect(() => {
     async function startScanner() {

@@ -170,7 +170,6 @@ const HomeTabs = () => {
           css={css`
             display: flex;
             gap: var(--size-250);
-            user-select: none;
           `}
           items={tabs}
         >
@@ -183,8 +182,8 @@ const HomeTabs = () => {
                 justify-content: flex-end;
                 font-size: var(--fs-medium);
                 font-weight: var(--fw-active);
-                height: 3rem;
-                padding-block-end: 1.25rem;
+                height: 2.5rem;
+                padding-block-end: 0.625rem;
                 cursor: pointer;
                 color: var(--clr-text-neutral-strong);
                 &:hover {
@@ -195,7 +194,7 @@ const HomeTabs = () => {
                 }
               `}
             >
-              {tab.label}
+              <span>{tab.label}</span>
             </Tab>
           )}
         </TabList>
@@ -204,8 +203,8 @@ const HomeTabs = () => {
           css={css`
             position: absolute;
             left: 0;
-            bottom: var(--size-100);
-            z-index: var(--z-index-modal);
+            bottom: 0;
+            z-index: 1;
             background-color: var(--clr-accent);
             height: 3px;
           `}
@@ -219,6 +218,7 @@ const HomeTabs = () => {
           display: flex;
           overflow: auto;
           scroll-snap-type: x mandatory;
+          background-color: var(--clr-surface);
         `}
       >
         <Collection items={tabs}>

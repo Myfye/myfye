@@ -10,9 +10,15 @@ import WalletCard from "./WalletCard";
 import { css } from "@emotion/react";
 import useBalance from "@/hooks/useBalance";
 import { useMemo } from "react";
+import { useDispatch } from "react-redux";
+import {
+  setCryptoSummaryOverlayOpen,
+  setEarnSummaryOverlayOpen,
+} from "@/redux/overlayReducers";
 
 const WalletCardList = ({ ...restProps }) => {
   const { cryptoBalanceInUSD, cashBalanceInUSD } = useBalance();
+  const dispatch = useDispatch();
   const cards = useMemo(
     () => [
       {
@@ -21,6 +27,7 @@ const WalletCardList = ({ ...restProps }) => {
         balance: cryptoBalanceInUSD,
         percentChange: 0.0492,
         icon: CryptoIcon,
+        action: () => dispatch(setCryptoSummaryOverlayOpen(true)),
       },
       {
         label: "Earn",
@@ -28,6 +35,7 @@ const WalletCardList = ({ ...restProps }) => {
         balance: cashBalanceInUSD,
         percentChange: -0.0212,
         icon: EarnIcon,
+        action: () => dispatch(setEarnSummaryOverlayOpen(true)),
       },
       { label: "Stocks", id: "stocks", precentChange: 0, icon: StocksIcon },
       {
@@ -50,13 +58,15 @@ const WalletCardList = ({ ...restProps }) => {
         `}
       >
         {cards.map((card, i) => (
-          <li className="wallet-card" css={css``}>
+          <li className="wallet-card-wrapper" key={`wallet-card-wrapper-${i}`}>
             <WalletCard
               title={card.label}
               icon={card.icon}
               balance={card.balance}
               percentChange={card.percentChange}
-              key={`wallet-card-${i}`}
+              onPress={() => {
+                if (card.action) card.action();
+              }}
             />
           </li>
         ))}

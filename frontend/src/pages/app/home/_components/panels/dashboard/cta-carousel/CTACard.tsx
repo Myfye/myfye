@@ -9,11 +9,13 @@ const CTACard = ({ title, subtitle, icon }) => {
         display: grid;
         grid-template-columns: auto 1fr;
         gap: var(--size-150);
-        padding: var(--size-300);
+        padding: var(--size-250);
         width: calc(100% - var(--size-500));
         border-radius: var(--border-radius-medium);
         box-shadow: var(--box-shadow-card);
         align-content: center;
+        background-color: var(--clr-surface-raised);
+        user-select: none;
       `}
     >
       <div

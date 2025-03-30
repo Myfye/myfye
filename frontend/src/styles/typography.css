@@ -8,6 +8,7 @@
   --fs-x-small: calc(1rem * 12 / 16);
 
   --font-family: "Inter", sans-serif;
+  --font-family-mono: "Azeret Mono", monospace;
 
   --fw-default: 400;
   --fw-active: 500;
@@ -48,7 +49,7 @@
 .heading-small {
   line-height: var(--line-height-heading);
   font-size: var(--fs-medium);
-  font-weight: var(--fw-heading);
+  font-weight: var(--fw-active);
 }
 
 .subtitle {

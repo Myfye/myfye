@@ -20,11 +20,12 @@ const CTACarousel = ({ slides }) => {
         dynamicBullets: false,
       }}
       css={css`
-        padding-block-start: var(--size-100);
-        padding-bottom: var(--size-500);
+        padding-block-start: var(--size-025);
+        padding-block-end: var(--size-400);
         --swiper-theme-color: var(--clr-text);
         --swiper-pagination-bullet-inactive-color: var(--clr-surface-lowered);
         --swiper-pagination-bullet-inactive-opacity: 1;
+        --swiper-pagination-bottom: 0;
       `}
     >
       {slides.map((slide, i) => (

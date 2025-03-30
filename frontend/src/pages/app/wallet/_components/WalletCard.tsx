@@ -55,9 +55,12 @@ const WalletCard = ({
       css={css`
         display: flex;
         flex-direction: column;
-        aspect-ratio: 1;
+        justify-content: space-between;
+        container: wallet-card / size;
         width: 100%;
+        aspect-ratio: 1;
         padding: var(--size-200);
+        background-color: var(--clr-surface);
         box-shadow: var(--box-shadow-card);
         border-radius: var(--border-radius-medium);
       `}
@@ -70,16 +73,24 @@ const WalletCard = ({
       <p
         className="heading-small"
         css={css`
-          margin-block-end: var(--size-150);
+          margin-block-end: var(--size-200);
         `}
       >
         {title}
       </p>
-      {Icon && <Icon size={48} color="var(--clr-accent)" />}
+      <div
+        className="icon-wrapper"
+        css={css`
+          width: min(30cqw, var(--size-600));
+          margin-block-end: auto;
+        `}
+      >
+        {Icon && <Icon size="100%" color="var(--clr-accent)" />}
+      </div>
       {!isNaN(balance) ? (
-        <>
+        <div>
           <p
-            className="balance | heading-large"
+            className="balance | heading-medium"
             css={css`
               margin-block-start: var(--size-150);
             `}
@@ -93,8 +104,8 @@ const WalletCard = ({
                 display: inline-flex;
                 align-items: center;
                 gap: var(--size-050);
-                margin-block-start: var(--size-100);
                 font-size: var(--fs-small);
+                margin-block-start: var(--size-050);
                 font-weight: var(--fw-active);
                 color: ${percentChange > 0
                   ? "var(--clr-text-success)"
@@ -109,7 +120,7 @@ const WalletCard = ({
               {formattedPercentChange}
             </p>
           )}
-        </>
+        </div>
       ) : (
         <p
           className="caption-medium"

@@ -52,7 +52,7 @@
   --control-padding-inline-x-small: var(--size-050);
   --control-size-x-small: var(--size-250);
 
-  --control-gap-small: var(--size-100);
+  --control-gap-small: var(--size-075);
   --control-padding-block-small: var(--size-0);
   --control-padding-inline-small: var(--size-150);
   --control-size-small: var(--size-400);
@@ -60,9 +60,9 @@
   --control-gap-medium: var(--size-100);
   --control-padding-block-medium: var(--size-0);
   --control-padding-inline-medium: var(--size-300);
-  --control-size-medium: var(--size-500);
+  --control-size-medium: 2.75rem;
 
-  --control-gap-large: var(--size-100);
+  --control-gap-large: var(--size-200);
   --control-padding-block-large: var(--size-0);
   --control-padding-inline-large: var(--size-400);
   --control-size-large: var(--size-600);
