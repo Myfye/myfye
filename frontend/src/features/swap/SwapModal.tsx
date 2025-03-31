@@ -127,7 +127,11 @@ const SwapModal = () => {
               margin-inline: var(--size-200);
             `}
           >
-            <Button expand onPress={handleSwapControllerConfirmation}>
+            <Button
+              isDisabled={isNaN(sellAmount)}
+              expand
+              onPress={handleSwapControllerConfirmation}
+            >
               Confirm
             </Button>
           </section>
