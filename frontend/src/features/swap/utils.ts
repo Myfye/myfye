@@ -25,6 +25,7 @@ export const formatAmountLabel = (
       return amountLabel;
     }
     default:
+      if (input === "0" && amountLabel.length === 0) return "0.";
       if (amountLabel.length === 1 && amountLabel[0] === "0") {
         return input;
       }
