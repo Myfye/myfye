@@ -7,23 +7,15 @@ import {
 } from "react-aria-components";
 import CoinCard from "./CoinCard";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
   ArrowLineDown,
-  ArrowLineUp,
   DotsThreeVertical,
 } from "@phosphor-icons/react";
 import { useDispatch } from "react-redux";
-import {
-  setDepositModalOpen,
-  setReceiveModalOpen,
-  setSendModalOpen,
-  setWithdrawModalOpen,
-} from "@/redux/modalReducers";
-import { addCurrentCoin } from "@/redux/coinReducer";
+import { setReceiveModalOpen, setSendModalOpen } from "@/redux/modalReducers";
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 
 const CoinCardList = ({
@@ -45,6 +37,7 @@ const CoinCardList = ({
     >
       {coins.map((coin, i) => (
         <li
+          key={`coin-card-${i}`}
           className="coin-card-wrapper"
           css={css`
             display: grid;
@@ -60,12 +53,10 @@ const CoinCardList = ({
             balance={coin.balance}
             showOptions={showOptions}
             onPress={() => onCoinSelect && onCoinSelect(coin)}
-            key={`coin-card-${i}`}
             showBalance={showBalance}
           />
           {showOptions && (
             <MenuTrigger>
-              {/* <Button {...buttonProps} ref={buttonRef}></Button> */}
               <AriaButton>
                 <DotsThreeVertical size={24} />
               </AriaButton>

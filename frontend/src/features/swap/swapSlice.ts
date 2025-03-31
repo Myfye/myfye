@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { formatAmountLabel } from "./utils";
 
+export type TransactionType = "buy" | "sell";
+
 interface Transaction {
   amount: number;
   amountLabel: string;
@@ -14,12 +16,19 @@ interface ModalState {
 
 type OverlayType = "selectCoin" | "confirmSwap" | "processingTransaction";
 
-type OverlayMap = {
-  [key in OverlayType]: { isOpen: boolean };
-};
-
-interface OverlayState extends OverlayMap {
-  extraProperty?: string; // Add any additional properties here
+interface OverlayState {
+  selectCoin: {
+    isOpen: boolean;
+    transactionType: TransactionType;
+  };
+  confirmSwap: {
+    isOpen: boolean;
+    transactionType?: TransactionType;
+  };
+  processingTransaction: {
+    isOpen: boolean;
+    transactionType?: TransactionType;
+  };
 }
 
 export interface SwapState {
@@ -27,7 +36,6 @@ export interface SwapState {
   overlays: OverlayState;
   buy: Transaction;
   sell: Transaction;
-  activeControl: "buy" | "sell";
 }
 
 // Define the initial state
@@ -36,13 +44,12 @@ const initialState: SwapState = {
     isOpen: false,
   },
   overlays: {
-    selectCoin: { isOpen: false },
+    selectCoin: { isOpen: false, transactionType: "sell" },
     confirmSwap: { isOpen: false },
     processingTransaction: { isOpen: false },
   },
-  activeControl: "sell",
-  buy: { amount: 0, amountLabel: "0", coin: null },
-  sell: { amount: 0, amountLabel: "0", coin: null },
+  buy: { amount: 0, amountLabel: "", coin: null },
+  sell: { amount: 0, amountLabel: "", coin: null },
 };
 
 const swapSlice = createSlice({
@@ -58,45 +65,53 @@ const swapSlice = createSlice({
     },
     toggleOverlay(
       state,
-      action: PayloadAction<{ type: OverlayType; isOpen: boolean }>
+      action: PayloadAction<{
+        type: OverlayType;
+        isOpen: boolean;
+        transactionType?: TransactionType;
+      }>
     ) {
       state.overlays[action.payload.type].isOpen = action.payload.isOpen;
+      if (state.overlays[action.payload.type]?.transactionType) {
+        state.overlays[action.payload.type].transactionType =
+          action.payload.transactionType;
+      }
     },
-    unmount(state) {
-      state = initialState;
+    unmount: () => {
+      return initialState;
     },
     changeAmountLabel(
       state,
       action: PayloadAction<{
-        type: "buy" | "sell";
+        transactionType: TransactionType;
         input: string;
         replace?: true;
       }>
     ) {
-      state[action.payload.type].amountLabel = action.payload.replace
+      state[action.payload.transactionType].amountLabel = action.payload.replace
         ? action.payload.input
         : formatAmountLabel(
-            state[action.payload.type].amountLabel,
+            state[action.payload.transactionType].amountLabel,
             action.payload.input
           );
     },
     changeAmount(
       state,
       action: PayloadAction<{
-        type: "buy" | "sell";
+        transactionType: TransactionType;
         amount: number;
       }>
     ) {
-      state[action.payload.type].amount = action.payload.amount;
+      state[action.payload.transactionType].amount = action.payload.amount;
     },
     setCoin(
       state,
-      action: PayloadAction<{ type: "buy" | "sell"; coin: string | null }>
+      action: PayloadAction<{
+        transactionType: TransactionType;
+        coin: string | null;
+      }>
     ) {
-      state[action.payload.type].coin = action.payload.coin;
-    },
-    setActiveControl(state, action: PayloadAction<"buy" | "sell">) {
-      state.activeControl = action.payload;
+      state[action.payload.transactionType].coin = action.payload.coin;
     },
   },
 });
@@ -107,7 +122,6 @@ export const {
   changeAmount,
   setCoin,
   unmount,
-  setActiveControl,
   changeAmountLabel,
 } = swapSlice.actions;
 export default swapSlice.reducer;

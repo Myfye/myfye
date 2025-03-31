@@ -6,7 +6,7 @@ import Overlay from "@/components/ui/overlay/Overlay";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setCoin, toggleOverlay } from "./swapSlice";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useBalance from "@/hooks/useBalance";
 
 const SelectCoinOverlay = ({ zIndex = 1000 }) => {
@@ -25,18 +25,33 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
     (state: RootState) => state.swap.overlays.selectCoin.isOpen
   );
 
-  const activeControl = useSelector(
-    (state: RootState) => state.swap.activeControl
+  const transactionType = useSelector(
+    (state: RootState) => state.swap.overlays.selectCoin.transactionType
   );
 
   const handleOpen = (e: boolean) => {
-    dispatch(toggleOverlay({ type: "selectCoin", isOpen: e }));
+    dispatch(
+      toggleOverlay({
+        type: "selectCoin",
+        isOpen: e,
+        transactionType: transactionType,
+      })
+    );
   };
 
-  const onCoinSelect = (coin) => {
-    dispatch(setCoin({ type: activeControl, coin: coin.type }));
-    dispatch(toggleOverlay({ type: "selectCoin", isOpen: false }));
-  };
+  const onCoinSelect = useCallback(
+    (coin: any) => {
+      dispatch(setCoin({ transactionType: transactionType, coin: coin.type }));
+      dispatch(
+        toggleOverlay({
+          type: "selectCoin",
+          isOpen: false,
+          transactionType: transactionType,
+        })
+      );
+    },
+    [transactionType]
+  );
 
   const cryptoCoins = useMemo(
     () => [
@@ -110,7 +125,7 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
           <CoinCardList
             coins={cashCoins}
             onCoinSelect={onCoinSelect}
-            showBalance={activeControl === "sell"}
+            showBalance={transactionType === "sell"}
           ></CoinCardList>
         </section>
         <section
@@ -131,7 +146,7 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
           <CoinCardList
             coins={cryptoCoins}
             onCoinSelect={onCoinSelect}
-            showBalance={activeControl === "sell"}
+            showBalance={transactionType === "sell"}
           ></CoinCardList>
         </section>
       </div>

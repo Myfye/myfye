@@ -14,6 +14,7 @@ const Button = ({
   iconOnly,
   iconLeft = icon,
   iconRight,
+  wrap,
   expand = false,
   href,
   children,
@@ -24,11 +25,14 @@ const Button = ({
   const getIconSize = useCallback(
     (size: string, iconOnly: boolean) => {
       switch (size) {
+        case "x-small": {
+          return !iconOnly ? 18 : 20;
+        }
         case "small": {
-          return !iconOnly ? 16 : 20;
+          return !iconOnly ? 18 : 20;
         }
         case "medium": {
-          return !iconOnly ? 16 : 24;
+          return !iconOnly ? 18 : 24;
         }
         case "large": {
           return !iconOnly ? 20 : 32;
@@ -56,6 +60,7 @@ const Button = ({
       data-color={color}
       data-expand={expand}
       data-icon-only={iconOnly}
+      data-wrap={wrap}
       className={`button ${className}`}
       ref={ref}
       href={href}

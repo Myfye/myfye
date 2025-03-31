@@ -150,7 +150,7 @@ const EarnSummaryOverlay = ({ isOpen, onOpenChange }) => {
               >
                 <li>
                   <Button
-                    size="small"
+                    size="x-small"
                     icon={ArrowCircleUp}
                     onPress={() => {
                       dispatch(setSendModalOpen(true));
@@ -161,7 +161,7 @@ const EarnSummaryOverlay = ({ isOpen, onOpenChange }) => {
                 </li>
                 <li>
                   <Button
-                    size="small"
+                    size="x-small"
                     icon={ArrowCircleDown}
                     onPress={() => {
                       dispatch(setReceiveModalOpen(true));
@@ -172,7 +172,7 @@ const EarnSummaryOverlay = ({ isOpen, onOpenChange }) => {
                 </li>
                 <li>
                   <Button
-                    size="small"
+                    size="x-small"
                     icon={ArrowsLeftRight}
                     onPress={() => {
                       dispatch(setDepositModalOpen(true));

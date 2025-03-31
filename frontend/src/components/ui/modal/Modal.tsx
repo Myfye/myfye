@@ -83,6 +83,8 @@ const Modal = ({
                 max-width: var(--app-max-width);
                 width: 100%;
                 border-radius: var(--border-radius-medium);
+                border-radius-bottom-left: 0;
+                border-radius-bottom-right: 0;
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
                 background-color: var(--clr-surface);
@@ -110,50 +112,70 @@ const Modal = ({
               {...restProps}
             >
               <div
-                data-drag-affordance
                 css={css`
-                  margin-inline: auto;
-                  width: var(--size-1000);
-                  height: var(--size-075);
-                  background-color: var(--clr-neutral-300);
-                  margin-block-start: var(--size-200);
-                  border-radius: var(--border-radius-pill);
+                  display: grid;
+                  grid-template-rows: auto 1fr;
+                  height: ${height}px;
+                  gap: var(--size-200);
                 `}
-              />
-              <Dialog aria-labelledby={id}>
-                <header
+              >
+                <div
+                  data-drag-affordance
                   css={css`
-                    position: relative;
-                    padding-inline: var(--size-200);
-                    padding-block-start: var(--size-200);
+                    margin-inline: auto;
+                    width: var(--size-1000);
+                    height: var(--size-075);
+                    background-color: var(--clr-neutral-300);
+                    margin-block-start: var(--size-200);
+                    border-radius: var(--border-radius-pill);
+                  `}
+                />
+                <Dialog
+                  aria-labelledby={id}
+                  css={css`
+                    display: grid;
+                    grid-template-rows: auto 1fr;
                   `}
                 >
-                  <p
-                    className="heading-medium"
+                  <header
                     css={css`
-                      text-align: center;
+                      position: relative;
+                      padding-inline: var(--size-200);
                     `}
-                    id={id}
                   >
-                    {title}
-                  </p>
-                  <Button
-                    onPress={() => onOpenChange(false)}
-                    iconOnly
-                    variant="transparent"
-                    icon={X}
+                    <p
+                      className="heading-medium"
+                      css={css`
+                        text-align: center;
+                      `}
+                      id={id}
+                    >
+                      {title}
+                    </p>
+                    <Button
+                      onPress={() => onOpenChange(false)}
+                      iconOnly
+                      variant="transparent"
+                      icon={X}
+                      css={css`
+                        position: absolute;
+                        inset: 0;
+                        top: var(--size-200);
+                        left: auto;
+                        right: var(--size-100);
+                        margin: auto;
+                      `}
+                    ></Button>
+                  </header>
+                  <main
                     css={css`
-                      position: absolute;
-                      inset: 0;
-                      top: var(--size-200);
-                      left: auto;
-                      right: var(--size-100);
-                      margin: auto;
+                      container: modal-content / size;
                     `}
-                  ></Button>
-                </header>
-                <main>{children}</main>
-              </Dialog>
+                  >
+                    {children}
+                  </main>
+                </Dialog>
+              </div>
             </MotionModal>
           </MotionModalOverlay>
         )}

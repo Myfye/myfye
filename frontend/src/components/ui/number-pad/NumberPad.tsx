@@ -16,7 +16,7 @@ import {
 import { css } from "@emotion/react";
 import NumberPadButton from "./NumberPadButton";
 
-const NumberPad = ({ onChange }) => {
+const NumberPad = ({ onNumberPress, onNumberPressStart, onNumberPressEnd }) => {
   const buttons = [
     { id: "1", icon: "1", value: "1" },
     { id: "2", icon: "2", value: "2" },
@@ -37,7 +37,6 @@ const NumberPad = ({ onChange }) => {
       className="number-pad-container"
       css={css`
         background-color: var(--clr-surface);
-        border-top: 1px solid var(--clr-border-neutral);
       `}
     >
       <ul
@@ -50,6 +49,7 @@ const NumberPad = ({ onChange }) => {
       >
         {buttons.map((button) => (
           <li
+            key={button.id}
             className="number-pad-button-wrapper"
             css={css`
               display: grid;
@@ -58,8 +58,9 @@ const NumberPad = ({ onChange }) => {
           >
             <NumberPadButton
               icon={button.icon}
-              key={button.id}
-              onPress={() => onChange(button.value)}
+              onPress={() => onNumberPress(button.value)}
+              onPressStart={() => onNumberPressStart(button.value)}
+              onPressEnd={() => onNumberPressEnd(button.value)}
             />
           </li>
         ))}

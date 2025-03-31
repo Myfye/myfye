@@ -48,12 +48,13 @@ const WalletCardList = ({ ...restProps }) => {
         icon: CryptoIcon,
         action: () => dispatch(setCryptoSummaryOverlayOpen(true)),
       },
-      { label: "Stocks", id: "stocks", precentChange: 0, icon: StocksIcon },
       {
-        label: "Wallet Info",
-        id: "wallet_info",
-        percentChange: 0,
-        icon: WalletIcon,
+        label: "Stocks",
+        id: "stocks",
+        balance: 0,
+        precentChange: 0.0292,
+        icon: StocksIcon,
+        action: () => dispatch(setCryptoSummaryOverlayOpen(true)),
       },
     ],
     [cryptoBalanceInUSD, cashBalanceInUSD, usdyBalanceInUSD]

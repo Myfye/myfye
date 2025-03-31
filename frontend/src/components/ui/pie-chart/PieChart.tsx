@@ -16,6 +16,12 @@ const captionStyle = {
   fill: "var(--clr-text-weaker)",
   fontSize: 14,
 };
+const heading2Style = {
+  fontWeight: "500",
+  fontFamily: "Inter",
+  fill: "var(--clr-text)",
+  fontSize: 16,
+};
 
 const BalanceTitle = ({ centerX, centerY }) => {
   const { totalBalanceInUSD } = useBalance();
@@ -57,18 +63,18 @@ const EarnTitle = ({ centerX, centerY }) => {
       <text
         textAnchor="middle"
         x={centerX}
-        y={centerY - 4}
-        style={headingStyle}
+        y={centerY - 5}
+        style={heading2Style}
       >
         Earn
       </text>
       <text
         textAnchor="middle"
         x={centerX}
-        y={centerY + 18}
-        style={headingStyle}
+        y={centerY + 17}
+        style={heading2Style}
       >
-        breakdown
+        Breakdown
       </text>
     </>
   );
@@ -91,7 +97,7 @@ const PieChart = ({ type, data }) => (
         "legends",
         type === "earn" ? EarnTitle : BalanceTitle,
       ]}
-      margin={{ top: 24, right: 0, bottom: 24, left: -165 }}
+      margin={{ top: 24, right: 120, bottom: 24, left: 0 }}
       valueFormat=" >-$"
       innerRadius={0.55}
       padAngle={0.7}
@@ -120,7 +126,7 @@ const PieChart = ({ type, data }) => (
           anchor: "right",
           direction: "column",
           justify: false,
-          translateX: -30,
+          translateX: 130,
           translateY: 0,
           itemsSpacing: 8,
           itemWidth: 100,

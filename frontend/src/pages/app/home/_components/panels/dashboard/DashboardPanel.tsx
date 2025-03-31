@@ -95,7 +95,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
         >
           <li>
             <Button
-              size="small"
+              size="x-small"
               icon={ArrowCircleUpIcon}
               onPress={() => {
                 dispatch(setSendModalOpen(true));
@@ -106,7 +106,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
           </li>
           <li>
             <Button
-              size="small"
+              size="x-small"
               icon={ArrowCircleDownIcon}
               onPress={() => {
                 dispatch(setReceiveModalOpen(true));
@@ -117,7 +117,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
           </li>
           <li>
             <Button
-              size="small"
+              size="x-small"
               icon={ArrowLineUpIcon}
               onPress={() => {
                 dispatch(setDepositModalOpen(true));
@@ -128,7 +128,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
           </li>
           <li>
             <Button
-              size="small"
+              size="x-small"
               icon={ArrowLineDownIcon}
               onPress={() => {
                 dispatch(setWithdrawModalOpen(true));
@@ -139,7 +139,12 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
           </li>
         </menu>
       </section>
-      <section className="pie-chart-container" css={css``}>
+      <section
+        className="pie-chart-container"
+        css={css`
+          padding-inline: var(--size-250);
+        `}
+      >
         {totalBalance === 0 ? (
           <div
             css={css`
@@ -147,7 +152,7 @@ const DashboardPanel = ({ cryptoBalanceInUSD, cashBalanceInUSD }) => {
               flex-direction: column;
               align-items: center;
               justify-content: center;
-              margin-block-start: var(--size-500);
+              margin-block-start: var(--size-200);
             `}
           >
             <div

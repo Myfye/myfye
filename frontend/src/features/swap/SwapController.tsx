@@ -1,15 +1,7 @@
 import { ArrowDown, CaretRight } from "@phosphor-icons/react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useEffect, useMemo } from "react";
-import {
-  Button as AriaButton,
-  ButtonContext,
-  useContextProps,
-} from "react-aria-components";
-import { useButton } from "react-aria";
-import { motion } from "motion/react";
+import { useMemo } from "react";
 
 import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
 import solIcon from "@/assets/svgs/coins/sol-coin.svg";
@@ -20,12 +12,9 @@ import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { formatGhostAmountLabel } from "./utils";
-import {
-  changeAmountLabel,
-  setActiveControl,
-  toggleOverlay,
-} from "./swapSlice";
+import { changeAmountLabel, toggleOverlay } from "./swapSlice";
 import Button from "@/components/ui/button/Button";
+import TextFit from "@/shared/components/TextFit";
 
 type Coin = {
   id: string;
@@ -37,14 +26,6 @@ type Coin = {
 };
 
 const CoinSelectButton = ({ coin, ref, ...restProps }) => {
-  const [restPropsButton, refButton] = useContextProps(
-    restProps,
-    ref,
-    ButtonContext
-  );
-
-  let { buttonProps, isPressed } = useButton(restPropsButton, refButton);
-
   const currentCoin = useMemo(() => {
     switch (coin) {
       case "btc": {
@@ -110,33 +91,13 @@ const CoinSelectButton = ({ coin, ref, ...restProps }) => {
   }, [coin]);
 
   return (
-    <motion.button
-      className="coin-select-button"
-      css={css`
-        display: inline-flex;
-        align-items: center;
-        height: 3rem;
-        min-height: 3rem;
-        gap: var(--control-gap-medium);
-        background-color: ${currentCoin.backgroundColor};
-        border: 1px solid ${currentCoin.borderColor};
-        color: ${currentCoin.color};
-        font-weight: var(--fw-active);
-        border-radius: var(--border-radius-medium);
-        padding: var(--size-100);
-      `}
-      {...buttonProps}
-      ref={ref}
-      animate={{
-        scale: isPressed ? 0.95 : 1,
-      }}
-    >
+    <Button size="small" color="neutral" {...restProps}>
       {coin && (
         <img
           src={currentCoin.img}
           alt=""
           css={css`
-            width: var(--size-300);
+            width: 24px;
             aspect-ratio: 1;
             border-radius: var(--border-radius-circle);
           `}
@@ -152,20 +113,16 @@ const CoinSelectButton = ({ coin, ref, ...restProps }) => {
       >
         {currentCoin.name}
       </span>
-      <CaretRight color={currentCoin.iconColor} size={16} weight="bold" />
-    </motion.button>
+      <CaretRight color="var(--clr-icon)" size={16} weight="bold" />
+    </Button>
   );
 };
 
-const SwapControl = ({
-  control,
-  onInputClick,
-  onSelectCoinClick,
-  value,
-  coin,
-}) => {
+const SwapControl = ({ control, onSelectCoin, value, coin }) => {
   const dispatch = useDispatch();
   const ghostValue = useMemo(() => formatGhostAmountLabel(value), [value]);
+  const valueArr = useMemo(() => value.split(""), [value]);
+  const ghostValueArr = useMemo(() => ghostValue.split(""), [ghostValue]);
   return (
     <div
       className="swap-control"
@@ -175,6 +132,7 @@ const SwapControl = ({
         background-color: var(--clr-surface-raised);
         box-shadow: var(--box-shadow-card);
         border-radius: var(--border-radius-medium);
+        container: swap-control / inline-size;
       `}
     >
       <div className="select-value">
@@ -188,41 +146,54 @@ const SwapControl = ({
           {control === "buy" ? "Buy" : "Sell"}
         </p>
         <div
-          className="input-wrapper"
+          className="value-wrapper"
           css={css`
             margin-block-start: var(--size-050);
             position: relative;
             isolation: isolate;
             color: var(--clr-text);
-            font-size: var(--fs-x-large);
             line-height: var(--line-height-tight);
             font-weight: var(--fw-active);
-            font-family: var(--font-family-mono);
+            letter-spacing: 0.01em;
+            overflow: hidden;
+            > * {
+              display: flex;
+              align-items: center;
+              width: calc(50cqi + var(--size-100));
+              height: calc(28px * var(--line-height-tight));
+            }
           `}
         >
-          <span
+          <p
             aria-hidden="true"
             css={css`
               position: absolute;
+              z-index: 1;
               top: 50%;
               left: 0;
               transform: translateY(-50%);
               color: var(--clr-text-weakest);
             `}
           >
-            {ghostValue}
-          </span>
-          <input
+            <TextFit maxFontSize="28px">
+              {ghostValueArr.map((val, i) => {
+                return <span key={`ghost-value-${i}`}>{val}</span>;
+              })}
+            </TextFit>
+          </p>
+          <p
             css={css`
               position: relative;
-              width: 100%;
-              z-index: 1;
+              z-index: 2;
+              min-height: 1em;
             `}
-            onClick={onInputClick}
-            readOnly
-            value={value}
-            type="text"
-          />
+          >
+            <TextFit maxFontSize="28px">
+              {valueArr.map((val, i) => {
+                return <span key={`value-${i}`}>{val}</span>;
+              })}
+            </TextFit>
+          </p>
         </div>
         <p
           css={css`
@@ -252,18 +223,18 @@ const SwapControl = ({
         <li>
           <CoinSelectButton
             coin={coin}
-            onPress={onSelectCoinClick}
+            onPress={onSelectCoin}
           ></CoinSelectButton>
         </li>
         <li>
           {control === "sell" && (
             <Button
-              size="small"
+              size="x-small"
               color="neutral"
               onPress={() => {
                 dispatch(
                   changeAmountLabel({
-                    type: "sell",
+                    transactionType: "sell",
                     input: "999",
                     replace: true,
                   })
@@ -306,10 +277,14 @@ const SwapController = () => {
         control="sell"
         coin={sellCoin}
         value={sellAmountLabel}
-        onInputClick={() => void dispatch(setActiveControl("sell"))}
-        onSelectCoinClick={() => {
-          dispatch(setActiveControl("sell"));
-          dispatch(toggleOverlay({ type: "selectCoin", isOpen: true }));
+        onSelectCoin={() => {
+          dispatch(
+            toggleOverlay({
+              type: "selectCoin",
+              isOpen: true,
+              transactionType: "sell",
+            })
+          );
         }}
       />
       <div
@@ -332,10 +307,14 @@ const SwapController = () => {
         control="buy"
         coin={buyCoin}
         value={buyAmountLabel}
-        onInputClick={() => void dispatch(setActiveControl("buy"))}
-        onSelectCoinClick={() => {
-          dispatch(setActiveControl("buy"));
-          dispatch(toggleOverlay({ type: "selectCoin", isOpen: true }));
+        onSelectCoin={() => {
+          dispatch(
+            toggleOverlay({
+              type: "selectCoin",
+              isOpen: true,
+              transactionType: "buy",
+            })
+          );
         }}
       />
     </div>

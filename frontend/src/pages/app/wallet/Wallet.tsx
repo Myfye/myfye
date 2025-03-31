@@ -10,6 +10,7 @@ import {
   setWithdrawModalOpen,
 } from "@/redux/modalReducers.tsx";
 import NumberPad from "@/components/ui/number-pad/NumberPad.tsx";
+import { ArrowSquareOut, Link } from "@phosphor-icons/react";
 
 const Wallet = () => {
   const dispatch = useDispatch();
@@ -50,10 +51,29 @@ const Wallet = () => {
       >
         <WalletCardList />
       </section>
+      <section>
+        <a
+          href="/"
+          css={css`
+            display: flex;
+            align-items: center;
+            gap: var(--control-gap-medium);
+            text-align: center;
+            font-size: var(--fs-small);
+            line-height: var(--line-height-tight);
+            color: var(--clr-text-weaker);
+            margin-inline: auto;
+            width: fit-content;
+            font-weight: var(--fw-active);
+          `}
+        >
+          Show wallet info <ArrowSquareOut size={18} />
+        </a>
+      </section>
       <section
         css={css`
           margin-block-start: var(--size-400);
-          margin-block-end: var(--size-300);
+          margin-block-end: var(--size-250);
           margin-inline: var(--size-250);
         `}
       >
