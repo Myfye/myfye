@@ -23,7 +23,7 @@ import {
 } from "@phosphor-icons/react";
 import CoinCardList from "@/components/ui/coin-card/CoinCardList";
 
-const CryptoSummaryOverlay = ({ isOpen, onOpenChange }) => {
+const CryptoOverlay = ({ isOpen, onOpenChange }) => {
   const { cryptoBalanceInUSD, solBalanceInUSD, btcBalanceInUSD } = useBalance();
   const dispatch = useDispatch();
 
@@ -187,4 +187,4 @@ const CryptoSummaryOverlay = ({ isOpen, onOpenChange }) => {
   );
 };
 
-export default CryptoSummaryOverlay;
+export default CryptoOverlay;

@@ -3,7 +3,6 @@ import {
   PiggyBank as EarnIcon,
   Money as CashIcon,
   ChartLineUp as StocksIcon,
-  Wallet as WalletIcon,
 } from "@phosphor-icons/react";
 import WalletCard from "./WalletCard";
 
@@ -13,6 +12,7 @@ import useBalance from "@/hooks/useBalance";
 import { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import {
+  setCashOverlayOpen,
   setCryptoSummaryOverlayOpen,
   setEarnSummaryOverlayOpen,
 } from "@/redux/overlayReducers";
@@ -30,7 +30,7 @@ const WalletCardList = ({ ...restProps }) => {
         balance: cashBalanceInUSD,
         percentChange: -0.012,
         icon: CashIcon,
-        action: () => dispatch(setCryptoSummaryOverlayOpen(true)),
+        action: () => dispatch(setCashOverlayOpen(true)),
       },
       {
         label: "Earn",

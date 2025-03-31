@@ -160,7 +160,6 @@ const Modal = ({
                       css={css`
                         position: absolute;
                         inset: 0;
-                        top: var(--size-200);
                         left: auto;
                         right: var(--size-100);
                         margin: auto;

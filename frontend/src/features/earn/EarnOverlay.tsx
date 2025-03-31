@@ -23,7 +23,58 @@ import {
 } from "@phosphor-icons/react";
 import CoinCardList from "@/components/ui/coin-card/CoinCardList";
 
-const EarnSummaryOverlay = ({ isOpen, onOpenChange }) => {
+const pieChartData = [
+  {
+    id: "First Citizens - Bank Deposits",
+    label: "First Citizens - Bank Deposits",
+    value: 0.7,
+    color: "var(--clr-green-500)",
+  },
+  {
+    id: "StoneX - US T-Bills",
+    label: "StoneX - US T-Bills",
+    value: 0.16,
+    color: "var(--clr-blue-300)",
+  },
+  {
+    id: "Morgan Stanley - Bank Deposits",
+    label: "Morgan Stanley - Bank Deposits",
+    value: 0.06,
+    color: "var(--clr-blue-500)",
+  },
+  {
+    id: "StoneX - Cash & Equivalents",
+    label: "StoneX - Cash & Equivalents",
+    value: 0.06,
+    color: "var(--clr-blue-700)",
+  },
+  {
+    id: "Morgan Stanley - US T-Notes",
+    label: "Morgan Stanley - US T-Notes",
+    value: 0.05,
+    color: "var(--clr-green-700)",
+  },
+  {
+    id: "StoneX - US T-Notes",
+    label: "StoneX - US T-Notes",
+    value: 0.03,
+    color: "var(--clr-blue-400)",
+  },
+  {
+    id: "First Citizens - Cash & Cash Deposits",
+    label: "First Citizens - Cash & Cash Deposits",
+    value: 0.02,
+    color: "var(--clr-green-400)",
+  },
+  {
+    id: "Morgan Stanley - Cash & Cash Deposits",
+    label: "Morgan Stanley - Cash & Cash Deposits",
+    value: 0,
+    color: "var(--clr-green-300)",
+  },
+];
+
+const EarnOverlay = ({ isOpen, onOpenChange }) => {
   const { cashBalanceInUSD, usdyBalanceInUSD, eurcBalanceInUSD } = useBalance();
 
   const dispatch = useDispatch();
@@ -61,38 +112,6 @@ const EarnSummaryOverlay = ({ isOpen, onOpenChange }) => {
     ],
     [usdtSolBalance, usdyBalanceInUSD, eurcSolBalance]
   );
-
-  const pieChartData = useMemo(() => {
-    const data = [];
-    if (usdtSolBalance > 0) {
-      const usdtData = {
-        id: "USD",
-        label: "USD",
-        value: usdtSolBalance,
-        color: "var(--clr-pie-chart-usdt)",
-      };
-      data.push(usdtData);
-    }
-    if (eurcBalanceInUSD > 0) {
-      const eurcData = {
-        id: "Euros",
-        label: "Euros",
-        value: eurcBalanceInUSD,
-        color: "var(--clr-pie-chart-eurc)",
-      };
-      data.push(eurcData);
-    }
-    if (usdyBalanceInUSD > 0) {
-      const usdyData = {
-        id: "US Treasury Bonds",
-        label: "US Treasury Bonds",
-        value: usdyBalanceInUSD,
-        color: "var(--clr-pie-chart-usdy)",
-      };
-      data.push(usdyData);
-    }
-    return data;
-  }, [usdyBalanceInUSD, eurcBalanceInUSD, usdtSolBalance]);
 
   return (
     <>
@@ -183,7 +202,12 @@ const EarnSummaryOverlay = ({ isOpen, onOpenChange }) => {
                 </li>
               </menu>
             </section>
-            <section className="pie-chart-container">
+            <section
+              className="pie-chart-container"
+              css={css`
+                margin-inline: var(--size-250);
+              `}
+            >
               <PieChart data={pieChartData} type="earn"></PieChart>
             </section>
             <section
@@ -200,4 +224,4 @@ const EarnSummaryOverlay = ({ isOpen, onOpenChange }) => {
   );
 };
 
-export default EarnSummaryOverlay;
+export default EarnOverlay;

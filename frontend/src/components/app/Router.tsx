@@ -19,7 +19,7 @@ import { css } from "@emotion/react";
 import Footer from "./layout/footer/Footer";
 import NavMenu from "./layout/header/nav-menu/NavMenu";
 import Header from "./layout/header/Header";
-import Wallet from "@/pages/app/wallet/Wallet";
+import Wallet from "@/features/wallet/Wallet";
 import { useDispatch } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../ui/button/Button";

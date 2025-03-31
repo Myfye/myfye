@@ -12,6 +12,7 @@ import {
 } from "./modalReducers.tsx";
 import {
   cashBalanceOverlayReducer,
+  cashOverlayReducer,
   coinSummaryOverlayReducer,
   cryptoBalanceOverlayReducer,
   cryptoSummaryOverlayReducer,
@@ -60,6 +61,7 @@ const store = configureStore({
 
     earnSummaryOverlay: earnSummaryOverlayReducer,
     cryptoSummaryOverlay: cryptoSummaryOverlayReducer,
+    cashOverlay: cashOverlayReducer,
 
     // Coin overlay
     coinSummaryOverlay: coinSummaryOverlayReducer,

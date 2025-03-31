@@ -1,20 +1,16 @@
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import Button from "@/components/ui/button/Button";
-import WalletCardList from "./_components/WalletCardList.tsx";
+import WalletCardList from "./WalletCardList.tsx";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import useBalance from "@/hooks/useBalance.ts";
 import { useDispatch } from "react-redux";
 import {
   setDepositModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers.tsx";
-import NumberPad from "@/components/ui/number-pad/NumberPad.tsx";
-import { ArrowSquareOut, Link } from "@phosphor-icons/react";
 
 const Wallet = () => {
   const dispatch = useDispatch();
-  const { totalBalanceInUSD } = useBalance();
   return (
     <div
       className="wallet"
@@ -51,7 +47,7 @@ const Wallet = () => {
       >
         <WalletCardList />
       </section>
-      <section>
+      {/* <section>
         <a
           href="/"
           css={css`
@@ -69,7 +65,7 @@ const Wallet = () => {
         >
           Show wallet info <ArrowSquareOut size={18} />
         </a>
-      </section>
+      </section> */}
       <section
         css={css`
           margin-block-start: var(--size-400);
