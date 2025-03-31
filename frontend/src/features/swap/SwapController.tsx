@@ -1,7 +1,7 @@
 import { ArrowDown, CaretRight } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
 import solIcon from "@/assets/svgs/coins/sol-coin.svg";
@@ -11,7 +11,11 @@ import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { formatGhostAmountLabel } from "./utils";
+import {
+  formatAmountLabel,
+  formatGhostAmountLabel,
+  parseAmountLabel,
+} from "./utils";
 import { changeAmountLabel, toggleOverlay } from "./swapSlice";
 import Button from "@/components/ui/button/Button";
 import TextFit from "@/shared/components/TextFit";
@@ -123,6 +127,67 @@ const SwapControl = ({ control, onSelectCoin, value, coin }) => {
   const ghostValue = useMemo(() => formatGhostAmountLabel(value), [value]);
   const valueArr = useMemo(() => value.split(""), [value]);
   const ghostValueArr = useMemo(() => ghostValue.split(""), [ghostValue]);
+
+  const walletData = useSelector((state: RootState) => state.userWalletData);
+
+  const numAmount = parseAmountLabel(value);
+
+  const getCoinAmount = () => {
+    switch (coin) {
+      case "btc": {
+        return walletData.btcSolBalance;
+      }
+      case "sol": {
+        return walletData.solBalance;
+      }
+      case "usdt": {
+        return walletData.usdtSolBalance;
+      }
+      case "usdy": {
+        return walletData.usdySolBalance;
+      }
+      case "eurc": {
+        return walletData.eurcSolBalance;
+      }
+      default: {
+        return 0;
+      }
+    }
+  };
+  const amount = getCoinAmount();
+
+  const valueInUSD = () => {
+    if (value === "") return 0;
+    switch (coin) {
+      case "btc": {
+        return numAmount * walletData.priceOfBTCinUSDC;
+      }
+      case "sol": {
+        return numAmount * 1;
+      }
+      case "usdt": {
+        return numAmount;
+      }
+      case "usdy": {
+        return numAmount * walletData.priceOfUSDYinUSDC;
+      }
+      case "eurc": {
+        return numAmount * walletData.priceOfEURCinUSDC;
+      }
+      default: {
+        return 0;
+      }
+    }
+  };
+
+  const _valueInUSD = valueInUSD();
+
+  const usdAmount = new Intl.NumberFormat("en-EN", {
+    currency: "usd",
+    style: "currency",
+    maximumFractionDigits: _valueInUSD > Math.floor(_valueInUSD) ? 2 : 0,
+  }).format(_valueInUSD);
+
   return (
     <div
       className="swap-control"
@@ -203,7 +268,7 @@ const SwapControl = ({ control, onSelectCoin, value, coin }) => {
             line-height: var(--line-height-tight);
           `}
         >
-          $0
+          {usdAmount}
         </p>
       </div>
       <menu
@@ -234,8 +299,7 @@ const SwapControl = ({ control, onSelectCoin, value, coin }) => {
               onPress={() => {
                 dispatch(
                   changeAmountLabel({
-                    transactionType: "sell",
-                    input: "999",
+                    input: `${amount}`,
                     replace: true,
                   })
                 );

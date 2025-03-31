@@ -1,10 +1,17 @@
-export const formatAmountLabel = (amountLabel: string, input: string) => {
+export const formatAmountLabel = (
+  amountLabel: string,
+  input: string,
+  replace?: boolean
+) => {
+  if (replace)
+    return parseAmountLabel(input).toLocaleString("en-EN", {
+      maximumFractionDigits: 8,
+    });
   switch (input) {
     case "delete": {
       if (amountLabel === "0.") return "";
       amountLabel = amountLabel.slice(0, -1);
       const parsedLabel = parseAmountLabel(amountLabel);
-      console.log(parsedLabel);
       amountLabel = isNaN(parsedLabel) ? (amountLabel = "") : amountLabel;
       if (!amountLabel) return amountLabel;
       amountLabel = parseAmountLabel(amountLabel).toLocaleString("en-EN", {

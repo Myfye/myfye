@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { formatAmountLabel } from "./utils";
+import { formatAmountLabel, parseAmountLabel } from "./utils";
 
 export type TransactionType = "buy" | "sell";
 
@@ -83,26 +83,34 @@ const swapSlice = createSlice({
     changeAmountLabel(
       state,
       action: PayloadAction<{
-        transactionType: TransactionType;
         input: string;
         replace?: true;
+        coinConversion?: number;
       }>
     ) {
-      state[action.payload.transactionType].amountLabel = action.payload.replace
-        ? action.payload.input
-        : formatAmountLabel(
-            state[action.payload.transactionType].amountLabel,
-            action.payload.input
-          );
+      const formattedAmount = formatAmountLabel(
+        state.sell.amountLabel,
+        action.payload.input,
+        action.payload?.replace
+      );
+      state.sell.amountLabel = formattedAmount;
+
+      if (action.payload.coinConversion) {
+        const numAmount = parseAmountLabel(formattedAmount);
+        state.buy.amountLabel = formatAmountLabel(
+          state.buy.amountLabel,
+          `${numAmount * action.payload.coinConversion}`,
+          true
+        );
+      }
     },
     changeAmount(
       state,
       action: PayloadAction<{
-        transactionType: TransactionType;
         amount: number;
       }>
     ) {
-      state[action.payload.transactionType].amount = action.payload.amount;
+      state.sell.amount = action.payload.amount;
     },
     setCoin(
       state,
