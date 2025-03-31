@@ -70,7 +70,7 @@ const swapSlice = createSlice({
       action: PayloadAction<{
         type: "buy" | "sell";
         input: string;
-        replace: true;
+        replace?: true;
       }>
     ) {
       state[action.payload.type].amountLabel = action.payload.replace
