@@ -26,6 +26,12 @@ const SwapModal = () => {
 
   const isOpen = useSelector((state: RootState) => state.swap.modal.isOpen);
 
+  const userWalletData = useSelector(
+    (state: RootState) => state.userWalletData
+  );
+
+  const sellCoin = useSelector((state: RootState) => state.swap.sell.coin);
+
   const buyAmountLabel = useSelector(
     (state: RootState) => state.swap.buy.amountLabel
   );
@@ -73,7 +79,8 @@ const SwapModal = () => {
   };
 
   const handleSwapControllerConfirmation = useCallback(() => {
-    dispatch(changeAmount({ amount: buyAmount }));
+    dispatch(changeAmount({ transactionType: "sell", amount: sellAmount }));
+    dispatch(changeAmount({ transactionType: "buy", amount: buyAmount }));
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
   }, [buyAmount, sellAmount, changeAmount, toggleOverlay, dispatch]);
 

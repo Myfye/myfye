@@ -85,7 +85,6 @@ const swapSlice = createSlice({
       action: PayloadAction<{
         input: string;
         replace?: true;
-        coinConversion?: number;
       }>
     ) {
       const formattedAmount = formatAmountLabel(
@@ -95,22 +94,29 @@ const swapSlice = createSlice({
       );
       state.sell.amountLabel = formattedAmount;
 
-      if (action.payload.coinConversion) {
+      if (state.buy.coin) {
         const numAmount = parseAmountLabel(formattedAmount);
-        state.buy.amountLabel = formatAmountLabel(
-          state.buy.amountLabel,
-          `${numAmount * action.payload.coinConversion}`,
-          true
-        );
+
+        // coin conversion rate
+        let coinConversionRate = 1.2;
+
+        state.buy.amountLabel = isNaN(numAmount)
+          ? ""
+          : formatAmountLabel(
+              state.buy.amountLabel,
+              `${numAmount * coinConversionRate}`,
+              true
+            );
       }
     },
     changeAmount(
       state,
       action: PayloadAction<{
+        transactionType: TransactionType;
         amount: number;
       }>
     ) {
-      state.sell.amount = action.payload.amount;
+      state[action.payload.transactionType].amount = action.payload.amount;
     },
     setCoin(
       state,
