@@ -143,9 +143,12 @@ const swapSlice = createSlice({
 
       // once that's done, get the exchange rate and multiply that buy the amount
 
-      // if no exchange rate or sell amount, don't bother calculating the buy amounts
-      if (!state.transaction.sell.amount || !state.transaction.exchangeRate)
+      // if no exchange rate or sell amount, don't bother calculating the buy amounts and reset them
+      if (!state.transaction.sell.amount || !state.transaction.exchangeRate) {
+        state.transaction.buy.amount = null;
+        state.transaction.buy.formattedAmount = "";
         return state;
+      }
 
       state.transaction.buy.amount =
         state.transaction.sell.amount * state.transaction.exchangeRate;
@@ -180,9 +183,12 @@ const swapSlice = createSlice({
         sellCoinId: action.payload.sellCoinId,
       });
 
-      // if no exchange rate or sell amount, don't bother calculating the buy amounts
-      if (!state.transaction.sell.amount || !state.transaction.exchangeRate)
+      // if no exchange rate or sell amount, don't bother calculating the buy amounts and reset them
+      if (!state.transaction.sell.amount || !state.transaction.exchangeRate) {
+        state.transaction.buy.amount = null;
+        state.transaction.buy.formattedAmount = "";
         return state;
+      }
 
       // then just update the buyAmount
       state.transaction.buy.amount =
