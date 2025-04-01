@@ -73,7 +73,7 @@ const SwapModal = () => {
         zIndex={1000}
         onAnimationComplete={() => {
           if (!isOpen) {
-            dispatch(unmount());
+            dispatch(unmount(undefined));
           }
         }}
       >
