@@ -1,40 +1,49 @@
-export const formatAmountLabel = (amountLabel: string, input: string) => {
-  console.log(amountLabel, input);
+export const formatAmountLabel = (
+  amountLabel: string,
+  input: string,
+  replace?: boolean
+) => {
+  if (replace)
+    return parseAmountLabel(input).toLocaleString("en-EN", {
+      maximumFractionDigits: 8,
+    });
   switch (input) {
     case "delete": {
-      if (amountLabel.length === 1) {
-        return "0";
-      }
-      const newStr = amountLabel.slice(0, -1);
-      if (!newStr.includes(",")) return newStr.length === 0 ? "0" : newStr;
-      return amountLabel;
+      if (amountLabel === "0.") return "";
+      amountLabel = amountLabel.slice(0, -1);
+      const parsedLabel = parseAmountLabel(amountLabel);
+      amountLabel = isNaN(parsedLabel) ? (amountLabel = "") : amountLabel;
+      if (!amountLabel) return amountLabel;
+      amountLabel = parseAmountLabel(amountLabel).toLocaleString("en-EN", {
+        maximumFractionDigits: 8,
+      });
+      return amountLabel.length === 0 ? "" : amountLabel;
     }
     case ".": {
+      if (amountLabel.length === 0) return "0.";
       if (!amountLabel.includes(".")) return amountLabel + ".";
       return amountLabel;
     }
     default:
+      if (input === "0" && amountLabel.length === 0) return "0.";
       if (amountLabel.length === 1 && amountLabel[0] === "0") {
         return input;
       }
-      return amountLabel + input;
+      amountLabel = amountLabel + input;
+
+      amountLabel = parseAmountLabel(amountLabel).toLocaleString("en-EN", {
+        maximumFractionDigits: 8,
+      });
+      return amountLabel;
   }
 };
 
 export const formatGhostAmountLabel = (amountLabel: string) => {
   switch (amountLabel.length) {
     case 0:
-      return "0.00";
-    case 1:
-      return amountLabel[0] !== "0" ? `${amountLabel[0]}.00` : "0.00";
-    case 2:
-      return amountLabel[1] !== "." ? amountLabel : `${amountLabel[0]}.00`;
-    case 3:
-      return amountLabel[1] === "."
-        ? `${amountLabel[0]}.${amountLabel[2]}0`
-        : amountLabel;
+      return "0";
     default:
-      return "";
+      return amountLabel;
   }
 };
 

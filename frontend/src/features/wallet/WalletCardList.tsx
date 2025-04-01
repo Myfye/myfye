@@ -1,8 +1,8 @@
 import {
   Coins as CryptoIcon,
   PiggyBank as EarnIcon,
+  Money as CashIcon,
   ChartLineUp as StocksIcon,
-  Wallet as WalletIcon,
 } from "@phosphor-icons/react";
 import WalletCard from "./WalletCard";
 
@@ -12,15 +12,34 @@ import useBalance from "@/hooks/useBalance";
 import { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import {
+  setCashOverlayOpen,
   setCryptoSummaryOverlayOpen,
   setEarnSummaryOverlayOpen,
 } from "@/redux/overlayReducers";
 
 const WalletCardList = ({ ...restProps }) => {
-  const { cryptoBalanceInUSD, cashBalanceInUSD } = useBalance();
+  const { cryptoBalanceInUSD, cashBalanceInUSD, usdyBalanceInUSD } =
+    useBalance();
   const dispatch = useDispatch();
   const cards = useMemo(
     () => [
+      ,
+      {
+        label: "Cash",
+        id: "cash",
+        balance: cashBalanceInUSD,
+        percentChange: -0.012,
+        icon: CashIcon,
+        action: () => dispatch(setCashOverlayOpen(true)),
+      },
+      {
+        label: "Earn",
+        id: "earn",
+        balance: usdyBalanceInUSD,
+        percentChange: -0.0212,
+        icon: EarnIcon,
+        action: () => dispatch(setEarnSummaryOverlayOpen(true)),
+      },
       {
         label: "Crypto",
         id: "crypto",
@@ -30,22 +49,15 @@ const WalletCardList = ({ ...restProps }) => {
         action: () => dispatch(setCryptoSummaryOverlayOpen(true)),
       },
       {
-        label: "Earn",
-        id: "earn",
-        balance: cashBalanceInUSD,
-        percentChange: -0.0212,
-        icon: EarnIcon,
-        action: () => dispatch(setEarnSummaryOverlayOpen(true)),
-      },
-      { label: "Stocks", id: "stocks", precentChange: 0, icon: StocksIcon },
-      {
-        label: "Wallet Info",
-        id: "wallet_info",
-        percentChange: 0,
-        icon: WalletIcon,
+        label: "Stocks",
+        id: "stocks",
+        balance: 0,
+        precentChange: 0.0292,
+        icon: StocksIcon,
+        action: () => dispatch(setCryptoSummaryOverlayOpen(true)),
       },
     ],
-    [cryptoBalanceInUSD, cashBalanceInUSD]
+    [cryptoBalanceInUSD, cashBalanceInUSD, usdyBalanceInUSD]
   );
   return (
     <div className="wallet-card-list-container" {...restProps}>

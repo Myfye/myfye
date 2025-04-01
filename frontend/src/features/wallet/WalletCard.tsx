@@ -60,7 +60,7 @@ const WalletCard = ({
         width: 100%;
         aspect-ratio: 1;
         padding: var(--size-200);
-        background-color: var(--clr-surface);
+        background-color: var(--clr-surface-raised);
         box-shadow: var(--box-shadow-card);
         border-radius: var(--border-radius-medium);
       `}
@@ -70,72 +70,41 @@ const WalletCard = ({
         scale: isPressed ? 0.97 : 1,
       }}
     >
-      <p
-        className="heading-small"
-        css={css`
-          margin-block-end: var(--size-200);
-        `}
-      >
-        {title}
-      </p>
+      <p className="heading-small">{title}</p>
       <div
         className="icon-wrapper"
         css={css`
-          width: min(30cqw, var(--size-600));
-          margin-block-end: auto;
+          width: 32cqw;
         `}
       >
-        {Icon && <Icon size="100%" color="var(--clr-accent)" />}
+        {Icon && <Icon size="100%" color="var(--clr-accent)" weight="light" />}
       </div>
-      {!isNaN(balance) ? (
-        <div>
+      <div>
+        <p className="balance | heading-medium">{formattedBalance}</p>
+        {!isNaN(percentChange) && (
           <p
-            className="balance | heading-medium"
+            className="percent-change"
             css={css`
-              margin-block-start: var(--size-150);
+              display: inline-flex;
+              align-items: center;
+              gap: var(--size-050);
+              font-size: var(--fs-small);
+              margin-block-start: var(--size-050);
+              font-weight: var(--fw-active);
+              color: ${percentChange > 0
+                ? "var(--clr-text-success)"
+                : "var(--clr-text-danger)"};
             `}
           >
-            {formattedBalance}
+            {percentChange > 0 ? (
+              <CaretUp color="var(--clr-text-success)" weight="fill" />
+            ) : (
+              <CaretDown color="var(--clr-text-danger)" weight="fill" />
+            )}
+            {formattedPercentChange}
           </p>
-          {!isNaN(percentChange) && (
-            <p
-              className="percent-change"
-              css={css`
-                display: inline-flex;
-                align-items: center;
-                gap: var(--size-050);
-                font-size: var(--fs-small);
-                margin-block-start: var(--size-050);
-                font-weight: var(--fw-active);
-                color: ${percentChange > 0
-                  ? "var(--clr-text-success)"
-                  : "var(--clr-text-danger)"};
-              `}
-            >
-              {percentChange > 0 ? (
-                <CaretUp color="var(--clr-text-success)" weight="fill" />
-              ) : (
-                <CaretDown color="var(--clr-text-danger)" weight="fill" />
-              )}
-              {formattedPercentChange}
-            </p>
-          )}
-        </div>
-      ) : (
-        <p
-          className="caption-medium"
-          css={css`
-            display: inline-flex;
-            align-items: center;
-            justify-content: space-between;
-            color: var(--clr-text-weak);
-            margin-block-start: auto;
-          `}
-        >
-          Show more
-          <CaretRightIcon />
-        </p>
-      )}
+        )}
+      </div>
     </motion.button>
   );
 };

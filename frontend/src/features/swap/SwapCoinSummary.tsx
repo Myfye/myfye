@@ -108,7 +108,7 @@ const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
             color: var(--clr-text-weaker);
           `}
         >
-          2 {_coin.type}
+          {_coin.type}
         </p>
       </div>
     </div>

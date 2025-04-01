@@ -141,6 +141,15 @@ export const swapOverlaySlice = createSlice({
     },
   },
 });
+export const cashOverlaySlice = createSlice({
+  name: "cashOverlaySlice",
+  initialState: { isOpen: false },
+  reducers: {
+    setOpen: (state, action) => {
+      state.isOpen = action.payload;
+    },
+  },
+});
 
 // Reducers
 export const withdrawFiatOverlayReducer = withdrawFiatOverlaySlice.reducer;
@@ -157,6 +166,7 @@ export const earnSummaryOverlayReducer = earnSummaryOverlaySlice.reducer;
 export const cryptoSummaryOverlayReducer = cryptoSummaryOverlaySlice.reducer;
 export const coinSummaryOverlayReducer = coinSummaryOverlaySlice.reducer;
 export const swapOverlayReducer = swapOverlaySlice.reducer;
+export const cashOverlayReducer = cashOverlaySlice.reducer;
 
 // Actions
 export const { setOpen: setWithdrawFiatOverlayOpen } =
@@ -182,3 +192,4 @@ export const { setOpen: setCryptoSummaryOverlayOpen } =
 export const { setOpen: setCoinSummaryOverlayOpen } =
   coinSummaryOverlaySlice.actions;
 export const { setOpen: setSwapOverlayOpen } = swapOverlaySlice.actions;
+export const { setOpen: setCashOverlayOpen } = cashOverlaySlice.actions;

@@ -14,7 +14,7 @@ const ReceiveModal = ({ isOpen, onOpenChange }) => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Receive"
-        height={580}
+        height={480}
       >
         <div
           className="qr-code-container"
@@ -22,28 +22,16 @@ const ReceiveModal = ({ isOpen, onOpenChange }) => {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            margin-block-start: var(--size-400);
+            justify-content: space-between;
+            height: 100%;
+            padding-inline: var(--size-200);
+            padding-block-end: var(--size-200);
+            padding-block-start: var(--size-400);
           `}
         >
           <QRCode data={pubKey} color="#000407" />
-          <p
-            css={css`
-              margin-block-start: var(--size-400);
-              color: var(--clr-text);
-              max-width: 35ch;
-              margin-inline: auto;
-              word-break: break-all;
-              white-space: normal;
-              text-align: center;
-              font-size: var(--fs-small);
-            `}
-          >
-            {pubKey}
-          </p>
           <Button
             expand
-            size="x-large"
             icon={CopyIcon}
             css={css`
               margin-block-start: var(--size-500);

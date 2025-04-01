@@ -27,12 +27,9 @@ const NumberPadButton = ({ ref, icon, ...restProps }: ButtonProps) => {
   let { buttonProps, isPressed } = useButton(restPropsButton, refButton);
 
   return (
-    <motion.button
+    <button
       {...buttonProps}
       ref={ref}
-      animate={{
-        scale: isPressed ? 0.96 : 1,
-      }}
       css={css`
         display: grid;
         place-items: center;
@@ -47,12 +44,18 @@ const NumberPadButton = ({ ref, icon, ...restProps }: ButtonProps) => {
       `}
       type="button"
     >
-      {typeof icon !== "string" ? (
-        <Icon size={24} weight="bold" />
-      ) : (
-        <span>{icon}</span>
-      )}
-    </motion.button>
+      <motion.span
+        animate={{
+          scale: isPressed ? 1.2 : 1,
+        }}
+      >
+        {typeof icon !== "string" ? (
+          <Icon size={24} weight="bold" />
+        ) : (
+          <span>{icon}</span>
+        )}
+      </motion.span>
+    </button>
   );
 };
 

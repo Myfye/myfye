@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Modal from "@/components/ui/modal/Modal";
 import NumberPad from "@/components/ui/number-pad/NumberPad";
@@ -26,6 +25,13 @@ const SwapModal = () => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector((state: RootState) => state.swap.modal.isOpen);
+
+  const userWalletData = useSelector(
+    (state: RootState) => state.userWalletData
+  );
+
+  const sellCoin = useSelector((state: RootState) => state.swap.sell.coin);
+
   const buyAmountLabel = useSelector(
     (state: RootState) => state.swap.buy.amountLabel
   );
@@ -33,37 +39,51 @@ const SwapModal = () => {
     (state: RootState) => state.swap.sell.amountLabel
   );
 
-  const buyAmount = useMemo(
-    () => parseAmountLabel(buyAmountLabel),
-    [buyAmountLabel]
-  );
-  const sellAmount = useMemo(
-    () => parseAmountLabel(sellAmountLabel),
-    [sellAmountLabel]
-  );
+  const buyAmount = parseAmountLabel(buyAmountLabel);
 
-  const activeControl = useSelector(
-    (state: RootState) => state.swap.activeControl
-  );
+  const sellAmount = parseAmountLabel(sellAmountLabel);
+
+  const deleteInterval = useRef<number | null>(null);
+
+  const startDelete = (input: string) => {
+    deleteInterval.current = setInterval(() => {
+      dispatch(changeAmountLabel({ input }));
+    }, 50);
+  };
+
+  const stopDelete = () => {
+    if (deleteInterval.current) {
+      clearInterval(deleteInterval.current);
+    }
+  };
+
+  useEffect(() => {
+    if (buyAmountLabel === "") stopDelete();
+  }, [buyAmountLabel]);
 
   const handleOpen = (e: boolean) => {
     dispatch(toggleModal({ isOpen: e }));
   };
 
-  const handleNumpadChange = (e: string) => {
-    dispatch(
-      changeAmountLabel({
-        type: activeControl,
-        input: e,
-      })
-    );
+  const handleNumberPressStart = (input: string) => {
+    if (input === "delete") startDelete(input);
+  };
+
+  const handleNumberPress = (input: string) => {
+    if (input === "delete") return;
+    dispatch(changeAmountLabel({ input }));
+  };
+
+  const handleNumberPressEnd = () => {
+    stopDelete();
   };
 
   const handleSwapControllerConfirmation = useCallback(() => {
-    dispatch(changeAmount({ type: "buy", amount: buyAmount }));
-    dispatch(changeAmount({ type: "sell", amount: sellAmount }));
+    dispatch(changeAmount({ transactionType: "sell", amount: sellAmount }));
+    dispatch(changeAmount({ transactionType: "buy", amount: buyAmount }));
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
   }, [buyAmount, sellAmount, changeAmount, toggleOverlay, dispatch]);
+
   return (
     <>
       <Modal
@@ -74,16 +94,17 @@ const SwapModal = () => {
         height={height}
         zIndex={1000}
         onAnimationComplete={() => {
-          dispatch(unmount);
+          if (!isOpen) {
+            dispatch(unmount(undefined));
+          }
         }}
       >
         <div
           css={css`
-            margin-block-start: var(--size-500);
+            margin-block-start: var(--size-400);
             display: flex;
             flex-direction: column;
             min-height: fit-content;
-            height: ${height};
             gap: var(--size-400);
           `}
         >
@@ -94,17 +115,25 @@ const SwapModal = () => {
           >
             <SwapController />
           </section>
+          <section>
+            <NumberPad
+              onNumberPress={handleNumberPress}
+              onNumberPressStart={handleNumberPressStart}
+              onNumberPressEnd={handleNumberPressEnd}
+            />
+          </section>
           <section
             css={css`
               margin-inline: var(--size-200);
             `}
           >
-            <Button expand onPress={handleSwapControllerConfirmation}>
+            <Button
+              isDisabled={isNaN(sellAmount)}
+              expand
+              onPress={handleSwapControllerConfirmation}
+            >
               Confirm
             </Button>
-          </section>
-          <section>
-            <NumberPad onChange={handleNumpadChange} />
           </section>
         </div>
       </Modal>

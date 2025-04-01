@@ -38,6 +38,7 @@ import {
 } from "@/redux/modalReducers.tsx";
 import WithdrawCryptoOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/WithdrawCryptoOverlay.tsx";
 import {
+  setCashOverlayOpen,
   setCoinSummaryOverlayOpen,
   setCryptoSummaryOverlayOpen,
   setEarnSummaryOverlayOpen,
@@ -45,10 +46,12 @@ import {
   setWithdrawCryptoOverlayOpen,
 } from "@/redux/overlayReducers.tsx";
 import SelectContactOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/select-contact-overlay/SelectContactOverlay.tsx";
-import EarnSummaryOverlay from "@/components/app/overlays/earn-summary-overlay/EarnSummaryOverlay.tsx";
-import CryptoSummaryOverlay from "@/components/app/overlays/crypto-summary-overlay/CryptoSummaryOverlay.tsx";
+import EarnOverlay from "@/features/earn/EarnOverlay.tsx";
+import CryptoOverlay from "@/features/crypto/CryptoOverlay.tsx";
+import CashOverlay from "@/features/cash/CashOverlay.tsx";
 import CoinSummaryOverlay from "@/components/app/overlays/coin-overlay/CoinSummaryOverlay.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
+import { RootState } from "@/redux/store.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -189,6 +192,9 @@ function WebAppInner() {
   const isCoinSummaryOverlayOpen = useSelector(
     (state: any) => state.coinSummaryOverlay.isOpen
   );
+  const isCashOverlayOpen = useSelector(
+    (state: RootState) => state.cashOverlay.isOpen
+  );
 
   if (authenticated) {
     return (
@@ -227,13 +233,17 @@ function WebAppInner() {
               isOpen={isSelectContactOverlayOpen}
               onOpenChange={(e) => dispatch(setSelectContactOverlayOpen(e))}
             />
-            <EarnSummaryOverlay
+            <EarnOverlay
               isOpen={isEarnSummaryOverlayOpen}
               onOpenChange={(e) => dispatch(setEarnSummaryOverlayOpen(e))}
             />
-            <CryptoSummaryOverlay
+            <CryptoOverlay
               isOpen={isCryptoSummaryOverlayOpen}
               onOpenChange={(e) => dispatch(setCryptoSummaryOverlayOpen(e))}
+            />
+            <CashOverlay
+              isOpen={isCashOverlayOpen}
+              onOpenChange={(e) => dispatch(setCashOverlayOpen(e))}
             />
             <CoinSummaryOverlay
               isOpen={isCoinSummaryOverlayOpen}
