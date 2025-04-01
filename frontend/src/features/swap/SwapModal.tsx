@@ -62,6 +62,20 @@ const SwapModal = () => {
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
   };
 
+  const transaction = useSelector((state: RootState) => state.swap.transaction);
+
+  const isValidSwapTransaction = useMemo(() => {
+    if (!transaction.sell.coinId || !transaction.buy.coinId) return true;
+    if (
+      transaction.sell.amount === 0 ||
+      transaction.sell.amount === null ||
+      transaction.buy.amount === null ||
+      transaction.buy.amount === 0
+    )
+      return true;
+    return false;
+  }, [transaction]);
+
   return (
     <>
       <Modal
@@ -106,7 +120,7 @@ const SwapModal = () => {
             `}
           >
             <Button
-              isDisabled={false}
+              isDisabled={isValidSwapTransaction}
               expand
               onPress={handleSwapControllerConfirmation}
             >

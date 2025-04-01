@@ -25,13 +25,13 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   };
 
   const handleSwapConfirmation = () => {
-    swap(
-      wallet,
-      wallet.pubKey,
-      transaction.buy.amount,
-      transaction.buy.coinId,
-      transaction.sell.coinId
-    );
+    // swap(
+    //   wallet,
+    //   wallet.pubKey,
+    //   transaction.buy.amount,
+    //   transaction.buy.coinId,
+    //   transaction.sell.coinId
+    // );
     dispatch(
       toggleOverlay({
         type: "processingTransaction",

@@ -21,6 +21,7 @@ export const changeFormattedAmount = (
   if (replace) {
     return getFormattedNumberFromString(input);
   }
+
   if (input === "delete") {
     if (formattedAmount === "0.") return "";
     return getFormattedNumberFromString(formattedAmount.slice(0, -1));
@@ -37,8 +38,12 @@ export const changeFormattedAmount = (
   if (formattedAmount === "0") return input; // Replace leading zero with input
 
   const updatedAmount = getFormattedNumberFromString(formattedAmount + input);
-  if (input === "0" && formattedAmount.includes("."))
-    return updatedAmount + input;
+  if (input === "0" && formattedAmount.includes(".")) {
+    formattedAmount += "0";
+    const [integer, decimal] = formattedAmount.split(".");
+    console.log(decimal);
+    return updatedAmount + "." + decimal;
+  }
   return updatedAmount;
 };
 
