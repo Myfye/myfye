@@ -12,10 +12,10 @@ import {
   setSwapFXTransactionStatus,
   setSwapWithdrawTransactionStatus,
   setSwapDepositTransactionStatus,
-} from "../redux/userWalletData.tsx"; // For managing UI
-import { HELIUS_API_KEY } from "../env.ts";
-import calculateBasisPoints from "./CalculateBasisPoints.tsx";
-import getTokenAccountData from "./GetTokenAccount.tsx";
+} from "../../redux/userWalletData.tsx"; // For managing UI
+import { HELIUS_API_KEY } from "../../env.ts";
+import calculateBasisPoints from "../../functions/CalculateBasisPoints.tsx";
+import getTokenAccountData from "../../functions/GetTokenAccount.tsx";
 
 // Swapping pairs
 const USDC_MINT_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";

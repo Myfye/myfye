@@ -128,7 +128,10 @@ const CoinCardList = ({
                     `}
                     onAction={() => {
                       dispatch(
-                        toggleSwapModal({ isOpen: true, coin: coin.type })
+                        toggleSwapModal({
+                          isOpen: true,
+                          coinId: coin.type.toUpperCase(),
+                        })
                       );
                     }}
                   >

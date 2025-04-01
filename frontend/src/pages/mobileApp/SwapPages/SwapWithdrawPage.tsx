@@ -10,7 +10,7 @@ import {
   setbtcSolValue,
   setusdcSolValue,
 } from "../../../redux/userWalletData.tsx";
-import { swap } from "../../../functions/Swaps.tsx";
+import { swap } from "../../../features/swap/SwapService.tsx";
 import LoadingAnimation from "../../../components/LoadingAnimation.tsx";
 import {
   setShowSwapWithdrawPage,

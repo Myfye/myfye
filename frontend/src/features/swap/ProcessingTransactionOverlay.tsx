@@ -7,12 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
 
-import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
-import solIcon from "@/assets/svgs/coins/sol-coin.svg";
-import eurcCoin from "@/assets/svgs/coins/eur-coin.svg";
-import usdCoin from "@/assets/svgs/coins/usd-coin.svg";
-import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
-
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
@@ -23,8 +17,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
     toggleOverlay({ type: "processingTransaction", isOpen: e });
   };
 
-  const buyInfo = useSelector((state: RootState) => state.swap.buy);
-  const sellInfo = useSelector((state: RootState) => state.swap.sell);
+  const buyInfo = useSelector((state: RootState) => state.swap.transaction.buy);
 
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
@@ -70,7 +63,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
                 text-align: center;
               `}
             >
-              You're swapping $2.00 {buyInfo.coin} for USD on Base
+              You're swapping $2.00 {buyInfo.coinId} for USD on Base
             </p>
             <p
               className="caption"

@@ -10,47 +10,54 @@ import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useMemo } from "react";
+import { CoinId } from "./swapSlice";
 
-const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
+const SwapCoin = ({
+  coinId,
+  amount,
+}: {
+  coinId: CoinId;
+  amount: number | null;
+}) => {
   const formattedAmount = useMemo(
     () =>
       new Intl.NumberFormat("en-EN", {
         currency: "usd",
         style: "currency",
-      }).format(amount),
+      }).format(amount ?? 0),
     [amount]
   );
-  const currentCoin = (coin) => {
-    switch (coin) {
-      case "btc": {
+  const currentCoin = () => {
+    switch (coinId) {
+      case "BTC": {
         return {
           title: "Bitcoin",
           type: "btc",
           icon: btcIcon,
         };
       }
-      case "sol": {
+      case "SOL": {
         return {
           title: "Solana",
           type: "sol",
           icon: solIcon,
         };
       }
-      case "usdt": {
+      case "USDT": {
         return {
           title: "US Dollar",
           type: "usdt",
           icon: usdCoin,
         };
       }
-      case "usdy": {
+      case "USDY": {
         return {
           title: "US Treasury Bonds",
           type: "usdy",
           icon: usdyCoin,
         };
       }
-      case "eurc": {
+      case "EURC": {
         return {
           title: "Euro",
           type: "eurc",
@@ -67,7 +74,7 @@ const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
     }
   };
 
-  const _coin = useMemo(() => currentCoin(coin), [coin]);
+  const _coin = useMemo(() => currentCoin(), [coinId]);
   const src = _coin.icon;
 
   return (
@@ -116,8 +123,10 @@ const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
 };
 
 const SwapCoinSummary = () => {
-  const buyInfo = useSelector((state: RootState) => state.swap.buy);
-  const sellInfo = useSelector((state: RootState) => state.swap.sell);
+  const buyInfo = useSelector((state: RootState) => state.swap.transaction.buy);
+  const sellInfo = useSelector(
+    (state: RootState) => state.swap.transaction.sell
+  );
 
   return (
     <div
@@ -133,7 +142,7 @@ const SwapCoinSummary = () => {
       `}
     >
       <section className="sell-coin">
-        <SwapCoin coin={sellInfo.coin} amount={sellInfo.amount} />
+        <SwapCoin coinId={sellInfo.coinId} amount={sellInfo.amount} />
       </section>
       <section
         className="icon-wrapper"
@@ -144,7 +153,7 @@ const SwapCoinSummary = () => {
         <ArrowDown color="var(--clr-icon)" size={24} />
       </section>
       <section className="buy-coin">
-        <SwapCoin coin={buyInfo.coin} amount={buyInfo.amount} />
+        <SwapCoin coinId={buyInfo.coinId} amount={buyInfo.amount} />
       </section>
     </div>
   );
