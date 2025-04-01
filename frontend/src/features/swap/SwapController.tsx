@@ -15,6 +15,7 @@ import {
   changeFormattedGhostAmount,
   formatUsdAmount,
   getCoinBalance,
+  getUsdAmount,
 } from "./utils";
 import {
   toggleOverlay,
@@ -158,8 +159,17 @@ const SwapControl = ({
     (state: RootState) => state.swap.transaction[transactionType].amount
   );
 
-  const usdAmount = useMemo(() => formatUsdAmount(amount), [amount]);
+  const wallet = useSelector((state: RootState) => state.userWalletData);
 
+  const usdAmount = useMemo(
+    () => getUsdAmount(coinId, wallet, amount),
+    [amount]
+  );
+
+  const formattedUsdAmount = useMemo(
+    () => formatUsdAmount(usdAmount),
+    [usdAmount]
+  );
   return (
     <div
       className="swap-control"
@@ -240,7 +250,7 @@ const SwapControl = ({
             line-height: var(--line-height-tight);
           `}
         >
-          {usdAmount}
+          {formattedUsdAmount}
         </p>
       </div>
       <menu

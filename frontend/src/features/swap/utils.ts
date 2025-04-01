@@ -56,10 +56,11 @@ export const parseFormattedAmount = (formattedAmount: string) => {
 };
 
 export const getUsdAmount = (
-  coinId: CoinId,
+  coinId: CoinId | null,
   wallet: UserWalletDataState,
-  amount: number
+  amount: number | null
 ) => {
+  if (!amount) return 0;
   switch (coinId) {
     case "BTC": {
       return amount * wallet.priceOfBTCinUSDC;

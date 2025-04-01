@@ -9,24 +9,29 @@ import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
 import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { CoinId } from "./swapSlice";
+import { formatUsdAmount, getUsdAmount } from "./utils";
 
 const SwapCoin = ({
   coinId,
   amount,
 }: {
-  coinId: CoinId;
+  coinId: CoinId | null;
   amount: number | null;
 }) => {
-  const formattedAmount = useMemo(
-    () =>
-      new Intl.NumberFormat("en-EN", {
-        currency: "usd",
-        style: "currency",
-      }).format(amount ?? 0),
-    [amount]
+  const wallet = useSelector((state: RootState) => state.userWalletData);
+
+  const usdAmount = useMemo(
+    () => getUsdAmount(coinId, wallet, amount),
+    [amount, coinId, wallet]
   );
+
+  const formattedUsdAmount = useMemo(
+    () => formatUsdAmount(usdAmount),
+    [usdAmount]
+  );
+
   const currentCoin = () => {
     switch (coinId) {
       case "BTC": {
@@ -106,7 +111,7 @@ const SwapCoin = ({
           text-align: end;
         `}
       >
-        <p className="heading-small">{formattedAmount}</p>
+        <p className="heading-small">{formattedUsdAmount}</p>
         <p
           className="caption-small"
           css={css`
