@@ -1,5 +1,6 @@
 import qrOptions from "qr_options.json";
-import logo from "@/assets/Logo.png";
+import baseLogoBlack from "@/assets/baseLogoBlack.png";
+import solanaLogoBlack from "@/assets/solanaLogoBlack.png";
 import { useEffect, useRef } from "react";
 import QRCodeStyling from "qr-code-styling";
 
@@ -7,12 +8,21 @@ import QRCodeStyling from "qr-code-styling";
 import { css } from "@emotion/react";
 
 const QRCode = ({
-  data = "https://qr-code-styling.com",
+  data = "",
   visible = true,
   color = "#f8fbfc",
-  size = 264,
+  size = 256,
   className = "",
+  chain = "base",
 }) => {
+  console.log('QR Code data:', data);
+  if (!data) {
+    console.log('No data provided to QR Code');
+    return null;
+  }
+
+  const logo = chain === "base" ? baseLogoBlack : solanaLogoBlack;
+
   const qrCode = new QRCodeStyling({
     type: "svg",
     shape: "square",
@@ -28,7 +38,7 @@ const QRCode = ({
     imageOptions: {
       saveAsBlob: true,
       hideBackgroundDots: true,
-      imageSize: 0.5,
+      imageSize: 0.2,
       margin: 0,
     },
     dotsOptions: { type: "dots", color: color, roundSize: true },
@@ -50,7 +60,7 @@ const QRCode = ({
       gradient: {
         linear: true,
         radial: false,
-        color1: color,
+        color1: color, 
         color2: color,
         rotation: "0",
       },
@@ -81,8 +91,11 @@ const QRCode = ({
   const ref = useRef(null!);
 
   useEffect(() => {
-    qrCode.append(ref.current);
-  }, []);
+    if (ref.current) {
+      ref.current.innerHTML = '';
+      qrCode.append(ref.current);
+    }
+  }, [data]);
 
   return (
     <div

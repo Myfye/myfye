@@ -238,6 +238,9 @@ const getUserBalances = async (pubKey: string, dispatch: Function) => {
           TokenBalances(pubKey),
           SolanaBalance(pubKey)
       ]);
+
+      console.log('tokenBalances', tokenBalances);
+      console.log('solanaBalance', solanaBalance);
   
         dispatch(setusdcSolValue(Number(tokenBalances.usdc)));
         dispatch(setusdtSolValue(Number(tokenBalances.usdt)));

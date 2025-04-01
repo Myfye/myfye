@@ -10,7 +10,10 @@ import { useSelector } from "react-redux";
 import Modal from "@/components/ui/modal/Modal";
 
 const DepositModal = ({ isOpen, onOpenChange }) => {
-  const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
+  const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
+  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
+  const [selectedChain, setSelectedChain] = useState<"base" | "solana">("base");
+  const [showCopiedAddress, setShowCopiedAddress] = useState(false);
 
   const [isWalletOpen, setWalletOpen] = useState(false);
 
@@ -19,6 +22,7 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
   const resetModal = () => {
     setWalletOpen(false);
     setHeight(360);
+    setShowCopiedAddress(false);
   };
 
   const openWallet = () => {
@@ -26,12 +30,27 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
     setHeight(580);
   };
 
+  const selectedAddress = selectedChain === "base" ? evmPubKey : solanaPubKey;
+
+  const handleCopyAddress = () => {
+    navigator.clipboard.writeText(selectedAddress);
+    setShowCopiedAddress(true);
+    setTimeout(() => {
+      onOpenChange(false);
+    }, 1700);
+  };
+
+  const getTruncatedAddress = (address: string) => {
+    if (!address) return "";
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  };
+
   return (
     <>
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        title="Deposit"
+        title="Deposit On Chain"
         height={height}
         onAnimationComplete={() => {
           isOpen && resetModal();
@@ -73,21 +92,27 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
               margin-block-start: var(--size-400);
             `}
           >
-            <QRCode data={pubKey} color="#000407" />
-            <p
+            <div
               css={css`
-                margin-block-start: var(--size-400);
-                color: var(--clr-text);
-                max-width: 35ch;
-                margin-inline: auto;
-                word-break: break-all;
-                white-space: normal;
-                text-align: center;
-                font-size: var(--fs-small);
+                display: flex;
+                gap: var(--size-200);
+                margin-bottom: var(--size-400);
               `}
             >
-              {pubKey}
-            </p>
+              <Button
+                variant={selectedChain === "base" ? "primary" : "ghost"}
+                onPress={() => setSelectedChain("base")}
+              >
+                Base
+              </Button>
+              <Button
+                variant={selectedChain === "solana" ? "primary" : "ghost"}
+                onPress={() => setSelectedChain("solana")}
+              >
+                Solana
+              </Button>
+            </div>
+            <QRCode data={selectedAddress} color="#000407" chain={selectedChain} />
             <Button
               expand
               size="x-large"
@@ -95,12 +120,9 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
               css={css`
                 margin-block-start: var(--size-500);
               `}
-              onPress={() => {
-                navigator.clipboard.writeText(pubKey);
-                onOpenChange(false);
-              }}
+              onPress={handleCopyAddress}
             >
-              Copy address
+              {showCopiedAddress ? getTruncatedAddress(selectedAddress) : `Copy ${selectedChain === "base" ? "Base" : "Solana"} Address`}
             </Button>
           </div>
         )}
