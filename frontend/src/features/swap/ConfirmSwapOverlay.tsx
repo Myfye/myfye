@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import SwapCoinSummary from "./SwapCoinSummary";
 import { toggleOverlay } from "./swapSlice";
+import { swap } from "./SwapService";
 
 const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -15,10 +16,29 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
     (state: RootState) => state.swap.overlays.confirmSwap.isOpen
   );
 
+  const wallet = useSelector((state: RootState) => state.userWalletData);
+
+  const transaction = useSelector((state: RootState) => state.swap.transaction);
+
   const handleOpen = (e: boolean) => {
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: e }));
   };
 
+  const handleSwapConfirmation = () => {
+    dispatch(
+      toggleOverlay({
+        type: "processingTransaction",
+        isOpen: true,
+      })
+    );
+    swap(
+      wallet,
+      wallet.pubKey,
+      transaction.buy.amount,
+      transaction.buy.coinId,
+      transaction.sell.coinId
+    );
+  };
   return (
     <>
       <Overlay
@@ -149,17 +169,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
                 </Button>
               </li>
               <li>
-                <Button
-                  expand
-                  onPress={() =>
-                    void dispatch(
-                      toggleOverlay({
-                        type: "processingTransaction",
-                        isOpen: true,
-                      })
-                    )
-                  }
-                >
+                <Button expand onPress={handleSwapConfirmation}>
                   Confirm
                 </Button>
               </li>
