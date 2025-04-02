@@ -9,48 +9,60 @@ import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
 import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { CoinId } from "./swapSlice";
+import { formatUsdAmount, getUsdAmount } from "./utils";
 
-const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
-  const formattedAmount = useMemo(
-    () =>
-      new Intl.NumberFormat("en-EN", {
-        currency: "usd",
-        style: "currency",
-      }).format(amount),
-    [amount]
+const SwapCoin = ({
+  coinId,
+  amount,
+}: {
+  coinId: CoinId | null;
+  amount: number | null;
+}) => {
+  const wallet = useSelector((state: RootState) => state.userWalletData);
+
+  const usdAmount = useMemo(
+    () => getUsdAmount(coinId, wallet, amount),
+    [amount, coinId, wallet]
   );
-  const currentCoin = (coin) => {
-    switch (coin) {
-      case "btc": {
+
+  const formattedUsdAmount = useMemo(
+    () => formatUsdAmount(usdAmount),
+    [usdAmount]
+  );
+
+  const currentCoin = () => {
+    switch (coinId) {
+      case "BTC": {
         return {
           title: "Bitcoin",
           type: "btc",
           icon: btcIcon,
         };
       }
-      case "sol": {
+      case "SOL": {
         return {
           title: "Solana",
           type: "sol",
           icon: solIcon,
         };
       }
-      case "usdt": {
+      case "USDT": {
         return {
           title: "US Dollar",
           type: "usdt",
           icon: usdCoin,
         };
       }
-      case "usdy": {
+      case "USDY": {
         return {
           title: "US Treasury Bonds",
           type: "usdy",
           icon: usdyCoin,
         };
       }
-      case "eurc": {
+      case "EURC": {
         return {
           title: "Euro",
           type: "eurc",
@@ -67,7 +79,7 @@ const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
     }
   };
 
-  const _coin = useMemo(() => currentCoin(coin), [coin]);
+  const _coin = useMemo(() => currentCoin(), [coinId]);
   const src = _coin.icon;
 
   return (
@@ -99,7 +111,7 @@ const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
           text-align: end;
         `}
       >
-        <p className="heading-small">{formattedAmount}</p>
+        <p className="heading-small">{formattedUsdAmount}</p>
         <p
           className="caption-small"
           css={css`
@@ -108,7 +120,7 @@ const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
             color: var(--clr-text-weaker);
           `}
         >
-          {_coin.type}
+          {amount} {_coin.type}
         </p>
       </div>
     </div>
@@ -116,8 +128,10 @@ const SwapCoin = ({ coin, amount }: { coin: string; amount: number }) => {
 };
 
 const SwapCoinSummary = () => {
-  const buyInfo = useSelector((state: RootState) => state.swap.buy);
-  const sellInfo = useSelector((state: RootState) => state.swap.sell);
+  const buyInfo = useSelector((state: RootState) => state.swap.transaction.buy);
+  const sellInfo = useSelector(
+    (state: RootState) => state.swap.transaction.sell
+  );
 
   return (
     <div
@@ -133,7 +147,7 @@ const SwapCoinSummary = () => {
       `}
     >
       <section className="sell-coin">
-        <SwapCoin coin={sellInfo.coin} amount={sellInfo.amount} />
+        <SwapCoin coinId={sellInfo.coinId} amount={sellInfo.amount} />
       </section>
       <section
         className="icon-wrapper"
@@ -144,7 +158,7 @@ const SwapCoinSummary = () => {
         <ArrowDown color="var(--clr-icon)" size={24} />
       </section>
       <section className="buy-coin">
-        <SwapCoin coin={buyInfo.coin} amount={buyInfo.amount} />
+        <SwapCoin coinId={buyInfo.coinId} amount={buyInfo.amount} />
       </section>
     </div>
   );

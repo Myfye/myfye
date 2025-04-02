@@ -5,7 +5,7 @@ import CoinCardList from "@/components/ui/coin-card/CoinCardList";
 import Overlay from "@/components/ui/overlay/Overlay";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setCoin, toggleOverlay } from "./swapSlice";
+import { changeCoinId, changeExchangeRate, toggleOverlay } from "./swapSlice";
 import { useCallback, useMemo } from "react";
 import useBalance from "@/hooks/useBalance";
 
@@ -25,8 +25,18 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
     (state: RootState) => state.swap.overlays.selectCoin.isOpen
   );
 
+  const wallet = useSelector((state: RootState) => state.userWalletData);
+
   const transactionType = useSelector(
     (state: RootState) => state.swap.overlays.selectCoin.transactionType
+  );
+
+  const buyCoinId = useSelector(
+    (state: RootState) => state.swap.transaction.buy.coinId
+  );
+
+  const sellCoinId = useSelector(
+    (state: RootState) => state.swap.transaction.sell.coinId
   );
 
   const handleOpen = (e: boolean) => {
@@ -41,7 +51,21 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
 
   const onCoinSelect = useCallback(
     (coin: any) => {
-      dispatch(setCoin({ transactionType: transactionType, coin: coin.type }));
+      dispatch(
+        changeCoinId({
+          transactionType: transactionType,
+          coinId: coin.type.toUpperCase(),
+        })
+      );
+      dispatch(
+        changeExchangeRate({
+          buyCoinId:
+            transactionType === "buy" ? coin.type.toUpperCase() : buyCoinId,
+          sellCoinId:
+            transactionType === "sell" ? coin.type.toUpperCase() : sellCoinId,
+          wallet,
+        })
+      );
       dispatch(
         toggleOverlay({
           type: "selectCoin",

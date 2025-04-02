@@ -1,7 +1,7 @@
 import { ArrowDown, CaretRight } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
 import solIcon from "@/assets/svgs/coins/sol-coin.svg";
@@ -12,91 +12,69 @@ import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
-  formatAmountLabel,
-  formatGhostAmountLabel,
-  parseAmountLabel,
+  changeFormattedGhostAmount,
+  formatUsdAmount,
+  getCoinBalance,
+  getUsdAmount,
 } from "./utils";
-import { changeAmountLabel, toggleOverlay } from "./swapSlice";
+import {
+  toggleOverlay,
+  changeAmount,
+  CoinId,
+  SwapTransactionType,
+} from "./swapSlice";
 import Button from "@/components/ui/button/Button";
 import TextFit from "@/shared/components/TextFit";
 
-type Coin = {
-  id: string;
-  label: string;
-  currency: "sol" | "btc" | "usdt" | "usdy" | "eurc";
-  balance: number;
-  usdBalance: number;
-  iconSrc: string;
-};
-
-const CoinSelectButton = ({ coin, ref, ...restProps }) => {
+const CoinSelectButton = ({
+  coinId,
+  ...restProps
+}: {
+  coinId: CoinId | null;
+}) => {
   const currentCoin = useMemo(() => {
-    switch (coin) {
-      case "btc": {
+    switch (coinId) {
+      case "BTC": {
         return {
           name: "Bitcoin",
-          color: "var(--clr-yellow-500)",
-          iconColor: "var(--clr-yellow-500)",
-          backgroundColor: "var(--clr-yellow-100)",
-          borderColor: "var(--clr-yellow-200)",
           img: btcIcon,
         };
       }
-      case "sol": {
+      case "SOL": {
         return {
           name: "Solana",
-          color: "var(--clr-purple-500)",
-          iconColor: "var(--clr-purple-500)",
-          backgroundColor: "var(--clr-purple-100)",
-          borderColor: "var(--clr-purple-200)",
           img: solIcon,
         };
       }
-      case "usdt": {
+      case "USDT": {
         return {
           name: "US Dollar",
-          color: "var(--clr-green-500)",
-          iconColor: "var(--clr-green-500)",
-          backgroundColor: "var(--clr-green-100)",
-          borderColor: "var(--clr-green-200)",
           img: usdCoin,
         };
       }
-      case "usdy": {
+      case "USDY": {
         return {
           name: "US Treasury Bonds",
-          color: "var(--clr-purple-500)",
-          iconColor: "var(--clr-purple-500)",
-          backgroundColor: "var(--clr-purple-100)",
-          borderColor: "var(--clr-purple-200)",
           img: usdyCoin,
         };
       }
-      case "eurc": {
+      case "EURC": {
         return {
           name: "Euro",
-          color: "var(--clr-blue-500)",
-          iconColor: "var(--clr-blue-500)",
-          backgroundColor: "var(--clr-blue-100)",
-          borderColor: "var(--clr-blue-200)",
           img: eurcCoin,
         };
       }
       default: {
         return {
           name: "Select coin",
-          color: "var(--clr-text)",
-          iconColor: "var(--clr-icon)",
-          backgroundColor: "var(--clr-surface-raised)",
-          borderColor: "var(--clr-border-neutral)",
         };
       }
     }
-  }, [coin]);
+  }, [coinId]);
 
   return (
     <Button size="small" color="neutral" {...restProps}>
-      {coin && (
+      {coinId && (
         <img
           src={currentCoin.img}
           alt=""
@@ -112,7 +90,7 @@ const CoinSelectButton = ({ coin, ref, ...restProps }) => {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          max-width: ${coin ? "8ch" : "auto"};
+          max-width: ${coinId ? "8ch" : "auto"};
         `}
       >
         {currentCoin.name}
@@ -122,72 +100,76 @@ const CoinSelectButton = ({ coin, ref, ...restProps }) => {
   );
 };
 
-const SwapControl = ({ control, onSelectCoin, value, coin }) => {
+const MaxAmountButton = ({ coinId }: { coinId: CoinId }) => {
   const dispatch = useDispatch();
-  const ghostValue = useMemo(() => formatGhostAmountLabel(value), [value]);
-  const valueArr = useMemo(() => value.split(""), [value]);
+
+  const wallet = useSelector((state: RootState) => state.userWalletData);
+
+  // Coin Balance for Max Amount
+  const coinBalance = useMemo(
+    () => getCoinBalance(wallet, coinId),
+    [wallet, coinId]
+  );
+
+  return (
+    <>
+      <Button
+        size="x-small"
+        color="neutral"
+        onPress={() => {
+          dispatch(
+            changeAmount({
+              input: coinBalance,
+              replace: true,
+            })
+          );
+        }}
+      >
+        MAX
+      </Button>
+    </>
+  );
+};
+
+const SwapControl = ({
+  transactionType,
+  onSelectCoin,
+  formattedAmount,
+  coinId,
+}: {
+  transactionType: SwapTransactionType;
+  onSelectCoin: () => void;
+  formattedAmount: string;
+  coinId: CoinId | null;
+}) => {
+  // Formatted Amount
+  const formattedAmountArr = useMemo(
+    () => formattedAmount.split(""),
+    [formattedAmount]
+  );
+
+  // Ghost amount
+  const ghostValue = useMemo(
+    () => changeFormattedGhostAmount(formattedAmount),
+    [formattedAmount]
+  );
   const ghostValueArr = useMemo(() => ghostValue.split(""), [ghostValue]);
 
-  const walletData = useSelector((state: RootState) => state.userWalletData);
+  const amount = useSelector(
+    (state: RootState) => state.swap.transaction[transactionType].amount
+  );
 
-  const numAmount = parseAmountLabel(value);
+  const wallet = useSelector((state: RootState) => state.userWalletData);
 
-  const getCoinAmount = () => {
-    switch (coin) {
-      case "btc": {
-        return walletData.btcSolBalance;
-      }
-      case "sol": {
-        return walletData.solBalance;
-      }
-      case "usdt": {
-        return walletData.usdtSolBalance;
-      }
-      case "usdy": {
-        return walletData.usdySolBalance;
-      }
-      case "eurc": {
-        return walletData.eurcSolBalance;
-      }
-      default: {
-        return 0;
-      }
-    }
-  };
-  const amount = getCoinAmount();
+  const usdAmount = useMemo(
+    () => getUsdAmount(coinId, wallet, amount),
+    [amount]
+  );
 
-  const valueInUSD = () => {
-    if (value === "") return 0;
-    switch (coin) {
-      case "btc": {
-        return numAmount * walletData.priceOfBTCinUSDC;
-      }
-      case "sol": {
-        return numAmount * 1;
-      }
-      case "usdt": {
-        return numAmount;
-      }
-      case "usdy": {
-        return numAmount * walletData.priceOfUSDYinUSDC;
-      }
-      case "eurc": {
-        return numAmount * walletData.priceOfEURCinUSDC;
-      }
-      default: {
-        return 0;
-      }
-    }
-  };
-
-  const _valueInUSD = valueInUSD();
-
-  const usdAmount = new Intl.NumberFormat("en-EN", {
-    currency: "usd",
-    style: "currency",
-    maximumFractionDigits: _valueInUSD > Math.floor(_valueInUSD) ? 2 : 0,
-  }).format(_valueInUSD);
-
+  const formattedUsdAmount = useMemo(
+    () => formatUsdAmount(usdAmount),
+    [usdAmount]
+  );
   return (
     <div
       className="swap-control"
@@ -208,7 +190,7 @@ const SwapControl = ({ control, onSelectCoin, value, coin }) => {
             line-height: var(--line-height-tight);
           `}
         >
-          {control === "buy" ? "Buy" : "Sell"}
+          {transactionType === "buy" ? "Buy" : "Sell"}
         </p>
         <div
           className="value-wrapper"
@@ -254,7 +236,7 @@ const SwapControl = ({ control, onSelectCoin, value, coin }) => {
             `}
           >
             <TextFit maxFontSize="28px">
-              {valueArr.map((val, i) => {
+              {formattedAmountArr.map((val, i) => {
                 return <span key={`value-${i}`}>{val}</span>;
               })}
             </TextFit>
@@ -268,7 +250,7 @@ const SwapControl = ({ control, onSelectCoin, value, coin }) => {
             line-height: var(--line-height-tight);
           `}
         >
-          {usdAmount}
+          {formattedUsdAmount}
         </p>
       </div>
       <menu
@@ -286,27 +268,11 @@ const SwapControl = ({ control, onSelectCoin, value, coin }) => {
         `}
       >
         <li>
-          <CoinSelectButton
-            coin={coin}
-            onPress={onSelectCoin}
-          ></CoinSelectButton>
+          <CoinSelectButton coinId={coinId} onPress={onSelectCoin} />
         </li>
         <li>
-          {control === "sell" && (
-            <Button
-              size="x-small"
-              color="neutral"
-              onPress={() => {
-                dispatch(
-                  changeAmountLabel({
-                    input: `${amount}`,
-                    replace: true,
-                  })
-                );
-              }}
-            >
-              MAX
-            </Button>
+          {transactionType === "sell" && coinId && (
+            <MaxAmountButton coinId={coinId} />
           )}
         </li>
       </menu>
@@ -317,15 +283,19 @@ const SwapControl = ({ control, onSelectCoin, value, coin }) => {
 const SwapController = () => {
   const dispatch = useDispatch();
 
-  const buyAmountLabel = useSelector(
-    (state: RootState) => state.swap.buy.amountLabel
+  const formattedBuyAmount = useSelector(
+    (state: RootState) => state.swap.transaction.buy.formattedAmount
   );
-  const sellAmountLabel = useSelector(
-    (state: RootState) => state.swap.sell.amountLabel
+  const formattedSellAmount = useSelector(
+    (state: RootState) => state.swap.transaction.sell.formattedAmount
   );
 
-  const buyCoin = useSelector((state: RootState) => state.swap.buy.coin);
-  const sellCoin = useSelector((state: RootState) => state.swap.sell.coin);
+  const buyCoinId = useSelector(
+    (state: RootState) => state.swap.transaction.buy.coinId
+  );
+  const sellCoinId = useSelector(
+    (state: RootState) => state.swap.transaction.sell.coinId
+  );
 
   return (
     <div
@@ -338,9 +308,9 @@ const SwapController = () => {
       `}
     >
       <SwapControl
-        control="sell"
-        coin={sellCoin}
-        value={sellAmountLabel}
+        transactionType="sell"
+        coinId={sellCoinId}
+        formattedAmount={formattedSellAmount}
         onSelectCoin={() => {
           dispatch(
             toggleOverlay({
@@ -368,9 +338,9 @@ const SwapController = () => {
         <ArrowDown size={24} color="var(--clr-icon)" />
       </div>
       <SwapControl
-        control="buy"
-        coin={buyCoin}
-        value={buyAmountLabel}
+        transactionType="buy"
+        coinId={buyCoinId}
+        formattedAmount={formattedBuyAmount}
         onSelectCoin={() => {
           dispatch(
             toggleOverlay({

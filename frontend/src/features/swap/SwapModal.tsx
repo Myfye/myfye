@@ -5,19 +5,12 @@ import Modal from "@/components/ui/modal/Modal";
 import NumberPad from "@/components/ui/number-pad/NumberPad";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  changeAmount,
-  changeAmountLabel,
-  toggleModal,
-  toggleOverlay,
-  unmount,
-} from "./swapSlice";
+import { changeAmount, toggleModal, toggleOverlay, unmount } from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
 import SelectCoinOverlay from "./SelectCoinOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
-import { parseAmountLabel } from "./utils";
 
 const SwapModal = () => {
   const [height] = useState(667);
@@ -26,40 +19,27 @@ const SwapModal = () => {
 
   const isOpen = useSelector((state: RootState) => state.swap.modal.isOpen);
 
-  const userWalletData = useSelector(
-    (state: RootState) => state.userWalletData
+  const formattedBuyAmount = useSelector(
+    (state: RootState) => state.swap.transaction.buy.formattedAmount
   );
 
-  const sellCoin = useSelector((state: RootState) => state.swap.sell.coin);
-
-  const buyAmountLabel = useSelector(
-    (state: RootState) => state.swap.buy.amountLabel
-  );
-  const sellAmountLabel = useSelector(
-    (state: RootState) => state.swap.sell.amountLabel
-  );
-
-  const buyAmount = parseAmountLabel(buyAmountLabel);
-
-  const sellAmount = parseAmountLabel(sellAmountLabel);
-
-  const deleteInterval = useRef<number | null>(null);
+  const intervalDelete = useRef<NodeJS.Timeout | null>(null);
 
   const startDelete = (input: string) => {
-    deleteInterval.current = setInterval(() => {
-      dispatch(changeAmountLabel({ input }));
+    intervalDelete.current = setInterval(() => {
+      dispatch(changeAmount({ input }));
     }, 50);
   };
 
   const stopDelete = () => {
-    if (deleteInterval.current) {
-      clearInterval(deleteInterval.current);
+    if (intervalDelete.current) {
+      clearInterval(intervalDelete.current);
     }
   };
 
   useEffect(() => {
-    if (buyAmountLabel === "") stopDelete();
-  }, [buyAmountLabel]);
+    if (formattedBuyAmount === "") stopDelete();
+  }, [formattedBuyAmount]);
 
   const handleOpen = (e: boolean) => {
     dispatch(toggleModal({ isOpen: e }));
@@ -71,18 +51,30 @@ const SwapModal = () => {
 
   const handleNumberPress = (input: string) => {
     if (input === "delete") return;
-    dispatch(changeAmountLabel({ input }));
+    dispatch(changeAmount({ input }));
   };
 
   const handleNumberPressEnd = () => {
     stopDelete();
   };
 
-  const handleSwapControllerConfirmation = useCallback(() => {
-    dispatch(changeAmount({ transactionType: "sell", amount: sellAmount }));
-    dispatch(changeAmount({ transactionType: "buy", amount: buyAmount }));
+  const handleSwapControllerConfirmation = () => {
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
-  }, [buyAmount, sellAmount, changeAmount, toggleOverlay, dispatch]);
+  };
+
+  const transaction = useSelector((state: RootState) => state.swap.transaction);
+
+  const isValidSwapTransaction = useMemo(() => {
+    if (!transaction.sell.coinId || !transaction.buy.coinId) return true;
+    if (
+      transaction.sell.amount === 0 ||
+      transaction.sell.amount === null ||
+      transaction.buy.amount === null ||
+      transaction.buy.amount === 0
+    )
+      return true;
+    return false;
+  }, [transaction]);
 
   return (
     <>
@@ -128,7 +120,7 @@ const SwapModal = () => {
             `}
           >
             <Button
-              isDisabled={isNaN(sellAmount)}
+              isDisabled={isValidSwapTransaction}
               expand
               onPress={handleSwapControllerConfirmation}
             >

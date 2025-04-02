@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import User from '../functions/UserInterface.tsx';
 
-interface UserWalletDataState {
+export interface UserWalletDataState {
+  wallet: any;
   currentUserID: string;
   currentUserFirstName: string;
   currentUserLastName: string;
