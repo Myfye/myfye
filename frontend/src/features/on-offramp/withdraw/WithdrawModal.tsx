@@ -3,14 +3,13 @@ import { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Bank, Wallet } from "@phosphor-icons/react";
-import ModalButton from "../buttons/ModalButton";
+import ModalButton from "../ModalButton";
 import Modal from "@/components/ui/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSelectContactOverlayOpen,
   setWithdrawCryptoOverlayOpen,
 } from "@/redux/overlayReducers";
-import { addCurrentCoin } from "@/redux/coinReducer";
 
 const WithdrawModal = ({ isOpen, onOpenChange }) => {
   const [height] = useState(360);

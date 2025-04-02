@@ -242,14 +242,8 @@ const HomeTabs = () => {
                   cryptoBalanceInUSD={cryptoBalanceInUSD}
                 />
               )}
-              {tab.id === "cash" && (
-                <CashPanel
-                />
-              )}
-              {tab.id === "crypto" && (
-                <CryptoPanel
-                />
-              )}
+              {tab.id === "cash" && <CashPanel />}
+              {tab.id === "crypto" && <CryptoPanel />}
             </TabPanel>
           )}
         </Collection>

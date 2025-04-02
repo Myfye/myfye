@@ -18,6 +18,7 @@
     "@stackflow/react": "^1.5.1",
     "@vitejs/plugin-react-swc": "^3.7.2",
     "autoprefixer": "^10.4.20",
+    "bs58": "^6.0.0",
     "firebase": "^11.2.0",
     "motion": "^12.3.1",
     "path": "^0.12.7",
