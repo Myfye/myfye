@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
 import { Bank, Copy, Wallet, X } from "@phosphor-icons/react";
-import ModalButton from "../buttons/ModalButton";
-import QRCode from "../../qr-code/QRCode";
+import ModalButton from "../../components/app/modals/buttons/ModalButton";
+import QRCode from "../qr-code/QRCode";
 import { useSelector } from "react-redux";
 import Modal from "@/components/ui/modal/Modal";
 
 const DepositModal = ({ isOpen, onOpenChange }) => {
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
-  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
+  const solanaPubKey = useSelector(
+    (state: any) => state.userWalletData.solanaPubKey
+  );
   const [selectedChain, setSelectedChain] = useState<"base" | "solana">("base");
   const [showCopiedAddress, setShowCopiedAddress] = useState(false);
 
@@ -112,7 +114,11 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
                 Solana
               </Button>
             </div>
-            <QRCode data={selectedAddress} color="#000407" chain={selectedChain} />
+            <QRCode
+              data={selectedAddress}
+              color="#000407"
+              chain={selectedChain}
+            />
             <Button
               expand
               size="x-large"
@@ -122,7 +128,11 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
               `}
               onPress={handleCopyAddress}
             >
-              {showCopiedAddress ? getTruncatedAddress(selectedAddress) : `Copy ${selectedChain === "base" ? "Base" : "Solana"} Address`}
+              {showCopiedAddress
+                ? getTruncatedAddress(selectedAddress)
+                : `Copy ${
+                    selectedChain === "base" ? "Base" : "Solana"
+                  } Address`}
             </Button>
           </div>
         )}

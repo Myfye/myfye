@@ -19,14 +19,14 @@ import appLogo from "@/assets/myfyeleaf.png";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import QRCodeModal from "../../components/app/modals/qr-code-modal/QRCodeModal.tsx";
+import QRCodeModal from "../../features/qr-scanner/QRCodeModal.tsx";
 import LoginHeader from "../../components/app/login/_components/LoginHeader.tsx";
 import LoginMain from "../../components/app/login/_components/LoginMain.tsx";
 import LoginFooter from "../../components/app/login/_components/LoginFooter.tsx";
 import LoginPage from "../../components/app/login/_components/LoginPage.tsx";
 import Router from "../../components/app/Router.tsx";
 import SendModal from "@/components/app/modals/send-modal/SendModal.tsx";
-import ReceiveModal from "@/components/app/modals/receive-modal/ReceiveModal.tsx";
+import ReceiveModal from "@/features/receive/ReceiveModal.tsx";
 import DepositModal from "@/components/app/modals/deposit-modal/DepositModal.tsx";
 import WithdrawModal from "@/components/app/modals/withdraw-modal/WithdrawModal.tsx";
 import {

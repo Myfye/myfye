@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
 import { Copy as CopyIcon, X } from "@phosphor-icons/react";
-import QRCode from "../../qr-code/QRCode";
+import QRCode from "../qr-code/QRCode";
 import { useSelector } from "react-redux";
 import Modal from "@/components/ui/modal/Modal";
 
