@@ -40,8 +40,7 @@ export const changeFormattedAmount = (
   const updatedAmount = getFormattedNumberFromString(formattedAmount + input);
   if (input === "0" && formattedAmount.includes(".")) {
     formattedAmount += "0";
-    const [integer, decimal] = formattedAmount.split(".");
-    console.log(decimal);
+    const [_, decimal] = formattedAmount.split(".");
     return updatedAmount + "." + decimal;
   }
   return updatedAmount;
