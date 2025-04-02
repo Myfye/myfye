@@ -32,6 +32,7 @@ const Toaster = () => {
             updateHeight(toast.id, height);
           }
         };
+        console.log(toast);
         return (
           <>
             <Toast

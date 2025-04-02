@@ -1,5 +1,17 @@
 import { css } from "@emotion/react";
-const Toast = ({ ref, offset, visible, children, ...restProps }) => {
+import { ReactNode, RefObject } from "react";
+const Toast = ({
+  ref,
+  offset,
+  visible,
+  children,
+  ...restProps
+}: {
+  ref: RefObject<HTMLLIElement>;
+  offset: number;
+  visible: boolean;
+  children: ReactNode;
+}) => {
   return (
     <li
       ref={ref}
