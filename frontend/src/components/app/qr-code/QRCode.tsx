@@ -15,11 +15,6 @@ const QRCode = ({
   className = "",
   chain = "base",
 }) => {
-  console.log('QR Code data:', data);
-  if (!data) {
-    console.log('No data provided to QR Code');
-    return null;
-  }
 
   const logo = chain === "base" ? baseLogoBlack : solanaLogoBlack;
 
