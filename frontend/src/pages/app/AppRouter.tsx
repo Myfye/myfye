@@ -38,7 +38,6 @@ import {
 } from "@/redux/modalReducers.tsx";
 import WithdrawCryptoOverlay from "@/features/on-offramp/withdraw/crypto/WithdrawCryptoOverlay.tsx";
 import {
-  setCoinSummaryOverlayOpen,
   setSelectContactOverlayOpen,
   setWithdrawCryptoOverlayOpen,
 } from "@/redux/overlayReducers.tsx";
