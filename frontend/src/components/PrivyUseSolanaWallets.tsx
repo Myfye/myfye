@@ -8,6 +8,7 @@ import {
 import { useDispatch } from 'react-redux';
 import {useSolanaWallets} from '@privy-io/react-auth/solana';
 import { updateUserSolanaPubKey } from '../functions/HandleUserLogIn';
+import getSolanaBalances from '../functions/GetSolanaBalances';
 
 function PrivyUseSolanaWallets() {
     /*
@@ -30,17 +31,21 @@ function PrivyUseSolanaWallets() {
         }
     }, []);
 
+    /*
     useEffect(() => {
         console.log('ready', ready);
     }, [ready]);
+    */
 
 
     useEffect(() => {
-        console.log('solana wallets', wallets);
         if (Array.isArray(wallets) && wallets.length > 0 && wallets[0].address) {
             const solanaAddress = wallets[0].address;
             dispatch(setSolanaPubKey(solanaAddress));
             
+            // Get the balances
+            getSolanaBalances(solanaAddress, dispatch);
+
             // Save the Solana public key to the database
             if (privyUserId) {
                 updateUserSolanaPubKey(privyUserId, solanaAddress)

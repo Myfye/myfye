@@ -39,6 +39,11 @@ const HomeTabs = () => {
   } = useBalance();
 
   // USDT
+  const usdcSolBalance = useSelector(
+    (state: any) => state.userWalletData.usdcSolBalance
+  );
+
+  // USDC
   const usdtSolBalance = useSelector(
     (state: any) => state.userWalletData.usdtSolBalance
   );
@@ -239,16 +244,10 @@ const HomeTabs = () => {
               )}
               {tab.id === "cash" && (
                 <CashPanel
-                  usdBalance={usdtSolBalance}
-                  eurcBalanceInUSD={eurcBalanceInUSD}
-                  eurcBalance={eurcSolBalance}
-                  usdyBalanceInUSD={usdyBalanceInUSD}
                 />
               )}
               {tab.id === "crypto" && (
                 <CryptoPanel
-                  solBalanceInUSD={solBalanceInUSD}
-                  btcBalanceInUSD={btcBalanceInUSD}
                 />
               )}
             </TabPanel>

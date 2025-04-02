@@ -4,16 +4,28 @@ import { css } from "@emotion/react";
 import CoinCardList from "@/components/ui/coin-card/CoinCardList";
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import { useMemo } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCoinSummaryOverlayOpen } from "@/redux/overlayReducers";
 
-const CryptoPanel = ({ btcBalanceInUSD, solBalanceInUSD }) => {
+const CryptoPanel = ({}) => {
+
+
+  const dispatch = useDispatch();
+
+  // Blockchain Data
+  const solBalance = useSelector((state: any) => state.userWalletData.solBalance);
+  const btcSolBalance = useSelector((state: any) => state.userWalletData.btcSolBalance);
+  const priceOfSOLinUSDC = useSelector((state: any) => state.userWalletData.priceOfSOLinUSDC);
+  const priceOfBTCinUSDC = useSelector((state: any) => state.userWalletData.priceOfBTCinUSDC);
+
+  // UI Balances
+  const solBalanceInUSD = solBalance * priceOfSOLinUSDC;
+  const btcBalanceInUSD = btcSolBalance * priceOfBTCinUSDC;
+
   const totalBalance = useMemo(
     () => btcBalanceInUSD + solBalanceInUSD,
     [btcBalanceInUSD, solBalanceInUSD]
   );
-
-  const dispatch = useDispatch();
 
   const coins = useMemo(
     () => [

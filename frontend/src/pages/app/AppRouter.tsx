@@ -70,6 +70,9 @@ function WebAppInner() {
   const priceOfBTCinUSDC = useSelector(
     (state: any) => state.userWalletData.priceOfBTCinUSDC
   );
+  const priceOfSOLinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfSOLinUSDC
+  );
   const priceOfEURCinUSDC = useSelector(
     (state: any) => state.userWalletData.priceOfEURCinUSDC
   );
@@ -104,6 +107,7 @@ function WebAppInner() {
             dispatch,
             priceOfUSDYinUSDC,
             priceOfBTCinUSDC,
+            priceOfSOLinUSDC,
             priceOfEURCinUSDC
           );
           setUserDataLoaded(true);

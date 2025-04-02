@@ -45,6 +45,7 @@ interface UserWalletDataState {
   priceOfUSDYinUSDC: number,
   priceOfBTCinUSDC: number,
   priceOfEURCinUSDC: number,
+  priceOfSOLinUSDC: number,
   recentlyUsedSolanaAddresses: string[],
   showContactPopup: boolean,
   selectedLanguageCode: string,
@@ -94,9 +95,10 @@ const initialUserWalletData: UserWalletDataState = {
   showProfileMenu: false,
   showSwapWithdrawPage: false,
   showSwapDepositPage: false,
-  priceOfUSDYinUSDC: 0,
-  priceOfBTCinUSDC: 0,
-  priceOfEURCinUSDC: 0,
+  priceOfUSDYinUSDC: 0, // Keep it at 0 because we will check it and update it once
+  priceOfBTCinUSDC: 0, // Keep it at 0 because we will check it and update it once
+  priceOfEURCinUSDC: 0, // Keep it at 0 because we will check it and update it once
+  priceOfSOLinUSDC: 0, // Keep it at 0 because we will check it and update it once
   recentlyUsedSolanaAddresses: [],
   showContactPopup: false,
   selectedLanguageCode: '',
@@ -252,6 +254,9 @@ export const userWalletDataSlice = createSlice({
   setPriceOfEURCinUSDC: (state, action: PayloadAction<number>) => {
     state.priceOfEURCinUSDC = action.payload;
   },
+  setPriceOfSOLinUSDC: (state, action: PayloadAction<number>) => {
+    state.priceOfSOLinUSDC = action.payload;
+  },
   setRecentlyUsedSolanaAddresses: (state, action: PayloadAction<string[]>) => {
     state.recentlyUsedSolanaAddresses = action.payload;
   },
@@ -300,6 +305,7 @@ export const {
   setPriceOfUSDYinUSDC, 
   setPriceOfBTCinUSDC,
   setPriceOfEURCinUSDC,
+  setPriceOfSOLinUSDC,
   setRecentlyUsedSolanaAddresses, 
   setShowContactPopup, setSelectedLanguageCode,
   setCurrentUserID, setPrivyUserId, setDepositWithdrawProductType,
