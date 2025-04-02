@@ -5,7 +5,7 @@ import {
   TabPanel as AriaTabPanel,
   Tab as AriaTab,
 } from "react-aria-components";
-import Home from "../../pages/app/home/Home";
+import Home from "../../features/home/Home";
 import {
   HouseSimple as HomeIcon,
   Wallet as WalletIcon,

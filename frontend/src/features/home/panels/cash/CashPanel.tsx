@@ -1,4 +1,4 @@
-import CoinCardList from "../../../../../../components/ui/coin-card/CoinCardList";
+import CoinCardList from "../../../../components/ui/coin-card/CoinCardList";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -9,17 +9,28 @@ import { useDispatch } from "react-redux";
 import { addCurrentCoin } from "@/redux/coinReducer";
 import { useSelector } from "react-redux";
 
-const CashPanel = ({
-}) => {
+const CashPanel = ({}) => {
   const dispatch = useDispatch();
 
   // Blockchain Data
-  const usdcSolBalance = useSelector((state: any) => state.userWalletData.usdcSolBalance);
-  const usdtSolBalance = useSelector((state: any) => state.userWalletData.usdtSolBalance);
-  const eurcSolBalance = useSelector((state: any) => state.userWalletData.eurcSolBalance);
-  const usdySolBalance = useSelector((state: any) => state.userWalletData.usdySolBalance);
-  const priceOfUSDYinUSDC = useSelector((state: any) => state.userWalletData.priceOfUSDYinUSDC);
-  const priceOfEURCinUSDC = useSelector((state: any) => state.userWalletData.priceOfEURCinUSDC);
+  const usdcSolBalance = useSelector(
+    (state: any) => state.userWalletData.usdcSolBalance
+  );
+  const usdtSolBalance = useSelector(
+    (state: any) => state.userWalletData.usdtSolBalance
+  );
+  const eurcSolBalance = useSelector(
+    (state: any) => state.userWalletData.eurcSolBalance
+  );
+  const usdySolBalance = useSelector(
+    (state: any) => state.userWalletData.usdySolBalance
+  );
+  const priceOfUSDYinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfUSDYinUSDC
+  );
+  const priceOfEURCinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfEURCinUSDC
+  );
 
   // UI Balances
   const usdBalance = usdtSolBalance + usdcSolBalance;

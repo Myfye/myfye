@@ -1,7 +1,7 @@
 import Header from "../_components/layout/header/Header";
-import NavMenu from "../_components/layout/header/nav-menu/NavMenu";
+import NavMenu from "../navigation/NavMenu";
 import QRCodeDialog from "../_components/qr-code/QRCodeDialog";
-import PrivyUseSolanaWallets from "../../../components/PrivyUseSolanaWallets";
+import PrivyUseSolanaWallets from "../../components/PrivyUseSolanaWallets";
 import HomeTabs from "./_components/HomeTabs";
 
 /** @jsxImportSource @emotion/react */

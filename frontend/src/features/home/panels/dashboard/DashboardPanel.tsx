@@ -8,8 +8,8 @@ import {
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import PieChart from "../../../../../../components/ui/pie-chart/PieChart";
-import BalanceTitle from "../../../../../../components/ui/balance-title/BalanceTitle";
+import PieChart from "../../../../components/ui/pie-chart/PieChart";
+import BalanceTitle from "../../../../components/ui/balance-title/BalanceTitle";
 import CTACarousel from "./cta-carousel/CTACarousel";
 import { useMemo } from "react";
 import {
@@ -23,26 +23,43 @@ import { useSelector } from "react-redux";
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
 
-    // Blockchain Data
-    const usdcSolBalance = useSelector((state: any) => state.userWalletData.usdcSolBalance);
-    const usdtSolBalance = useSelector((state: any) => state.userWalletData.usdtSolBalance);
-    const eurcSolBalance = useSelector((state: any) => state.userWalletData.eurcSolBalance);
-    const usdySolBalance = useSelector((state: any) => state.userWalletData.usdySolBalance);
-    const btcSolBalance = useSelector((state: any) => state.userWalletData.btcSolBalance);
-    const priceOfUSDYinUSDC = useSelector((state: any) => state.userWalletData.priceOfUSDYinUSDC);
-    const priceOfBTCinUSDC = useSelector((state: any) => state.userWalletData.priceOfBTCinUSDC);
-    const priceOfEURCinUSDC = useSelector((state: any) => state.userWalletData.priceOfEURCinUSDC);
-  
-    const cashBalanceInUSD = usdtSolBalance + usdcSolBalance;
+  // Blockchain Data
+  const usdcSolBalance = useSelector(
+    (state: any) => state.userWalletData.usdcSolBalance
+  );
+  const usdtSolBalance = useSelector(
+    (state: any) => state.userWalletData.usdtSolBalance
+  );
+  const eurcSolBalance = useSelector(
+    (state: any) => state.userWalletData.eurcSolBalance
+  );
+  const usdySolBalance = useSelector(
+    (state: any) => state.userWalletData.usdySolBalance
+  );
+  const btcSolBalance = useSelector(
+    (state: any) => state.userWalletData.btcSolBalance
+  );
+  const priceOfUSDYinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfUSDYinUSDC
+  );
+  const priceOfBTCinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfBTCinUSDC
+  );
+  const priceOfEURCinUSDC = useSelector(
+    (state: any) => state.userWalletData.priceOfEURCinUSDC
+  );
 
-    const cryptoBalanceInUSD = (btcSolBalance * priceOfBTCinUSDC) // TO DO add solana
-  
-    const totalBalance = useMemo(
-      () => cashBalanceInUSD + 
-        (eurcSolBalance * priceOfEURCinUSDC) + 
-        (usdySolBalance * priceOfUSDYinUSDC) + 
-        (btcSolBalance * priceOfBTCinUSDC)
-    );
+  const cashBalanceInUSD = usdtSolBalance + usdcSolBalance;
+
+  const cryptoBalanceInUSD = btcSolBalance * priceOfBTCinUSDC; // TO DO add solana
+
+  const totalBalance = useMemo(
+    () =>
+      cashBalanceInUSD +
+      eurcSolBalance * priceOfEURCinUSDC +
+      usdySolBalance * priceOfUSDYinUSDC +
+      btcSolBalance * priceOfBTCinUSDC
+  );
 
   const pieChartData = useMemo(() => {
     const data = [];

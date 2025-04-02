@@ -19,7 +19,7 @@ import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
 import { Bank, Copy, Wallet, X } from "@phosphor-icons/react";
-import ModalButton from "../../app/modals/buttons/ModalButton";
+import ModalButton from "../../../features/on-offramp/ModalButton";
 import QRCode from "../../../features/qr-code/QRCode";
 import { useSelector } from "react-redux";
 
