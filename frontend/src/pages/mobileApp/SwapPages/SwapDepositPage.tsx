@@ -31,7 +31,7 @@ import {
   setDoc,
   addDoc,
 } from "firebase/firestore";
-import GetUserTransactionsEnabled from "../../../functions/GetUserTransactionsEnabled.tsx";
+import GetUserTransactionsEnabled from "../../../features/user/GetUserTransactionsEnabled.tsx";
 
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
 

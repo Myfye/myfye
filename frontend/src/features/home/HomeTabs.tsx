@@ -21,11 +21,13 @@ import CashPanel from "./panels/cash/CashPanel";
 import CryptoPanel from "./panels/crypto/CryptoPanel";
 import { useSelector } from "react-redux";
 import useBalance from "@/hooks/useBalance";
+import StocksPanel from "./panels/stocks/StocksPanel";
 
 const tabs = [
   { id: "dashboard", label: "Dashboard" },
   { id: "cash", label: "Cash" },
   { id: "crypto", label: "Crypto" },
+  { id: "stocks", label: "Stocks" },
 ];
 
 const HomeTabs = () => {
@@ -244,6 +246,7 @@ const HomeTabs = () => {
               )}
               {tab.id === "cash" && <CashPanel />}
               {tab.id === "crypto" && <CryptoPanel />}
+              {tab.id === "stocks" && <StocksPanel />}
             </TabPanel>
           )}
         </Collection>

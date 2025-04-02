@@ -12,12 +12,9 @@ import {
 } from "./modalReducers.tsx";
 import {
   cashBalanceOverlayReducer,
-  cashOverlayReducer,
   coinSummaryOverlayReducer,
   cryptoBalanceOverlayReducer,
-  cryptoSummaryOverlayReducer,
   depositFiatOverlayReducer,
-  earnSummaryOverlayReducer,
   requestOverlayReducer,
   selectContactOverlayReducer,
   sendOverlayReducer,
@@ -28,6 +25,11 @@ import {
 } from "./overlayReducers.tsx";
 import { currentCoinReducer } from "./coinReducer.tsx";
 import { currentContactReducer } from "./contactReducer.tsx";
+
+import cashReducer from "@/features/wallet/cash/cashSlice.ts";
+import cryptoReducer from "@/features/wallet/crypto/cryptoSlice.ts";
+import earnReducer from "@/features/wallet/earn/earnSlice.ts";
+import stocksReducer from "@/features/wallet/stocks/stocksSlice.ts";
 
 const store = configureStore({
   reducer: {
@@ -57,17 +59,17 @@ const store = configureStore({
     currentCoin: currentCoinReducer,
     currentContact: currentContactReducer,
 
-    // Wallet overlays
-
-    earnSummaryOverlay: earnSummaryOverlayReducer,
-    cryptoSummaryOverlay: cryptoSummaryOverlayReducer,
-    cashOverlay: cashOverlayReducer,
-
     // Coin overlay
     coinSummaryOverlay: coinSummaryOverlayReducer,
 
     // Swap
     swap: swapReducer,
+
+    // Cash
+    cash: cashReducer,
+    crypto: cryptoReducer,
+    earn: earnReducer,
+    stocks: stocksReducer,
   },
 });
 

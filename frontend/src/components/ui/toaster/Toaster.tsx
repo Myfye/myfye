@@ -1,23 +1,24 @@
-// import toast, { useToaster } from "react-hot-toast/headless";
+import { useToaster } from "react-hot-toast/headless";
+import Toast from "./Toast";
 
-// const Toast = ({ t, updateHeight, offset }) => {};
+const Toaster = () => {
+  const { toasts, handlers } = useToaster();
+  return (
+    <ul>
+      {toasts.map((toast) => (
+        <li className="toast-wrapper">
+          <Toast
+            key={toast.id}
+            t={toast}
+            updateHeight={(height) => handlers.updateHeight(toast.id, height)}
+            offset={handlers.calculateOffset(toast, {
+              reverseOrder: false,
+            })}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+};
 
-// const Toaster = () => {
-//   const { toasts, handlers } = useToaster();
-//   return (
-//     <div>
-//       {toasts.map((t) => (
-//         <Toast
-//           key={t.id}
-//           t={t}
-//           updateHeight={(height) => handlers.updateHeight(t.id, height)}
-//           offset={handlers.calculateOffset(t, {
-//             reverseOrder: false,
-//           })}
-//         />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default Toaster;
+export default Toaster;

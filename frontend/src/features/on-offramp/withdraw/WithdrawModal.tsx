@@ -26,10 +26,10 @@ const WithdrawModal = ({ isOpen, onOpenChange }) => {
       >
         <menu
           css={css`
-            margin-block-start: var(--size-500);
             display: flex;
             flex-direction: column;
             gap: var(--size-200);
+            padding-inline: var(--size-200);
           `}
         >
           <li>

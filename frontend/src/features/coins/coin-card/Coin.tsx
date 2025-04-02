@@ -6,9 +6,19 @@ import solCoinIcon from "@/assets/svgs/coins/sol-coin.svg";
 import usdCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
 import usdyCoinIcon from "@/assets/svgs/coins/usdy-coin.svg";
+import microsoftCoinIcon from "@/assets/svgs/coins/microsoft.svg";
+import appleCoinIcon from "@/assets/svgs/coins/apple.svg";
+import googleCoinIcon from "@/assets/svgs/coins/google.png";
 
-type CoinType = "btc" | "sol" | "usdt" | "eurc" | "usdy";
-type Currency = "usd" | "eur" | "btc" | "sol";
+type CoinType =
+  | "btc"
+  | "sol"
+  | "usdt"
+  | "eurc"
+  | "usdy"
+  | "google"
+  | "microsoft"
+  | "apple";
 
 const Coin = ({ type = "usdt" }: { type: CoinType }) => {
   const getCoinImageSrc = useCallback(
@@ -28,6 +38,15 @@ const Coin = ({ type = "usdt" }: { type: CoinType }) => {
         }
         case "usdy": {
           return usdyCoinIcon;
+        }
+        case "apple": {
+          return appleCoinIcon;
+        }
+        case "microsoft": {
+          return microsoftCoinIcon;
+        }
+        case "google": {
+          return googleCoinIcon;
         }
         default: {
           return usdCoinIcon;

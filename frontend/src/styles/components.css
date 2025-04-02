@@ -16,8 +16,6 @@
     --_padding-inline: var(--control-padding-inline-medium);
     --_padding-block: var(--control-padding-block-medium);
 
-    --_border-radius: var(--border-radius-pill);
-
     --_icon-size: var(--size-200);
 
     --_font-size: var(--fs-medium);
@@ -26,6 +24,8 @@
     justify-content: center;
     align-items: center;
     gap: var(--_gap);
+
+    --_border-radius: var(--border-radius-pill);
 
     padding-inline: var(--_padding-inline);
 
@@ -103,10 +103,26 @@
       }
     }
     &[data-variant="secondary"] {
-      background-color: var(--clr-accent);
+      &[data-color="accent"] {
+        --_background-color: transparent;
+        --_border-color: var(--clr-accent);
+        --_color: var(--clr-accent);
+
+        --_background-color-active: var(--clr-accent-active);
+        --_border-color-active: var(--clr-accent-active);
+        --_color-active: var(--clr-text-on-accent);
+      }
     }
     &[data-variant="ghost"] {
-      background-color: var(--clr-danger);
+      &[data-color="accent"] {
+        --_background-color: transparent;
+        --_border-color: transparent;
+        --_color: var(--clr-accent);
+
+        --_background-color-active: transparent;
+        --_border-color-active: transparent;
+        --_color-active: transparent;
+      }
     }
 
     /* Size */
@@ -116,6 +132,19 @@
     --_padding-inline: var(--control-padding-inline-x-small);
     --_padding-block: var(--control-padding-block-x-small);
 
+    &[data-size="xx-small"] {
+      --_size: var(--control-size-xx-small);
+      --_gap: var(--control-gap-xx-small);
+
+      --_font-size: var(--fs-small);
+
+      --_padding-inline: var(--control-padding-inline-xx-small);
+      --_padding-block: var(--control-padding-block-xx-small);
+
+      &[data-border-radius="square"] {
+        --_border-radius: var(--border-radius-small);
+      }
+    }
     &[data-size="x-small"] {
       --_size: var(--control-size-x-small);
       --_gap: var(--control-gap-x-small);
@@ -124,6 +153,10 @@
 
       --_padding-inline: var(--control-padding-inline-x-small);
       --_padding-block: var(--control-padding-block-x-small);
+
+      &[data-border-radius="square"] {
+        --_border-radius: var(--border-radius-small);
+      }
     }
     &[data-size="small"] {
       --_size: var(--control-size-small);
@@ -133,6 +166,10 @@
 
       --_padding-inline: var(--control-padding-inline-small);
       --_padding-block: var(--control-padding-block-small);
+
+      &[data-border-radius="square"] {
+        --_border-radius: var(--border-radius-small);
+      }
     }
     &[data-size="medium"] {
       --_size: var(--control-size-medium);
@@ -140,6 +177,10 @@
 
       --_padding-inline: var(--control-padding-inline-medium);
       --_padding-block: var(--control-padding-block-medium);
+
+      &[data-border-radius="square"] {
+        --_border-radius: var(--border-radius-medium);
+      }
     }
     &[data-size="large"] {
       --_size: var(--control-size-large);
@@ -147,6 +188,10 @@
 
       --_padding-inline: var(--control-padding-inline-large);
       --_padding-block: var(--control-padding-block-large);
+
+      &[data-border-radius="square"] {
+        --_border-radius: var(--border-radius-medium);
+      }
     }
     &[data-size="x-large"] {
       --_size: var(--control-size-large);
@@ -154,6 +199,10 @@
 
       --_padding-inline: var(--control-padding-inline-large);
       --_padding-block: var(--control-padding-block-large);
+
+      &[data-border-radius="square"] {
+        --_border-radius: var(--border-radius-medium);
+      }
     }
 
     &[data-wrap="true"] {
@@ -170,6 +219,10 @@
     &[disabled] {
       opacity: 0.75;
       cursor: not-allowed;
+    }
+
+    &[data-border-radius="pill"] {
+      --_border-radius: var(--border-radius-pill);
     }
 
     /* Icon */

@@ -11,11 +11,11 @@ import { css } from "@emotion/react";
 import useBalance from "@/hooks/useBalance";
 import { useMemo } from "react";
 import { useDispatch } from "react-redux";
-import {
-  setCashOverlayOpen,
-  setCryptoSummaryOverlayOpen,
-  setEarnSummaryOverlayOpen,
-} from "@/redux/overlayReducers";
+
+import { setOverlayOpen as setCashOverlayOpen } from "./cash/cashSlice";
+import { setOverlayOpen as setEarnOverlayOpen } from "./earn/earnSlice";
+import { setOverlayOpen as setStocksOverlayOpen } from "./stocks/stocksSlice";
+import { setOverlayOpen as setCryptoOverlayOpen } from "./crypto/cryptoSlice";
 
 const WalletCardList = ({ ...restProps }) => {
   const { cryptoBalanceInUSD, cashBalanceInUSD, usdyBalanceInUSD } =
@@ -38,7 +38,7 @@ const WalletCardList = ({ ...restProps }) => {
         balance: usdyBalanceInUSD,
         percentChange: -0.0212,
         icon: EarnIcon,
-        action: () => dispatch(setEarnSummaryOverlayOpen(true)),
+        action: () => dispatch(setEarnOverlayOpen(true)),
       },
       {
         label: "Crypto",
@@ -46,7 +46,7 @@ const WalletCardList = ({ ...restProps }) => {
         balance: cryptoBalanceInUSD,
         percentChange: 0.0492,
         icon: CryptoIcon,
-        action: () => dispatch(setCryptoSummaryOverlayOpen(true)),
+        action: () => dispatch(setCryptoOverlayOpen(true)),
       },
       {
         label: "Stocks",
@@ -54,7 +54,7 @@ const WalletCardList = ({ ...restProps }) => {
         balance: 0,
         precentChange: 0.0292,
         icon: StocksIcon,
-        action: () => dispatch(setCryptoSummaryOverlayOpen(true)),
+        action: () => dispatch(setStocksOverlayOpen(true)),
       },
     ],
     [cryptoBalanceInUSD, cashBalanceInUSD, usdyBalanceInUSD]

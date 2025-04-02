@@ -33,7 +33,13 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const QRCodeModal = ({ isOpen = false, onOpenChange }) => {
+const QRCodeModal = ({
+  isOpen = false,
+  onOpenChange,
+}: {
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+}) => {
   let h = window.innerHeight;
   let y = useMotionValue(h);
   let bgOpacity = useTransform(y, [0, h], [0.4, 0]);

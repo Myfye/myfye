@@ -47,7 +47,7 @@ const WalletCard = ({
     ButtonContext
   );
 
-  let { buttonProps, isPressed } = useButton(restPropsButton, refButton);
+  const { buttonProps, isPressed } = useButton(restPropsButton, refButton);
 
   return (
     <motion.button

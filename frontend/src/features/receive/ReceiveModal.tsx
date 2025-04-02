@@ -26,7 +26,6 @@ const ReceiveModal = ({ isOpen, onOpenChange }) => {
             height: 100%;
             padding-inline: var(--size-200);
             padding-block-end: var(--size-200);
-            padding-block-start: var(--size-400);
           `}
         >
           <QRCode data={pubKey} color="#000407" />

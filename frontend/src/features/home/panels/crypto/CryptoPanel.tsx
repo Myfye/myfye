@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import CoinCardList from "@/components/ui/coin-card/CoinCardList";
+import CoinCardList from "@/features/coins/coin-card/CoinCardList";
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";

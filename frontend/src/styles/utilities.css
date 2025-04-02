@@ -9,4 +9,8 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  .no-scroll {
+    overflow-y: hidden;
+  }
 }
