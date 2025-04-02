@@ -230,7 +230,7 @@ const StocksOverlay = () => {
           </section>
           <section
             css={css`
-              margin-block-start: var(--size-400);
+              margin-block-start: var(--size-500);
               margin-inline: var(--size-250);
               margin-block-end: var(--size-250);
             `}

@@ -102,7 +102,6 @@ const SwapModal = () => {
       >
         <div
           css={css`
-            margin-block-start: var(--size-400);
             display: flex;
             flex-direction: column;
             min-height: fit-content;

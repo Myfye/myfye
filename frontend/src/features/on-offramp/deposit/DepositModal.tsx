@@ -64,6 +64,7 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
               display: flex;
               flex-direction: column;
               gap: var(--size-200);
+              padding-inline: var(--size-200);
             `}
           >
             <li>
