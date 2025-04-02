@@ -8,6 +8,7 @@ import ModalButton from "../ModalButton";
 import QRCode from "../../qr-code/QRCode";
 import { useSelector } from "react-redux";
 import Modal from "@/components/ui/modal/Modal";
+import toast from "react-hot-toast/headless";
 
 const DepositModal = ({ isOpen, onOpenChange }) => {
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
@@ -37,9 +38,8 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(selectedAddress);
     setShowCopiedAddress(true);
-    setTimeout(() => {
-      onOpenChange(false);
-    }, 1700);
+    onOpenChange(false);
+    toast(selectedChain === "base" ? "Base" : "Solana");
   };
 
   const getTruncatedAddress = (address: string) => {
@@ -136,11 +136,7 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
               `}
             >
               <Button expand icon={Copy} onPress={handleCopyAddress}>
-                {showCopiedAddress
-                  ? getTruncatedAddress(selectedAddress)
-                  : `Copy ${
-                      selectedChain === "base" ? "Base" : "Solana"
-                    } Address`}
+                {`Copy ${selectedChain === "base" ? "Base" : "Solana"} Address`}
               </Button>
             </section>
           </div>

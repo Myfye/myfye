@@ -45,6 +45,7 @@ import {
 import SelectContactOverlay from "@/features/on-offramp/withdraw/crypto/SelectContactOverlay.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
+import Toaster from "@/features/toaster/Toaster.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -221,6 +222,7 @@ function WebAppInner() {
               isOpen={isSelectContactOverlayOpen}
               onOpenChange={(e) => dispatch(setSelectContactOverlayOpen(e))}
             />
+            <Toaster />
           </>
         ) : (
           <div
