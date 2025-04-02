@@ -13,9 +13,26 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const { btcBalanceInUSD, solBalanceInUSD, usdyBalanceInUSD } = useBalance();
-  const usdBalance = useSelector(
+
+  let usdBalance = 0;
+  let usdType = "usdcSol";
+
+  const usdtSolBalance = useSelector(
     (state: RootState) => state.userWalletData.usdtSolBalance
   );
+
+  const usdcSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdcSolBalance
+  );
+
+  if (usdtSolBalance > usdcSolBalance) {
+    usdBalance = usdtSolBalance;
+    usdType = "usdtSol";
+  } else {
+    usdBalance = usdcSolBalance;
+    usdType = "usdcSol";
+  }
+
 
   const eurcBalance = useSelector(
     (state: RootState) => state.userWalletData.eurcSolBalance
@@ -54,15 +71,15 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
       dispatch(
         changeCoinId({
           transactionType: transactionType,
-          coinId: coin.type.toUpperCase(),
+          coinId: coin.type,
         })
       );
       dispatch(
         changeExchangeRate({
           buyCoinId:
-            transactionType === "buy" ? coin.type.toUpperCase() : buyCoinId,
+            transactionType === "buy" ? coin.type : buyCoinId,
           sellCoinId:
-            transactionType === "sell" ? coin.type.toUpperCase() : sellCoinId,
+            transactionType === "sell" ? coin.type : sellCoinId,
           wallet,
         })
       );
@@ -82,7 +99,7 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
       {
         title: "Bitcoin",
         currency: "btc",
-        type: "btc",
+        type: "btcSol",
         balance: btcBalanceInUSD,
       },
       {
@@ -100,19 +117,19 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
       {
         title: "US Dollar",
         currency: "usd",
-        type: "usdt",
+        type: usdType,
         balance: usdBalance,
       },
       {
         title: "Euro",
         currency: "eur",
-        type: "eurc",
+        type: "eurcSol",
         balance: eurcBalance,
       },
       {
         title: "US Treasury Bonds",
         currency: "usd",
-        type: "usdy",
+        type: "usdySol",
         balance: usdyBalanceInUSD,
       },
     ],

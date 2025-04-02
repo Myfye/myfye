@@ -7,26 +7,29 @@ import usdCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
 import usdyCoinIcon from "@/assets/svgs/coins/usdy-coin.svg";
 
-type CoinType = "btc" | "sol" | "usdt" | "eurc" | "usdy";
+type CoinType = "btcSol" | "sol" | "usdtSol" | "usdcSol" | "eurcSol" | "usdySol";
 type Currency = "usd" | "eur" | "btc" | "sol";
 
 const Coin = ({ type = "usdt" }: { type: CoinType }) => {
   const getCoinImageSrc = useCallback(
     (type: CoinType) => {
       switch (type) {
-        case "btc": {
+        case "btcSol": {
           return btcCoinIcon;
         }
         case "sol": {
           return solCoinIcon;
         }
-        case "usdt": {
+        case "usdtSol": {
           return usdCoinIcon;
         }
-        case "eurc": {
+        case "usdcSol": {
+          return usdCoinIcon;
+        }
+        case "eurcSol": {
           return euroCoinIcon;
         }
-        case "usdy": {
+        case "usdySol": {
           return usdyCoinIcon;
         }
         default: {

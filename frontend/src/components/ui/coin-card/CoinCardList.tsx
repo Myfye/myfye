@@ -130,7 +130,7 @@ const CoinCardList = ({
                       dispatch(
                         toggleSwapModal({
                           isOpen: true,
-                          coinId: coin.type.toUpperCase(),
+                          coinId: coin.type,
                         })
                       );
                     }}
