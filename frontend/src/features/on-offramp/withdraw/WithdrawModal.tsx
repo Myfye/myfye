@@ -3,7 +3,7 @@ import { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Bank, Wallet } from "@phosphor-icons/react";
-import ModalButton from "../buttons/ModalButton";
+import ModalButton from "../ModalButton";
 import Modal from "@/components/ui/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import {

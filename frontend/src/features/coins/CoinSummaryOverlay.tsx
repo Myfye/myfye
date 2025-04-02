@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 
 import Overlay from "@/components/ui/overlay/Overlay";
-import CryptoSummary from "./CryptoSummary";
+import CryptoSummary from "./crypto/CryptoSummary";
 
 const CoinSummaryOverlay = ({ isOpen, onOpenChange }) => {
   return (

@@ -6,12 +6,12 @@ import {
   useTransform,
 } from "motion/react";
 import { Dialog, Modal, ModalOverlay } from "react-aria-components";
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import QrReader from "../../components/app/qr-code/QRReader";
+import QrReader from "./QRReader";
 import Button from "@/components/ui/button/Button";
 import {
   CaretLeft as CaretLeftIcon,

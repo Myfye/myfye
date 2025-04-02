@@ -19,16 +19,16 @@ import appLogo from "@/assets/myfyeleaf.png";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import QRCodeModal from "../../features/qr-scanner/QRCodeModal.tsx";
-import LoginHeader from "../../components/app/login/_components/LoginHeader.tsx";
-import LoginMain from "../../components/app/login/_components/LoginMain.tsx";
-import LoginFooter from "../../components/app/login/_components/LoginFooter.tsx";
-import LoginPage from "../../components/app/login/_components/LoginPage.tsx";
+import QRCodeModal from "../../features/qr-code/QRCodeModal.tsx";
+import LoginHeader from "../../features/authentication/LoginHeader.tsx";
+import LoginMain from "../../features/authentication/LoginMain.tsx";
+import LoginFooter from "../../features/authentication/LoginFooter.tsx";
+import LoginPage from "../../features/authentication/LoginPage.tsx";
 import Router from "../../components/app/Router.tsx";
-import SendModal from "@/components/app/modals/send-modal/SendModal.tsx";
+import SendModal from "@/features/send/SendModal.tsx";
 import ReceiveModal from "@/features/receive/ReceiveModal.tsx";
-import DepositModal from "@/components/app/modals/deposit-modal/DepositModal.tsx";
-import WithdrawModal from "@/components/app/modals/withdraw-modal/WithdrawModal.tsx";
+import DepositModal from "@/features/on-offramp/deposit/DepositModal.tsx";
+import WithdrawModal from "@/features/on-offramp/withdraw/WithdrawModal.tsx";
 import {
   setDepositModalOpen,
   setQRCodeModalOpen,
@@ -36,7 +36,7 @@ import {
   setSendModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers.tsx";
-import WithdrawCryptoOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/WithdrawCryptoOverlay.tsx";
+import WithdrawCryptoOverlay from "@/features/on-offramp/withdraw/crypto/WithdrawCryptoOverlay.tsx";
 import {
   setCashOverlayOpen,
   setCoinSummaryOverlayOpen,
@@ -45,11 +45,11 @@ import {
   setSelectContactOverlayOpen,
   setWithdrawCryptoOverlayOpen,
 } from "@/redux/overlayReducers.tsx";
-import SelectContactOverlay from "@/components/app/overlays/withdraw-overlays/withdraw-crypto-overlay/select-contact-overlay/SelectContactOverlay.tsx";
+import SelectContactOverlay from "@/features/on-offramp/withdraw/crypto/SelectContactOverlay.tsx";
 import EarnOverlay from "@/features/earn/EarnOverlay.tsx";
 import CryptoOverlay from "@/features/crypto/CryptoOverlay.tsx";
 import CashOverlay from "@/features/cash/CashOverlay.tsx";
-import CoinSummaryOverlay from "@/components/app/overlays/coin-overlay/CoinSummaryOverlay.tsx";
+import CoinSummaryOverlay from "@/features/coins/CoinSummaryOverlay.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
 

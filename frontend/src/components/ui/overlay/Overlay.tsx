@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import { Dialog, Modal, ModalOverlay } from "react-aria-components";
-import { useId } from "react";
+import { ReactNode, useId } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -19,7 +19,19 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const Overlay = ({ isOpen, onOpenChange, title, zIndex = 1000, children }) => {
+const Overlay = ({
+  isOpen,
+  onOpenChange,
+  title,
+  zIndex = 1000,
+  children,
+}: {
+  isOpen: boolean;
+  onOpenChange: (e: boolean) => void;
+  title?: string;
+  zIndex?: number;
+  children?: ReactNode;
+}) => {
   let w = window.innerWidth;
   let x = useMotionValue(w);
 
