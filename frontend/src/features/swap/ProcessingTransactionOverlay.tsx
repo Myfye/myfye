@@ -6,6 +6,7 @@ import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
+import { useState } from "react";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -16,6 +17,8 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const handleOpen = (e: boolean) => {
     toggleOverlay({ type: "processingTransaction", isOpen: e });
   };
+
+  const [statusMessage, setStatusMessage] = useState('');
 
   const buyInfo = useSelector((state: RootState) => state.swap.transaction.buy);
 
@@ -63,7 +66,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
                 text-align: center;
               `}
             >
-              You're swapping $2.00 {buyInfo.coinId} for USD on Base
+              {statusMessage}
             </p>
             <p
               className="caption"

@@ -50,8 +50,11 @@ import {
       )
     }
   
+    const microInputAmount = inputAmount*1000000 // to do convert dynamically right now its hard coded for USDC
+    
+  
     getSwapQuote(
-      inputAmount, 
+      microInputAmount, 
       inputCurrency, 
       output_mint,
       microPlatformFeeAmount

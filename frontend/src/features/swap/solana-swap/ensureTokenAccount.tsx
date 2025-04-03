@@ -1,7 +1,3 @@
-
-import { 
-    getFunctions, 
-    httpsCallable } from 'firebase/functions';
 import { 
   ComputeBudgetProgram, 
   PublicKey, 
@@ -13,7 +9,7 @@ import {
   Transaction, 
   TransactionInstruction,
   VersionedTransaction, } from "@solana/web3.js";
-import { HELIUS_API_KEY } from '../../../env.ts';
+import { HELIUS_API_KEY } from '../../../env';
 
 async function ensureTokenAccount(userPublicKeyString: String, mintAddress: String) {
 
@@ -45,14 +41,18 @@ async function ensureTokenAccount(userPublicKeyString: String, mintAddress: Stri
     );
 
     if (!receiverAccountInfo) {
-        const functions = getFunctions();
-        const newTokenAccount = httpsCallable(functions, 'createNewTokenAccount');
     
         try {
-            const result = newTokenAccount({
-                receiverPubKey: userPublicKeyString,
-                mintAddress: mintAddress!,
-                programId: programId,
+            const response = await fetch('http://localhost:3001/create_solana_token_account', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    receiverPubKey: userPublicKeyString,
+                    mintAddress: mintAddress,
+                    programId: programId
+                })
             });
 
             // the create new account promise is not working 
