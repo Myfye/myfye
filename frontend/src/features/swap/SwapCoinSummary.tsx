@@ -22,6 +22,25 @@ const SwapCoin = ({
 }) => {
   const wallet = useSelector((state: RootState) => state.userWalletData);
 
+  let usdBalance = 0;
+  let type = "usdt";
+
+  const usdtSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdtSolBalance
+  );
+
+  const usdcSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdcSolBalance
+  );
+
+  if (usdtSolBalance > usdcSolBalance) {
+    usdBalance = usdtSolBalance;
+    type = "usdtSol";
+  } else {
+    usdBalance = usdcSolBalance;
+    type = "usdcSol";
+  }
+
   const usdAmount = useMemo(
     () => getUsdAmount(coinId, wallet, amount),
     [amount, coinId, wallet]
@@ -34,35 +53,42 @@ const SwapCoin = ({
 
   const currentCoin = () => {
     switch (coinId) {
-      case "BTC": {
+      case "btcSol": {
         return {
           title: "Bitcoin",
           type: "btc",
           icon: btcIcon,
         };
       }
-      case "SOL": {
+      case "sol": {
         return {
           title: "Solana",
           type: "sol",
           icon: solIcon,
         };
       }
-      case "USDT": {
+      case "usdcSol": {
         return {
           title: "US Dollar",
-          type: "usdt",
+          type: type,
           icon: usdCoin,
         };
       }
-      case "USDY": {
+      case "usdtSol": {
+        return {
+          title: "US Dollar",
+          type: type,
+          icon: usdCoin,
+        };
+      }
+      case "usdySol": {
         return {
           title: "US Treasury Bonds",
           type: "usdy",
           icon: usdyCoin,
         };
       }
-      case "EURC": {
+      case "eurcSol": {
         return {
           title: "Euro",
           type: "eurc",

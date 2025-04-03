@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import ThreeDotsBounceLoader from "./spinners/ThreeDotsBounceLoader";
 import logo from "@/assets/Logo.png";
 import Ring180Loader from "./spinners/180RingLoader";
 

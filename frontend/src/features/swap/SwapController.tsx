@@ -34,31 +34,37 @@ const CoinSelectButton = ({
 }) => {
   const currentCoin = useMemo(() => {
     switch (coinId) {
-      case "BTC": {
+      case "btcSol": {
         return {
           name: "Bitcoin",
           img: btcIcon,
         };
       }
-      case "SOL": {
+      case "sol": {
         return {
           name: "Solana",
           img: solIcon,
         };
       }
-      case "USDT": {
+      case "usdcSol": {
         return {
           name: "US Dollar",
           img: usdCoin,
         };
       }
-      case "USDY": {
+      case "usdtSol": {
+        return {
+          name: "US Dollar",
+          img: usdCoin,
+        };
+      }
+      case "usdySol": {
         return {
           name: "US Treasury Bonds",
           img: usdyCoin,
         };
       }
-      case "EURC": {
+      case "eurcSol": {
         return {
           name: "Euro",
           img: eurcCoin,

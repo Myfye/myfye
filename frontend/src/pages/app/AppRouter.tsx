@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Buffer } from "buffer";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import "../../styles/components.css";
 import {
   usePrivy,

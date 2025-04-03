@@ -66,19 +66,22 @@ export const getUsdAmount = (
 ) => {
   if (!amount) return 0;
   switch (coinId) {
-    case "BTC": {
+    case "btcSol": {
       return amount * wallet.priceOfBTCinUSDC;
     }
-    case "SOL": {
+    case "sol": {
       return amount * 100;
     }
-    case "USDT": {
+    case "usdcSol": {
       return amount;
     }
-    case "EURC": {
+    case "usdtSol": {
+      return amount;
+    }
+    case "eurcSol": {
       return amount * wallet.priceOfEURCinUSDC;
     }
-    case "USDY": {
+    case "usdySol": {
       return amount * wallet.priceOfUSDYinUSDC;
     }
     default: {
@@ -98,20 +101,25 @@ export const formatUsdAmount = (amount: number | null) =>
     : "$0";
 
 export const getCoinBalance = (wallet: UserWalletDataState, coinId: CoinId) => {
+
+  console.log('coinID', coinId)
   switch (coinId) {
-    case "BTC": {
+    case "btcSol": {
       return wallet.btcSolBalance;
     }
-    case "SOL": {
+    case "sol": {
       return wallet.solBalance;
     }
-    case "USDT": {
+    case "usdcSol": {
+      return wallet.usdcSolBalance;
+    }
+    case "usdtSol": {
       return wallet.usdtSolBalance;
     }
-    case "EURC": {
+    case "eurcSol": {
       return wallet.eurcSolBalance;
     }
-    case "USDY": {
+    case "usdySol": {
       return wallet.usdySolBalance;
     }
     default: {
@@ -134,23 +142,27 @@ export const calculateExchangeRate = ({
 
   const coinUsdPrices = [
     {
-      coinId: "BTC",
+      coinId: "btcSol",
       usdPrice: wallet.priceOfBTCinUSDC,
     },
     {
-      coinId: "SOL",
-      usdPrice: 100,
+      coinId: "sol",
+      usdPrice: wallet.priceOfSOLinUSDC,
     },
     {
-      coinId: "USDT",
+      coinId: "usdtSol",
       usdPrice: 1,
     },
     {
-      coinId: "USDY",
+      coinId: "usdcSol",
+      usdPrice: 1,
+    },
+    {
+      coinId: "usdySol",
       usdPrice: wallet.priceOfUSDYinUSDC,
     },
     {
-      coinId: "EURC",
+      coinId: "eurcSol",
       usdPrice: wallet.priceOfEURCinUSDC,
     },
   ];

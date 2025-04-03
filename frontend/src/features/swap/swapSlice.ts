@@ -7,9 +7,9 @@ import {
 } from "./utils";
 import { UserWalletDataState } from "@/redux/userWalletData";
 
-export type CryptoCoinId = "BTC" | "SOL";
-export type CashCoinId = "USDT" | "EURC";
-export type EarnCoinId = "USDY";
+export type CryptoCoinId = "btcSol" | "sol";
+export type CashCoinId = "usdcSol" | "usdtSol" | "eurcSol";
+export type EarnCoinId = "usdySol";
 export type CoinId = CryptoCoinId | CashCoinId | EarnCoinId;
 
 export interface Coin {

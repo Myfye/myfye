@@ -7,6 +7,7 @@ const { create_new_on_ramp_path } = require("./routes/newUser");
 const { get_payin_quote } = require("./routes/getPayinQuote");
 const { create_new_payin } = require("./routes/createNewPayin");
 const { bridge_swap } = require("./routes/bridge_swap/bridgeSwap");
+const { createNewTokenAccount } = require("./routes/newSolanaTokenAccount");
 const {
   createUser,
   getUserByEmail,
@@ -152,6 +153,27 @@ app.post("/new_payin", async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error("Error in /get_payin endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/create_solana_token_account", async (req, res) => {
+  console.log("\n=== Create Solana Token Account Request Received ===");
+
+  try {
+    const { receiverPubKey, mintAddress, programId } = req.body;
+    const result = await createNewTokenAccount({
+      receiverPubKey,
+      mintAddress,
+      programId,
+    });
+    console.log(
+      "Token account creation result:",
+      JSON.stringify(result, null, 2)
+    );
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /create_solana_token_account endpoint:", error);
     res.status(500).json({ error: error.message });
   }
 });

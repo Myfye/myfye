@@ -8,7 +8,7 @@ import ModalButton from "../ModalButton";
 import QRCode from "../../qr-code/QRCode";
 import { useSelector } from "react-redux";
 import Modal from "@/components/ui/modal/Modal";
-import toast from "react-hot-toast/headless";
+// import toast from "react-hot-toast/headless";
 
 const DepositModal = ({ isOpen, onOpenChange }) => {
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);

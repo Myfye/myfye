@@ -47,23 +47,23 @@ const CashPanel = ({}) => {
       {
         title: "US Dollar",
         currency: "usd",
-        type: "usdt",
+        type: usdtSolBalance > usdcSolBalance ? "usdtSol" : "usdcSol",
         balance: usdBalance,
       },
       {
         title: "Euro",
         currency: "eur",
-        type: "eurc",
-        balance: usdySolBalance,
+        type: "eurcSol",
+        balance: eurcBalanceInUSD,
       },
       {
         title: "US Treasury Bonds",
         currency: "usd",
-        type: "usdy",
+        type: "usdySol",
         balance: usdyBalanceInUSD,
       },
     ],
-    [usdBalance, usdyBalanceInUSD, eurcBalanceInUSD]
+    [usdBalance, usdyBalanceInUSD, eurcBalanceInUSD, usdtSolBalance, usdcSolBalance]
   );
 
   return (

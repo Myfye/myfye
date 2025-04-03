@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import SwapCoinSummary from "./SwapCoinSummary";
 import { toggleOverlay } from "./swapSlice";
-import { swap } from "./SwapService";
+import { swap } from "./solana-swap/SwapService";
+import {useSolanaWallets} from '@privy-io/react-auth/solana';
 
 const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -16,8 +17,9 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
     (state: RootState) => state.swap.overlays.confirmSwap.isOpen
   );
 
-  const wallet = useSelector((state: RootState) => state.userWalletData);
-
+  const walletData = useSelector((state: RootState) => state.userWalletData);
+  const { wallets } = useSolanaWallets();
+  const wallet = wallets[0];
   const transaction = useSelector((state: RootState) => state.swap.transaction);
 
   const handleOpen = (e: boolean) => {
@@ -25,13 +27,15 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   };
 
   const handleSwapConfirmation = () => {
-    // swap(
-    //   wallet,
-    //   wallet.pubKey,
-    //   transaction.buy.amount,
-    //   transaction.buy.coinId,
-    //   transaction.sell.coinId
-    // );
+
+    swap(
+      wallet,
+      walletData.solanaPubKey, 
+      transaction.sell.amount,
+      transaction.sell.coinId,
+      transaction.buy.coinId,
+      dispatch,
+    );
     dispatch(
       toggleOverlay({
         type: "processingTransaction",
