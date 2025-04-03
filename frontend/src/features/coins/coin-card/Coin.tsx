@@ -13,9 +13,9 @@ import googleCoinIcon from "@/assets/svgs/coins/google.png";
 type CoinType =
   | "btc"
   | "sol"
-  | "usdt"
-  | "eurc"
-  | "usdy"
+  | "usdtSol"
+  | "eurcSol"
+  | "usdySol"
   | "google"
   | "microsoft"
   | "apple";
@@ -30,13 +30,13 @@ const Coin = ({ type = "usdt" }: { type: CoinType }) => {
         case "sol": {
           return solCoinIcon;
         }
-        case "usdt": {
+        case "usdtSol": {
           return usdCoinIcon;
         }
-        case "eurc": {
+        case "eurcSol": {
           return euroCoinIcon;
         }
-        case "usdy": {
+        case "usdySol": {
           return usdyCoinIcon;
         }
         case "apple": {
