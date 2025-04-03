@@ -33,7 +33,7 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const QRCodeModal = ({
+const QRScanner = ({
   isOpen = false,
   onOpenChange,
 }: {
@@ -258,4 +258,4 @@ const QRCodeModal = ({
   );
 };
 
-export default QRCodeModal;
+export default QRScanner;
