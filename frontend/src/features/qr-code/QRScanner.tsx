@@ -6,7 +6,7 @@ import {
   useTransform,
 } from "motion/react";
 import { Dialog, Modal, ModalOverlay } from "react-aria-components";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -23,6 +23,7 @@ import QRCode from "./QRCode";
 import { useDispatch, useSelector } from "react-redux";
 import { setQRCodeModalOpen, setSendModalOpen } from "@/redux/modalReducers";
 import Header from "../../components/app/layout/header/Header";
+import { RootState } from "@/redux/store";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);

@@ -398,7 +398,7 @@ function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function updateUI(dispatch: any, type: String, status: string): void {
+function updateUI(dispatch: any, type: string, status: string): void {
   if (type == "withdraw") {
     dispatch(setSwapWithdrawTransactionStatus(status)); // Update UI
   } else if (type == "deposit") {

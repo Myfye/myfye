@@ -6,7 +6,7 @@ import {
   useTransform,
 } from "motion/react";
 import { Dialog, Modal, ModalOverlay } from "react-aria-components";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -49,6 +49,12 @@ const QRCodeModal = ({
   const [isQRCodeVisible, setQRCodeVisible] = useState(false);
 
   const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
+
+  const wallet = useSelector((state: RootState) => state.userWalletData);
+
+  useEffect(() => {
+    console.log(wallet);
+  }, [wallet]);
 
   const id = useId();
 
