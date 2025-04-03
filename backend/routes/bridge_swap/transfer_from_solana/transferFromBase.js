@@ -1,11 +1,10 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const SOL_PRIV_KEY = process.env.SOL_PRIV_KEY;
 const SOL_PUB_KEY = process.env.SOL_PUB_KEY;
 
 const EVM_PRIV_KEY = process.env.EVM_PRIV_KEY;
 const EVM_PUB_KEY = process.env.EVM_PUB_KEY;
-
 
 const USDC_TOKEN_CONTRACT = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 const AAPL_TOKEN_CONTRACT = "0xce38e140fc3982a6bcebc37b040913ef2cd6c5a7"; // Apple
@@ -24,25 +23,21 @@ const KO_TOKEN_CONTRACT = "0x000804047791C8e0fbD04F1A9f4567114130B9a7"; // Coca-
 const AMC_TOKEN_CONTRACT = "0xfdaF8D69fA9931f00b92E14bc4233cB438B24980"; // AMC Entertainment
 const GME_TOKEN_CONTRACT = "0x2bB9282552228734Cca01a1671605122258E276a"; // GameStop
 
-import {
-    transferFromSolana,
-  } from "@wormhole-foundation/sdk";
+import { transferFromSolana } from "@wormhole-foundation/sdk";
 
-  async function transfer_from_solana(data) {
-
-    // gotta swap to USDC first then bridge to base
-    // then swap in base 
-    await transferFromSolana({
-      token: USDC_ADDRESS_ON_BASE,
-      amount: "1000000", // 1 USDC
-      targetChain: "base",
-      recipient: solanaWallet.publicKey.toBase58(),
-      signer: ethSigner,
-    });
-
-  }
+async function transfer_from_solana(data) {
+  // gotta swap to USDC first then bridge to base
+  // then swap in base
+  await transferFromSolana({
+    token: USDC_ADDRESS_ON_BASE,
+    amount: "1000000", // 1 USDC
+    targetChain: "base",
+    recipient: solanaWallet.publicKey.toBase58(),
+    signer: ethSigner,
+  });
+}
 
 // Export functions for use in other modules
 module.exports = {
-  transfer_from_solana
-}; 
+  transfer_from_solana,
+};
