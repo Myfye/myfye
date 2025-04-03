@@ -107,7 +107,14 @@ const Overlay = ({
                     </h1>
                   )}
                 </Header>
-                <main css={css``}>{children}</main>
+                <main
+                  className="overlay-scroll"
+                  css={css`
+                    overflow-y: auto;
+                  `}
+                >
+                  {children}
+                </main>
               </Dialog>
             </MotionModal>
           </MotionModalOverlay>

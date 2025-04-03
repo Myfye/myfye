@@ -8,6 +8,7 @@ import ModalButton from "../ModalButton";
 import QRCode from "../../qr-code/QRCode";
 import { useSelector } from "react-redux";
 import Modal from "@/components/ui/modal/Modal";
+import toast from "react-hot-toast/headless";
 
 const DepositModal = ({ isOpen, onOpenChange }) => {
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
@@ -37,9 +38,8 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(selectedAddress);
     setShowCopiedAddress(true);
-    setTimeout(() => {
-      onOpenChange(false);
-    }, 1700);
+    onOpenChange(false);
+    toast(selectedChain === "base" ? "Base" : "Solana");
   };
 
   const getTruncatedAddress = (address: string) => {
@@ -61,10 +61,10 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
         {!isWalletOpen ? (
           <menu
             css={css`
-              margin-block-start: var(--size-500);
               display: flex;
               flex-direction: column;
               gap: var(--size-200);
+              padding-inline: var(--size-200);
             `}
           >
             <li>
@@ -84,56 +84,61 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
             </li>
           </menu>
         ) : (
-          <div
-            className="qr-code-container"
-            css={css`
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              margin-block-start: var(--size-400);
-            `}
-          >
-            <div
+          <div className="qr-code-container">
+            <section>
+              <menu
+                css={css`
+                  display: flex;
+                  gap: var(--controls-gap-medium);
+                  padding-inline: var(--size-200);
+                  width: fit-content;
+                  margin-inline: auto;
+                `}
+              >
+                <li>
+                  <Button
+                    variant={selectedChain === "base" ? "primary" : "secondary"}
+                    onPress={() => setSelectedChain("base")}
+                  >
+                    Base
+                  </Button>
+                </li>
+                <li>
+                  <Button
+                    variant={
+                      selectedChain === "solana" ? "primary" : "secondary"
+                    }
+                    onPress={() => setSelectedChain("solana")}
+                  >
+                    Solana
+                  </Button>
+                </li>
+              </menu>
+            </section>
+            <section
               css={css`
-                display: flex;
-                gap: var(--size-200);
-                margin-bottom: var(--size-400);
+                margin-block-start: var(--size-400);
+                padding-inline: var(--size-200);
+                width: fit-content;
+                margin-inline: auto;
               `}
             >
-              <Button
-                variant={selectedChain === "base" ? "primary" : "ghost"}
-                onPress={() => setSelectedChain("base")}
-              >
-                Base
-              </Button>
-              <Button
-                variant={selectedChain === "solana" ? "primary" : "ghost"}
-                onPress={() => setSelectedChain("solana")}
-              >
-                Solana
-              </Button>
-            </div>
-            <QRCode
-              data={selectedAddress}
-              color="#000407"
-              chain={selectedChain}
-            />
-            <Button
-              expand
-              size="x-large"
-              icon={Copy}
+              <QRCode
+                data={selectedAddress}
+                color="#000407"
+                chain={selectedChain}
+              />
+            </section>
+            <section
               css={css`
                 margin-block-start: var(--size-500);
+                padding-inline: var(--size-200);
               `}
-              onPress={handleCopyAddress}
             >
-              {showCopiedAddress
-                ? getTruncatedAddress(selectedAddress)
-                : `Copy ${
-                    selectedChain === "base" ? "Base" : "Solana"
-                  } Address`}
-            </Button>
+              <Button expand icon={Copy} onPress={handleCopyAddress}>
+                {`Copy ${selectedChain === "base" ? "Base" : "Solana"} Address`}
+              </Button>
+            </section>
           </div>
         )}
       </Modal>

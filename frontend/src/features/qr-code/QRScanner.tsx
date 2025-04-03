@@ -23,6 +23,7 @@ import QRCode from "./QRCode";
 import { useDispatch, useSelector } from "react-redux";
 import { setQRCodeModalOpen, setSendModalOpen } from "@/redux/modalReducers";
 import Header from "../../components/app/layout/header/Header";
+import { RootState } from "@/redux/store";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);
@@ -33,7 +34,7 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const QRCodeModal = ({
+const QRScanner = ({
   isOpen = false,
   onOpenChange,
 }: {
@@ -49,12 +50,6 @@ const QRCodeModal = ({
   const [isQRCodeVisible, setQRCodeVisible] = useState(false);
 
   const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
-
-  const wallet = useSelector((state: RootState) => state.userWalletData);
-
-  useEffect(() => {
-    console.log(wallet);
-  }, [wallet]);
 
   const id = useId();
 
@@ -264,4 +259,4 @@ const QRCodeModal = ({
   );
 };
 
-export default QRCodeModal;
+export default QRScanner;

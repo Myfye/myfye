@@ -18,6 +18,7 @@ interface ButtonProps {
   className: string;
   icon: Icon;
   iconOnly: boolean;
+  borderRadius: string;
   iconLeft: Icon;
   iconRight: Icon;
   wrap: boolean;
@@ -31,6 +32,7 @@ interface LinkProps {
   color: string;
   size: string;
   className: string;
+  borderRadius: string;
   icon: Icon;
   iconOnly: boolean;
   iconLeft: Icon;
@@ -49,6 +51,7 @@ const _Button = ({
   className = "",
   icon,
   iconOnly,
+  borderRadius,
   iconLeft = icon,
   iconRight,
   wrap = false,
@@ -92,6 +95,7 @@ const _Button = ({
       data-color={color}
       data-expand={expand}
       data-icon-only={iconOnly}
+      data-border-radius={borderRadius}
       className={`button ${className}`}
       ref={ref}
       animate={{
@@ -110,6 +114,7 @@ const _Link = ({
   color = "accent",
   size = "medium",
   className = "",
+  borderRadius,
   icon,
   iconOnly,
   iconLeft = icon,
@@ -154,6 +159,7 @@ const _Link = ({
       data-color={color}
       data-expand={expand}
       data-icon-only={iconOnly}
+      data-border-radius={borderRadius}
       className={`button ${className}`}
       ref={ref}
       animate={{

@@ -135,6 +135,7 @@ const Modal = ({
                   css={css`
                     display: grid;
                     grid-template-rows: auto 1fr;
+                    gap: var(--size-400);
                   `}
                 >
                   <header

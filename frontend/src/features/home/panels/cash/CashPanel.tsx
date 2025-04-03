@@ -1,4 +1,4 @@
-import CoinCardList from "../../../../components/ui/coin-card/CoinCardList";
+import CoinCardList from "../../../coins/coin-card/CoinCardList";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";

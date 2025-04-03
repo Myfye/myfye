@@ -6,7 +6,7 @@ import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -18,9 +18,73 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
     toggleOverlay({ type: "processingTransaction", isOpen: e });
   };
 
-  const [statusMessage, setStatusMessage] = useState('');
+  const transaction = useSelector((state: RootState) => state.swap.transaction);
 
-  const buyInfo = useSelector((state: RootState) => state.swap.transaction.buy);
+  const [swapStatus, setSwapStatus] = useState("pending");
+
+  const caption = useMemo(() => {
+    switch (swapStatus) {
+      case "complete": {
+        return "Coins have been deposited into your wallet.";
+      }
+      case "error": {
+        return "Error processing swap. Please try again.";
+      }
+      default: {
+        return `${transaction.buy.coinId} will be deposited into your wallet once the transaction is complete.`;
+      }
+    }
+  }, [swapStatus]);
+
+  const heading = useMemo(() => {
+    switch (swapStatus) {
+      case "complete": {
+        return "Swap complete!";
+      }
+      case "error": {
+        return "Swap error";
+      }
+      default: {
+        return "Swapping...";
+      }
+    }
+  }, [swapStatus]);
+
+  const lottie = useMemo(() => {
+    switch (swapStatus) {
+      case "complete": {
+        return (
+          <DotLottieReact
+            src="src/assets/lottie/success.lottie"
+            autoplay
+            width="100%"
+            height="100%"
+          />
+        );
+      }
+      case "error": {
+        return (
+          <DotLottieReact
+            src="src/assets/lottie/error.lottie"
+            autoplay
+            width="100%"
+            height="100%"
+          />
+        );
+      }
+      default: {
+        return (
+          <DotLottieReact
+            src="src/assets/lottie/leaf-loader.lottie"
+            autoplay
+            loop={true}
+            width="100%"
+            height="100%"
+          />
+        );
+      }
+    }
+  }, [swapStatus]);
 
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
@@ -28,6 +92,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
         css={css`
           display: flex;
           flex-direction: column;
+          justify-content: center;
           padding: var(--size-250);
           height: 100svh;
         `}
@@ -37,64 +102,60 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
             margin-block-start: auto;
           `}
         >
-          <DotLottieReact
-            src="src/assets/lottie/leaf-loader.lottie"
-            loop
-            autoplay
-          />
+          <div
+            css={css`
+              width: 12rem;
+              aspect-ratio: 1;
+              margin-inline: auto;
+            `}
+          >
+            {lottie}
+          </div>
+          <section
+            css={css`
+              margin-block-start: var(--size-200);
+            `}
+          >
+            <hgroup>
+              <h1
+                className="heading-x-large"
+                css={css`
+                  color: var(--clr-text);
+                  text-align: center;
+                  margin-block-end: var(--size-200);
+                `}
+              >
+                {heading}
+              </h1>
+              <p
+                className="caption"
+                css={css`
+                  margin-block-start: var(--size-200);
+                  color: var(--clr-text-weaker);
+                  text-align: center;
+                `}
+              >
+                {caption}
+              </p>
+            </hgroup>
+          </section>
         </section>
         <section
           css={css`
-            margin-block-start: var(--size-600);
-          `}
-        >
-          <hgroup>
-            <h1
-              className="heading-x-large"
-              css={css`
-                color: var(--clr-text);
-                text-align: center;
-                margin-block-end: var(--size-200);
-              `}
-            >
-              Swapping
-            </h1>
-            <p
-              className="heading-large"
-              css={css`
-                color: var(--clr-text);
-                text-align: center;
-              `}
-            >
-              {statusMessage}
-            </p>
-            <p
-              className="caption"
-              css={css`
-                margin-block-start: var(--size-200);
-                color: var(--clr-text-weak);
-                text-align: center;
-              `}
-            >
-              This transaction may take a few minutes on the blockchain, then it
-              will arrive in your wallet
-            </p>
-          </hgroup>
-        </section>
-        <section
-          css={css`
-            margin-block-start: var(--size-600);
+            margin-block-start: auto;
+            width: 100%;
           `}
         >
           <menu
             css={css`
               display: flex;
               flex-direction: column;
-              gap: var(--control-gap-medium);
+              gap: var(--controls-gap-medium);
             `}
           >
             <li>
               <Button
+                isDisabled={swapStatus === "pending"}
                 expand
                 onPress={() => {
                   dispatch(unmount());
@@ -104,7 +165,19 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
               </Button>
             </li>
             <li>
-              <Button expand color="neutral" href="/">
+              <Button
+                onPress={() => {
+                  if (swapStatus === "complete") {
+                    setSwapStatus("pending");
+                  } else if (swapStatus === "pending") {
+                    setSwapStatus("error");
+                  } else {
+                    setSwapStatus("complete");
+                  }
+                }}
+                expand
+                color="neutral"
+              >
                 View transaction
               </Button>
             </li>

@@ -13,7 +13,7 @@ import {
   HandleUserLogIn,
   UpdatePasskey,
   getUsers,
-} from "../../functions/HandleUserLogIn.tsx";
+} from "../../features/authentication/LoginService.tsx";
 
 import appLogo from "@/assets/myfyeleaf.png";
 
@@ -38,20 +38,13 @@ import {
 } from "@/redux/modalReducers.tsx";
 import WithdrawCryptoOverlay from "@/features/on-offramp/withdraw/crypto/WithdrawCryptoOverlay.tsx";
 import {
-  setCashOverlayOpen,
-  setCoinSummaryOverlayOpen,
-  setCryptoSummaryOverlayOpen,
-  setEarnSummaryOverlayOpen,
   setSelectContactOverlayOpen,
   setWithdrawCryptoOverlayOpen,
 } from "@/redux/overlayReducers.tsx";
 import SelectContactOverlay from "@/features/on-offramp/withdraw/crypto/SelectContactOverlay.tsx";
-import EarnOverlay from "@/features/earn/EarnOverlay.tsx";
-import CryptoOverlay from "@/features/crypto/CryptoOverlay.tsx";
-import CashOverlay from "@/features/cash/CashOverlay.tsx";
-import CoinSummaryOverlay from "@/features/coins/CoinSummaryOverlay.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
+import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -59,30 +52,30 @@ function WebAppInner() {
   const { showMfaEnrollmentModal } = useMfaEnrollment();
 
   const firstNameUI = useSelector(
-    (state: any) => state.userWalletData.currentUserFirstName
+    (state: RootState) => state.userWalletData.currentUserFirstName
   );
   const userPassKeyState = useSelector(
-    (state: any) => state.userWalletData.passKeyState
+    (state: RootState) => state.userWalletData.passKeyState
   );
   const priceOfUSDYinUSDC = useSelector(
-    (state: any) => state.userWalletData.priceOfUSDYinUSDC
+    (state: RootState) => state.userWalletData.priceOfUSDYinUSDC
   );
   const priceOfBTCinUSDC = useSelector(
-    (state: any) => state.userWalletData.priceOfBTCinUSDC
+    (state: RootState) => state.userWalletData.priceOfBTCinUSDC
   );
   const priceOfSOLinUSDC = useSelector(
-    (state: any) => state.userWalletData.priceOfSOLinUSDC
+    (state: RootState) => state.userWalletData.priceOfSOLinUSDC
   );
   const priceOfEURCinUSDC = useSelector(
-    (state: any) => state.userWalletData.priceOfEURCinUSDC
+    (state: RootState) => state.userWalletData.priceOfEURCinUSDC
   );
   const selectedLanguageCode = useSelector(
-    (state: any) => state.userWalletData.selectedLanguageCode
+    (state: RootState) => state.userWalletData.selectedLanguageCode
   );
   const KYCVerifired = useSelector(
-    (state: any) => state.userWalletData.currentUserKYCVerified
+    (state: RootState) => state.userWalletData.currentUserKYCVerified
   );
-  const users = useSelector((state: any) => state.userWalletData.users);
+  const users = useSelector((state: RootState) => state.userWalletData.users);
   const dispatch = useDispatch();
 
   const [userDataLoaded, setUserDataLoaded] = useState(false); // To do: get user data
@@ -187,17 +180,8 @@ function WebAppInner() {
   const isSelectContactOverlayOpen = useSelector(
     (state: any) => state.selectContactOverlay.isOpen
   );
-  const isCryptoSummaryOverlayOpen = useSelector(
-    (state: any) => state.cryptoSummaryOverlay.isOpen
-  );
-  const isEarnSummaryOverlayOpen = useSelector(
-    (state: any) => state.earnSummaryOverlay.isOpen
-  );
   const isCoinSummaryOverlayOpen = useSelector(
     (state: any) => state.coinSummaryOverlay.isOpen
-  );
-  const isCashOverlayOpen = useSelector(
-    (state: RootState) => state.cashOverlay.isOpen
   );
 
   if (authenticated) {
@@ -237,22 +221,7 @@ function WebAppInner() {
               isOpen={isSelectContactOverlayOpen}
               onOpenChange={(e) => dispatch(setSelectContactOverlayOpen(e))}
             />
-            <EarnOverlay
-              isOpen={isEarnSummaryOverlayOpen}
-              onOpenChange={(e) => dispatch(setEarnSummaryOverlayOpen(e))}
-            />
-            <CryptoOverlay
-              isOpen={isCryptoSummaryOverlayOpen}
-              onOpenChange={(e) => dispatch(setCryptoSummaryOverlayOpen(e))}
-            />
-            <CashOverlay
-              isOpen={isCashOverlayOpen}
-              onOpenChange={(e) => dispatch(setCashOverlayOpen(e))}
-            />
-            <CoinSummaryOverlay
-              isOpen={isCoinSummaryOverlayOpen}
-              onOpenChange={(e) => dispatch(setCoinSummaryOverlayOpen(e))}
-            />
+            <Toaster />
           </>
         ) : (
           <div

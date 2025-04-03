@@ -1,4 +1,3 @@
-import qrOptions from "qr_options.json";
 import baseLogoBlack from "@/assets/baseLogoBlack.png";
 import solanaLogoBlack from "@/assets/solanaLogoBlack.png";
 import { useEffect, useRef } from "react";
@@ -15,7 +14,6 @@ const QRCode = ({
   className = "",
   chain = "base",
 }) => {
-
   const logo = chain === "base" ? baseLogoBlack : solanaLogoBlack;
 
   const qrCode = new QRCodeStyling({
@@ -26,7 +24,7 @@ const QRCode = ({
     data: data,
     margin: 0,
     qrOptions: {
-      typeNumber: "0",
+      typeNumber: 0,
       mode: "Byte",
       errorCorrectionLevel: "Q",
     },
@@ -37,57 +35,17 @@ const QRCode = ({
       margin: 0,
     },
     dotsOptions: { type: "dots", color: color, roundSize: true },
-    backgroundOptions: { round: 0, color: "transparent", gradient: null },
+    backgroundOptions: { round: 0, color: "transparent" },
     image: logo,
-    dotsOptionsHelper: {
-      colorType: { single: true, gradient: false },
-      gradient: {
-        linear: true,
-        radial: false,
-        color1: color,
-        color2: color,
-        rotation: "0",
-      },
-    },
     cornersSquareOptions: { type: "extra-rounded", color: color },
-    cornersSquareOptionsHelper: {
-      colorType: { single: true, gradient: false },
-      gradient: {
-        linear: true,
-        radial: false,
-        color1: color, 
-        color2: color,
-        rotation: "0",
-      },
-    },
-    cornersDotOptions: { type: "", color: color },
-    cornersDotOptionsHelper: {
-      colorType: { single: true, gradient: false },
-      gradient: {
-        linear: true,
-        radial: false,
-        color1: color,
-        color2: color,
-        rotation: "0",
-      },
-    },
-    backgroundOptionsHelper: {
-      colorType: { single: true, gradient: false },
-      gradient: {
-        linear: true,
-        radial: false,
-        color1: color,
-        color2: color,
-        rotation: "0",
-      },
-    },
+    cornersDotOptions: { color: color },
   });
 
-  const ref = useRef(null!);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (ref.current) {
-      ref.current.innerHTML = '';
+      ref.current.innerHTML = "";
       qrCode.append(ref.current);
     }
   }, [data]);

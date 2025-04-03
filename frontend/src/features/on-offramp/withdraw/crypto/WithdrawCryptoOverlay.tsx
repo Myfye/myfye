@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { css } from "@emotion/react";
 
 import { useDispatch, useSelector } from "react-redux";
-import CoinCardList from "@/components/ui/coin-card/CoinCardList";
+import CoinCardList from "@/features/coins/coin-card/CoinCardList";
 
 import usDollarCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";

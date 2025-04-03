@@ -21,7 +21,9 @@ import {
   ArrowLineUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
-import CoinCardList from "@/components/ui/coin-card/CoinCardList";
+import CoinCardList from "@/features/coins/coin-card/CoinCardList";
+import { RootState } from "@/redux/store";
+import { setOverlayOpen } from "./earnSlice";
 
 const pieChartData = [
   {
@@ -74,10 +76,15 @@ const pieChartData = [
   },
 ];
 
-const EarnOverlay = ({ isOpen, onOpenChange }) => {
+const EarnOverlay = () => {
   const { cashBalanceInUSD, usdyBalanceInUSD, eurcBalanceInUSD } = useBalance();
 
   const dispatch = useDispatch();
+  const isOpen = useSelector((state: RootState) => state.earn.overlay.isOpen);
+
+  const onOpenChange = (isOpen: boolean) => {
+    dispatch(setOverlayOpen(isOpen));
+  };
 
   // USDT
   const usdtSolBalance = useSelector(
@@ -116,7 +123,7 @@ const EarnOverlay = ({ isOpen, onOpenChange }) => {
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Earn">
-        {usdyBalanceInUSD === 0 &&
+        {/* {usdyBalanceInUSD === 0 &&
         eurcBalanceInUSD === 0 &&
         usdtSolBalance === 0 ? (
           <div
@@ -138,87 +145,87 @@ const EarnOverlay = ({ isOpen, onOpenChange }) => {
               <Button>Deposit cash</Button>
             </section>
           </div>
-        ) : (
-          <>
-            <section
-              className="balance-container"
+        ) : ( */}
+        <>
+          <section
+            className="balance-container"
+            css={css`
+              margin-block-start: var(--size-150);
+            `}
+          >
+            <div
+              className="balance-wrapper"
               css={css`
-                margin-block-start: var(--size-150);
+                padding: 0 var(--size-250);
               `}
             >
-              <div
-                className="balance-wrapper"
-                css={css`
-                  padding: 0 var(--size-250);
-                `}
-              >
-                <BalanceTitle balance={cashBalanceInUSD} />
-              </div>
-              <menu
-                className="no-scrollbar"
-                css={css`
-                  display: flex;
-                  align-items: center;
-                  justify-content: flex-start;
-                  gap: var(--controls-gap-small);
-                  overflow-x: auto;
-                  padding: 0 var(--size-250);
-                  margin-block-start: var(--size-250);
-                  background-color: var(--clr-surface);
-                `}
-              >
-                <li>
-                  <Button
-                    size="x-small"
-                    icon={ArrowCircleUp}
-                    onPress={() => {
-                      dispatch(setSendModalOpen(true));
-                    }}
-                  >
-                    Send
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    size="x-small"
-                    icon={ArrowCircleDown}
-                    onPress={() => {
-                      dispatch(setReceiveModalOpen(true));
-                    }}
-                  >
-                    Receive
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    size="x-small"
-                    icon={ArrowsLeftRight}
-                    onPress={() => {
-                      dispatch(setDepositModalOpen(true));
-                    }}
-                  >
-                    Swap
-                  </Button>
-                </li>
-              </menu>
-            </section>
-            <section
-              className="pie-chart-container"
+              <BalanceTitle balance={cashBalanceInUSD} />
+            </div>
+            <menu
+              className="no-scrollbar"
               css={css`
-                margin-inline: var(--size-250);
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: var(--controls-gap-small);
+                overflow-x: auto;
+                padding: 0 var(--size-250);
+                margin-block-start: var(--size-250);
+                background-color: var(--clr-surface);
               `}
             >
-              <PieChart data={pieChartData} type="earn"></PieChart>
-            </section>
-            <section
-              css={css`
-                margin-inline: var(--size-250);
-              `}
-            >
-              <CoinCardList coins={coins} showOptions={true} />
-            </section>
-          </>
-        )}
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowCircleUp}
+                  onPress={() => {
+                    dispatch(setSendModalOpen(true));
+                  }}
+                >
+                  Send
+                </Button>
+              </li>
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowCircleDown}
+                  onPress={() => {
+                    dispatch(setReceiveModalOpen(true));
+                  }}
+                >
+                  Receive
+                </Button>
+              </li>
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowsLeftRight}
+                  onPress={() => {
+                    dispatch(setDepositModalOpen(true));
+                  }}
+                >
+                  Swap
+                </Button>
+              </li>
+            </menu>
+          </section>
+          <section
+            className="pie-chart-container"
+            css={css`
+              margin-inline: var(--size-250);
+            `}
+          >
+            <PieChart data={pieChartData} type="earn"></PieChart>
+          </section>
+          <section
+            css={css`
+              margin-inline: var(--size-250);
+            `}
+          >
+            <CoinCardList coins={coins} showOptions={true} />
+          </section>
+        </>
+        {/* )} */}
       </Overlay>
     </>
   );

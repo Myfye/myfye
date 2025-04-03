@@ -24,6 +24,7 @@ const SwapModal = () => {
   );
 
   const intervalDelete = useRef<NodeJS.Timeout | null>(null);
+  const delayDelete = useRef<NodeJS.Timeout | null>(null);
 
   const startDelete = (input: string) => {
     intervalDelete.current = setInterval(() => {
@@ -34,6 +35,9 @@ const SwapModal = () => {
   const stopDelete = () => {
     if (intervalDelete.current) {
       clearInterval(intervalDelete.current);
+    }
+    if (delayDelete.current) {
+      clearTimeout(delayDelete.current);
     }
   };
 
@@ -46,7 +50,12 @@ const SwapModal = () => {
   };
 
   const handleNumberPressStart = (input: string) => {
-    if (input === "delete") startDelete(input);
+    if (input === "delete") {
+      dispatch(changeAmount({ input }));
+      delayDelete.current = setTimeout(() => {
+        startDelete(input);
+      }, 200);
+    }
   };
 
   const handleNumberPress = (input: string) => {
@@ -93,7 +102,6 @@ const SwapModal = () => {
       >
         <div
           css={css`
-            margin-block-start: var(--size-400);
             display: flex;
             flex-direction: column;
             min-height: fit-content;

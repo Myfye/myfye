@@ -6,31 +6,47 @@ import solCoinIcon from "@/assets/svgs/coins/sol-coin.svg";
 import usdCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
 import usdyCoinIcon from "@/assets/svgs/coins/usdy-coin.svg";
+import microsoftCoinIcon from "@/assets/svgs/coins/microsoft.svg";
+import appleCoinIcon from "@/assets/svgs/coins/apple.svg";
+import googleCoinIcon from "@/assets/svgs/coins/google.png";
 
-type CoinType = "btcSol" | "sol" | "usdtSol" | "usdcSol" | "eurcSol" | "usdySol";
-type Currency = "usd" | "eur" | "btc" | "sol";
+type CoinType =
+  | "btc"
+  | "sol"
+  | "usdt"
+  | "eurc"
+  | "usdy"
+  | "google"
+  | "microsoft"
+  | "apple";
 
 const Coin = ({ type = "usdt" }: { type: CoinType }) => {
   const getCoinImageSrc = useCallback(
     (type: CoinType) => {
       switch (type) {
-        case "btcSol": {
+        case "btc": {
           return btcCoinIcon;
         }
         case "sol": {
           return solCoinIcon;
         }
-        case "usdtSol": {
+        case "usdt": {
           return usdCoinIcon;
         }
-        case "usdcSol": {
-          return usdCoinIcon;
-        }
-        case "eurcSol": {
+        case "eurc": {
           return euroCoinIcon;
         }
-        case "usdySol": {
+        case "usdy": {
           return usdyCoinIcon;
+        }
+        case "apple": {
+          return appleCoinIcon;
+        }
+        case "microsoft": {
+          return microsoftCoinIcon;
+        }
+        case "google": {
+          return googleCoinIcon;
         }
         default: {
           return usdCoinIcon;

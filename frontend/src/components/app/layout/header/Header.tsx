@@ -1,7 +1,13 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { ReactNode } from "react";
 
-const Header = ({ children, color = "transparent" }) => {
+const Header = ({
+  children,
+  color = "transparent",
+}: {
+  children: ReactNode;
+  color: string;
+}) => {
   return (
     <header
       css={css`
@@ -17,7 +23,7 @@ const Header = ({ children, color = "transparent" }) => {
           align-items: center;
           justify-content: space-between;
           height: 100%;
-          padding-inline: 0.625rem;
+          padding-inline: 0.375rem;
         `}
       >
         {children}

@@ -47,6 +47,11 @@
   --stack-padding-medium: var(--space-200);
   --stack-padding-large: var(--space-300);
 
+  --control-gap-xx-small: var(--size-025);
+  --control-padding-block-xx-small: var(--size-050);
+  --control-padding-inline-xx-small: var(--size-075);
+  --control-size-xx-small: 1.5rem;
+
   --control-gap-x-small: var(--size-050);
   --control-padding-block-x-small: var(--size-100);
   --control-padding-inline-x-small: var(--size-150);

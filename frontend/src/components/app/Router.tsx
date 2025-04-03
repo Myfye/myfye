@@ -5,7 +5,7 @@ import {
   TabPanel as AriaTabPanel,
   Tab as AriaTab,
 } from "react-aria-components";
-import Home from "../../pages/app/Home";
+import Home from "@/pages/app/Home";
 import {
   HouseSimple as HomeIcon,
   Wallet as WalletIcon,
@@ -23,6 +23,7 @@ import Wallet from "@/features/wallet/Wallet";
 import { useDispatch } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../ui/button/Button";
+import { motion, AnimatePresence } from "motion/react";
 
 const tabs = [
   { id: "home", label: "Home" },
@@ -35,9 +36,63 @@ const Router = () => {
   const dispatch = useDispatch();
   let [selectedKey, setSelectedKey] = useState(tabs[0].id);
 
-  useEffect(() => {
-    console.log(selectedKey);
-  }, [selectedKey]);
+  const getTabIcon = (id: string, isSelected: boolean) => {
+    const color = isSelected ? "var(--clr-accent)" : "var(--clr-neutral-700)";
+    const weight = isSelected ? "fill" : "regular";
+    switch (id) {
+      case "home": {
+        return (
+          <HomeIcon
+            color={color}
+            weight={weight}
+            size={24}
+            css={css`
+              margin-inline: auto;
+            `}
+          />
+        );
+      }
+      case "wallet": {
+        return (
+          <WalletIcon
+            color={color}
+            weight={weight}
+            size={24}
+            css={css`
+              margin-inline: auto;
+            `}
+          />
+        );
+      }
+      case "pay": {
+        return (
+          <PayIcon
+            color={color}
+            weight={weight}
+            size={24}
+            css={css`
+              margin-inline: auto;
+            `}
+          />
+        );
+      }
+      case "activity": {
+        return (
+          <ActivityIcon
+            color={color}
+            weight={weight}
+            size={24}
+            css={css`
+              margin-inline: auto;
+            `}
+          />
+        );
+      }
+      default: {
+        throw new Error(`Tab ID ${id} is invalid.`);
+      }
+    }
+  };
 
   return (
     <div
@@ -74,8 +129,26 @@ const Router = () => {
                 min-height: 100%;
               `}
             >
-              {tab.id === "home" && <Home />}
-              {tab.id === "wallet" && <Wallet />}
+              {tab.id === "home" && (
+                <motion.div
+                  key={tab.id}
+                  css={css`
+                    height: 100cqh;
+                  `}
+                >
+                  <Home />
+                </motion.div>
+              )}
+              {tab.id === "wallet" && (
+                <motion.div
+                  key={tab.id}
+                  css={css`
+                    height: 100cqh;
+                  `}
+                >
+                  <Wallet />
+                </motion.div>
+              )}
               {tab.id === "pay" && <div></div>}
               {tab.id === "activity" && <div></div>}
             </AriaTabPanel>
@@ -102,78 +175,24 @@ const Router = () => {
                 `}
                 key={`tab-${tab.id}`}
               >
-                {tab.id === "home" && (
-                  <HomeIcon
-                    color={
-                      selectedKey === tab.id
-                        ? "var(--clr-accent)"
-                        : "var(--clr-neutral-700)"
-                    }
-                    weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={24}
-                    css={css`
-                      margin: 0 auto;
-                    `}
-                  />
+                {({ isSelected }) => (
+                  <>
+                    {getTabIcon(tab.id, isSelected)}
+                    <p
+                      css={css`
+                        margin-top: var(--size-025);
+                        font-weight: var(--fw-active);
+                        font-size: var(--fs-x-small);
+                        text-align: center;
+                        color: ${isSelected
+                          ? "var(--clr-accent)"
+                          : "var(--clr-neutral-700)"};
+                      `}
+                    >
+                      {tab.label}
+                    </p>
+                  </>
                 )}
-                {tab.id === "wallet" && (
-                  <WalletIcon
-                    color={
-                      selectedKey === tab.id
-                        ? "var(--clr-accent)"
-                        : "var(--clr-neutral-700)"
-                    }
-                    weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={24}
-                    css={css`
-                      margin: 0 auto;
-                    `}
-                  />
-                )}
-                {tab.id === "pay" && (
-                  <PayIcon
-                    color={
-                      selectedKey === tab.id
-                        ? "var(--clr-accent)"
-                        : "var(--clr-neutral-700)"
-                    }
-                    weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={24}
-                    css={css`
-                      margin: 0 auto;
-                    `}
-                  />
-                )}
-                {tab.id === "activity" && (
-                  <ActivityIcon
-                    color={
-                      selectedKey === tab.id
-                        ? "var(--clr-accent)"
-                        : "var(--clr-neutral-700)"
-                    }
-                    weight={selectedKey === tab.id ? "fill" : "regular"}
-                    size={24}
-                    css={css`
-                      margin: 0 auto;
-                    `}
-                  />
-                )}
-                <p
-                  css={css`
-                    margin-top: var(--size-025);
-                    font-weight: var(--fw-active);
-                    font-size: var(--fs-x-small);
-                    text-align: center;
-                  `}
-                  style={{
-                    color:
-                      selectedKey === tab.id
-                        ? "var(--clr-accent)"
-                        : "var(--clr-neutral-700)",
-                  }}
-                >
-                  {tab.label}
-                </p>
               </AriaTab>
             )}
           </AriaTabList>
