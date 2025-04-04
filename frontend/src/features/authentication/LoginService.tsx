@@ -22,7 +22,7 @@ import {
   httpsCallable,
   HttpsCallableResult,
 } from "firebase/functions";
-import { HELIUS_API_KEY } from "../../env.ts";
+import { HELIUS_API_KEY, MYFYE_BACKEND } from "../../env.ts";
 
 const userCreationInProgress = new Set();
 
@@ -36,7 +36,7 @@ export const getUser = async (
 
   try {
     const checkUserResponse = await fetch(
-      "http://localhost:3001/get_user_by_privy_id",
+      `${MYFYE_BACKEND}/get_user_by_privy_id`,
       {
         method: "POST",
         headers: {
@@ -72,7 +72,7 @@ export const createUser = async (
 ): Promise<any> => {
   try {
     const createUserResponse = await fetch(
-      "http://localhost:3001/create_user",
+      `${MYFYE_BACKEND}/create_user`,
       {
         method: "POST",
         headers: {
@@ -108,7 +108,7 @@ export const updateUserEvmPubKey = async (
   evmPubKey: string
 ): Promise<any> => {
   try {
-    const response = await fetch("http://localhost:3001/update_evm_pub_key", {
+    const response = await fetch(`${MYFYE_BACKEND}/update_evm_pub_key`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -134,7 +134,7 @@ export const updateUserSolanaPubKey = async (
 ): Promise<any> => {
   try {
     const response = await fetch(
-      "http://localhost:3001/update_solana_pub_key",
+      `${MYFYE_BACKEND}/update_solana_pub_key`, 
       {
         method: "POST",
         headers: {
