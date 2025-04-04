@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS swap_transaction (
   user_id INTEGER NOT NULL REFERENCES users(uid),
   input_amount NUMERIC NOT NULL,
   output_amount NUMERIC,
+  input_chain TEXT,
+  output_chain TEXT,
   creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
   public_key TEXT,
   input_currency TEXT,
@@ -45,11 +47,14 @@ CREATE TABLE IF NOT EXISTS swap_transaction (
 CREATE TABLE IF NOT EXISTS pay_transaction (
   id SERIAL PRIMARY KEY,
   sender_id INTEGER NOT NULL REFERENCES users(uid),
+  sender_public_key TEXT,
   receiver_id INTEGER REFERENCES users(uid),
   receiver_phone_number VARCHAR(20),
   receiver_email VARCHAR(255),
+  receiver_public_key TEXT,
   amount NUMERIC NOT NULL,
   currency TEXT NOT NULL,
+  chain TEXT NOT NULL,
   creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
   transaction_hash TEXT
 );
