@@ -19,7 +19,7 @@ import { setOverlayOpen as setCryptoOverlayOpen } from "./crypto/cryptoSlice";
 import { RootState } from "@/redux/store";
 
 const WalletCardList = ({ ...restProps }) => {
-  const { eurcBalanceInUSD, usdyBalanceInUSD } = useBalance();
+  const { cryptoBalanceInUSD, usdyBalanceInUSD } = useBalance();
 
   const usdtSolBalance = useSelector(
     (state: RootState) => state.userWalletData.usdtSolBalance
@@ -71,7 +71,7 @@ const WalletCardList = ({ ...restProps }) => {
         action: () => dispatch(setStocksOverlayOpen(true)),
       },
     ],
-    [cryptoBalanceInUSD, cashBalanceInUSD, usdyBalanceInUSD]
+    [cryptoBalanceInUSD, cashBalance, usdyBalanceInUSD]
   );
   return (
     <div className="wallet-card-list-container" {...restProps}>

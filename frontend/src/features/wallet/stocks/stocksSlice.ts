@@ -172,7 +172,7 @@ const initialState = {
 
 export const stocksSlice = createSlice({
   name: "stocks",
-  initialState: { overlay: { isOpen: false } },
+  initialState: initialState,
   reducers: {
     setOverlayOpen: (state, action) => {
       state.overlay.isOpen = action.payload;
