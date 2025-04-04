@@ -68,6 +68,7 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
 
   const onCoinSelect = useCallback(
     (coin: any) => {
+      console.log('Selecting coin:', coin.title, 'with ID:', coin.type);
       dispatch(
         changeCoinId({
           transactionType: transactionType,
