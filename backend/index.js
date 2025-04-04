@@ -15,12 +15,28 @@ const {
     updateSolanaPubKey, 
     getUserByPrivyId } = require('./routes/userDb');
 
+
+const allowedOrigins = [
+    'http://localhost:3000', // Development (local)
+    'https://d3ewm5gcazpqyv.cloudfront.net', // Staging (CloudFront)
+    'https://d1voqwa9zncr8f.cloudfront.net', // Production (CloudFront)
+    'https://myfye.com', // Production (myfye.com)
+    'https://www.myfye.com' // Production (www.myfye.com)
+];
+
 // Add CORS middleware
 app.use(cors({
-    origin: 'http://localhost:3000', // Allow requests from frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow specific methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
-    credentials: true // Allow credentials (cookies, authorization headers, etc.)
+    origin: function (origin, callback) {
+        // Allow requests without origin (e.g., Postman or server-side requests)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }));
 
 // Add middleware logging
@@ -166,15 +182,6 @@ app.post('/create_solana_token_account', async (req, res) => {
     }
 });
 
-app.get('/get_balance', (req, res) => {
-    console.log("get_balance");
-    const balance = {
-        address: "YourWalletAddress",
-        balance: "11"
-    };
-    res.json(balance);
-});
-
 app.get('/bridge_swap', async (req, res) => {
     console.log("\n=== Bridge Swap Request Received ===");
     try {
@@ -194,8 +201,17 @@ app.get('/bridge_swap', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Backend server running at http://localhost:${PORT}`);
+app.get('/get_balance', (req, res) => {
+    console.log("get_balance");
+    const balance = {
+        address: "YourWalletAddress",
+        balance: "11"
+    };
+    res.json(balance);
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Backend server running at http://0.0.0.0:${PORT}`);
 });
 
 /*
