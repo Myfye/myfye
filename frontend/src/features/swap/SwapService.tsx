@@ -16,6 +16,7 @@ import {
 import { HELIUS_API_KEY } from "../../env.ts";
 import calculateBasisPoints from "../../functions/CalculateBasisPoints.tsx";
 import getTokenAccountData from "../../functions/GetSolanaTokenAccount.tsx";
+import { updateStatus } from "./swapSlice.ts";
 
 // Swapping pairs
 const USDC_MINT_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
@@ -95,7 +96,7 @@ export const swap = async (
       );
     })
     .catch((error) => {
-      updateUI(dispatch, type, "Fail");
+      dispatch(updateStatus("fail"));
       console.error(
         "Error calling getSwapQuote retrying becuase error: ",
         error
@@ -233,7 +234,8 @@ async function getJupiterSwapTransaction(
             console.log(
               `Transaction successful: https://solscan.io/tx/${transactionId}`
             );
-            updateUI(dispatch, type, "Success");
+            // updateUI(dispatch, type, "Success");
+            dispatch(updateStatus("success"));
             return true;
           }
         } catch (error) {
@@ -248,12 +250,12 @@ async function getJupiterSwapTransaction(
           await delay(1000); // Delay in milliseconds
         }
       }
-      console.log("Transaction Uncomfirmed");
-      updateUI(dispatch, type, "Fail");
+      dispatch(updateStatus("fail"));
+      console.error("Transaction Uncomfirmed");
       return false;
     } else {
-      console.log("Transaction Failed: transactionID: ", transactionId);
-      updateUI(dispatch, type, "Fail");
+      dispatch(updateStatus("fail"));
+      console.error("Transaction Failed: transactionID: ", transactionId);
       return false;
     }
 

@@ -25,16 +25,34 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const caption = useMemo(() => {
     switch (swapStatus) {
       case "complete": {
-        return "Coins have been deposited into your wallet.";
+        return (
+          <span
+            css={css`
+              display: inline-block;
+              padding-block-end: calc(1em * var(--line-height-caption));
+            `}
+          >
+            Coins have been deposited into your wallet.
+          </span>
+        );
       }
       case "error": {
-        return "Error processing swap. Please try again.";
+        return (
+          <span
+            css={css`
+              display: inline-block;
+              padding-block-end: calc(1em * var(--line-height-caption));
+            `}
+          >
+            Error processing swap. Please try again.
+          </span>
+        );
       }
       default: {
         return `${transaction.buy.coinId} will be deposited into your wallet once the transaction is complete.`;
       }
     }
-  }, [swapStatus]);
+  }, [swapStatus, css]);
 
   const heading = useMemo(() => {
     switch (swapStatus) {
