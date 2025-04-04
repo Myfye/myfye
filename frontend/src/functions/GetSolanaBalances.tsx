@@ -5,8 +5,7 @@ import {
     setpyusdSolValue,
     seteurcSolValue,
     setbtcSolValue,
-    setusdySolValue,
-    setwSolValue
+    setusdySolValue
     } from '../redux/userWalletData.tsx';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { HELIUS_API_KEY } from '../env';
@@ -29,7 +28,6 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
           dispatch(seteurcSolValue(Number(tokenBalances.eurc)));
           dispatch(setbtcSolValue(Number(tokenBalances.btc)));
           dispatch(setsolValue(Number(solanaBalance)));
-          dispatch(setwSolValue(Number(tokenBalances.wSol)));
         } catch (e) {
             console.error('Error fetching user balances');
             return false
