@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Buffer } from "buffer";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import "../../styles/components.css";
 import {
   usePrivy,
@@ -45,6 +44,7 @@ import SelectContactOverlay from "@/features/on-offramp/withdraw/crypto/SelectCo
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
+import LoadingScreen from "@/components/ui/loading/LoadingScreen.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -224,24 +224,7 @@ function WebAppInner() {
             <Toaster />
           </>
         ) : (
-          <div
-            className="loading-screen"
-            css={css`
-              display: grid;
-              place-items: center;
-              height: 100svh;
-              background-color: var(--clr-accent);
-            `}
-          >
-            <DotLottieReact
-              src="https://lottie.host/744ea5d2-8d13-4f4c-b0a0-11e94caef4c2/2xZe6NoQB2.lottie"
-              loop
-              autoplay
-              css={css`
-                width: 4rem;
-              `}
-            />
-          </div>
+          <LoadingScreen />
         )}
       </div>
     );

@@ -1,6 +1,6 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 const app = express();
 const PORT = 3001; 
 const { create_new_on_ramp_path } = require('./routes/newBlindPayReceiver');
@@ -41,8 +41,8 @@ app.use(cors({
 
 // Add middleware logging
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    next();
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
 });
 
 app.use(express.json());
@@ -60,32 +60,32 @@ app.post('/create_user', async (req, res) => {
     }
 });
 
-app.post('/get_user_by_email', async (req, res) => {
-    console.log("\n=== User Lookup Request Received ===");
-    
-    try {
-        const { email } = req.body;
-        const result = await getUserByEmail(email);
-        console.log("User lookup result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_user_by_email endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/get_user_by_email", async (req, res) => {
+  console.log("\n=== User Lookup Request Received ===");
+
+  try {
+    const { email } = req.body;
+    const result = await getUserByEmail(email);
+    console.log("User lookup result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_user_by_email endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post('/get_user_by_privy_id', async (req, res) => {
-    console.log("\n=== User Lookup Request Received ===");
-    
-    try {
-        const { privyUserId } = req.body;
-        const result = await getUserByPrivyId(privyUserId);
-        console.log("User lookup result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_user_by_privy_id endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/get_user_by_privy_id", async (req, res) => {
+  console.log("\n=== User Lookup Request Received ===");
+
+  try {
+    const { privyUserId } = req.body;
+    const result = await getUserByPrivyId(privyUserId);
+    console.log("User lookup result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_user_by_privy_id endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post('/update_evm_pub_key', async (req, res) => {
@@ -113,92 +113,95 @@ app.post('/update_solana_pub_key', async (req, res) => {
 });
 
 /* Blind pay API */
-app.post('/new_on_ramp', async (req, res) => {
-    console.log("\n=== New On-Ramp Request Received ===");
-    
-    try {
-        const data = req.body;
-        // Call the on-ramp service
-        const result = await create_new_on_ramp_path(data);
-        console.log("On-ramp result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /new_on_ramp endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/new_on_ramp", async (req, res) => {
+  console.log("\n=== New On-Ramp Request Received ===");
+
+  try {
+    const data = req.body;
+    // Call the on-ramp service
+    const result = await create_new_on_ramp_path(data);
+    console.log("On-ramp result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /new_on_ramp endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post('/get_payin_quote', async (req, res) => {
-    console.log("\n=== New Pay-In Quote Request Received ===");
-    
-    try {
-        const data = req.body;
-        // Call the pay-in quote service
-        const result = await get_payin_quote(data);
-        console.log("Pay-in quote result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_payin_quote endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/get_payin_quote", async (req, res) => {
+  console.log("\n=== New Pay-In Quote Request Received ===");
+
+  try {
+    const data = req.body;
+    // Call the pay-in quote service
+    const result = await get_payin_quote(data);
+    console.log("Pay-in quote result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_payin_quote endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post('/new_payin', async (req, res) => {
-    console.log("\n=== New Pay-In Request Received ===");
-    
-    try {
-        const data = req.body;
-        // Call the pay-in quote service
-        const result = await create_new_payin(data);
-        console.log("Pay-in result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_payin endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/new_payin", async (req, res) => {
+  console.log("\n=== New Pay-In Request Received ===");
+
+  try {
+    const data = req.body;
+    // Call the pay-in quote service
+    const result = await create_new_payin(data);
+    console.log("Pay-in result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_payin endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post('/create_solana_token_account', async (req, res) => {
-    console.log("\n=== Create Solana Token Account Request Received ===");
-    
-    try {
-        const { receiverPubKey, mintAddress, programId } = req.body;
-        const result = await createNewTokenAccount({
-            receiverPubKey,
-            mintAddress,
-            programId
-        });
-        console.log("Token account creation result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /create_solana_token_account endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/create_solana_token_account", async (req, res) => {
+  console.log("\n=== Create Solana Token Account Request Received ===");
+
+  try {
+    const { receiverPubKey, mintAddress, programId } = req.body;
+    const result = await createNewTokenAccount({
+      receiverPubKey,
+      mintAddress,
+      programId,
+    });
+    console.log(
+      "Token account creation result:",
+      JSON.stringify(result, null, 2)
+    );
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /create_solana_token_account endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 
-app.get('/bridge_swap', async (req, res) => {
-    console.log("\n=== Bridge Swap Request Received ===");
-    try {
-        const result = await bridge_swap({
-            toAddress: "DR5s8mAdygzmHihziLzDBwjuux1R131ydAG2rjYhpAmn",
-            inToken: "USDC",
-            inChain: "solana",
-            outToken: "USDC",
-            outChain: "base",
-            amount: "1000000" // 1 USDC
-        });
-        console.log("Bridge swap result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /bridge_swap endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.get("/bridge_swap", async (req, res) => {
+  console.log("\n=== Bridge Swap Request Received ===");
+  try {
+    const result = await bridge_swap({
+      toAddress: "DR5s8mAdygzmHihziLzDBwjuux1R131ydAG2rjYhpAmn",
+      inToken: "USDC",
+      inChain: "solana",
+      outToken: "USDC",
+      outChain: "base",
+      amount: "1000000", // 1 USDC
+    });
+    console.log("Bridge swap result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /bridge_swap endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /*
 app.listen(PORT, () => {
-    console.log(`Backend server running at http://localhost:${PORT}`);
+  console.log(`Backend server running at http://localhost:${PORT}`);
 });
 */
 
