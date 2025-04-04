@@ -49,12 +49,10 @@ app.use(express.json());
 
 /* User management endpoints */
 app.post('/create_user', async (req, res) => {
-    console.log("\n=== New User Creation Request Received ===");
     
     try {
         const userData = req.body;
         const result = await createUser(userData);
-        console.log("User creation result:", JSON.stringify(result, null, 2));
         res.json(result);
     } catch (error) {
         console.error("Error in /create_user endpoint:", error);
@@ -91,12 +89,10 @@ app.post('/get_user_by_privy_id', async (req, res) => {
 });
 
 app.post('/update_evm_pub_key', async (req, res) => {
-    console.log("\n=== Update EVM Public Key Request Received ===");
     
     try {
         const { privyUserId, evmPubKey } = req.body;
         const result = await updateEvmPubKey(privyUserId, evmPubKey);
-        console.log("EVM public key update result:", JSON.stringify(result, null, 2));
         res.json(result);
     } catch (error) {
         console.error("Error in /update_evm_pub_key endpoint:", error);
@@ -105,12 +101,10 @@ app.post('/update_evm_pub_key', async (req, res) => {
 });
 
 app.post('/update_solana_pub_key', async (req, res) => {
-    console.log("\n=== Update Solana Public Key Request Received ===");
     
     try {
         const { privyUserId, solanaPubKey } = req.body;
         const result = await updateSolanaPubKey(privyUserId, solanaPubKey);
-        console.log("Solana public key update result:", JSON.stringify(result, null, 2));
         res.json(result);
     } catch (error) {
         console.error("Error in /update_solana_pub_key endpoint:", error);
@@ -182,6 +176,7 @@ app.post('/create_solana_token_account', async (req, res) => {
     }
 });
 
+
 app.get('/bridge_swap', async (req, res) => {
     console.log("\n=== Bridge Swap Request Received ===");
     try {
@@ -201,19 +196,15 @@ app.get('/bridge_swap', async (req, res) => {
     }
 });
 
-app.get('/get_balance', (req, res) => {
-    console.log("get_balance");
-    const balance = {
-        address: "YourWalletAddress",
-        balance: "11"
-    };
-    res.json(balance);
+/*
+app.listen(PORT, () => {
+    console.log(`Backend server running at http://localhost:${PORT}`);
 });
+*/
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Backend server running at http://0.0.0.0:${PORT}`);
+    console.log(`Backend server running at http://0.0.0.0:${PORT}`); //http://44.242.228.55:3001
 });
-
 /*
 curl -X POST http://localhost:3001/new_on_ramp \
   -H "Content-Type: application/json" \
