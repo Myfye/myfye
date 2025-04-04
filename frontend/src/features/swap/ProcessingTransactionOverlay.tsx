@@ -1,12 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import HeadlessOverlay from "@/components/ui/overlay/HeadlessOverlay";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { DotLottie, DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import leafLoading from "@/assets/lottie/leaf-loading.json";
+import success from "@/assets/lottie/success.json";
+import fail from "@/assets/lottie/fail.json";
+import { useLottie } from "lottie-react";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -20,71 +24,51 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
 
-  const [swapStatus, setSwapStatus] = useState("pending");
-
   const caption = useMemo(() => {
-    switch (swapStatus) {
-      case "complete": {
-        return "Coins have been deposited into your wallet.";
+    switch (transaction.status) {
+      case "success": {
+        return (
+          <span
+            css={css`
+              display: inline-block;
+              padding-block-end: calc(1em * var(--line-height-caption));
+            `}
+          >
+            Coins have been deposited into your wallet.
+          </span>
+        );
       }
-      case "error": {
-        return "Error processing swap. Please try again.";
+      case "fail": {
+        return (
+          <span
+            css={css`
+              display: inline-block;
+              padding-block-end: calc(1em * var(--line-height-caption));
+            `}
+          >
+            Error processing swap. Please try again.
+          </span>
+        );
       }
       default: {
         return `${transaction.buy.coinId} will be deposited into your wallet once the transaction is complete.`;
       }
     }
-  }, [swapStatus]);
+  }, [transaction]);
 
   const heading = useMemo(() => {
-    switch (swapStatus) {
-      case "complete": {
+    switch (transaction.status) {
+      case "success": {
         return "Swap complete!";
       }
-      case "error": {
+      case "fail": {
         return "Swap error";
       }
       default: {
         return "Swapping...";
       }
     }
-  }, [swapStatus]);
-
-  const lottie = useMemo(() => {
-    switch (swapStatus) {
-      case "complete": {
-        return (
-          <DotLottieReact
-            src="src/assets/lottie/success.lottie"
-            autoplay
-            width="100%"
-            height="100%"
-          />
-        );
-      }
-      case "error": {
-        return (
-          <DotLottieReact
-            src="src/assets/lottie/error.lottie"
-            autoplay
-            width="100%"
-            height="100%"
-          />
-        );
-      }
-      default: {
-        return (
-          <DotLottieReact
-            src="src/assets/lottie/leaf-loader.lottie"
-            autoplay
-            loop={true}
-            width="100%"
-            height="100%"
-          />
-        );
-      }
-    }
-  }, [swapStatus]);
+  }, [transaction]);
 
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
@@ -109,7 +93,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
               margin-inline: auto;
             `}
           >
-            {lottie}
+            <UIAnimation transactionStatus={transaction.status} />
           </div>
           <section
             css={css`
@@ -155,7 +139,10 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
           >
             <li>
               <Button
-                isDisabled={swapStatus === "pending"}
+                isDisabled={
+                  transaction.status === "signed" ||
+                  transaction.status === "idle"
+                }
                 expand
                 onPress={() => {
                   dispatch(unmount());
@@ -165,19 +152,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
               </Button>
             </li>
             <li>
-              <Button
-                onPress={() => {
-                  if (swapStatus === "complete") {
-                    setSwapStatus("pending");
-                  } else if (swapStatus === "pending") {
-                    setSwapStatus("error");
-                  } else {
-                    setSwapStatus("complete");
-                  }
-                }}
-                expand
-                color="neutral"
-              >
+              <Button expand color="neutral">
                 View transaction
               </Button>
             </li>
@@ -189,3 +164,35 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
 };
 
 export default ProcessingTransactionOverlay;
+
+const UIAnimation = ({ transactionStatus }) => {
+  const options = useMemo(() => {
+    switch (transactionStatus) {
+      case "success": {
+        return {
+          loop: false,
+          animationData: success,
+          autoplay: true,
+        };
+      }
+      case "fail": {
+        return {
+          loop: false,
+          animationData: fail,
+          autoplay: true,
+        };
+      }
+      default: {
+        return {
+          loop: true,
+          animationData: leafLoading,
+          autoplay: true,
+        };
+      }
+    }
+  }, [transactionStatus]);
+
+  const { View } = useLottie(options);
+
+  return <>{View}</>;
+};

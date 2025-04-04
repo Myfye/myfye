@@ -73,7 +73,31 @@ const SwapModal = () => {
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
 
-  const isValidSwapTransaction = useMemo(() => {
+  const btcBalance = useSelector(
+    (state: RootState) => state.userWalletData.btcSolBalance
+  );
+  const solBalance = useSelector(
+    (state: RootState) => state.userWalletData.solBalance
+  );
+  const usdcSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdcSolBalance
+  );
+  const usdtSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdtSolBalance
+  );
+  const eurcSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.eurcSolBalance
+  );
+  const usdySolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdySolBalance
+  );
+
+  const usdBalance = useMemo(
+    () => usdcSolBalance + usdtSolBalance,
+    [usdcSolBalance, usdtSolBalance]
+  );
+
+  const isInvalidSwapTransaction = useMemo(() => {
     if (!transaction.sell.coinId || !transaction.buy.coinId) return true;
     if (
       transaction.sell.amount === 0 ||
@@ -82,7 +106,35 @@ const SwapModal = () => {
       transaction.buy.amount === 0
     )
       return true;
-    return false;
+    switch (transaction.sell.coinId) {
+      case "btcSol": {
+        if (btcBalance < transaction.sell.amount) return true;
+        return false;
+      }
+      case "sol": {
+        if (solBalance < transaction.sell.amount) return true;
+        return false;
+      }
+      case "usdcSol": {
+        if (usdBalance < transaction.sell.amount) return true;
+        return false;
+      }
+      case "usdtSol": {
+        if (usdBalance < transaction.sell.amount) return true;
+        return false;
+      }
+      case "eurcSol": {
+        if (eurcSolBalance < transaction.sell.amount) return true;
+        return false;
+      }
+      case "usdySol": {
+        if (usdySolBalance < transaction.sell.amount) return true;
+        return false;
+      }
+      default: {
+        return true;
+      }
+    }
   }, [transaction]);
 
   return (
@@ -128,7 +180,7 @@ const SwapModal = () => {
             `}
           >
             <Button
-              isDisabled={isValidSwapTransaction}
+              isDisabled={isInvalidSwapTransaction}
               expand
               onPress={handleSwapControllerConfirmation}
             >

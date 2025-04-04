@@ -21,6 +21,7 @@
     "autoprefixer": "^10.4.20",
     "bs58": "^6.0.0",
     "firebase": "^11.2.0",
+    "lottie-react": "^2.4.1",
     "motion": "^12.3.1",
     "path": "^0.12.7",
     "postcss": "^8.5.1",
@@ -54,6 +55,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "@playwright/test": "^1.51.1",
     "@types/node": "^22.13.17",
     "@types/promise-retry": "^1.1.6",
     "@types/react": "^19.0.8",

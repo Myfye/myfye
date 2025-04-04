@@ -17,22 +17,22 @@ const {
 
 
 const allowedOrigins = [
-    'http://localhost:3000', // Development (local)
-    'https://d3ewm5gcazpqyv.cloudfront.net', // Staging (CloudFront)
-    'https://d1voqwa9zncr8f.cloudfront.net', // Production (CloudFront)
-    'https://myfye.com', // Production (myfye.com)
-    'https://www.myfye.com' // Production (www.myfye.com)
+  "http://localhost:3000", // Development (local)
+  "https://d3ewm5gcazpqyv.cloudfront.net", // Staging (CloudFront)
+  "https://d1voqwa9zncr8f.cloudfront.net", // Production (CloudFront)
+  "https://myfye.com", // Production (myfye.com)
+  "https://www.myfye.com", // Production (www.myfye.com)
 ];
 
 // Add CORS middleware
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests without origin (e.g., Postman or server-side requests)
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
+      // Allow requests without origin (e.g., Postman or server-side requests)
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -201,12 +201,12 @@ app.get("/bridge_swap", async (req, res) => {
 
 /*
 app.listen(PORT, () => {
-  console.log(`Backend server running at http://localhost:${PORT}`);
+    console.log(`Backend server running at http://localhost:${PORT}`);
 });
 */
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Backend server running at http://0.0.0.0:${PORT}`); //http://44.242.228.55:3001
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Backend server running at http://0.0.0.0:${PORT}`); //http://44.242.228.55:3001
 });
 /*
 curl -X POST http://localhost:3001/new_on_ramp \

@@ -10,16 +10,30 @@ import WalletCard from "./WalletCard";
 import { css } from "@emotion/react";
 import useBalance from "@/hooks/useBalance";
 import { useMemo } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { setOverlayOpen as setCashOverlayOpen } from "./cash/cashSlice";
 import { setOverlayOpen as setEarnOverlayOpen } from "./earn/earnSlice";
 import { setOverlayOpen as setStocksOverlayOpen } from "./stocks/stocksSlice";
 import { setOverlayOpen as setCryptoOverlayOpen } from "./crypto/cryptoSlice";
+import { RootState } from "@/redux/store";
 
 const WalletCardList = ({ ...restProps }) => {
-  const { cryptoBalanceInUSD, cashBalanceInUSD, usdyBalanceInUSD } =
-    useBalance();
+  const { eurcBalanceInUSD, usdyBalanceInUSD } = useBalance();
+
+  const usdtSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdtSolBalance
+  );
+
+  const usdcSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdcSolBalance
+  );
+
+  const cashBalance = useMemo(
+    () => usdtSolBalance + usdcSolBalance,
+    [usdtSolBalance, usdcSolBalance]
+  );
+
   const dispatch = useDispatch();
   const cards = useMemo(
     () => [
@@ -27,7 +41,7 @@ const WalletCardList = ({ ...restProps }) => {
       {
         label: "Cash",
         id: "cash",
-        balance: cashBalanceInUSD,
+        balance: cashBalance,
         percentChange: -0.012,
         icon: CashIcon,
         action: () => dispatch(setCashOverlayOpen(true)),

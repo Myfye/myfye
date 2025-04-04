@@ -77,7 +77,7 @@ function PrivyUseSolanaWallets() {
     }
   };
 
-  return <div></div>;
+  return <></>;
 }
 
 export default PrivyUseSolanaWallets;

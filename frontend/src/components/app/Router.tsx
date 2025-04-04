@@ -5,7 +5,7 @@ import {
   TabPanel as AriaTabPanel,
   Tab as AriaTab,
 } from "react-aria-components";
-import Home from "@/pages/app/Home";
+import Home from "@/features/home/Home";
 import {
   HouseSimple as HomeIcon,
   Wallet as WalletIcon,
@@ -127,6 +127,7 @@ const Router = () => {
               css={css`
                 container: tab / size;
                 min-height: 100%;
+                height: 100%;
               `}
             >
               {tab.id === "home" && (

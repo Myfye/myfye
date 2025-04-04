@@ -8,7 +8,8 @@ import { RootState } from "@/redux/store";
 import SwapCoinSummary from "./SwapCoinSummary";
 import { toggleOverlay } from "./swapSlice";
 import { swap } from "./solana-swap/SwapService";
-import {useSolanaWallets} from '@privy-io/react-auth/solana';
+import { useSolanaWallets } from "@privy-io/react-auth/solana";
+import userWalletData from "@/redux/userWalletData";
 
 const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -27,15 +28,25 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   };
 
   const handleSwapConfirmation = () => {
-
-    swap(
+    if (!transaction.sell.amount) {
+      throw new Error(`Sell amount is null`);
+    }
+    if (!transaction.sell.coinId) {
+      throw new Error(`Sell coinid is null`);
+    }
+    if (!transaction.buy.coinId) {
+      throw new Error(`Buy coinid is null`);
+    }
+    swap({
       wallet,
-      walletData.solanaPubKey, 
-      transaction.sell.amount,
-      transaction.sell.coinId,
-      transaction.buy.coinId,
+      walletData,
+      publicKey: walletData.solanaPubKey,
+      inputAmount: transaction.sell.amount,
+      inputCurrency: transaction.sell.coinId,
+      outputCurrency: transaction.buy.coinId,
       dispatch,
-    );
+      transaction,
+    });
     dispatch(
       toggleOverlay({
         type: "processingTransaction",

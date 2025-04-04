@@ -25,9 +25,9 @@ export interface Coin {
 
 export type SwapTransactionType = "buy" | "sell";
 
-export type SwapTransactionStatus = "idle" | "completed" | "failed" | "pending";
+export type SwapTransactionStatus = "idle" | "signed" | "success" | "fail";
 
-interface Transaction {
+export interface Transaction {
   buy: {
     amount: number | null;
     formattedAmount: string;
@@ -198,6 +198,9 @@ const swapSlice = createSlice({
         true
       );
     },
+    updateStatus(state, action: PayloadAction<SwapTransactionStatus>) {
+      state.transaction.status = action.payload;
+    },
   },
 });
 
@@ -208,5 +211,6 @@ export const {
   changeExchangeRate,
   changeCoinId,
   unmount,
+  updateStatus,
 } = swapSlice.actions;
 export default swapSlice.reducer;

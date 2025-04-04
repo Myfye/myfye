@@ -11,7 +11,7 @@ import appleCoinIcon from "@/assets/svgs/coins/apple.svg";
 import googleCoinIcon from "@/assets/svgs/coins/google.png";
 
 type CoinType =
-  | "btc"
+  | "btcSol"
   | "sol"
   | "usdtSol"
   | "eurcSol"
@@ -20,7 +20,7 @@ type CoinType =
   | "microsoft"
   | "apple";
 
-const Coin = ({ type = "usdt" }: { type: CoinType }) => {
+const Coin = ({ type = "usdtSol" }: { type: CoinType }) => {
   const getCoinImageSrc = useCallback(
     (type: CoinType) => {
       switch (type) {
