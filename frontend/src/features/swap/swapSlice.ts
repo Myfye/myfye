@@ -27,7 +27,7 @@ export type SwapTransactionType = "buy" | "sell";
 
 export type SwapTransactionStatus = "idle" | "signed" | "success" | "fail";
 
-interface Transaction {
+export interface Transaction {
   buy: {
     amount: number | null;
     formattedAmount: string;

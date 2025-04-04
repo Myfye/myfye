@@ -61,6 +61,7 @@ export const swap = async (
   wallet: any,
   publicKey: String,
   inputAmount: number,
+  outputAmount: number,
   inputCurrency: String,
   outputCurrency: String,
   dispatch: Function,
@@ -107,7 +108,7 @@ export const swap = async (
 async function getSwapQuote(
   microInputAmount: number,
   inputCurrencyType: String,
-  outputMint: String = USDY_MINT_ADDRESS,
+  outputMint: string = USDY_MINT_ADDRESS,
   microPlatformFeeAmount: number = 0
 ) {
   // Input mint
@@ -234,8 +235,10 @@ async function getJupiterSwapTransaction(
             console.log(
               `Transaction successful: https://solscan.io/tx/${transactionId}`
             );
-            // updateUI(dispatch, type, "Success");
+            // update status on swap screen
             dispatch(updateStatus("success"));
+            // then, update wallet amounts
+
             return true;
           }
         } catch (error) {

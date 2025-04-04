@@ -18,7 +18,7 @@ const StocksPanel = ({}) => {
     {
       title: "Bitcoin",
       currency: "btc",
-      type: "btc",
+      type: "btcSol",
       balance: 4349,
     },
     {

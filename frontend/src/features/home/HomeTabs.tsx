@@ -31,30 +31,6 @@ const tabs = [
 ];
 
 const HomeTabs = () => {
-  const {
-    cashBalanceInUSD,
-    cryptoBalanceInUSD,
-    usdyBalanceInUSD,
-    eurcBalanceInUSD,
-    solBalanceInUSD,
-    btcBalanceInUSD,
-  } = useBalance();
-
-  // USDT
-  const usdcSolBalance = useSelector(
-    (state: any) => state.userWalletData.usdcSolBalance
-  );
-
-  // USDC
-  const usdtSolBalance = useSelector(
-    (state: any) => state.userWalletData.usdtSolBalance
-  );
-
-  // EURC
-  const eurcSolBalance = useSelector(
-    (state: any) => state.userWalletData.eurcSolBalance
-  );
-
   let [selectedKey, setSelectedKey] = useState(tabs[0].id);
 
   let tabListRef = useRef(null!);
@@ -238,12 +214,7 @@ const HomeTabs = () => {
                 scroll-snap-align: start;
               `}
             >
-              {tab.id === "dashboard" && (
-                <DashboardPanel
-                  cashBalanceInUSD={cashBalanceInUSD}
-                  cryptoBalanceInUSD={cryptoBalanceInUSD}
-                />
-              )}
+              {tab.id === "dashboard" && <DashboardPanel />}
               {tab.id === "cash" && <CashPanel />}
               {tab.id === "crypto" && <CryptoPanel />}
               {tab.id === "stocks" && <StocksPanel />}

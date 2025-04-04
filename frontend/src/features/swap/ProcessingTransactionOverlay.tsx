@@ -1,12 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import HeadlessOverlay from "@/components/ui/overlay/HeadlessOverlay";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { DotLottie, DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import leafLoading from "@/assets/lottie/leaf-loading.json";
+import success from "@/assets/lottie/success.json";
+import fail from "@/assets/lottie/fail.json";
+import { useLottie } from "lottie-react";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -19,6 +23,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   };
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
+
   const caption = useMemo(() => {
     switch (transaction.status) {
       case "success": {
@@ -65,42 +70,6 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
     }
   }, [transaction]);
 
-  const lottie = useMemo(() => {
-    switch (transaction.status) {
-      case "success": {
-        return (
-          <DotLottieReact
-            src="src/assets/lottie/success.lottie"
-            autoplay
-            width="100%"
-            height="100%"
-          />
-        );
-      }
-      case "fail": {
-        return (
-          <DotLottieReact
-            src="src/assets/lottie/error.lottie"
-            autoplay
-            width="100%"
-            height="100%"
-          />
-        );
-      }
-      default: {
-        return (
-          <DotLottieReact
-            src="src/assets/lottie/leaf-loader.lottie"
-            autoplay
-            loop={true}
-            width="100%"
-            height="100%"
-          />
-        );
-      }
-    }
-  }, [transaction]);
-
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
       <div
@@ -124,7 +93,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
               margin-inline: auto;
             `}
           >
-            {lottie}
+            <UIAnimation transactionStatus={transaction.status} />
           </div>
           <section
             css={css`
@@ -195,3 +164,35 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
 };
 
 export default ProcessingTransactionOverlay;
+
+const UIAnimation = ({ transactionStatus }) => {
+  const options = useMemo(() => {
+    switch (transactionStatus) {
+      case "success": {
+        return {
+          loop: false,
+          animationData: success,
+          autoplay: true,
+        };
+      }
+      case "fail": {
+        return {
+          loop: false,
+          animationData: fail,
+          autoplay: true,
+        };
+      }
+      default: {
+        return {
+          loop: true,
+          animationData: leafLoading,
+          autoplay: true,
+        };
+      }
+    }
+  }, [transactionStatus]);
+
+  const { View } = useLottie(options);
+
+  return <>{View}</>;
+};

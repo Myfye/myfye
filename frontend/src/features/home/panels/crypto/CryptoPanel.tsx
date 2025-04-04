@@ -38,7 +38,7 @@ const CryptoPanel = ({}) => {
       {
         title: "Bitcoin",
         currency: "btc",
-        type: "btc",
+        type: "btcSol",
         balance: btcBalanceInUSD,
       },
       {

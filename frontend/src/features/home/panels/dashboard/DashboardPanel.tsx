@@ -20,45 +20,15 @@ import {
 } from "@/redux/modalReducers";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import useBalance from "@/hooks/useBalance";
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
 
-  // Blockchain Data
-  const usdcSolBalance = useSelector(
-    (state: any) => state.userWalletData.usdcSolBalance
-  );
-  const usdtSolBalance = useSelector(
-    (state: any) => state.userWalletData.usdtSolBalance
-  );
-  const eurcSolBalance = useSelector(
-    (state: any) => state.userWalletData.eurcSolBalance
-  );
-  const usdySolBalance = useSelector(
-    (state: any) => state.userWalletData.usdySolBalance
-  );
-  const btcSolBalance = useSelector(
-    (state: any) => state.userWalletData.btcSolBalance
-  );
-  const priceOfUSDYinUSDC = useSelector(
-    (state: any) => state.userWalletData.priceOfUSDYinUSDC
-  );
-  const priceOfBTCinUSDC = useSelector(
-    (state: any) => state.userWalletData.priceOfBTCinUSDC
-  );
-  const priceOfEURCinUSDC = useSelector(
-    (state: any) => state.userWalletData.priceOfEURCinUSDC
-  );
-
-  const cashBalanceInUSD = usdtSolBalance + usdcSolBalance;
-
-  const cryptoBalanceInUSD = btcSolBalance * priceOfBTCinUSDC; // TO DO add solana
+  const { cashBalanceInUSD, cryptoBalanceInUSD } = useBalance();
 
   const totalBalance = useMemo(
-    () =>
-      cashBalanceInUSD +
-      eurcSolBalance * priceOfEURCinUSDC +
-      usdySolBalance * priceOfUSDYinUSDC +
-      btcSolBalance * priceOfBTCinUSDC
+    () => cashBalanceInUSD + cryptoBalanceInUSD,
+    [cashBalanceInUSD, cryptoBalanceInUSD]
   );
 
   const pieChartData = useMemo(() => {

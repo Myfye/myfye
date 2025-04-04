@@ -8,6 +8,9 @@ const useBalance = () => {
   const usdtSolBalance = useSelector(
     (state: any) => state.userWalletData.usdtSolBalance
   );
+  const usdcSolBalance = useSelector(
+    (state: any) => state.userWalletData.usdcSolBalance
+  );
 
   // EURC
   const eurcSolBalance = useSelector(
@@ -34,8 +37,8 @@ const useBalance = () => {
   );
 
   const cashBalance = useMemo(
-    () => usdtSolBalance + eurcBalanceInUSD + usdyBalanceInUSD,
-    [usdtSolBalance, eurcBalanceInUSD, usdyBalanceInUSD]
+    () => usdtSolBalance + usdcSolBalance + eurcBalanceInUSD + usdyBalanceInUSD,
+    [usdtSolBalance, eurcBalanceInUSD, usdyBalanceInUSD, usdcSolBalance]
   );
 
   // BTC
