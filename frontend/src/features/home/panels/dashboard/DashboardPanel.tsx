@@ -19,25 +19,25 @@ import {
   setWithdrawModalOpen,
 } from "@/redux/modalReducers";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import useBalance from "@/hooks/useBalance";
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
 
-  const { cashBalanceInUSD, cryptoBalanceInUSD } = useBalance();
+  const { cashBalanceInUSD, cryptoBalanceInUSD, usdyBalanceInUSD } =
+    useBalance();
 
   const totalBalance = useMemo(
-    () => cashBalanceInUSD + cryptoBalanceInUSD,
-    [cashBalanceInUSD, cryptoBalanceInUSD]
+    () => cashBalanceInUSD + cryptoBalanceInUSD + usdyBalanceInUSD,
+    [cashBalanceInUSD, cryptoBalanceInUSD, usdyBalanceInUSD]
   );
 
   const pieChartData = useMemo(() => {
     const data = [];
-    if (cashBalanceInUSD > 0) {
+    if (cashBalanceInUSD > 0 || usdyBalanceInUSD > 0) {
       const cashData = {
         id: "Cash",
         label: "Cash",
-        value: cashBalanceInUSD,
+        value: cashBalanceInUSD + usdyBalanceInUSD,
         color: "var(--clr-pie-chart-usdt)",
       };
       data.push(cashData);

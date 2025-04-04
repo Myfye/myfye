@@ -90,26 +90,7 @@ const StocksOverlay = () => {
     dispatch(setOverlayOpen(isOpen));
   };
 
-  const coins = [
-    {
-      title: "Apple",
-      currency: "usd",
-      type: "apple",
-      balance: 48942.93,
-    },
-    {
-      title: "Google",
-      currency: "usd",
-      type: "google",
-      balance: 412.81,
-    },
-    {
-      title: "Microsoft",
-      currency: "usd",
-      type: "microsoft",
-      balance: 9433.11,
-    },
-  ];
+  const stocks = useSelector((state: RootState) => state.stocks.stocks);
 
   const [selectedDateRange, setSelectedDateRange] = useState(
     new Set<Key>(["1D"])
@@ -235,7 +216,7 @@ const StocksOverlay = () => {
               margin-block-end: var(--size-250);
             `}
           >
-            <CoinCardList coins={coins} showOptions={true} />
+            {/* <CoinCardList coins={stocks} showOptions={true} /> */}
           </section>
         </>
         {/* )} */}

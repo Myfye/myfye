@@ -37,8 +37,8 @@ const useBalance = () => {
   );
 
   const cashBalance = useMemo(
-    () => usdtSolBalance + usdcSolBalance + eurcBalanceInUSD + usdyBalanceInUSD,
-    [usdtSolBalance, eurcBalanceInUSD, usdyBalanceInUSD, usdcSolBalance]
+    () => usdtSolBalance + usdcSolBalance + eurcBalanceInUSD,
+    [usdtSolBalance, eurcBalanceInUSD, usdcSolBalance]
   );
 
   // BTC
@@ -71,7 +71,7 @@ const useBalance = () => {
   );
 
   const totalBalance = useMemo(
-    () => cryptoBalance + cashBalance,
+    () => cryptoBalance + cashBalance + usdyBalanceInUSD,
     [cryptoBalance, cashBalance]
   );
 
