@@ -24,7 +24,7 @@ const Coin = ({ type = "usdt" }: { type: CoinType }) => {
   const getCoinImageSrc = useCallback(
     (type: CoinType) => {
       switch (type) {
-        case "btc": {
+        case "btcSol": {
           return btcCoinIcon;
         }
         case "sol": {

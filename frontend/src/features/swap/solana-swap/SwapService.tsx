@@ -50,8 +50,7 @@ import {
       )
     }
   
-    const microInputAmount = inputAmount*1000000 // to do convert dynamically right now its hard coded for USDC
-    
+    const microInputAmount = convertToMicro(inputAmount, inputCurrency)
   
     getSwapQuote(
       microInputAmount, 
@@ -66,16 +65,23 @@ import {
       });
   }
   
+  const convertToMicro = (amount: number, currency: string) => {
+    if (currency === 'btcSol') {
+      return amount * 100000000;
+    } else if (currency === 'wSol' || currency === 'sol') {
+      return amount * 1000000000;
+    }else {
+      return amount * 1000000;
+    }
+  }
   
   
   
   {/* Get Swap Quote*/}
   async function getSwapQuote(
-  
-  
     microInputAmount: number, 
     inputCurrencyType: String, 
-    outputMint: String = 'A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6', // default to some mint address (USDY)
+    outputMint,
     microPlatformFeeAmount: number = 0
   ) {
     // Input mint

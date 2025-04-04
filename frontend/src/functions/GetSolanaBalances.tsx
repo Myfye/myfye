@@ -6,6 +6,7 @@ import {
     seteurcSolValue,
     setbtcSolValue,
     setusdySolValue,
+    setwSolValue
     } from '../redux/userWalletData.tsx';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { HELIUS_API_KEY } from '../env';
@@ -28,6 +29,7 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
           dispatch(seteurcSolValue(Number(tokenBalances.eurc)));
           dispatch(setbtcSolValue(Number(tokenBalances.btc)));
           dispatch(setsolValue(Number(solanaBalance)));
+          dispatch(setwSolValue(Number(tokenBalances.wSol)));
         } catch (e) {
             console.error('Error fetching user balances');
             return false
@@ -64,6 +66,7 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
     const PYUSD_MINT_ADDRESS = '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo';
     const EURC_MINT_ADDRESS = 'HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr';
     const BTC_MINT_ADDRESS = "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij";
+    const WSOL_MINT_ADDRESS = 'So11111111111111111111111111111111111111112';
   
   
     try {
@@ -101,6 +104,10 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
         if (mintAddress === USDY_MINT_ADDRESS) {
             const usdyBalance = account.account.data.parsed.info.tokenAmount.uiAmount;
             balances.usdy = usdyBalance
+        }
+        if (mintAddress === WSOL_MINT_ADDRESS) {
+            const wsolBalance = account.account.data.parsed.info.tokenAmount.uiAmount;
+            balances.wSol = wsolBalance
         }
       }
       balances.success = true
