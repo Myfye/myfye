@@ -283,7 +283,7 @@ async function getJupiterSwapTransaction(
       }
 */
   } catch (error) {
-    updateUI(dispatch, type, "Fail");
+    dispatch(updateStatus("fail"));
     console.error("Error with swap transaction", error);
     return `Unable to confirm transaction txid: `; // Re-throw the error for further handling if necessary
   }

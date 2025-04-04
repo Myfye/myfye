@@ -19,12 +19,9 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   };
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
-
-  const [swapStatus, setSwapStatus] = useState("pending");
-
   const caption = useMemo(() => {
-    switch (swapStatus) {
-      case "complete": {
+    switch (transaction.status) {
+      case "success": {
         return (
           <span
             css={css`
@@ -36,7 +33,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
           </span>
         );
       }
-      case "error": {
+      case "fail": {
         return (
           <span
             css={css`
@@ -52,25 +49,25 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
         return `${transaction.buy.coinId} will be deposited into your wallet once the transaction is complete.`;
       }
     }
-  }, [swapStatus, css]);
+  }, [transaction]);
 
   const heading = useMemo(() => {
-    switch (swapStatus) {
-      case "complete": {
+    switch (transaction.status) {
+      case "success": {
         return "Swap complete!";
       }
-      case "error": {
+      case "fail": {
         return "Swap error";
       }
       default: {
         return "Swapping...";
       }
     }
-  }, [swapStatus]);
+  }, [transaction]);
 
   const lottie = useMemo(() => {
-    switch (swapStatus) {
-      case "complete": {
+    switch (transaction.status) {
+      case "success": {
         return (
           <DotLottieReact
             src="src/assets/lottie/success.lottie"
@@ -80,7 +77,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
           />
         );
       }
-      case "error": {
+      case "fail": {
         return (
           <DotLottieReact
             src="src/assets/lottie/error.lottie"
@@ -102,7 +99,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
         );
       }
     }
-  }, [swapStatus]);
+  }, [transaction]);
 
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
@@ -173,7 +170,10 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
           >
             <li>
               <Button
-                isDisabled={swapStatus === "pending"}
+                isDisabled={
+                  transaction.status === "signed" ||
+                  transaction.status === "idle"
+                }
                 expand
                 onPress={() => {
                   dispatch(unmount());
@@ -183,19 +183,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
               </Button>
             </li>
             <li>
-              <Button
-                onPress={() => {
-                  if (swapStatus === "complete") {
-                    setSwapStatus("pending");
-                  } else if (swapStatus === "pending") {
-                    setSwapStatus("error");
-                  } else {
-                    setSwapStatus("complete");
-                  }
-                }}
-                expand
-                color="neutral"
-              >
+              <Button expand color="neutral">
                 View transaction
               </Button>
             </li>
