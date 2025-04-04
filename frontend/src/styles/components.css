@@ -216,7 +216,7 @@
       --_width: 100%;
     }
 
-    &[disabled] {
+    &:is([disabled], [data-disabled]) {
       opacity: 0.75;
       cursor: not-allowed;
     }

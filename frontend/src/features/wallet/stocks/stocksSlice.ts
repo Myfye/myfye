@@ -32,6 +32,8 @@ const initialState = {
     "APPL.d_base": {
       id: "APPL.d_base",
       label: "Apple, Inc.",
+      type: "APPL",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -41,6 +43,8 @@ const initialState = {
     "MSFT.d_base": {
       id: "MSFT.d_base",
       label: "Microsoft Corporation",
+      type: "MSFT",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -50,6 +54,8 @@ const initialState = {
     "GOOGL.d_base": {
       id: "GOOGL.d_base",
       label: "Alphabet, inc.",
+      type: "GOOGL",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -59,6 +65,8 @@ const initialState = {
     "NFLX.d_base": {
       id: "NFLX.d_base",
       label: "Netflix, Inc.",
+      type: "NFLX",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -68,6 +76,8 @@ const initialState = {
     "AMZN.d_base": {
       id: "AMZN.d_base",
       label: "Amazon.com, Inc.",
+      type: "AMZN",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -77,6 +87,8 @@ const initialState = {
     "SQ.d_base": {
       id: "SQ.d_base",
       label: "Block, Inc.",
+      type: "SQ",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -86,6 +98,8 @@ const initialState = {
     "DIS.d_base": {
       id: "DIS.d_base",
       label: "Walt Disney Company",
+      type: "DIS",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -95,6 +109,8 @@ const initialState = {
     "TSLA.d_base": {
       id: "TSLA.d_base",
       label: "Tesla, Inc.",
+      type: "TSLA",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -104,6 +120,8 @@ const initialState = {
     "AMD.d_base": {
       id: "AMD.d_base",
       label: "Advanced Micro Devices",
+      type: "AMD",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -113,6 +131,8 @@ const initialState = {
     "SPY.d_base": {
       id: "SPY.d_base",
       label: "SPDR S&P 500 ETF Trust",
+      type: "SPY",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -122,6 +142,8 @@ const initialState = {
     "MSTR.d_base": {
       id: "MSTR.d_base",
       label: "MicroStrategy, Inc.",
+      type: "MSTR",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -131,6 +153,8 @@ const initialState = {
     "IAU.d_base": {
       id: "IAU.d_base",
       label: "iShares Gold Trust",
+      type: "IAU",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -140,6 +164,8 @@ const initialState = {
     "KO.d_base": {
       id: "KO.d_base",
       label: "Coca-Cola Company",
+      type: "KO",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -149,6 +175,8 @@ const initialState = {
     "AMC.d_base": {
       id: "AMC.d_base",
       label: "AMC Entertainment Holdings, Inc.",
+      type: "AMC",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,
@@ -158,6 +186,8 @@ const initialState = {
     "GME.d_base": {
       id: "GME.d_base",
       label: "GameStop Corp. Class A, Inc.",
+      type: "GME",
+      currency: "usd",
       balance: 0,
       priceInUSD: 0,
       exchangeRateUSD: 0,

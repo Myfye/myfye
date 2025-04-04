@@ -5,6 +5,7 @@ import CoinCardList from "@/features/coins/coin-card/CoinCardList";
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { setCoinSummaryOverlayOpen } from "@/redux/overlayReducers";
+import { RootState } from "@/redux/store";
 
 const StocksPanel = ({}) => {
   const dispatch = useDispatch();
@@ -14,20 +15,7 @@ const StocksPanel = ({}) => {
     dispatch(setCoinSummaryOverlayOpen(true));
   };
 
-  const coins = [
-    {
-      title: "Bitcoin",
-      currency: "btc",
-      type: "btcSol",
-      balance: 4349,
-    },
-    {
-      title: "Solana",
-      currency: "sol",
-      type: "sol",
-      balance: 44323,
-    },
-  ];
+  const stocks = useSelector((state: RootState) => state.stocks.stocks);
 
   return (
     <div className="crypto-panel" css={css``}>
@@ -46,11 +34,11 @@ const StocksPanel = ({}) => {
           padding: 0 var(--size-250);
         `}
       >
-        <CoinCardList
-          coins={coins}
+        {/* <CoinCardList
+          coins={stocks}
           showOptions={true}
           onCoinSelect={onCoinSelect}
-        />
+        /> */}
       </section>
     </div>
   );

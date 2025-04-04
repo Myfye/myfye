@@ -24,7 +24,16 @@ export const changeFormattedAmount = (
 
   if (input === "delete") {
     if (formattedAmount === "0.") return "";
-    return getFormattedNumberFromString(formattedAmount.slice(0, -1));
+    const [integer, decimal] = formattedAmount.split(".");
+    const newAmount = formattedAmount.slice(0, -1);
+    if (
+      decimal &&
+      (decimal[decimal.length - 1] === "0" ||
+        decimal[decimal.length - 2] === "0")
+    )
+      return newAmount;
+    const newStr = getFormattedNumberFromString(newAmount);
+    return newStr;
   }
 
   if (input === ".") {
@@ -41,7 +50,8 @@ export const changeFormattedAmount = (
   if (input === "0" && formattedAmount.includes(".")) {
     formattedAmount += "0";
     const [_, decimal] = formattedAmount.split(".");
-    return updatedAmount + "." + decimal;
+    const [updatedAmountInteger, __] = updatedAmount.split(".");
+    return updatedAmountInteger + "." + decimal;
   }
   return updatedAmount;
 };
@@ -101,8 +111,7 @@ export const formatUsdAmount = (amount: number | null) =>
     : "$0";
 
 export const getCoinBalance = (wallet: UserWalletDataState, coinId: CoinId) => {
-
-  console.log('coinID', coinId)
+  console.log("coinID", coinId);
   switch (coinId) {
     case "btcSol": {
       return wallet.btcSolBalance;

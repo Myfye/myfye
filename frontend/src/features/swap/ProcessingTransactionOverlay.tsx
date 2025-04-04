@@ -152,7 +152,12 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
               </Button>
             </li>
             <li>
-              <Button expand color="neutral">
+              <Button
+                isDisabled={!transaction.id}
+                href={`https://solscan.io/tx/${transaction.id}`}
+                expand
+                color="neutral"
+              >
                 View transaction
               </Button>
             </li>

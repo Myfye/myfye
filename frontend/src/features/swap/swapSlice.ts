@@ -27,7 +27,7 @@ export type SwapTransactionType = "buy" | "sell";
 
 export type SwapTransactionStatus = "idle" | "signed" | "success" | "fail";
 
-export interface Transaction {
+export interface SwapTransaction {
   buy: {
     amount: number | null;
     formattedAmount: string;
@@ -41,6 +41,7 @@ export interface Transaction {
   fee: number | null;
   exchangeRate: number | null;
   status: SwapTransactionStatus;
+  id: string | null;
 }
 
 interface ModalState {
@@ -67,7 +68,7 @@ interface OverlayState {
 export interface SwapState {
   modal: ModalState;
   overlays: OverlayState;
-  transaction: Transaction;
+  transaction: SwapTransaction;
 }
 
 // Define the initial state
@@ -86,6 +87,7 @@ const initialState: SwapState = {
     exchangeRate: null,
     fee: null,
     status: "idle",
+    id: null,
   },
 };
 
@@ -201,6 +203,9 @@ const swapSlice = createSlice({
     updateStatus(state, action: PayloadAction<SwapTransactionStatus>) {
       state.transaction.status = action.payload;
     },
+    updateId(state, action: PayloadAction<string>) {
+      state.transaction.id = action.payload;
+    },
   },
 });
 
@@ -212,5 +217,6 @@ export const {
   changeCoinId,
   unmount,
   updateStatus,
+  updateId,
 } = swapSlice.actions;
 export default swapSlice.reducer;

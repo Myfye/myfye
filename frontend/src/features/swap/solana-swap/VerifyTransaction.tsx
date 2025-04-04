@@ -1,6 +1,6 @@
 import { Connection } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
-import { SwapTransaction, updateStatus } from "../swapSlice.ts";
+import { SwapTransaction, updateId, updateStatus } from "../swapSlice.ts";
 import {
   UserWalletDataState,
   setbtcSolValue,
@@ -45,6 +45,7 @@ async function verifyTransaction(
             `Transaction successful: https://solscan.io/tx/${transactionId}`
           );
           dispatch(updateStatus("success"));
+          dispatch(updateId(transactionId));
           updateBalances(dispatch, transaction, walletData);
           return true;
         }
