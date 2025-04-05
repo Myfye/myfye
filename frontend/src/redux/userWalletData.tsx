@@ -51,7 +51,7 @@ export interface UserWalletDataState {
   showContactPopup: boolean,
   selectedLanguageCode: string,
   depositWithdrawProductType: string;
-  passKeyState: string;
+  mfaStatus: string;
   privySolanaWalletReady: boolean;
   users: User[]
 }
@@ -106,7 +106,7 @@ const initialUserWalletData: UserWalletDataState = {
   currentUserID: '',
   privyUserId: '',
   depositWithdrawProductType: 'Earn',
-  passKeyState: 'initial',
+  mfaStatus: '',
   privySolanaWalletReady: false,
   users: []
 };
@@ -270,8 +270,8 @@ export const userWalletDataSlice = createSlice({
   setDepositWithdrawProductType: (state, action: PayloadAction<string>) => {
     state.depositWithdrawProductType= action.payload;
   },
-  setPassKeyState: (state, action: PayloadAction<string>) => {
-    state.passKeyState= action.payload;
+  setMFAStatus: (state, action: PayloadAction<string>) => {
+    state.mfaStatus= action.payload;
   }, 
   setPrivySolanaWalletReady: (state, action: PayloadAction<boolean>) => {
     state.privySolanaWalletReady= action.payload;
@@ -310,7 +310,7 @@ export const {
   setRecentlyUsedSolanaAddresses, 
   setShowContactPopup, setSelectedLanguageCode,
   setCurrentUserID, setPrivyUserId, setDepositWithdrawProductType,
-  setPassKeyState,
+  setMFAStatus,
   setPrivySolanaWalletReady,
   setUsers
   

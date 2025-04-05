@@ -10,6 +10,7 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 const SERVER_SOLANA_PUBLIC_KEY = import.meta.env
   .VITE_REACT_APP_SERVER_SOLANA_PUBLIC_KEY;
 import prepareTransaction from "./PrepareSwap.tsx";
+import simulate from "./Simulate.tsx";
 import mintAddress from "./MintAddress.tsx";
 import verifyTransaction from "./VerifyTransaction.tsx";
 import ensureTokenAccount from "./ensureTokenAccount.tsx";
@@ -161,6 +162,15 @@ const swapTransaction = async (
     platformFeeAccount = new PublicKey(platformFeeAccountData.pubkey);
   }
 
+  console.log("User Public Key:", userPublicKey);
+  console.log("Server Fee Payer:", SERVER_SOLANA_PUBLIC_KEY);
+  
+  // Get balances for both accounts
+  const userBalance = await connection.getBalance(new PublicKey(userPublicKey));
+  const serverBalance = await connection.getBalance(new PublicKey(SERVER_SOLANA_PUBLIC_KEY!));
+  console.log("User SOL Balance:", userBalance / 1e9, "SOL");
+  console.log("Server SOL Balance:", serverBalance / 1e9, "SOL");
+
   const instructions = await fetchSwapTransaction(
     quoteData,
     userPublicKey,
@@ -171,18 +181,39 @@ const swapTransaction = async (
   }
 
   const preparedTransaction = await prepareTransaction(instructions);
+  console.log("Prepared Transaction Details:", {
+    feePayer: preparedTransaction.message.staticAccountKeys[0].toString(),
+    numSigners: preparedTransaction.message.header.numRequiredSignatures,
+    staticAccountKeys: preparedTransaction.message.staticAccountKeys.map(key => key.toString())
+  });
 
   const serverSignedTransaction = await signTransactionOnBackend(
     preparedTransaction
   );
+  console.log("Server Signed Transaction Details:", {
+    feePayer: serverSignedTransaction.message.staticAccountKeys[0].toString(),
+    numSigners: serverSignedTransaction.message.header.numRequiredSignatures,
+    staticAccountKeys: serverSignedTransaction.message.staticAccountKeys.map(key => key.toString())
+  });
 
   const fullySignedTx = await wallet.signTransaction(serverSignedTransaction);
+  console.log("Fully Signed Transaction Details:", {
+    feePayer: fullySignedTx.message.staticAccountKeys[0].toString(),
+    numSigners: fullySignedTx.message.header.numRequiredSignatures,
+    staticAccountKeys: fullySignedTx.message.staticAccountKeys.map(key => key.toString())
+  });
 
-  console.log("fully signed transaction", fullySignedTx);
+  // Log the actual transaction data
+  console.log("Transaction Data:", {
+    serialized: Buffer.from(fullySignedTx.serialize()).toString('base64'),
+    message: fullySignedTx.message,
+    signatures: fullySignedTx.signatures.map(sig => sig ? Buffer.from(sig).toString('base64') : null)
+  });
+
   //simulate(fullySignedTx);
 
   const transactionId = await wallet.sendTransaction!(
-    serverSignedTransaction,
+    fullySignedTx,
     connection
   );
 
@@ -196,10 +227,11 @@ const swapTransaction = async (
   );
 };
 
-{
-  /* Sign Transaction On Backend */
-}
+{/* Sign Transaction On Backend */}
 async function signTransactionOnBackend(transaction: any) {
+  console.log("Starting server signing process");
+  console.log("Original transaction fee payer:", transaction.message.staticAccountKeys[0].toString());
+  
   // Serialize for server signing
   const serializedTx = Buffer.from(transaction.serialize()).toString("base64");
 
@@ -217,7 +249,7 @@ async function signTransactionOnBackend(transaction: any) {
   const { signedTransaction, error } = signTransactionResponse.data;
 
   if (error) {
-    console.error("Signing error:", error);
+    console.error("Server signing error:", error);
     return false;
   }
 
@@ -230,7 +262,12 @@ async function signTransactionOnBackend(transaction: any) {
     Buffer.from(signedTransaction, "base64")
   );
 
-  console.log("Deserialized Transaction:", deserializedTransaction);
+  console.log("Server signed transaction details:", {
+    feePayer: deserializedTransaction.message.staticAccountKeys[0].toString(),
+    numSigners: deserializedTransaction.message.header.numRequiredSignatures,
+    staticAccountKeys: deserializedTransaction.message.staticAccountKeys.map(key => key.toString()),
+    signatures: deserializedTransaction.signatures.map(sig => sig ? Buffer.from(sig).toString('base64') : null)
+  });
 
   if (
     signTransactionResponse.data.error ||
@@ -249,9 +286,7 @@ async function signTransactionOnBackend(transaction: any) {
   return signedTx;
 }
 
-{
-  /* Fetch Swap Transaction */
-}
+{/* Fetch Swap Transaction */}
 async function fetchSwapTransaction(
   quoteResponse: any,
   userPublicKey: String,

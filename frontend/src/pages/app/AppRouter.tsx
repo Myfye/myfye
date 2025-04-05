@@ -10,9 +10,10 @@ import {
 } from "@privy-io/react-auth";
 import {
   HandleUserLogIn,
-  UpdatePasskey,
   getUsers,
 } from "../../features/authentication/LoginService.tsx";
+import { 
+  setMFAStatus } from '../../redux/userWalletData.tsx';
 
 import appLogo from "@/assets/myfyeleaf.png";
 
@@ -84,13 +85,21 @@ function WebAppInner() {
   const { user, ready, authenticated, login, linkPasskey } = usePrivy();
   const { state, loginWithPasskey } = useLoginWithPasskey();
 
-  const [enrolledInMFA, setEnrolledInMFA] = useState<boolean>(false);
+  const mfaStatus = useSelector(
+    (state: RootState) => state.userWalletData.mfaStatus
+  );
 
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
 
   useEffect(() => {
+    console.log("MFA status", mfaStatus);
+  }, [mfaStatus]);
+
+  useEffect(() => {
     const handleLogin = async () => {
+
+      console.log("user", user);
       if (authenticated) {
         try {
           if (!user?.wallet) {
@@ -108,29 +117,18 @@ function WebAppInner() {
           console.error("Error during login:", error);
         }
       }
+
+      if (user?.mfaMethods[0] == "passkey") {
+        dispatch(setMFAStatus("enrolled"));
+      }
     };
-
-    if (user?.mfaMethods[0] == "passkey") {
-      setEnrolledInMFA(true);
-    }
-
     handleLogin();
   }, [authenticated, user]);
-  // To do:
-  // Get all users
-  // Get contacts
-  // Get uncreaters user balance
 
   useEffect(() => {
     getUsers(dispatch);
   }, []);
 
-  useEffect(() => {
-    console.log(state);
-    if (state.status == "done") {
-      UpdatePasskey(dispatch);
-    }
-  }, [state]);
 
   const isSendModalOpen = useSelector((state: any) => state.sendModal.isOpen);
   const isReceiveModalOpen = useSelector(
@@ -185,10 +183,12 @@ function WebAppInner() {
   );
 
   if (authenticated) {
-    return (
-      <div className="app-layout">
-        {userDataLoaded ? (
-          <>
+
+    if (userDataLoaded) {
+
+      if (mfaStatus === "enrolled") {
+        return (
+          <div className="app-layout">
             <Router />
             {/* Modals */}
             <SendModal
@@ -222,12 +222,68 @@ function WebAppInner() {
               onOpenChange={(e) => dispatch(setSelectContactOverlayOpen(e))}
             />
             <Toaster />
-          </>
-        ) : (
+          </div>
+        );
+      }
+      
+      if (mfaStatus === "createdPasskey") { 
+        return (
+        <div className="app-layout">
+
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div style={{marginTop: '80px'}}>
+          <button onClick={showMfaEnrollmentModal}
+          style={{
+            color: '#ffffff',
+            fontSize: '25px',
+            fontWeight: 'bold',
+            background: '#447E26',
+          borderRadius: '10px', 
+          border: '3px solid #ffffff',
+          padding: '15px',
+          cursor: 'pointer'}}>
+              Enroll in MFA
+            </button>
+            </div>
+            
+          </div>
+            </div>
+        )
+      }
+
+      if (mfaStatus === "" || !mfaStatus) {
+        return (
+        <div className="app-layout">
+
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div style={{marginTop: '80px'}}>
+          <button onClick={linkPasskey}
+          style={{
+            color: '#ffffff',
+            fontSize: '25px',
+            fontWeight: 'bold',
+            background: '#447E26',
+          borderRadius: '10px', 
+          border: '3px solid #ffffff',
+          padding: '15px',
+          cursor: 'pointer'}}>
+              Create A Passkey
+            </button>
+            </div>
+            
+          </div>
+            </div>
+        ) 
+      }
+
+    } else {
+      return (
+        <div className="app-layout">
           <LoadingScreen />
-        )}
-      </div>
-    );
+        </div>
+      )
+    }
+
   } else {
     return (
       <>
