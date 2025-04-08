@@ -12,13 +12,10 @@ import {
   setDepositModalOpen,
   setReceiveModalOpen,
   setSendModalOpen,
-  setWithdrawModalOpen,
 } from "@/redux/modalReducers";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
-  ArrowLineDown,
-  ArrowLineUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
@@ -39,24 +36,6 @@ const CryptoOverlay = () => {
 
   const cryptoAssets = useSelector((state: RootState) =>
     selectAssetsByGroup(state, "crypto")
-  );
-
-  const coins = useMemo(
-    () => [
-      {
-        title: "Bitcoin",
-        currency: "usd",
-        type: "btc",
-        balance: btcBalanceInUSD,
-      },
-      {
-        title: "Solana",
-        currency: "usd",
-        type: "sol",
-        balance: solBalanceInUSD,
-      },
-    ],
-    [btcBalanceInUSD, solBalanceInUSD]
   );
 
   const pieChartData = useMemo(() => {
@@ -192,7 +171,7 @@ const CryptoOverlay = () => {
               margin-inline: var(--size-250);
             `}
           >
-            <AssetCardList coins={coins} showOptions={true} />
+            <AssetCardList assets={cryptoAssets} showOptions={true} />
           </section>
         </>
         {/* )} */}

@@ -4,24 +4,18 @@ import {
   motion,
   useMotionTemplate,
   useMotionValue,
-  useMotionValueEvent,
   useTransform,
-} from "framer-motion";
+} from "motion/react";
 import {
   Dialog,
-  Heading,
   Modal as AriaModal,
   ModalOverlay,
 } from "react-aria-components";
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useId } from "react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
-import { Bank, Copy, Wallet, X } from "@phosphor-icons/react";
-import ModalButton from "../../../features/on-offramp/ModalButton";
-import QRCode from "../../../features/qr-code/QRCode";
-import { useSelector } from "react-redux";
+import { X } from "@phosphor-icons/react";
 
 // Wrap React Aria modal components so they support framer-motion values.
 const MotionModal = motion(AriaModal);

@@ -206,20 +206,10 @@ function WebAppInner() {
               onOpenChange={(e) => dispatch(setQRCodeModalOpen(e))}
             />
             <SwapModal />
-            {/* Overlays */}
-            <WithdrawCryptoOverlay
-              isOpen={isWithdrawCryptoOverlayOpen}
-              onOpenChange={(e) => dispatch(setWithdrawCryptoOverlayOpen(e))}
-            />
-            <SelectContactOverlay
-              isOpen={isSelectContactOverlayOpen}
-              onOpenChange={(e) => dispatch(setSelectContactOverlayOpen(e))}
-            />
             <Toaster />
           </div>
         );
       }
-
       if (mfaStatus === "createdPasskey") {
         return (
           <div className="app-layout">
@@ -245,7 +235,6 @@ function WebAppInner() {
           </div>
         );
       }
-
       if (mfaStatus === "" || !mfaStatus) {
         return (
           <div className="app-layout">

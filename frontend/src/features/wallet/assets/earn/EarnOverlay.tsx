@@ -87,40 +87,6 @@ const EarnOverlay = () => {
     selectAssetsByGroup(state, "earn")
   );
 
-  // USDT
-  const usdtSolBalance = useSelector(
-    (state: any) => state.userWalletData.usdtSolBalance
-  );
-
-  // EURC
-  const eurcSolBalance = useSelector(
-    (state: any) => state.userWalletData.eurcSolBalance
-  );
-
-  const coins = useMemo(
-    () => [
-      {
-        title: "US Dollar",
-        currency: "usd",
-        type: "usdt",
-        balance: usdtSolBalance,
-      },
-      {
-        title: "Euro",
-        currency: "eur",
-        type: "eurc",
-        balance: eurcSolBalance,
-      },
-      {
-        title: "US Treasury Bonds",
-        currency: "usd",
-        type: "usdy",
-        balance: usdyBalanceInUSD,
-      },
-    ],
-    [usdtSolBalance, usdyBalanceInUSD, eurcSolBalance]
-  );
-
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Earn">
@@ -218,15 +184,7 @@ const EarnOverlay = () => {
           >
             <PieChart data={pieChartData} type="earn"></PieChart>
           </section>
-          <section
-            css={css`
-              margin-inline: var(--size-250);
-            `}
-          >
-            <AssetCardList coins={coins} showOptions={true} />
-          </section>
         </>
-        {/* )} */}
       </Overlay>
     </>
   );
