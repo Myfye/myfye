@@ -8,9 +8,6 @@ import solCoinIcon from "@/assets/svgs/coins/sol-coin.svg";
 import usdCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
 import usdyCoinIcon from "@/assets/svgs/coins/usdy-coin.svg";
-import microsoftCoinIcon from "@/assets/svgs/coins/microsoft.svg";
-import appleCoinIcon from "@/assets/svgs/coins/apple.svg";
-import googleCoinIcon from "@/assets/svgs/coins/google.png";
 
 const initialState: AssetsState = {
   assetIds: [
@@ -46,6 +43,7 @@ const initialState: AssetsState = {
       label: "Apple, Inc.",
       symbol: "APPL",
       fiatCurrency: "usd",
+      type: "stock",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
@@ -58,6 +56,7 @@ const initialState: AssetsState = {
       id: "MSFT.d_base",
       label: "Microsoft Corporation",
       symbol: "MSFT",
+      type: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
       balance: 0,
@@ -73,6 +72,7 @@ const initialState: AssetsState = {
       symbol: "GOOGL",
       fiatCurrency: "usd",
       groupId: "stocks",
+      type: "stock",
       balance: 0,
       exchangeRateUSD: 0,
       icon: null,
@@ -86,6 +86,7 @@ const initialState: AssetsState = {
       symbol: "NFLX",
       fiatCurrency: "usd",
       groupId: "stocks",
+      type: "stock",
       balance: 0,
       exchangeRateUSD: 0,
       icon: null,
@@ -98,6 +99,7 @@ const initialState: AssetsState = {
       label: "Amazon.com, Inc.",
       symbol: "AMZN",
       fiatCurrency: "usd",
+      type: "stock",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
@@ -112,6 +114,7 @@ const initialState: AssetsState = {
       symbol: "SQ",
       fiatCurrency: "usd",
       groupId: "stocks",
+      type: "stock",
       balance: 0,
       exchangeRateUSD: 0,
       icon: null,
@@ -124,6 +127,7 @@ const initialState: AssetsState = {
       label: "Walt Disney Company",
       symbol: "DIS",
       fiatCurrency: "usd",
+      type: "stock",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
@@ -136,6 +140,7 @@ const initialState: AssetsState = {
       id: "TSLA.d_base",
       label: "Tesla, Inc.",
       symbol: "TSLA",
+      type: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
       balance: 0,
@@ -151,6 +156,7 @@ const initialState: AssetsState = {
       symbol: "AMD",
       fiatCurrency: "usd",
       groupId: "stocks",
+      type: "stock",
       balance: 0,
       exchangeRateUSD: 0,
       icon: null,
@@ -164,6 +170,7 @@ const initialState: AssetsState = {
       symbol: "SPY",
       fiatCurrency: "usd",
       groupId: "stocks",
+      type: "stock",
       balance: 0,
       exchangeRateUSD: 0,
       icon: null,
@@ -176,6 +183,7 @@ const initialState: AssetsState = {
       label: "MicroStrategy, Inc.",
       symbol: "MSTR",
       fiatCurrency: "usd",
+      type: "stock",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
@@ -190,6 +198,7 @@ const initialState: AssetsState = {
       symbol: "IAU",
       fiatCurrency: "usd",
       groupId: "stocks",
+      type: "stock",
       balance: 0,
       exchangeRateUSD: 0,
       icon: null,
@@ -203,6 +212,7 @@ const initialState: AssetsState = {
       symbol: "KO",
       fiatCurrency: "usd",
       groupId: "stocks",
+      type: "stock",
       balance: 0,
       exchangeRateUSD: 0,
       icon: null,
@@ -216,6 +226,7 @@ const initialState: AssetsState = {
       symbol: "AMC",
       fiatCurrency: "usd",
       groupId: "stocks",
+      type: "stock",
       balance: 0,
       exchangeRateUSD: 0,
       icon: null,
@@ -227,6 +238,7 @@ const initialState: AssetsState = {
       id: "GME.d_base",
       label: "GameStop Corp. Class A, Inc.",
       symbol: "GME",
+      type: "stock",
       fiatCurrency: "usd",
       groupId: "crypto",
       balance: 0,
@@ -241,6 +253,7 @@ const initialState: AssetsState = {
       id: "btc_sol",
       label: "Bitcoin",
       symbol: "CBBTC",
+      type: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
       balance: 0,
@@ -254,6 +267,7 @@ const initialState: AssetsState = {
       id: "sol",
       label: "Solana",
       symbol: "SOL",
+      type: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
       balance: 0,
@@ -268,6 +282,7 @@ const initialState: AssetsState = {
       id: "usdt_sol",
       label: "US Dollar",
       symbol: "USDT",
+      type: "usd",
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
@@ -281,6 +296,7 @@ const initialState: AssetsState = {
       id: "usdc_sol",
       label: "US Dollar",
       symbol: "USDC",
+      type: "usd",
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
@@ -294,6 +310,7 @@ const initialState: AssetsState = {
       id: "usdc_base",
       label: "US Dollar",
       symbol: "USDC",
+      type: "usd",
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
@@ -307,6 +324,7 @@ const initialState: AssetsState = {
       id: "eurc_sol",
       label: "Euro",
       symbol: "EUR",
+      type: "euro",
       fiatCurrency: "eur",
       groupId: "cash",
       balance: 0,
@@ -321,6 +339,7 @@ const initialState: AssetsState = {
       id: "usdy_sol",
       label: "US Dollar Yield",
       symbol: "usdy",
+      type: "treasury",
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
@@ -365,6 +384,8 @@ export const selectAssetGroupId = (_: RootState, groupId: AssetGroup["id"]) =>
 export const selectAsset = (state: RootState, asset: string) =>
   state.assets.assets[asset];
 
+export const selectAssetType = (_: RootState, type: Asset["type"]) => type;
+
 export const selectAssetsArray = createSelector([selectAssets], (assets) =>
   assets.assetIds.map((assetId) => assets.assets[assetId])
 );
@@ -377,6 +398,27 @@ export const selectAssetsGroupsArray = createSelector(
 export const selectAssetsByGroup = createSelector(
   [selectAssets, selectAssetGroupId],
   (assets, groupId) => getAssetsByGroup(assets, groupId)
+);
+
+export const selectAssetsByType = createSelector(
+  [selectAssets, selectAssetType],
+  (assets, type) => {
+    const assetsArr = assets.assetIds.map((assetId) => assets.assets[assetId]);
+    const labelledAssets = assetsArr.filter((asset) => asset.type === type);
+    return labelledAssets;
+  }
+);
+
+export const selectAssetsBalanceUSDByType = createSelector(
+  [selectAssets, selectAssetType],
+  (assets, type) => {
+    const assetsArr = assets.assetIds.map((assetId) => assets.assets[assetId]);
+    const labelledAssets = assetsArr.filter((asset) => asset.type === type);
+    return labelledAssets.reduce(
+      (acc, val) => acc + val.balance * val.exchangeRateUSD,
+      0
+    );
+  }
 );
 
 export const selectAssetsBalanceUSDByGroup = createSelector(

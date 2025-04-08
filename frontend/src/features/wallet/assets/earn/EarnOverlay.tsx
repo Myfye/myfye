@@ -1,23 +1,25 @@
 import Overlay from "@/components/ui/overlay/Overlay";
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
-import useBalance from "@/hooks/useBalance";
 import PieChart from "@/components/ui/pie-chart/PieChart";
-import { useMemo } from "react";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setDepositModalOpen,
   setReceiveModalOpen,
   setSendModalOpen,
+  setSwapModalOpen,
 } from "@/redux/modalReducers";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
-import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
-import { selectAssetsByGroup, toggleGroupOverlay } from "../assetsSlice";
+import {
+  selectAssetsBalanceUSDByGroup,
+  selectAssetsByGroup,
+  toggleGroupOverlay,
+} from "../assetsSlice";
+import { css } from "@emotion/react";
 
 const pieChartData = [
   {
@@ -71,8 +73,6 @@ const pieChartData = [
 ];
 
 const EarnOverlay = () => {
-  const { cashBalanceInUSD, usdyBalanceInUSD, eurcBalanceInUSD } = useBalance();
-
   const dispatch = useDispatch();
 
   const isOpen = useSelector(
@@ -87,104 +87,82 @@ const EarnOverlay = () => {
     selectAssetsByGroup(state, "earn")
   );
 
+  const balanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "earn")
+  );
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Earn">
-        {/* {usdyBalanceInUSD === 0 &&
-        eurcBalanceInUSD === 0 &&
-        usdtSolBalance === 0 ? (
+        <section
+          className="balance-container"
+          css={css`
+            margin-block-start: var(--size-150);
+          `}
+        >
           <div
+            className="balance-wrapper"
             css={css`
-              display: grid;
-              place-items: center;
-              height: 100%;
+              padding: 0 var(--size-250);
             `}
           >
-            <section>
-              <hgroup
-                css={css`
-                  text-align: center;
-                `}
-              >
-                <p className="heading-large">Deposit cash</p>
-                <p className="caption-medium">Lorem ipsum dolor</p>
-              </hgroup>
-              <Button>Deposit cash</Button>
-            </section>
+            <BalanceTitle balance={balanceUSD} />
           </div>
-        ) : ( */}
-        <>
-          <section
-            className="balance-container"
+          <menu
+            className="no-scrollbar"
             css={css`
-              margin-block-start: var(--size-150);
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              gap: var(--controls-gap-small);
+              overflow-x: auto;
+              padding: 0 var(--size-250);
+              margin-block-start: var(--size-250);
+              background-color: var(--clr-surface);
             `}
           >
-            <div
-              className="balance-wrapper"
-              css={css`
-                padding: 0 var(--size-250);
-              `}
-            >
-              <BalanceTitle balance={cashBalanceInUSD} />
-            </div>
-            <menu
-              className="no-scrollbar"
-              css={css`
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: var(--controls-gap-small);
-                overflow-x: auto;
-                padding: 0 var(--size-250);
-                margin-block-start: var(--size-250);
-                background-color: var(--clr-surface);
-              `}
-            >
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowCircleUp}
-                  onPress={() => {
-                    dispatch(setSendModalOpen(true));
-                  }}
-                >
-                  Send
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowCircleDown}
-                  onPress={() => {
-                    dispatch(setReceiveModalOpen(true));
-                  }}
-                >
-                  Receive
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowsLeftRight}
-                  onPress={() => {
-                    dispatch(setDepositModalOpen(true));
-                  }}
-                >
-                  Swap
-                </Button>
-              </li>
-            </menu>
-          </section>
-          <section
-            className="pie-chart-container"
-            css={css`
-              margin-inline: var(--size-250);
-            `}
-          >
-            <PieChart data={pieChartData} type="earn"></PieChart>
-          </section>
-        </>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowCircleUp}
+                onPress={() => {
+                  dispatch(setSendModalOpen(true));
+                }}
+              >
+                Send
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowCircleDown}
+                onPress={() => {
+                  dispatch(setReceiveModalOpen(true));
+                }}
+              >
+                Receive
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowsLeftRight}
+                onPress={() => {
+                  dispatch(setSwapModalOpen(true));
+                }}
+              >
+                Swap
+              </Button>
+            </li>
+          </menu>
+        </section>
+        <section
+          className="pie-chart-container"
+          css={css`
+            margin-inline: var(--size-250);
+          `}
+        >
+          <PieChart data={pieChartData} type="earn"></PieChart>
+        </section>
       </Overlay>
     </>
   );

@@ -5,11 +5,11 @@ import Modal from "@/components/ui/modal/Modal";
 import NumberPad from "@/components/ui/number-pad/NumberPad";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { changeAmount, toggleModal, toggleOverlay, unmount } from "./swapSlice";
+import { toggleModal, toggleOverlay, unmount, updateAmount } from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
-import SelectCoinOverlay from "./SelectCoinOverlay";
+import SelectCoinOverlay from "./SelectAssetOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
 
 const SwapModal = () => {
@@ -28,7 +28,7 @@ const SwapModal = () => {
 
   const startDelete = (input: string) => {
     intervalDelete.current = setInterval(() => {
-      dispatch(changeAmount({ input }));
+      dispatch(updateAmount({ input }));
     }, 50);
   };
 
@@ -51,7 +51,7 @@ const SwapModal = () => {
 
   const handleNumberPressStart = (input: string) => {
     if (input === "delete") {
-      dispatch(changeAmount({ input }));
+      dispatch(updateAmount({ input }));
       delayDelete.current = setTimeout(() => {
         startDelete(input);
       }, 200);
@@ -60,7 +60,7 @@ const SwapModal = () => {
 
   const handleNumberPress = (input: string) => {
     if (input === "delete") return;
-    dispatch(changeAmount({ input }));
+    dispatch(updateAmount({ input }));
   };
 
   const handleNumberPressEnd = () => {
@@ -72,33 +72,10 @@ const SwapModal = () => {
   };
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
-
-  const btcBalance = useSelector(
-    (state: RootState) => state.userWalletData.btcSolBalance
-  );
-  const solBalance = useSelector(
-    (state: RootState) => state.userWalletData.solBalance
-  );
-  const usdcSolBalance = useSelector(
-    (state: RootState) => state.userWalletData.usdcSolBalance
-  );
-  const usdtSolBalance = useSelector(
-    (state: RootState) => state.userWalletData.usdtSolBalance
-  );
-  const eurcSolBalance = useSelector(
-    (state: RootState) => state.userWalletData.eurcSolBalance
-  );
-  const usdySolBalance = useSelector(
-    (state: RootState) => state.userWalletData.usdySolBalance
-  );
-
-  const usdBalance = useMemo(
-    () => usdcSolBalance + usdtSolBalance,
-    [usdcSolBalance, usdtSolBalance]
-  );
+  const assets = useSelector((state: RootState) => state.assets);
 
   const isInvalidSwapTransaction = useMemo(() => {
-    if (!transaction.sell.coinId || !transaction.buy.coinId) return true;
+    if (!transaction.sell.assetId || !transaction.buy.assetId) return true;
     if (
       transaction.sell.amount === 0 ||
       transaction.sell.amount === null ||
@@ -106,36 +83,12 @@ const SwapModal = () => {
       transaction.buy.amount === 0
     )
       return true;
-    switch (transaction.sell.coinId) {
-      case "btcSol": {
-        if (btcBalance < transaction.sell.amount) return true;
-        return false;
-      }
-      case "sol": {
-        if (solBalance < transaction.sell.amount) return true;
-        return false;
-      }
-      case "usdcSol": {
-        if (usdBalance < transaction.sell.amount) return true;
-        return false;
-      }
-      case "usdtSol": {
-        if (usdBalance < transaction.sell.amount) return true;
-        return false;
-      }
-      case "eurcSol": {
-        if (eurcSolBalance < transaction.sell.amount) return true;
-        return false;
-      }
-      case "usdySol": {
-        if (usdySolBalance < transaction.sell.amount) return true;
-        return false;
-      }
-      default: {
-        return true;
-      }
-    }
-  }, [transaction]);
+    if (
+      assets.assets[transaction.sell.assetId].balance < transaction.sell.amount
+    )
+      return true;
+    return false;
+  }, [transaction, assets]);
 
   return (
     <>

@@ -1,7 +1,7 @@
-import { CashId } from "./cash/type";
-import { CryptoId } from "./crypto/type";
-import { EarnId } from "./earn/type";
-import { StocksId } from "./stocks/type";
+import { CashId } from "./cash/types";
+import { CryptoId } from "./crypto/types";
+import { EarnId } from "./earn/types";
+import { StocksId } from "./stocks/types";
 
 export type FiatCurrency = "usd" | "eur";
 
@@ -10,6 +10,7 @@ export interface Asset {
   label: string;
   symbol: string;
   fiatCurrency: FiatCurrency;
+  type: "usd" | "stock" | "euro" | "treasury" | "crypto";
   groupId: AssetGroup["id"];
   balance: number;
   exchangeRateUSD: number;

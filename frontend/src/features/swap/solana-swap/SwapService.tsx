@@ -1,34 +1,24 @@
-import {
-  ComputeBudgetProgram,
-  PublicKey,
-  Connection,
-  VersionedTransaction,
-} from "@solana/web3.js";
+import { PublicKey, Connection, VersionedTransaction } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
 import getTokenAccountData from "../../../functions/GetSolanaTokenAccount.tsx";
 import { getFunctions, httpsCallable } from "firebase/functions";
 const SERVER_SOLANA_PUBLIC_KEY = import.meta.env
   .VITE_REACT_APP_SERVER_SOLANA_PUBLIC_KEY;
 import prepareTransaction from "./PrepareSwap.tsx";
-import simulate from "./Simulate.tsx";
 import mintAddress from "./MintAddress.tsx";
 import verifyTransaction from "./VerifyTransaction.tsx";
 import ensureTokenAccount from "./ensureTokenAccount.tsx";
-import {
-  SwapTransaction,
-  SwapTransactionType,
-  updateStatus,
-} from "../swapSlice.ts";
+import { SwapTransaction, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
-import { UserWalletDataState } from "@/redux/userWalletData.tsx";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
+import { Asset, AssetsState } from "@/features/wallet/assets/types.ts";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
 
 export const swap = async ({
   wallet,
-  walletData,
+  assets,
   publicKey,
   inputAmount,
   inputCurrency,
@@ -39,11 +29,11 @@ export const swap = async ({
   transaction,
 }: {
   wallet: ConnectedSolanaWallet;
-  walletData: UserWalletDataState;
+  assets: AssetsState;
   publicKey: string;
   inputAmount: number;
-  inputCurrency: string;
-  outputCurrency: string;
+  inputCurrency: Asset["id"];
+  outputCurrency: Asset["id"];
   dispatch: Dispatch;
   type?: string;
   microPlatformFeeAmount?: number;
@@ -93,7 +83,7 @@ export const swap = async ({
         type,
         platformFeeAccountData,
         transaction,
-        walletData
+        assets
       );
     })
     .catch((error) => {
@@ -106,21 +96,21 @@ export const swap = async ({
 };
 
 const convertToMicro = (amount: number, currency: string) => {
-  if (currency === 'btcSol') {
+  if (currency === "btc_sol") {
     return amount * 100000000;
-  } else if (currency === 'wSol' || currency === 'sol') {
+  } else if (currency === "w_sol" || currency === "sol") {
     return amount * 1000000000;
-  }else {
+  } else {
     return amount * 1000000;
   }
-}
+};
 
 {
   /* Get Swap Quote*/
 }
 async function getSwapQuote(
   microInputAmount: number,
-  inputCurrencyType: String,
+  inputCurrencyType: Asset["id"],
   outputMint: String = "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6", // default to some mint address (USDY)
   microPlatformFeeAmount: number = 0
 ) {
@@ -154,7 +144,7 @@ const swapTransaction = async (
   type: String,
   platformFeeAccountData: any,
   transaction: any,
-  walletData: UserWalletDataState
+  assets: AssetsState
 ) => {
   // get the platform fee account
   let platformFeeAccount: PublicKey | null = null;
@@ -164,10 +154,12 @@ const swapTransaction = async (
 
   console.log("User Public Key:", userPublicKey);
   console.log("Server Fee Payer:", SERVER_SOLANA_PUBLIC_KEY);
-  
+
   // Get balances for both accounts
   const userBalance = await connection.getBalance(new PublicKey(userPublicKey));
-  const serverBalance = await connection.getBalance(new PublicKey(SERVER_SOLANA_PUBLIC_KEY!));
+  const serverBalance = await connection.getBalance(
+    new PublicKey(SERVER_SOLANA_PUBLIC_KEY!)
+  );
   console.log("User SOL Balance:", userBalance / 1e9, "SOL");
   console.log("Server SOL Balance:", serverBalance / 1e9, "SOL");
 
@@ -184,7 +176,9 @@ const swapTransaction = async (
   console.log("Prepared Transaction Details:", {
     feePayer: preparedTransaction.message.staticAccountKeys[0].toString(),
     numSigners: preparedTransaction.message.header.numRequiredSignatures,
-    staticAccountKeys: preparedTransaction.message.staticAccountKeys.map(key => key.toString())
+    staticAccountKeys: preparedTransaction.message.staticAccountKeys.map(
+      (key) => key.toString()
+    ),
   });
 
   const serverSignedTransaction = await signTransactionOnBackend(
@@ -193,21 +187,27 @@ const swapTransaction = async (
   console.log("Server Signed Transaction Details:", {
     feePayer: serverSignedTransaction.message.staticAccountKeys[0].toString(),
     numSigners: serverSignedTransaction.message.header.numRequiredSignatures,
-    staticAccountKeys: serverSignedTransaction.message.staticAccountKeys.map(key => key.toString())
+    staticAccountKeys: serverSignedTransaction.message.staticAccountKeys.map(
+      (key) => key.toString()
+    ),
   });
 
   const fullySignedTx = await wallet.signTransaction(serverSignedTransaction);
   console.log("Fully Signed Transaction Details:", {
     feePayer: fullySignedTx.message.staticAccountKeys[0].toString(),
     numSigners: fullySignedTx.message.header.numRequiredSignatures,
-    staticAccountKeys: fullySignedTx.message.staticAccountKeys.map(key => key.toString())
+    staticAccountKeys: fullySignedTx.message.staticAccountKeys.map((key) =>
+      key.toString()
+    ),
   });
 
   // Log the actual transaction data
   console.log("Transaction Data:", {
-    serialized: Buffer.from(fullySignedTx.serialize()).toString('base64'),
+    serialized: Buffer.from(fullySignedTx.serialize()).toString("base64"),
     message: fullySignedTx.message,
-    signatures: fullySignedTx.signatures.map(sig => sig ? Buffer.from(sig).toString('base64') : null)
+    signatures: fullySignedTx.signatures.map((sig) =>
+      sig ? Buffer.from(sig).toString("base64") : null
+    ),
   });
 
   //simulate(fullySignedTx);
@@ -223,15 +223,20 @@ const swapTransaction = async (
     type,
     transaction,
     wallet,
-    walletData
+    assets
   );
 };
 
-{/* Sign Transaction On Backend */}
+{
+  /* Sign Transaction On Backend */
+}
 async function signTransactionOnBackend(transaction: any) {
   console.log("Starting server signing process");
-  console.log("Original transaction fee payer:", transaction.message.staticAccountKeys[0].toString());
-  
+  console.log(
+    "Original transaction fee payer:",
+    transaction.message.staticAccountKeys[0].toString()
+  );
+
   // Serialize for server signing
   const serializedTx = Buffer.from(transaction.serialize()).toString("base64");
 
@@ -265,8 +270,12 @@ async function signTransactionOnBackend(transaction: any) {
   console.log("Server signed transaction details:", {
     feePayer: deserializedTransaction.message.staticAccountKeys[0].toString(),
     numSigners: deserializedTransaction.message.header.numRequiredSignatures,
-    staticAccountKeys: deserializedTransaction.message.staticAccountKeys.map(key => key.toString()),
-    signatures: deserializedTransaction.signatures.map(sig => sig ? Buffer.from(sig).toString('base64') : null)
+    staticAccountKeys: deserializedTransaction.message.staticAccountKeys.map(
+      (key) => key.toString()
+    ),
+    signatures: deserializedTransaction.signatures.map((sig) =>
+      sig ? Buffer.from(sig).toString("base64") : null
+    ),
   });
 
   if (
@@ -286,7 +295,9 @@ async function signTransactionOnBackend(transaction: any) {
   return signedTx;
 }
 
-{/* Fetch Swap Transaction */}
+{
+  /* Fetch Swap Transaction */
+}
 async function fetchSwapTransaction(
   quoteResponse: any,
   userPublicKey: String,

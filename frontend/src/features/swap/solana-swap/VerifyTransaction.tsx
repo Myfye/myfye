@@ -3,7 +3,6 @@ import { HELIUS_API_KEY } from "../../../env.ts";
 import { SwapTransaction, updateId, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
-import { UserWalletDataState } from "@/redux/userWalletData.tsx";
 import { AssetsState } from "@/features/wallet/assets/types.ts";
 import { updateBalance } from "@/features/wallet/assets/assetsSlice.ts";
 
@@ -20,7 +19,7 @@ async function verifyTransaction(
   type: String,
   transaction: SwapTransaction,
   wallet: ConnectedSolanaWallet,
-  walletData: UserWalletDataState
+  assets: AssetsState
 ) {
   if (transactionId) {
     let transactionConfirmed = false;
@@ -41,7 +40,7 @@ async function verifyTransaction(
           );
           dispatch(updateStatus("success"));
           dispatch(updateId(transactionId));
-          updateBalances(dispatch, transaction, walletData);
+          updateBalances(dispatch, transaction, assets);
           return true;
         }
       } catch (error) {
@@ -181,12 +180,14 @@ function updateBalances(
     },
   };
 
-  if (!sell.coinId || !buy.coinId)
+  if (!sell.assetId || !buy.assetId)
     throw new Error(`Buy coin id or sell coin id is null`);
 
-  if (!sellActions[sell.coinId] || !buyActions[buy.coinId]) {
-    throw new Error(`Invalid transaction from ${sell.coinId} to ${buy.coinId}`);
+  if (!sellActions[sell.assetId] || !buyActions[buy.assetId]) {
+    throw new Error(
+      `Invalid transaction from ${sell.assetId} to ${buy.assetId}`
+    );
   }
-  sellActions[sell.coinId]();
-  buyActions[buy.coinId]();
+  sellActions[sell.assetId]();
+  buyActions[buy.assetId]();
 }

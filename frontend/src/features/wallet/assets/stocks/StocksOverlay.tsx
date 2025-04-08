@@ -10,6 +10,7 @@ import {
   setDepositModalOpen,
   setReceiveModalOpen,
   setSendModalOpen,
+  setSwapModalOpen,
 } from "@/redux/modalReducers";
 import {
   ArrowCircleDown,
@@ -21,7 +22,11 @@ import { RootState } from "@/redux/store";
 import LineChart from "@/components/ui/line-chart/LineChart";
 import { useState } from "react";
 import { Key, useSelect } from "react-aria";
-import { selectAssetsByGroup, toggleGroupOverlay } from "../assetsSlice";
+import {
+  selectAssetsBalanceUSDByGroup,
+  selectAssetsByGroup,
+  toggleGroupOverlay,
+} from "../assetsSlice";
 
 const lineChartData = [
   {
@@ -81,7 +86,6 @@ const lineChartData = [
 ];
 
 const StocksOverlay = () => {
-  const { cryptoBalanceInUSD, solBalanceInUSD, btcBalanceInUSD } = useBalance();
   const dispatch = useDispatch();
 
   const isOpen = useSelector(
@@ -96,6 +100,10 @@ const StocksOverlay = () => {
     selectAssetsByGroup(state, "stocks")
   );
 
+  const balanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "stocks")
+  );
+
   const [selectedDateRange, setSelectedDateRange] = useState(
     new Set<Key>(["1D"])
   );
@@ -103,127 +111,88 @@ const StocksOverlay = () => {
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Stocks">
-        {/* {solBalanceInUSD === 0 || btcBalanceInUSD === 0 ? (
+        <section
+          className="balance-container"
+          css={css`
+            margin-block-start: var(--size-200);
+          `}
+        >
           <div
+            className="balance-wrapper"
             css={css`
-              display: grid;
-              place-items: center;
-              height: 100%;
+              padding: 0 var(--size-250);
             `}
           >
-            <section>
-              <hgroup
-                css={css`
-                  text-align: center;
-                  margin-block-end: var(--size-400);
-                `}
-              >
-                <p className="heading-large">Deposit crypto</p>
-                <p
-                  className="caption-medium"
-                  css={css`
-                    margin-block-start: var(--size-100);
-                    color: var(--clr-text-weak);
-                  `}
-                >
-                  Lorem ipsum dolor
-                </p>
-              </hgroup>
+            <BalanceTitle balance={balanceUSD} />
+          </div>
+          <menu
+            className="no-scrollbar"
+            css={css`
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              gap: var(--controls-gap-small);
+              overflow-x: auto;
+              padding: 0 var(--size-250);
+              margin-block-start: var(--size-250);
+              background-color: var(--clr-surface);
+            `}
+          >
+            <li>
               <Button
+                size="x-small"
+                icon={ArrowCircleUp}
                 onPress={() => {
-                  dispatch(setDepositModalOpen(true));
+                  dispatch(setSendModalOpen(true));
                 }}
               >
-                Deposit Crypto
+                Send
               </Button>
-            </section>
-          </div>
-        ) : ( */}
-        <>
-          <section
-            className="balance-container"
-            css={css`
-              margin-block-start: var(--size-200);
-            `}
-          >
-            <div
-              className="balance-wrapper"
-              css={css`
-                padding: 0 var(--size-250);
-              `}
-            >
-              <BalanceTitle balance={cryptoBalanceInUSD} />
-            </div>
-            <menu
-              className="no-scrollbar"
-              css={css`
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: var(--controls-gap-small);
-                overflow-x: auto;
-                padding: 0 var(--size-250);
-                margin-block-start: var(--size-250);
-                background-color: var(--clr-surface);
-              `}
-            >
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowCircleUp}
-                  onPress={() => {
-                    dispatch(setSendModalOpen(true));
-                  }}
-                >
-                  Send
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowCircleDown}
-                  onPress={() => {
-                    dispatch(setReceiveModalOpen(true));
-                  }}
-                >
-                  Receive
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowsLeftRight}
-                  onPress={() => {
-                    dispatch(setDepositModalOpen(true));
-                  }}
-                >
-                  Swap
-                </Button>
-              </li>
-            </menu>
-          </section>
-          <section
-            css={css`
-              margin-block-start: var(--size-400);
-            `}
-          >
-            <LineChart
-              data={lineChartData}
-              selectedDateRange={selectedDateRange}
-              onDateRangeSelectionChange={(key) => setSelectedDateRange(key)}
-            />
-          </section>
-          <section
-            css={css`
-              margin-block-start: var(--size-500);
-              margin-inline: var(--size-250);
-              margin-block-end: var(--size-250);
-            `}
-          >
-            {/* <AssetCardList coins={stocks} showOptions={true} /> */}
-          </section>
-        </>
-        {/* )} */}
+            </li>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowCircleDown}
+                onPress={() => {
+                  dispatch(setReceiveModalOpen(true));
+                }}
+              >
+                Receive
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowsLeftRight}
+                onPress={() => {
+                  dispatch(setSwapModalOpen(true));
+                }}
+              >
+                Swap
+              </Button>
+            </li>
+          </menu>
+        </section>
+        <section
+          css={css`
+            margin-block-start: var(--size-400);
+          `}
+        >
+          <LineChart
+            data={lineChartData}
+            selectedDateRange={selectedDateRange}
+            onDateRangeSelectionChange={(key) => setSelectedDateRange(key)}
+          />
+        </section>
+        <section
+          css={css`
+            margin-block-start: var(--size-500);
+            margin-inline: var(--size-250);
+            margin-block-end: var(--size-250);
+          `}
+        >
+          <AssetCardList assets={stocksAssets} showOptions={true} />
+        </section>
       </Overlay>
     </>
   );

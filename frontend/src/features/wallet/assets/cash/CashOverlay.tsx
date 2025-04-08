@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 import Overlay from "@/components/ui/overlay/Overlay";
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
-import useBalance from "@/hooks/useBalance";
 import PieChart from "@/components/ui/pie-chart/PieChart";
 import { useMemo } from "react";
 import Button from "@/components/ui/button/Button";
@@ -20,8 +18,12 @@ import {
 } from "@phosphor-icons/react";
 import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
-import { toggleOverlay } from "./cashSlice";
-import { selectAssetsByGroup, toggleGroupOverlay } from "../assetsSlice";
+import {
+  selectAssetsBalanceUSDByGroup,
+  selectAssetsBalanceUSDByType,
+  selectAssetsByGroup,
+  toggleGroupOverlay,
+} from "../assetsSlice";
 
 const CashOverlay = () => {
   const dispatch = useDispatch();
@@ -38,174 +40,115 @@ const CashOverlay = () => {
     selectAssetsByGroup(state, "cash")
   );
 
-  const { eurcBalanceInUSD } = useBalance();
-  const usdtSolBalance = useSelector(
-    (state: RootState) => state.userWalletData.usdtSolBalance
+  const usdBalance = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByType(state, "usd")
   );
-  const eurcSolBalance = useSelector(
-    (state: RootState) => state.userWalletData.eurcSolBalance
-  );
-
-  const balance = useMemo(
-    () => usdtSolBalance + eurcBalanceInUSD,
-    [usdtSolBalance, eurcBalanceInUSD]
+  const euroBalance = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByType(state, "euro")
   );
 
-  const coins = useMemo(
-    () => [
-      {
-        title: "US Dollar",
-        currency: "usd",
-        type: "usdt",
-        balance: usdtSolBalance,
-      },
-      {
-        title: "Euro",
-        currency: "eur",
-        type: "eurc",
-        balance: eurcSolBalance,
-      },
-    ],
-    [eurcSolBalance, usdtSolBalance]
+  const balanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "cash")
   );
 
   const pieChartData = useMemo(() => {
     const data = [];
-    if (usdtSolBalance > 0) {
-      const usdtData = {
+    if (usdBalance > 0) {
+      const usdData = {
         id: "US Dollar",
         label: "USD",
-        value: usdtSolBalance,
+        value: usdBalance,
         color: "var(--clr-green-500)",
       };
-      data.push(usdtData);
+      data.push(usdData);
     }
-    if (eurcSolBalance > 0) {
-      const eurcData = {
+    if (euroBalance > 0) {
+      const euroData = {
         id: "Euro",
         label: "Euro",
-        value: eurcSolBalance,
+        value: euroBalance,
         color: "var(--clr-blue-500)",
       };
-      data.push(eurcData);
+      data.push(euroData);
     }
     return data;
-  }, [usdtSolBalance, eurcSolBalance]);
+  }, [usdBalance, euroBalance]);
 
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Cash">
-        {/* {usdtSolBalance === 0 || eurcSolBalance === 0 ? (
+        <section
+          className="balance-container"
+          css={css`
+            margin-block-start: var(--size-150);
+          `}
+        >
           <div
+            className="balance-wrapper"
             css={css`
-              display: grid;
-              place-items: center;
-              height: 100%;
+              padding: 0 var(--size-250);
             `}
           >
-            <section>
-              <hgroup
-                css={css`
-                  text-align: center;
-                  margin-block-end: var(--size-400);
-                `}
-              >
-                <p className="heading-large">Deposit cash</p>
-                <p
-                  className="caption-medium"
-                  css={css`
-                    margin-block-start: var(--size-100);
-                    color: var(--clr-text-weak);
-                  `}
-                >
-                  Lorem ipsum dolor
-                </p>
-              </hgroup>
+            <BalanceTitle balance={balanceUSD} />
+          </div>
+          <menu
+            className="no-scrollbar"
+            css={css`
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              gap: var(--controls-gap-small);
+              overflow-x: auto;
+              padding: 0 var(--size-250);
+              margin-block-start: var(--size-250);
+              background-color: var(--clr-surface);
+            `}
+          >
+            <li>
               <Button
+                size="small"
+                icon={ArrowCircleUp}
+                onPress={() => {
+                  dispatch(setSendModalOpen(true));
+                }}
+              >
+                Send
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="small"
+                icon={ArrowCircleDown}
+                onPress={() => {
+                  dispatch(setReceiveModalOpen(true));
+                }}
+              >
+                Receive
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="small"
+                icon={ArrowsLeftRight}
                 onPress={() => {
                   dispatch(setDepositModalOpen(true));
                 }}
               >
-                Deposit Cash
+                Swap
               </Button>
-            </section>
-          </div>
-        ) : ( */}
-        <>
-          <section
-            className="balance-container"
-            css={css`
-              margin-block-start: var(--size-150);
-            `}
-          >
-            <div
-              className="balance-wrapper"
-              css={css`
-                padding: 0 var(--size-250);
-              `}
-            >
-              <BalanceTitle balance={balance} />
-            </div>
-            <menu
-              className="no-scrollbar"
-              css={css`
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: var(--controls-gap-small);
-                overflow-x: auto;
-                padding: 0 var(--size-250);
-                margin-block-start: var(--size-250);
-                background-color: var(--clr-surface);
-              `}
-            >
-              <li>
-                <Button
-                  size="small"
-                  icon={ArrowCircleUp}
-                  onPress={() => {
-                    dispatch(setSendModalOpen(true));
-                  }}
-                >
-                  Send
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="small"
-                  icon={ArrowCircleDown}
-                  onPress={() => {
-                    dispatch(setReceiveModalOpen(true));
-                  }}
-                >
-                  Receive
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="small"
-                  icon={ArrowsLeftRight}
-                  onPress={() => {
-                    dispatch(setDepositModalOpen(true));
-                  }}
-                >
-                  Swap
-                </Button>
-              </li>
-            </menu>
-          </section>
-          <section className="pie-chart-container">
-            <PieChart data={pieChartData}></PieChart>
-          </section>
-          <section
-            css={css`
-              margin-inline: var(--size-250);
-            `}
-          >
-            <AssetCardList coins={coins} showOptions={true} />
-          </section>
-        </>
-        {/* )} */}
+            </li>
+          </menu>
+        </section>
+        <section className="pie-chart-container">
+          <PieChart data={pieChartData}></PieChart>
+        </section>
+        <section
+          css={css`
+            margin-inline: var(--size-250);
+          `}
+        >
+          <AssetCardList assets={cashAssets} showOptions={true} />
+        </section>
       </Overlay>
     </>
   );
