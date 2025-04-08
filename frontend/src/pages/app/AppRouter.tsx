@@ -12,12 +12,10 @@ import {
   HandleUserLogIn,
   getUsers,
 } from "../../features/authentication/LoginService.tsx";
-import { 
-  setMFAStatus } from '../../redux/userWalletData.tsx';
+import { setMFAStatus } from "../../redux/userWalletData.tsx";
 
 import appLogo from "@/assets/myfyeleaf.png";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import QRCodeModal from "../../features/qr-code/QRCodeModal.tsx";
 import LoginHeader from "../../features/authentication/LoginHeader.tsx";
@@ -98,7 +96,6 @@ function WebAppInner() {
 
   useEffect(() => {
     const handleLogin = async () => {
-
       console.log("user", user);
       if (authenticated) {
         try {
@@ -128,7 +125,6 @@ function WebAppInner() {
   useEffect(() => {
     getUsers(dispatch);
   }, []);
-
 
   const isSendModalOpen = useSelector((state: any) => state.sendModal.isOpen);
   const isReceiveModalOpen = useSelector(
@@ -183,9 +179,7 @@ function WebAppInner() {
   );
 
   if (authenticated) {
-
     if (userDataLoaded) {
-
       if (mfaStatus === "enrolled") {
         return (
           <div className="app-layout">
@@ -225,65 +219,65 @@ function WebAppInner() {
           </div>
         );
       }
-      
-      if (mfaStatus === "createdPasskey") { 
-        return (
-        <div className="app-layout">
 
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-        <div style={{marginTop: '80px'}}>
-          <button onClick={showMfaEnrollmentModal}
-          style={{
-            color: '#ffffff',
-            fontSize: '25px',
-            fontWeight: 'bold',
-            background: '#447E26',
-          borderRadius: '10px', 
-          border: '3px solid #ffffff',
-          padding: '15px',
-          cursor: 'pointer'}}>
-              Enroll in MFA
-            </button>
+      if (mfaStatus === "createdPasskey") {
+        return (
+          <div className="app-layout">
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ marginTop: "80px" }}>
+                <button
+                  onClick={showMfaEnrollmentModal}
+                  style={{
+                    color: "#ffffff",
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    background: "#447E26",
+                    borderRadius: "10px",
+                    border: "3px solid #ffffff",
+                    padding: "15px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Enroll in MFA
+                </button>
+              </div>
             </div>
-            
           </div>
-            </div>
-        )
+        );
       }
 
       if (mfaStatus === "" || !mfaStatus) {
         return (
-        <div className="app-layout">
-
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-        <div style={{marginTop: '80px'}}>
-          <button onClick={linkPasskey}
-          style={{
-            color: '#ffffff',
-            fontSize: '25px',
-            fontWeight: 'bold',
-            background: '#447E26',
-          borderRadius: '10px', 
-          border: '3px solid #ffffff',
-          padding: '15px',
-          cursor: 'pointer'}}>
-              Create A Passkey
-            </button>
+          <div className="app-layout">
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ marginTop: "80px" }}>
+                <button
+                  onClick={linkPasskey}
+                  style={{
+                    color: "#ffffff",
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    background: "#447E26",
+                    borderRadius: "10px",
+                    border: "3px solid #ffffff",
+                    padding: "15px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Create A Passkey
+                </button>
+              </div>
             </div>
-            
           </div>
-            </div>
-        ) 
+        );
       }
-
     } else {
       return (
         <div className="app-layout">
           <LoadingScreen />
         </div>
-      )
+      );
     }
-
   } else {
     return (
       <>
