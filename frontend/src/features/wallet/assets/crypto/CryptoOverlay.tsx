@@ -21,111 +21,71 @@ import {
   ArrowLineUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
-import CoinCardList from "@/features/coins/coin-card/CoinCardList";
+import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
-import { setOverlayOpen } from "./earnSlice";
+import { selectAssetsByGroup, toggleGroupOverlay } from "../assetsSlice";
 
-const pieChartData = [
-  {
-    id: "First Citizens - Bank Deposits",
-    label: "First Citizens - Bank Deposits",
-    value: 0.7,
-    color: "var(--clr-green-500)",
-  },
-  {
-    id: "StoneX - US T-Bills",
-    label: "StoneX - US T-Bills",
-    value: 0.16,
-    color: "var(--clr-blue-300)",
-  },
-  {
-    id: "Morgan Stanley - Bank Deposits",
-    label: "Morgan Stanley - Bank Deposits",
-    value: 0.06,
-    color: "var(--clr-blue-500)",
-  },
-  {
-    id: "StoneX - Cash & Equivalents",
-    label: "StoneX - Cash & Equivalents",
-    value: 0.06,
-    color: "var(--clr-blue-700)",
-  },
-  {
-    id: "Morgan Stanley - US T-Notes",
-    label: "Morgan Stanley - US T-Notes",
-    value: 0.05,
-    color: "var(--clr-green-700)",
-  },
-  {
-    id: "StoneX - US T-Notes",
-    label: "StoneX - US T-Notes",
-    value: 0.03,
-    color: "var(--clr-blue-400)",
-  },
-  {
-    id: "First Citizens - Cash & Cash Deposits",
-    label: "First Citizens - Cash & Cash Deposits",
-    value: 0.02,
-    color: "var(--clr-green-400)",
-  },
-  {
-    id: "Morgan Stanley - Cash & Cash Deposits",
-    label: "Morgan Stanley - Cash & Cash Deposits",
-    value: 0,
-    color: "var(--clr-green-300)",
-  },
-];
-
-const EarnOverlay = () => {
-  const { cashBalanceInUSD, usdyBalanceInUSD, eurcBalanceInUSD } = useBalance();
-
+const CryptoOverlay = () => {
+  const { cryptoBalanceInUSD, solBalanceInUSD, btcBalanceInUSD } = useBalance();
   const dispatch = useDispatch();
-  const isOpen = useSelector((state: RootState) => state.earn.overlay.isOpen);
 
-  const onOpenChange = (isOpen: boolean) => {
-    dispatch(setOverlayOpen(isOpen));
-  };
-
-  // USDT
-  const usdtSolBalance = useSelector(
-    (state: any) => state.userWalletData.usdtSolBalance
+  const isOpen = useSelector(
+    (state: RootState) => state.assets.groups["earn"].overlay.isOpen
   );
 
-  // EURC
-  const eurcSolBalance = useSelector(
-    (state: any) => state.userWalletData.eurcSolBalance
+  const onOpenChange = (isOpen: boolean) => {
+    dispatch(toggleGroupOverlay({ isOpen, groupId: "crypto" }));
+  };
+
+  const cryptoAssets = useSelector((state: RootState) =>
+    selectAssetsByGroup(state, "crypto")
   );
 
   const coins = useMemo(
     () => [
       {
-        title: "US Dollar",
+        title: "Bitcoin",
         currency: "usd",
-        type: "usdt",
-        balance: usdtSolBalance,
+        type: "btc",
+        balance: btcBalanceInUSD,
       },
       {
-        title: "Euro",
-        currency: "eur",
-        type: "eurc",
-        balance: eurcSolBalance,
-      },
-      {
-        title: "US Treasury Bonds",
+        title: "Solana",
         currency: "usd",
-        type: "usdy",
-        balance: usdyBalanceInUSD,
+        type: "sol",
+        balance: solBalanceInUSD,
       },
     ],
-    [usdtSolBalance, usdyBalanceInUSD, eurcSolBalance]
+    [btcBalanceInUSD, solBalanceInUSD]
   );
+
+  const pieChartData = useMemo(() => {
+    const data = [];
+    if (btcBalanceInUSD > 0) {
+      const btcData = {
+        id: "Bitcoin",
+        label: "Bitcoin",
+        value: btcBalanceInUSD,
+        color: "var(--clr-pie-chart-btc)",
+      };
+      data.push(btcData);
+    }
+    if (solBalanceInUSD > 0) {
+      const solData = {
+        id: "Solana",
+        label: "Solana",
+        value: solBalanceInUSD,
+        color: "var(--clr-pie-chart-sol)",
+      };
+      data.push(solData);
+    }
+    return data;
+  }, [solBalanceInUSD, btcBalanceInUSD]);
 
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Earn">
-        {/* {usdyBalanceInUSD === 0 &&
-        eurcBalanceInUSD === 0 &&
-        usdtSolBalance === 0 ? (
+      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Crypto">
+        {/* {solBalanceInUSD === 0 || btcBalanceInUSD === 0 ? (
           <div
             css={css`
               display: grid;
@@ -137,12 +97,27 @@ const EarnOverlay = () => {
               <hgroup
                 css={css`
                   text-align: center;
+                  margin-block-end: var(--size-400);
                 `}
               >
-                <p className="heading-large">Deposit cash</p>
-                <p className="caption-medium">Lorem ipsum dolor</p>
+                <p className="heading-large">Deposit crypto</p>
+                <p
+                  className="caption-medium"
+                  css={css`
+                    margin-block-start: var(--size-100);
+                    color: var(--clr-text-weak);
+                  `}
+                >
+                  Lorem ipsum dolor
+                </p>
               </hgroup>
-              <Button>Deposit cash</Button>
+              <Button
+                onPress={() => {
+                  dispatch(setDepositModalOpen(true));
+                }}
+              >
+                Deposit Crypto
+              </Button>
             </section>
           </div>
         ) : ( */}
@@ -159,7 +134,7 @@ const EarnOverlay = () => {
                 padding: 0 var(--size-250);
               `}
             >
-              <BalanceTitle balance={cashBalanceInUSD} />
+              <BalanceTitle balance={cryptoBalanceInUSD} />
             </div>
             <menu
               className="no-scrollbar"
@@ -176,7 +151,7 @@ const EarnOverlay = () => {
             >
               <li>
                 <Button
-                  size="x-small"
+                  size="small"
                   icon={ArrowCircleUp}
                   onPress={() => {
                     dispatch(setSendModalOpen(true));
@@ -187,7 +162,7 @@ const EarnOverlay = () => {
               </li>
               <li>
                 <Button
-                  size="x-small"
+                  size="small"
                   icon={ArrowCircleDown}
                   onPress={() => {
                     dispatch(setReceiveModalOpen(true));
@@ -198,7 +173,7 @@ const EarnOverlay = () => {
               </li>
               <li>
                 <Button
-                  size="x-small"
+                  size="small"
                   icon={ArrowsLeftRight}
                   onPress={() => {
                     dispatch(setDepositModalOpen(true));
@@ -209,20 +184,15 @@ const EarnOverlay = () => {
               </li>
             </menu>
           </section>
-          <section
-            className="pie-chart-container"
-            css={css`
-              margin-inline: var(--size-250);
-            `}
-          >
-            <PieChart data={pieChartData} type="earn"></PieChart>
+          <section className="pie-chart-container">
+            <PieChart data={pieChartData}></PieChart>
           </section>
           <section
             css={css`
               margin-inline: var(--size-250);
             `}
           >
-            <CoinCardList coins={coins} showOptions={true} />
+            <AssetCardList coins={coins} showOptions={true} />
           </section>
         </>
         {/* )} */}
@@ -231,4 +201,4 @@ const EarnOverlay = () => {
   );
 };
 
-export default EarnOverlay;
+export default CryptoOverlay;

@@ -1,36 +1,42 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import Coin from "./Coin";
-import { useMemo } from "react";
+import AssetIcon from "./AssetIcon";
+import { RefObject, useMemo } from "react";
 
 // import Button from "@/components/ui/button/Button";
 // import Menu from "@/components/ui/menu/Menu";
 
-import CoinCardController from "./CoinCardController";
+import AssetCardController from "./AssetCardController";
+import { formatBalance } from "../utils";
+import { Asset } from "../types";
 
-const CoinCard = ({
+const AssetCard = ({
   title,
   currency,
-  type,
+  symbol,
   balance,
+  icon,
   ref,
   showOptions,
   showBalance,
   ...restProps
+}: {
+  title: Asset["label"];
+  currency: Asset["fiatCurrency"];
+  symbol: Asset["symbol"];
+  balance: Asset["balance"];
+  ref: RefObject<HTMLButtonElement>;
+  icon: Asset["icon"];
+  showOptions: boolean;
+  showBalance: boolean;
 }) => {
   const formattedBalance = useMemo(
-    () =>
-      new Intl.NumberFormat("en-EN", {
-        style: "currency",
-        currency: `${
-          currency === "sol" || currency === "btc" ? "usd" : currency
-        }`,
-      }).format(balance),
-    [balance]
+    () => formatBalance(balance, currency),
+    [balance, currency]
   );
 
   return (
-    <CoinCardController {...restProps} ref={ref}>
+    <AssetCardController {...restProps} ref={ref}>
       <div
         className="coin-card"
         css={css`
@@ -42,7 +48,7 @@ const CoinCard = ({
           user-select: none;
         `}
       >
-        <Coin type={type} />
+        <AssetIcon icon={asset.icon} />
         <div
           className="content"
           css={css`
@@ -97,8 +103,8 @@ const CoinCard = ({
           </div>
         </div>
       </div>
-    </CoinCardController>
+    </AssetCardController>
   );
 };
 
-export default CoinCard;
+export default AssetCard;

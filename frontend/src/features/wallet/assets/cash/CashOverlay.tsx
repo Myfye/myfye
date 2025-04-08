@@ -4,6 +4,8 @@ import { css } from "@emotion/react";
 import Overlay from "@/components/ui/overlay/Overlay";
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import useBalance from "@/hooks/useBalance";
+import PieChart from "@/components/ui/pie-chart/PieChart";
+import { useMemo } from "react";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,90 +18,84 @@ import {
   ArrowCircleUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
-import CoinCardList from "@/features/coins/coin-card/CoinCardList";
+import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
-import { setOverlayOpen } from "./stocksSlice";
-import LineChart from "@/components/ui/line-chart/LineChart";
-import { useState } from "react";
-import { Key } from "react-aria";
+import { toggleOverlay } from "./cashSlice";
+import { selectAssetsByGroup, toggleGroupOverlay } from "../assetsSlice";
 
-const lineChartData = [
-  {
-    id: "stocksData",
-    color: "var(--clr-green-400)",
-    data: [
-      {
-        x: "2024-01-15",
-        y: 28,
-      },
-      {
-        x: "2024-03-10",
-        y: 76,
-      },
-      {
-        x: "2024-06-25",
-        y: 101,
-      },
-      {
-        x: "2024-09-07",
-        y: 213,
-      },
-      {
-        x: "2024-11-22",
-        y: 222,
-      },
-      {
-        x: "2025-02-14",
-        y: 161,
-      },
-      {
-        x: "2025-05-05",
-        y: 78,
-      },
-      {
-        x: "2025-07-19",
-        y: 245,
-      },
-      {
-        x: "2025-08-30",
-        y: 68,
-      },
-      {
-        x: "2025-10-12",
-        y: 77,
-      },
-      {
-        x: "2025-12-03",
-        y: 152,
-      },
-      {
-        x: "2024-04-08",
-        y: 29,
-      },
-    ],
-  },
-];
-
-const StocksOverlay = () => {
-  const { cryptoBalanceInUSD, solBalanceInUSD, btcBalanceInUSD } = useBalance();
+const CashOverlay = () => {
   const dispatch = useDispatch();
 
-  const isOpen = useSelector((state: RootState) => state.stocks.overlay.isOpen);
+  const isOpen = useSelector(
+    (state: RootState) => state.assets.groups["earn"].overlay.isOpen
+  );
 
   const onOpenChange = (isOpen: boolean) => {
-    dispatch(setOverlayOpen(isOpen));
+    dispatch(toggleGroupOverlay({ isOpen, groupId: "cash" }));
   };
 
-  const stocks = useSelector((state: RootState) => state.stocks.stocks);
-
-  const [selectedDateRange, setSelectedDateRange] = useState(
-    new Set<Key>(["1D"])
+  const cashAssets = useSelector((state: RootState) =>
+    selectAssetsByGroup(state, "cash")
   );
+
+  const { eurcBalanceInUSD } = useBalance();
+  const usdtSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.usdtSolBalance
+  );
+  const eurcSolBalance = useSelector(
+    (state: RootState) => state.userWalletData.eurcSolBalance
+  );
+
+  const balance = useMemo(
+    () => usdtSolBalance + eurcBalanceInUSD,
+    [usdtSolBalance, eurcBalanceInUSD]
+  );
+
+  const coins = useMemo(
+    () => [
+      {
+        title: "US Dollar",
+        currency: "usd",
+        type: "usdt",
+        balance: usdtSolBalance,
+      },
+      {
+        title: "Euro",
+        currency: "eur",
+        type: "eurc",
+        balance: eurcSolBalance,
+      },
+    ],
+    [eurcSolBalance, usdtSolBalance]
+  );
+
+  const pieChartData = useMemo(() => {
+    const data = [];
+    if (usdtSolBalance > 0) {
+      const usdtData = {
+        id: "US Dollar",
+        label: "USD",
+        value: usdtSolBalance,
+        color: "var(--clr-green-500)",
+      };
+      data.push(usdtData);
+    }
+    if (eurcSolBalance > 0) {
+      const eurcData = {
+        id: "Euro",
+        label: "Euro",
+        value: eurcSolBalance,
+        color: "var(--clr-blue-500)",
+      };
+      data.push(eurcData);
+    }
+    return data;
+  }, [usdtSolBalance, eurcSolBalance]);
 
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Stocks">
-        {/* {solBalanceInUSD === 0 || btcBalanceInUSD === 0 ? (
+      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Cash">
+        {/* {usdtSolBalance === 0 || eurcSolBalance === 0 ? (
           <div
             css={css`
               display: grid;
@@ -114,7 +110,7 @@ const StocksOverlay = () => {
                   margin-block-end: var(--size-400);
                 `}
               >
-                <p className="heading-large">Deposit crypto</p>
+                <p className="heading-large">Deposit cash</p>
                 <p
                   className="caption-medium"
                   css={css`
@@ -130,7 +126,7 @@ const StocksOverlay = () => {
                   dispatch(setDepositModalOpen(true));
                 }}
               >
-                Deposit Crypto
+                Deposit Cash
               </Button>
             </section>
           </div>
@@ -139,7 +135,7 @@ const StocksOverlay = () => {
           <section
             className="balance-container"
             css={css`
-              margin-block-start: var(--size-200);
+              margin-block-start: var(--size-150);
             `}
           >
             <div
@@ -148,7 +144,7 @@ const StocksOverlay = () => {
                 padding: 0 var(--size-250);
               `}
             >
-              <BalanceTitle balance={cryptoBalanceInUSD} />
+              <BalanceTitle balance={balance} />
             </div>
             <menu
               className="no-scrollbar"
@@ -165,7 +161,7 @@ const StocksOverlay = () => {
             >
               <li>
                 <Button
-                  size="x-small"
+                  size="small"
                   icon={ArrowCircleUp}
                   onPress={() => {
                     dispatch(setSendModalOpen(true));
@@ -176,7 +172,7 @@ const StocksOverlay = () => {
               </li>
               <li>
                 <Button
-                  size="x-small"
+                  size="small"
                   icon={ArrowCircleDown}
                   onPress={() => {
                     dispatch(setReceiveModalOpen(true));
@@ -187,7 +183,7 @@ const StocksOverlay = () => {
               </li>
               <li>
                 <Button
-                  size="x-small"
+                  size="small"
                   icon={ArrowsLeftRight}
                   onPress={() => {
                     dispatch(setDepositModalOpen(true));
@@ -198,25 +194,15 @@ const StocksOverlay = () => {
               </li>
             </menu>
           </section>
-          <section
-            css={css`
-              margin-block-start: var(--size-400);
-            `}
-          >
-            <LineChart
-              data={lineChartData}
-              selectedDateRange={selectedDateRange}
-              onDateRangeSelectionChange={(key) => setSelectedDateRange(key)}
-            />
+          <section className="pie-chart-container">
+            <PieChart data={pieChartData}></PieChart>
           </section>
           <section
             css={css`
-              margin-block-start: var(--size-500);
               margin-inline: var(--size-250);
-              margin-block-end: var(--size-250);
             `}
           >
-            {/* <CoinCardList coins={stocks} showOptions={true} /> */}
+            <AssetCardList coins={coins} showOptions={true} />
           </section>
         </>
         {/* )} */}
@@ -225,4 +211,4 @@ const StocksOverlay = () => {
   );
 };
 
-export default StocksOverlay;
+export default CashOverlay;

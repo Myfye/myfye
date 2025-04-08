@@ -8,71 +8,86 @@ import WalletCard from "./WalletCard";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import useBalance from "@/hooks/useBalance";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setOverlayOpen as setCashOverlayOpen } from "./cash/cashSlice";
-import { setOverlayOpen as setEarnOverlayOpen } from "./earn/earnSlice";
-import { setOverlayOpen as setStocksOverlayOpen } from "./stocks/stocksSlice";
-import { setOverlayOpen as setCryptoOverlayOpen } from "./crypto/cryptoSlice";
 import { RootState } from "@/redux/store";
+import {
+  selectAssetsBalanceUSDByGroup,
+  selectAssetsGroupsArray,
+  toggleGroupOverlay,
+} from "./assets/assetsSlice";
+import { AssetGroup } from "./assets/types";
 
 const WalletCardList = ({ ...restProps }) => {
-  const { cryptoBalanceInUSD, usdyBalanceInUSD } = useBalance();
-
-  const usdtSolBalance = useSelector(
-    (state: RootState) => state.userWalletData.usdtSolBalance
-  );
-
-  const usdcSolBalance = useSelector(
-    (state: RootState) => state.userWalletData.usdcSolBalance
-  );
-
-  const cashBalance = useMemo(
-    () => usdtSolBalance + usdcSolBalance,
-    [usdtSolBalance, usdcSolBalance]
-  );
-
   const dispatch = useDispatch();
-  const cards = useMemo(
-    () => [
-      ,
-      {
-        label: "Cash",
-        id: "cash",
-        balance: cashBalance,
-        percentChange: -0.012,
-        icon: CashIcon,
-        action: () => dispatch(setCashOverlayOpen(true)),
-      },
-      {
-        label: "Earn",
-        id: "earn",
-        balance: usdyBalanceInUSD,
-        percentChange: -0.0212,
-        icon: EarnIcon,
-        action: () => dispatch(setEarnOverlayOpen(true)),
-      },
-      {
-        label: "Crypto",
-        id: "crypto",
-        balance: cryptoBalanceInUSD,
-        percentChange: 0.0492,
-        icon: CryptoIcon,
-        action: () => dispatch(setCryptoOverlayOpen(true)),
-      },
-      {
-        label: "Stocks",
-        id: "stocks",
-        balance: 0,
-        precentChange: 0.0292,
-        icon: StocksIcon,
-        action: () => dispatch(setStocksOverlayOpen(true)),
-      },
-    ],
-    [cryptoBalanceInUSD, cashBalance, usdyBalanceInUSD]
+  const assetsGroups = useSelector(selectAssetsGroupsArray);
+  const cashBalanceInUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "cash")
   );
+  const cryptoBalanceInUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "crypto")
+  );
+
+  const earnBalanceInUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "earn")
+  );
+
+  const stocksBalanceInUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "stocks")
+  );
+
+  const getCardIcon = (groupId: AssetGroup["id"]) => {
+    switch (groupId) {
+      case "cash": {
+        return CashIcon;
+      }
+      case "crypto": {
+        return CryptoIcon;
+      }
+      case "earn": {
+        return EarnIcon;
+      }
+      case "stocks": {
+        return StocksIcon;
+      }
+      default: {
+        throw new Error("Invalid group id");
+      }
+    }
+  };
+
+  const getCardBalance = (groupId: AssetGroup["id"]) => {
+    switch (groupId) {
+      case "cash": {
+        return cashBalanceInUSD;
+      }
+      case "crypto": {
+        return cryptoBalanceInUSD;
+      }
+      case "earn": {
+        return earnBalanceInUSD;
+      }
+      case "stocks": {
+        return stocksBalanceInUSD;
+      }
+      default: {
+        throw new Error("Invalid group id");
+      }
+    }
+  };
+
+  const cards = useMemo(() => {
+    return assetsGroups.map((group) => ({
+      title: group.label,
+      balance: getCardBalance(group.id),
+      percentChange: group.percentChange,
+      icon: getCardIcon(group.id),
+      action: () =>
+        dispatch(toggleGroupOverlay({ groupId: group.id, isOpen: true })),
+    }));
+  }, [assetsGroups, dispatch, toggleGroupOverlay]);
+
   return (
     <div className="wallet-card-list-container" {...restProps}>
       <ul
@@ -86,13 +101,11 @@ const WalletCardList = ({ ...restProps }) => {
         {cards.map((card, i) => (
           <li className="wallet-card-wrapper" key={`wallet-card-wrapper-${i}`}>
             <WalletCard
-              title={card.label}
+              title={card.title}
               icon={card.icon}
               balance={card.balance}
               percentChange={card.percentChange}
-              onPress={() => {
-                if (card.action) card.action();
-              }}
+              onPress={card.action}
             />
           </li>
         ))}

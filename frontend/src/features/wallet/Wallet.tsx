@@ -8,10 +8,10 @@ import {
   setDepositModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers.tsx";
-import EarnOverlay from "./earn/EarnOverlay.tsx";
-import CryptoOverlay from "./crypto/CryptoOverlay.tsx";
-import CashOverlay from "./cash/CashOverlay.tsx";
-import StocksOverlay from "./stocks/StocksOverlay.tsx";
+import EarnOverlay from "./assets/earn/EarnOverlay.tsx";
+import CryptoOverlay from "./assets/crypto/CryptoOverlay.tsx";
+import CashOverlay from "./assets/cash/CashOverlay.tsx";
+import StocksOverlay from "./assets/stocks/StocksOverlay.tsx";
 
 const Wallet = () => {
   const dispatch = useDispatch();

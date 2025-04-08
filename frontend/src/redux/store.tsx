@@ -26,10 +26,7 @@ import {
 import { currentCoinReducer } from "./coinReducer.tsx";
 import { currentContactReducer } from "./contactReducer.tsx";
 
-import cashReducer from "@/features/wallet/cash/cashSlice.ts";
-import cryptoReducer from "@/features/wallet/crypto/cryptoSlice.ts";
-import earnReducer from "@/features/wallet/earn/earnSlice.ts";
-import stocksReducer from "@/features/wallet/stocks/stocksSlice.ts";
+import assetsReducer from "@/features/wallet/assets/assetsSlice.ts";
 
 const store = configureStore({
   reducer: {
@@ -65,11 +62,8 @@ const store = configureStore({
     // Swap
     swap: swapReducer,
 
-    // Cash
-    cash: cashReducer,
-    crypto: cryptoReducer,
-    earn: earnReducer,
-    stocks: stocksReducer,
+    // Assets
+    assets: assetsReducer,
   },
 });
 

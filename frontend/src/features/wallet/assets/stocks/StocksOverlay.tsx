@@ -4,81 +4,105 @@ import { css } from "@emotion/react";
 import Overlay from "@/components/ui/overlay/Overlay";
 import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import useBalance from "@/hooks/useBalance";
-import PieChart from "@/components/ui/pie-chart/PieChart";
-import { useEffect, useMemo } from "react";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setDepositModalOpen,
   setReceiveModalOpen,
   setSendModalOpen,
-  setWithdrawModalOpen,
 } from "@/redux/modalReducers";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
-  ArrowLineDown,
-  ArrowLineUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
-import CoinCardList from "@/features/coins/coin-card/CoinCardList";
+import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
-import { setOverlayOpen } from "./cryptoSlice";
+import LineChart from "@/components/ui/line-chart/LineChart";
+import { useState } from "react";
+import { Key, useSelect } from "react-aria";
+import { selectAssetsByGroup, toggleGroupOverlay } from "../assetsSlice";
 
-const CryptoOverlay = () => {
+const lineChartData = [
+  {
+    id: "stocksData",
+    color: "var(--clr-green-400)",
+    data: [
+      {
+        x: "2024-01-15",
+        y: 28,
+      },
+      {
+        x: "2024-03-10",
+        y: 76,
+      },
+      {
+        x: "2024-06-25",
+        y: 101,
+      },
+      {
+        x: "2024-09-07",
+        y: 213,
+      },
+      {
+        x: "2024-11-22",
+        y: 222,
+      },
+      {
+        x: "2025-02-14",
+        y: 161,
+      },
+      {
+        x: "2025-05-05",
+        y: 78,
+      },
+      {
+        x: "2025-07-19",
+        y: 245,
+      },
+      {
+        x: "2025-08-30",
+        y: 68,
+      },
+      {
+        x: "2025-10-12",
+        y: 77,
+      },
+      {
+        x: "2025-12-03",
+        y: 152,
+      },
+      {
+        x: "2024-04-08",
+        y: 29,
+      },
+    ],
+  },
+];
+
+const StocksOverlay = () => {
   const { cryptoBalanceInUSD, solBalanceInUSD, btcBalanceInUSD } = useBalance();
   const dispatch = useDispatch();
 
-  const isOpen = useSelector((state: RootState) => state.crypto.overlay.isOpen);
-
-  const onOpenChange = (isOpen: boolean) => {
-    dispatch(setOverlayOpen(isOpen));
-  };
-
-  const coins = useMemo(
-    () => [
-      {
-        title: "Bitcoin",
-        currency: "usd",
-        type: "btc",
-        balance: btcBalanceInUSD,
-      },
-      {
-        title: "Solana",
-        currency: "usd",
-        type: "sol",
-        balance: solBalanceInUSD,
-      },
-    ],
-    [btcBalanceInUSD, solBalanceInUSD]
+  const isOpen = useSelector(
+    (state: RootState) => state.assets.groups["stocks"].overlay.isOpen
   );
 
-  const pieChartData = useMemo(() => {
-    const data = [];
-    if (btcBalanceInUSD > 0) {
-      const btcData = {
-        id: "Bitcoin",
-        label: "Bitcoin",
-        value: btcBalanceInUSD,
-        color: "var(--clr-pie-chart-btc)",
-      };
-      data.push(btcData);
-    }
-    if (solBalanceInUSD > 0) {
-      const solData = {
-        id: "Solana",
-        label: "Solana",
-        value: solBalanceInUSD,
-        color: "var(--clr-pie-chart-sol)",
-      };
-      data.push(solData);
-    }
-    return data;
-  }, [solBalanceInUSD, btcBalanceInUSD]);
+  const onOpenChange = (isOpen: boolean) => {
+    dispatch(toggleGroupOverlay({ isOpen, groupId: "stocks" }));
+  };
+
+  const stocksAssets = useSelector((state: RootState) =>
+    selectAssetsByGroup(state, "stocks")
+  );
+
+  const [selectedDateRange, setSelectedDateRange] = useState(
+    new Set<Key>(["1D"])
+  );
 
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Crypto">
+      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Stocks">
         {/* {solBalanceInUSD === 0 || btcBalanceInUSD === 0 ? (
           <div
             css={css`
@@ -119,7 +143,7 @@ const CryptoOverlay = () => {
           <section
             className="balance-container"
             css={css`
-              margin-block-start: var(--size-150);
+              margin-block-start: var(--size-200);
             `}
           >
             <div
@@ -145,7 +169,7 @@ const CryptoOverlay = () => {
             >
               <li>
                 <Button
-                  size="small"
+                  size="x-small"
                   icon={ArrowCircleUp}
                   onPress={() => {
                     dispatch(setSendModalOpen(true));
@@ -156,7 +180,7 @@ const CryptoOverlay = () => {
               </li>
               <li>
                 <Button
-                  size="small"
+                  size="x-small"
                   icon={ArrowCircleDown}
                   onPress={() => {
                     dispatch(setReceiveModalOpen(true));
@@ -167,7 +191,7 @@ const CryptoOverlay = () => {
               </li>
               <li>
                 <Button
-                  size="small"
+                  size="x-small"
                   icon={ArrowsLeftRight}
                   onPress={() => {
                     dispatch(setDepositModalOpen(true));
@@ -178,15 +202,25 @@ const CryptoOverlay = () => {
               </li>
             </menu>
           </section>
-          <section className="pie-chart-container">
-            <PieChart data={pieChartData}></PieChart>
+          <section
+            css={css`
+              margin-block-start: var(--size-400);
+            `}
+          >
+            <LineChart
+              data={lineChartData}
+              selectedDateRange={selectedDateRange}
+              onDateRangeSelectionChange={(key) => setSelectedDateRange(key)}
+            />
           </section>
           <section
             css={css`
+              margin-block-start: var(--size-500);
               margin-inline: var(--size-250);
+              margin-block-end: var(--size-250);
             `}
           >
-            <CoinCardList coins={coins} showOptions={true} />
+            {/* <AssetCardList coins={stocks} showOptions={true} /> */}
           </section>
         </>
         {/* )} */}
@@ -195,4 +229,4 @@ const CryptoOverlay = () => {
   );
 };
 
-export default CryptoOverlay;
+export default StocksOverlay;

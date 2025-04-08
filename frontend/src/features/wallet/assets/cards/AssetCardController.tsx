@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const CoinCardController = ({
+const AssetCardController = ({
   showOptions = false,
   children,
   ref,
@@ -37,4 +37,4 @@ const CoinCardController = ({
   );
 };
 
-export default CoinCardController;
+export default AssetCardController;

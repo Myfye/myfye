@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import CoinCardList from "@/features/coins/coin-card/CoinCardList";
+import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import Overlay from "@/components/ui/overlay/Overlay";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,7 +32,6 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
     usdBalance = usdcSolBalance;
     usdType = "usdcSol";
   }
-
 
   const eurcBalance = useSelector(
     (state: RootState) => state.userWalletData.eurcSolBalance
@@ -66,9 +65,9 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
     );
   };
 
-  const onCoinSelect = useCallback(
+  const onAssetSelect = useCallback(
     (coin: any) => {
-      console.log('Selecting coin:', coin.title, 'with ID:', coin.type);
+      console.log("Selecting coin:", coin.title, "with ID:", coin.type);
       dispatch(
         changeCoinId({
           transactionType: transactionType,
@@ -77,10 +76,8 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
       );
       dispatch(
         changeExchangeRate({
-          buyCoinId:
-            transactionType === "buy" ? coin.type : buyCoinId,
-          sellCoinId:
-            transactionType === "sell" ? coin.type : sellCoinId,
+          buyCoinId: transactionType === "buy" ? coin.type : buyCoinId,
+          sellCoinId: transactionType === "sell" ? coin.type : sellCoinId,
           wallet,
         })
       );
@@ -164,11 +161,11 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
           >
             Cash
           </h2>
-          <CoinCardList
+          <AssetCardList
             coins={cashCoins}
-            onCoinSelect={onCoinSelect}
+            onAssetSelect={onAssetSelect}
             showBalance={transactionType === "sell"}
-          ></CoinCardList>
+          ></AssetCardList>
         </section>
         <section
           className="crypto"
@@ -185,11 +182,11 @@ const SelectCoinOverlay = ({ zIndex = 1000 }) => {
           >
             Crypto
           </h2>
-          <CoinCardList
+          <AssetCardList
             coins={cryptoCoins}
-            onCoinSelect={onCoinSelect}
+            onAssetSelect={onAssetSelect}
             showBalance={transactionType === "sell"}
-          ></CoinCardList>
+          ></AssetCardList>
         </section>
       </div>
     </Overlay>

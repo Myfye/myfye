@@ -5,7 +5,7 @@ import {
   Menu,
   MenuItem,
 } from "react-aria-components";
-import CoinCard from "./CoinCard";
+import AssetCard from "./AssetCard";
 
 import { css } from "@emotion/react";
 import {
@@ -17,12 +17,18 @@ import {
 import { useDispatch } from "react-redux";
 import { setReceiveModalOpen, setSendModalOpen } from "@/redux/modalReducers";
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { Asset } from "../types";
 
-const CoinCardList = ({
-  coins,
+const AssetCardList = ({
+  assets,
   showOptions = false,
-  onCoinSelect,
+  onAssetSelect,
   showBalance = true,
+}: {
+  assets: Asset[];
+  showOptions?: boolean;
+  onAssetSelect?: (asset: Asset) => void;
+  showBalance?: boolean;
 }) => {
   const dispatch = useDispatch();
   return (
@@ -35,9 +41,9 @@ const CoinCardList = ({
         gap: var(--size-300);
       `}
     >
-      {coins.map((coin, i) => (
+      {assets.map((asset, i) => (
         <li
-          key={`coin-card-${i}`}
+          key={`asset-card-${i}`}
           className="coin-card-wrapper"
           css={css`
             display: grid;
@@ -46,13 +52,13 @@ const CoinCardList = ({
             width: 100%;
           `}
         >
-          <CoinCard
-            title={coin.title}
-            type={coin.type}
-            currency={coin.currency}
-            balance={coin.balance}
+          <AssetCard
+            title={asset.label}
+            symbol={asset.symbol}
+            currency={asset.fiatCurrency}
+            balance={asset.balance}
             showOptions={showOptions}
-            onPress={() => onCoinSelect && onCoinSelect(coin)}
+            onPress={() => onAssetSelect && onAssetSelect(asset)}
             showBalance={showBalance}
           />
           {showOptions && (
@@ -153,4 +159,4 @@ const CoinCardList = ({
   );
 };
 
-export default CoinCardList;
+export default AssetCardList;

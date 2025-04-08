@@ -1,47 +1,22 @@
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-
-import CoinCardList from "@/features/coins/coin-card/CoinCardList";
-import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import { useDispatch, useSelector } from "react-redux";
-import { setCoinSummaryOverlayOpen } from "@/redux/overlayReducers";
 import { RootState } from "@/redux/store";
+import {
+  selectAssetsBalanceUSDByGroup,
+  selectAssetsByGroup,
+} from "@/features/wallet/assets/assetsSlice";
+import AssetPanel from "../../PanelInner";
 
 const StocksPanel = ({}) => {
   const dispatch = useDispatch();
 
-  const onCoinSelect = (coin) => {
-    console.log(coin);
-    dispatch(setCoinSummaryOverlayOpen(true));
-  };
-
-  const stocks = useSelector((state: RootState) => state.stocks.stocks);
-
-  return (
-    <div className="crypto-panel" css={css``}>
-      <section
-        className="balance-container"
-        css={css`
-          margin-block-start: var(--size-250);
-          padding: 0 var(--size-250);
-        `}
-      >
-        <BalanceTitle balance={13329.32} />
-      </section>
-      <section
-        css={css`
-          margin-block-start: var(--size-400);
-          padding: 0 var(--size-250);
-        `}
-      >
-        {/* <CoinCardList
-          coins={stocks}
-          showOptions={true}
-          onCoinSelect={onCoinSelect}
-        /> */}
-      </section>
-    </div>
+  const stocksAssets = useSelector((state: RootState) =>
+    selectAssetsByGroup(state, "stocks")
   );
+  const balanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "stocks")
+  );
+
+  return <AssetPanel balance={balanceUSD} assets={stocksAssets} />;
 };
 
 export default StocksPanel;

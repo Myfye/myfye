@@ -1,16 +1,11 @@
 import { Connection } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
 import { SwapTransaction, updateId, updateStatus } from "../swapSlice.ts";
-import {
-  UserWalletDataState,
-  setbtcSolValue,
-  seteurcSolValue,
-  setsolValue,
-  setusdcSolValue,
-  setusdySolValue,
-} from "@/redux/userWalletData.tsx";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
+import { UserWalletDataState } from "@/redux/userWalletData.tsx";
+import { AssetsState } from "@/features/wallet/assets/types.ts";
+import { updateBalance } from "@/features/wallet/assets/assetsSlice.ts";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -76,63 +71,112 @@ export default verifyTransaction;
 function updateBalances(
   dispatch: Dispatch,
   transaction: SwapTransaction,
-  walletData: UserWalletDataState
+  assets: AssetsState
 ) {
   const balances = {
-    btcSol: walletData.btcSolBalance,
-    usdcSol: walletData.usdcSolBalance,
-    usdySol: walletData.usdySolBalance,
-    eurcSol: walletData.eurcSolBalance,
-    sol: walletData.solBalance,
+    btcSol: assets.assets["btc_sol"].balance,
+    usdcSol: assets.assets["usdc_sol"].balance,
+    usdySol: assets.assets["usdy_sol"].balance,
+    eurcSol: assets.assets["eurc_sol"].balance,
+    sol: assets.assets["sol"].balance,
   };
 
   const { sell, buy } = transaction;
 
-  if (!sell.amount || !buy.amount)
-    throw new Error(`Buy or sell amount is null`);
+  if (sell.amount || !buy.amount) throw new Error(`Buy or sell amount is null`);
 
   const buyActions = {
     btcSol: () => {
-      dispatch(setbtcSolValue(balances.btcSol + buy.amount));
+      dispatch(
+        updateBalance({
+          assetId: "btc_sol",
+          balance: balances.btcSol + buy.amount,
+        })
+      );
       console.log(`added ${buy.amount} to btc balance`);
     },
     usdcSol: () => {
-      dispatch(setusdcSolValue(balances.usdcSol + buy.amount));
+      dispatch(
+        updateBalance({
+          assetId: "usdc_sol",
+          balance: balances.usdcSol + buy.amount,
+        })
+      );
       console.log(`added ${buy.amount} to usdc balance`);
     },
     usdySol: () => {
-      dispatch(setusdcSolValue(balances.usdySol + buy.amount));
+      dispatch(
+        updateBalance({
+          assetId: "usdy_sol",
+          balance: balances.usdySol + buy.amount,
+        })
+      );
       console.log(`added ${buy.amount} to usdy balance`);
     },
     eurcSol: () => {
-      dispatch(seteurcSolValue(balances.eurcSol + buy.amount));
+      dispatch(
+        updateBalance({
+          assetId: "eurc_sol",
+          balance: balances.eurcSol + buy.amount,
+        })
+      );
       console.log(`added ${buy.amount} to eurc balance`);
     },
     sol: () => {
-      dispatch(setsolValue(balances.sol + buy.amount));
+      dispatch(
+        updateBalance({
+          assetId: "sol",
+          balance: balances.sol + buy.amount,
+        })
+      );
       console.log(`added ${buy.amount} to sol balance`);
     },
   };
 
   const sellActions = {
     btcSol: () => {
-      dispatch(setbtcSolValue(balances.btcSol - sell.amount));
+      dispatch(
+        updateBalance({
+          assetId: "btc_sol",
+          balance: balances.btcSol - sell.amount,
+        })
+      );
       console.log(`subtracted ${sell.amount} from btc balance`);
     },
     usdcSol: () => {
-      void dispatch(setusdcSolValue(balances.usdcSol - sell.amount));
+      dispatch(
+        updateBalance({
+          assetId: "usdc_sol",
+          balance: balances.usdcSol - sell.amount,
+        })
+      );
       console.log(`subtracted ${sell.amount} from usdc balance`);
     },
     usdySol: () => {
-      void dispatch(setusdySolValue(balances.usdySol - sell.amount));
+      dispatch(
+        updateBalance({
+          assetId: "usdy_sol",
+          balance: balances.usdySol - sell.amount,
+        })
+      );
       console.log(`subtracted ${sell.amount} from usdy balance`);
     },
     eurcSol: () => {
-      void dispatch(seteurcSolValue(balances.eurcSol - sell.amount));
+      dispatch(
+        updateBalance({
+          assetId: "eurc_sol",
+          balance: balances.eurcSol - sell.amount,
+        })
+      );
       console.log(`subtracted ${sell.amount} from eurc balance`);
     },
     sol: () => {
-      void dispatch(setsolValue(balances.sol - sell.amount));
+      dispatch(
+        updateBalance({
+          assetId: "sol",
+          balance: balances.sol - sell.amount,
+        })
+      );
       console.log(`subtracted ${sell.amount} from sol balance`);
     },
   };
