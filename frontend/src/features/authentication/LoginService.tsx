@@ -39,6 +39,8 @@ export const getUser = async (
       `${MYFYE_BACKEND}/get_user_by_privy_id`,
       {
         method: "POST",
+        mode: 'cors',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
           "x-api-key": MYFYE_BACKEND_KEY,
@@ -76,6 +78,8 @@ export const createUser = async (
       `${MYFYE_BACKEND}/create_user`,
       {
         method: "POST",
+        mode: 'cors',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
           "x-api-key": MYFYE_BACKEND_KEY,
@@ -112,6 +116,8 @@ export const updateUserEvmPubKey = async (
   try {
     const response = await fetch(`${MYFYE_BACKEND}/update_evm_pub_key`, {
       method: "POST",
+      mode: 'cors',
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
         "x-api-key": MYFYE_BACKEND_KEY,

@@ -45,6 +45,8 @@ async function ensureTokenAccount(userPublicKeyString: String, mintAddress: Stri
         try {
             const response = await fetch(`${MYFYE_BACKEND}/create_token_account`, {
                 method: 'POST',
+                mode: 'cors',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     'x-api-key': MYFYE_BACKEND_KEY,

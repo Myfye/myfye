@@ -17,6 +17,12 @@ const {
     updateSolanaPubKey, 
     getUserByPrivyId } = require('./routes/userDb');
 
+// Add middleware logging
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+  });
+
 // Create different rate limiters for different endpoints
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -46,6 +52,10 @@ const sensitiveLimiter = rateLimit({
 
 // IP blocking middleware with rate limiting
 const blockUnauthorizedIPs = (req, res, next) => {
+  // Allow preflight OPTIONS requests without API key
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
   const apiKey = req.headers['x-api-key'];
   const ip = req.ip;
   const geo = geoip.lookup(ip);
@@ -99,12 +109,6 @@ app.use(cors({
     maxAge: 86400, // Cache preflight requests for 24 hours
     exposedHeaders: ['Access-Control-Allow-Origin']
 }));
-
-// Add middleware logging
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
 
 app.use(express.json());
 
