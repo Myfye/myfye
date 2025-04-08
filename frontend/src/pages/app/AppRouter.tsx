@@ -14,7 +14,6 @@ import {
 } from "../../features/authentication/LoginService.tsx";
 import { 
   setMFAStatus } from '../../redux/userWalletData.tsx';
-
 import appLogo from "@/assets/myfyeleaf.png";
 
 /** @jsxImportSource @emotion/react */
@@ -98,12 +97,8 @@ function WebAppInner() {
 
   useEffect(() => {
     const handleLogin = async () => {
-
-      console.log("user", user);
-      if (authenticated) {
+      if (authenticated && user) {
         try {
-          if (!user?.wallet) {
-          }
           await HandleUserLogIn(
             user,
             dispatch,
@@ -116,10 +111,6 @@ function WebAppInner() {
         } catch (error) {
           console.error("Error during login:", error);
         }
-      }
-
-      if (user?.mfaMethods[0] == "passkey") {
-        dispatch(setMFAStatus("enrolled"));
       }
     };
     handleLogin();

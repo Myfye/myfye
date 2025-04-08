@@ -1,6 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const geoip = require('geoip-lite');
+const rateLimit = require('express-rate-limit');
 const app = express();
 const PORT = 3001; 
 const { create_new_on_ramp_path } = require('./routes/newBlindPayReceiver');
@@ -15,6 +17,61 @@ const {
     updateSolanaPubKey, 
     getUserByPrivyId } = require('./routes/userDb');
 
+// Create different rate limiters for different endpoints
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // Limit each IP requests per windowMs
+  message: { error: 'Too many requests from this IP, please try again later.' },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Stricter limiter for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP requests per windowMs
+  message: { error: 'Too many authentication attempts, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Very strict limiter for sensitive operations
+const sensitiveLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 6, // Limit each IP per windowMs
+  message: { error: 'Too many sensitive operations attempted, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// IP blocking middleware with rate limiting
+const blockUnauthorizedIPs = (req, res, next) => {
+  const apiKey = req.headers['x-api-key'];
+  const ip = req.ip;
+  const geo = geoip.lookup(ip);
+  
+  // If no API key is provided, block the request immediately
+  if (!apiKey) {
+    console.log(`Blocked request from IP: ${ip} (${geo?.country || 'Unknown Country'}, ${geo?.city || 'Unknown City'}) - No API key provided`);
+    return res.status(403).json({ 
+      error: 'Forbidden',
+      message: 'Missing API key'
+    });
+  }
+
+  // If API key is invalid, block the request
+  if (apiKey !== process.env.CLIENT_SIDE_KEY) {
+    console.log(`Blocked request from IP: ${ip} (${geo?.country || 'Unknown Country'}, ${geo?.city || 'Unknown City'}) - Invalid API key`);
+    return res.status(403).json({ 
+      error: 'Forbidden',
+      message: 'Invalid API key'
+    });
+  }
+
+  // Log successful requests with geolocation
+  console.log(`Request from IP: ${ip} (${geo?.country || 'Unknown Country'}, ${geo?.city || 'Unknown City'})`);
+  next();
+};
 
 const allowedOrigins = [
   "http://localhost:3000", // Development (local)
@@ -24,7 +81,7 @@ const allowedOrigins = [
   "https://www.myfye.com", // Production (www.myfye.com)
 ];
 
-// Add CORS middleware
+// Add CORS middleware with stricter configuration
 app.use(cors({
     origin: function (origin, callback) {
       // Allow requests without origin (e.g., Postman or server-side requests)
@@ -35,8 +92,9 @@ app.use(cors({
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
+    credentials: true,
+    maxAge: 86400 // Cache preflight requests for 24 hours
 }));
 
 // Add middleware logging
@@ -47,9 +105,15 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+// Apply general rate limiting to all routes
+app.use(generalLimiter);
+
+// Apply IP blocking and API key validation to all routes
+app.use(blockUnauthorizedIPs);
+
 /* User management endpoints */
-app.post('/create_user', async (req, res) => {
-    
+// Apply stricter rate limiting to sensitive endpoints
+app.post('/create_user', sensitiveLimiter, async (req, res) => {
     try {
         const userData = req.body;
         const result = await createUser(userData);
@@ -60,7 +124,7 @@ app.post('/create_user', async (req, res) => {
     }
 });
 
-app.post("/get_user_by_email", async (req, res) => {
+app.post("/get_user_by_email", authLimiter, async (req, res) => {
   console.log("\n=== User Lookup Request Received ===");
 
   try {
@@ -74,7 +138,7 @@ app.post("/get_user_by_email", async (req, res) => {
   }
 });
 
-app.post("/get_user_by_privy_id", async (req, res) => {
+app.post("/get_user_by_privy_id", authLimiter, async (req, res) => {
   console.log("\n=== User Lookup Request Received ===");
 
   try {
@@ -88,8 +152,7 @@ app.post("/get_user_by_privy_id", async (req, res) => {
   }
 });
 
-app.post('/update_evm_pub_key', async (req, res) => {
-    
+app.post('/update_evm_pub_key', sensitiveLimiter, async (req, res) => {
     try {
         const { privyUserId, evmPubKey } = req.body;
         const result = await updateEvmPubKey(privyUserId, evmPubKey);
@@ -100,8 +163,7 @@ app.post('/update_evm_pub_key', async (req, res) => {
     }
 });
 
-app.post('/update_solana_pub_key', async (req, res) => {
-    
+app.post('/update_solana_pub_key', sensitiveLimiter, async (req, res) => {
     try {
         const { privyUserId, solanaPubKey } = req.body;
         const result = await updateSolanaPubKey(privyUserId, solanaPubKey);

@@ -22,7 +22,7 @@ import {
   httpsCallable,
   HttpsCallableResult,
 } from "firebase/functions";
-import { HELIUS_API_KEY, MYFYE_BACKEND } from "../../env.ts";
+import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env.ts";
 
 const userCreationInProgress = new Set();
 
@@ -33,7 +33,8 @@ export const getUser = async (
   if (userCreationInProgress.has(email)) {
     return null;
   }
-
+  console.log("MYFYE_BACKEND", MYFYE_BACKEND);
+  console.log("MYFYE_BACKEND_KEY", MYFYE_BACKEND_KEY);
   try {
     const checkUserResponse = await fetch(
       `${MYFYE_BACKEND}/get_user_by_privy_id`,
@@ -41,6 +42,7 @@ export const getUser = async (
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
         },
         body: JSON.stringify({ email }),
       }
@@ -77,6 +79,7 @@ export const createUser = async (
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
         },
         body: JSON.stringify({
           email,
@@ -112,6 +115,7 @@ export const updateUserEvmPubKey = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "x-api-key": MYFYE_BACKEND_KEY,
       },
       body: JSON.stringify({
         privyUserId,
@@ -139,6 +143,7 @@ export const updateUserSolanaPubKey = async (
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
         },
         body: JSON.stringify({
           privyUserId,
@@ -206,20 +211,30 @@ const HandleUserLogIn = async (
 };
 
 const checkMFAState = async (user: any, dispatch: Function) => {
+  if (!user) return;
 
-  for (const mfaMethod of user.mfaMethods) {
-    if (mfaMethod === "passkey") {
-      dispatch(setMFAStatus("enrolled"));
-      return;
+  // Check mfaMethods if they exist
+  if (user.mfaMethods && Array.isArray(user.mfaMethods)) {
+    for (const mfaMethod of user.mfaMethods) {
+      if (mfaMethod === "passkey") {
+        dispatch(setMFAStatus("enrolled"));
+        return;
+      }
     }
   }
 
-  for (const linkedAccount of user.linkedAccounts) {
-    if (linkedAccount.type === "passkey") {
-      dispatch(setMFAStatus("createdPasskey"));
+  // Check linkedAccounts if they exist
+  if (user.linkedAccounts && Array.isArray(user.linkedAccounts)) {
+    for (const linkedAccount of user.linkedAccounts) {
+      if (linkedAccount.type === "passkey") {
+        dispatch(setMFAStatus("createdPasskey"));
+        return;
+      }
     }
   }
 
+  // If no MFA is found, set empty status
+  dispatch(setMFAStatus(""));
 }
 
 export const getUserData = async (

@@ -9,7 +9,7 @@ import {
   Transaction, 
   TransactionInstruction,
   VersionedTransaction, } from "@solana/web3.js";
-import { HELIUS_API_KEY, MYFYE_BACKEND } from '../../../env';
+import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
 
 async function ensureTokenAccount(userPublicKeyString: String, mintAddress: String) {
 
@@ -43,10 +43,11 @@ async function ensureTokenAccount(userPublicKeyString: String, mintAddress: Stri
     if (!receiverAccountInfo) {
     
         try {
-            const response = await fetch(`${MYFYE_BACKEND}/create_solana_token_account`, {
+            const response = await fetch(`${MYFYE_BACKEND}/create_token_account`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'x-api-key': MYFYE_BACKEND_KEY,
                 },
                 body: JSON.stringify({
                     receiverPubKey: userPublicKeyString,
