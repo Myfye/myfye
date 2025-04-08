@@ -18,6 +18,20 @@ async function createUser(userData) {
         RETURNING *
     `;
 
+  const values = [
+    userData.email,
+    userData.phoneNumber,
+    userData.firstName,
+    userData.lastName,
+    userData.country,
+    userData.evmPubKey,
+    userData.solanaPubKey,
+    userData.privyUserId,
+    userData.personaAccountId,
+    userData.blindPayReceiverId,
+    userData.blindPayEvmWalletId,
+  ];
+
     try {
         const result = await pool.query(query, values);
         if (result.rows.length === 0) {
@@ -29,11 +43,6 @@ async function createUser(userData) {
         console.error('Error creating user:', error);
         throw error;
     }
-    return result.rows[0];
-  } catch (error) {
-    console.error("Error creating user:", error);
-    throw error;
-  }
 }
 
 async function getUserByEmail(email) {
@@ -109,11 +118,6 @@ async function updateEvmPubKey(privyUserId, evmPubKey) {
         console.error('Error updating EVM public key:', error);
         throw error;
     }
-    return result.rows[0];
-  } catch (error) {
-    console.error("Error updating EVM public key:", error);
-    throw error;
-  }
 }
 
 async function updateSolanaPubKey(privyUserId, solanaPubKey) {
@@ -142,11 +146,6 @@ async function updateSolanaPubKey(privyUserId, solanaPubKey) {
         console.error('Error updating Solana public key:', error);
         throw error;
     }
-    return result.rows[0];
-  } catch (error) {
-    console.error("Error updating Solana public key:", error);
-    throw error;
-  }
 }
 
 module.exports = {

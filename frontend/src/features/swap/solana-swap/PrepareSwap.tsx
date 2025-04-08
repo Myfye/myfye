@@ -92,7 +92,7 @@ async function prepareTransaction(instructions: any) {
     
         const transaction = new VersionedTransaction(messageV0);
 
-        console.log("Prepared transaction", transaction);
+        console.log("Prepared transaction with server fee payer", transaction);
         return transaction;
     } catch (error) {
         console.error("Error preparing transaction:", error);

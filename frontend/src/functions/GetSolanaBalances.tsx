@@ -74,6 +74,7 @@ export const TokenBalances = async (
   const PYUSD_MINT_ADDRESS = "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo";
   const EURC_MINT_ADDRESS = "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr";
   const BTC_MINT_ADDRESS = "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij";
+  const WSOL_MINT_ADDRESS = "So11111111111111111111111111111111111111112";
 
   try {
     const publicKey = new PublicKey(address);
@@ -85,6 +86,47 @@ export const TokenBalances = async (
         programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"), // SPL Token program ID
       }
     );
+
+    for (const account of parsedTokenAccounts.value) {
+      const mintAddress = account.account.data.parsed.info.mint;
+
+      // Check if the mint address matches that of USDC
+      if (mintAddress === USDC_MINT_ADDRESS) {
+        const usdcBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.usdc = usdcBalance;
+      }
+      if (mintAddress === BTC_MINT_ADDRESS) {
+        const btcBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.btc = btcBalance;
+      }
+      if (mintAddress === PYUSD_MINT_ADDRESS) {
+        const pyusdBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.pyusd = pyusdBalance;
+      }
+      if (mintAddress === EURC_MINT_ADDRESS) {
+        const eurcBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.eurc = eurcBalance;
+      }
+      if (mintAddress === USDT_MINT_ADDRESS) {
+        const usdtBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.usdt = usdtBalance;
+      }
+      if (mintAddress === USDY_MINT_ADDRESS) {
+        const usdyBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.usdy = usdyBalance;
+      }
+      if (mintAddress === WSOL_MINT_ADDRESS) {
+        const wsolBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.wSol = wsolBalance;
+      }
+    }
 
     for (const account of parsedTokenAccounts.value) {
       const mintAddress = account.account.data.parsed.info.mint;

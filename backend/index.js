@@ -2,19 +2,19 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const PORT = 3001;
-const { create_new_on_ramp_path } = require("./routes/newBlindPayReceiver");
-const { get_payin_quote } = require("./routes/getPayinQuote");
-const { create_new_payin } = require("./routes/createNewPayin");
-const { bridge_swap } = require("./routes/bridge_swap/bridgeSwap");
-const { createNewTokenAccount } = require("./routes/newSolanaTokenAccount");
-const {
-  createUser,
-  getUserByEmail,
-  updateEvmPubKey,
-  updateSolanaPubKey,
-  getUserByPrivyId,
-} = require("./routes/userDb");
+const PORT = 3001; 
+const { create_new_on_ramp_path } = require('./routes/newBlindPayReceiver');
+const { get_payin_quote } = require('./routes/getPayinQuote');
+const { create_new_payin } = require('./routes/createNewPayin');
+const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
+const { createNewTokenAccount } = require('./routes/newSolanaTokenAccount');
+const { 
+    createUser, 
+    getUserByEmail, 
+    updateEvmPubKey, 
+    updateSolanaPubKey, 
+    getUserByPrivyId } = require('./routes/userDb');
+
 
 const allowedOrigins = [
   "http://localhost:3000", // Development (local)
@@ -25,8 +25,7 @@ const allowedOrigins = [
 ];
 
 // Add CORS middleware
-app.use(
-  cors({
+app.use(cors({
     origin: function (origin, callback) {
       // Allow requests without origin (e.g., Postman or server-side requests)
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -35,11 +34,10 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 
 // Add middleware logging
 app.use((req, res, next) => {
@@ -50,15 +48,16 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 /* User management endpoints */
-app.post("/create_user", async (req, res) => {
-  try {
-    const userData = req.body;
-    const result = await createUser(userData);
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /create_user endpoint:", error);
-    res.status(500).json({ error: error.message });
-  }
+app.post('/create_user', async (req, res) => {
+    
+    try {
+        const userData = req.body;
+        const result = await createUser(userData);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /create_user endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.post("/get_user_by_email", async (req, res) => {
@@ -89,26 +88,28 @@ app.post("/get_user_by_privy_id", async (req, res) => {
   }
 });
 
-app.post("/update_evm_pub_key", async (req, res) => {
-  try {
-    const { privyUserId, evmPubKey } = req.body;
-    const result = await updateEvmPubKey(privyUserId, evmPubKey);
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /update_evm_pub_key endpoint:", error);
-    res.status(500).json({ error: error.message });
-  }
+app.post('/update_evm_pub_key', async (req, res) => {
+    
+    try {
+        const { privyUserId, evmPubKey } = req.body;
+        const result = await updateEvmPubKey(privyUserId, evmPubKey);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /update_evm_pub_key endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
-app.post("/update_solana_pub_key", async (req, res) => {
-  try {
-    const { privyUserId, solanaPubKey } = req.body;
-    const result = await updateSolanaPubKey(privyUserId, solanaPubKey);
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /update_solana_pub_key endpoint:", error);
-    res.status(500).json({ error: error.message });
-  }
+app.post('/update_solana_pub_key', async (req, res) => {
+    
+    try {
+        const { privyUserId, solanaPubKey } = req.body;
+        const result = await updateSolanaPubKey(privyUserId, solanaPubKey);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /update_solana_pub_key endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 /* Blind pay API */
@@ -177,6 +178,7 @@ app.post("/create_solana_token_account", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get("/bridge_swap", async (req, res) => {
   console.log("\n=== Bridge Swap Request Received ===");

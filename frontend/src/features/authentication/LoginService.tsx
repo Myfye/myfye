@@ -4,7 +4,7 @@ import {
   setcurrentUserEmail,
   setSolanaPubKey,
   setEvmPubKey,
-  setPassKeyState,
+  setMFAStatus,
   setPriceOfUSDYinUSDC,
   setPriceOfBTCinUSDC,
   setPriceOfEURCinUSDC,
@@ -176,7 +176,7 @@ const HandleUserLogIn = async (
       console.error("Error handling user:", error);
     }
   }
-
+  
   if (user.wallet) {
     dispatch(setEvmPubKey(user.wallet.address));
 
@@ -188,12 +188,7 @@ const HandleUserLogIn = async (
     }
   }
 
-  // Check if the user has set up a pass key
-  for (const linkedAccount of user.linkedAccounts) {
-    if (linkedAccount.type === "passkey") {
-      await UpdatePasskey(dispatch);
-    }
-  }
+  checkMFAState(user, dispatch)
 
   try {
     await Promise.all([
@@ -209,6 +204,23 @@ const HandleUserLogIn = async (
     return { success: false };
   }
 };
+
+const checkMFAState = async (user: any, dispatch: Function) => {
+
+  for (const mfaMethod of user.mfaMethods) {
+    if (mfaMethod === "passkey") {
+      dispatch(setMFAStatus("enrolled"));
+      return;
+    }
+  }
+
+  for (const linkedAccount of user.linkedAccounts) {
+    if (linkedAccount.type === "passkey") {
+      dispatch(setMFAStatus("createdPasskey"));
+    }
+  }
+
+}
 
 export const getUserData = async (
   pubKey: string,
@@ -395,8 +407,4 @@ export async function getUsers(dispatch: Function) {
   return users;
 }
 
-const UpdatePasskey = async (dispatch: Function) => {
-  dispatch(setPassKeyState("done"));
-};
-
-export { HandleUserLogIn, UpdatePasskey };
+export { HandleUserLogIn };
