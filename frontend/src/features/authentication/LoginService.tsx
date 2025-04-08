@@ -23,6 +23,7 @@ import {
   HttpsCallableResult,
 } from "firebase/functions";
 import { HELIUS_API_KEY, MYFYE_BACKEND } from "../../env.ts";
+import { updateExchangeRateUSD } from "../wallet/assets/assetsSlice.ts";
 
 const userCreationInProgress = new Set();
 
@@ -33,7 +34,6 @@ export const getUser = async (
   if (userCreationInProgress.has(email)) {
     return null;
   }
-
   try {
     const checkUserResponse = await fetch(
       `${MYFYE_BACKEND}/get_user_by_privy_id`,
@@ -71,28 +71,25 @@ export const createUser = async (
   privyUserId: string
 ): Promise<any> => {
   try {
-    const createUserResponse = await fetch(
-      `${MYFYE_BACKEND}/create_user`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          phoneNumber: null,
-          firstName: null,
-          lastName: null,
-          country: null,
-          evmPubKey: null,
-          solanaPubKey: null,
-          privyUserId,
-          personaAccountId: null,
-          blindPayReceiverId: null,
-          blindPayEvmWalletId: null,
-        }),
-      }
-    );
+    const createUserResponse = await fetch(`${MYFYE_BACKEND}/create_user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        phoneNumber: null,
+        firstName: null,
+        lastName: null,
+        country: null,
+        evmPubKey: null,
+        solanaPubKey: null,
+        privyUserId,
+        personaAccountId: null,
+        blindPayReceiverId: null,
+        blindPayEvmWalletId: null,
+      }),
+    });
 
     const newUser = await createUserResponse.json();
     console.log("Created new user:", newUser);
@@ -133,19 +130,16 @@ export const updateUserSolanaPubKey = async (
   solanaPubKey: string
 ): Promise<any> => {
   try {
-    const response = await fetch(
-      `${MYFYE_BACKEND}/update_solana_pub_key`, 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          privyUserId,
-          solanaPubKey,
-        }),
-      }
-    );
+    const response = await fetch(`${MYFYE_BACKEND}/update_solana_pub_key`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        privyUserId,
+        solanaPubKey,
+      }),
+    });
 
     const result = await response.json();
     console.log("Updated Solana public key:", result);
@@ -176,7 +170,7 @@ const HandleUserLogIn = async (
       console.error("Error handling user:", error);
     }
   }
-  
+
   if (user.wallet) {
     dispatch(setEvmPubKey(user.wallet.address));
 
@@ -188,7 +182,7 @@ const HandleUserLogIn = async (
     }
   }
 
-  checkMFAState(user, dispatch)
+  checkMFAState(user, dispatch);
 
   try {
     await Promise.all([
@@ -206,7 +200,6 @@ const HandleUserLogIn = async (
 };
 
 const checkMFAState = async (user: any, dispatch: Function) => {
-
   for (const mfaMethod of user.mfaMethods) {
     if (mfaMethod === "passkey") {
       dispatch(setMFAStatus("enrolled"));
@@ -219,8 +212,7 @@ const checkMFAState = async (user: any, dispatch: Function) => {
       dispatch(setMFAStatus("createdPasskey"));
     }
   }
-
-}
+};
 
 export const getUserData = async (
   pubKey: string,
@@ -251,9 +243,19 @@ const getUSDYPriceQuote = async (
     const quote = await getSwapQuote();
     const priceInUSD = quote.outAmount / 1000000;
     if (priceInUSD && priceInUSD > 0.01) {
-      dispatch(setPriceOfUSDYinUSDC(quote.outAmount / 1000000));
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: "usdy_sol",
+          exchangeRateUSD: quote.outAmount / 1000000,
+        })
+      );
     } else {
-      dispatch(setPriceOfUSDYinUSDC(1.09)); // default
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: "usdy_sol",
+          exchangeRateUSD: 1.09,
+        })
+      );
     }
   }
 
@@ -281,9 +283,19 @@ const getBTCPriceQuote = async (
     const quote = await getSwapQuote();
     const priceInUSD = quote.outAmount / 1000000;
     if (priceInUSD && priceInUSD > 0.01) {
-      dispatch(setPriceOfBTCinUSDC(quote.outAmount / 10000));
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: "btc_sol",
+          exchangeRateUSD: quote.outAmount / 10000,
+        })
+      );
     } else {
-      dispatch(setPriceOfBTCinUSDC(100000)); // default to $100,000
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: "btc_sol",
+          exchangeRateUSD: 100000, // default to $100,000
+        })
+      );
     }
   }
 
@@ -311,9 +323,19 @@ const getEURCPriceQuote = async (
     const quote = await getSwapQuote();
     const priceInUSD = quote.outAmount / 1000000;
     if (priceInUSD && priceInUSD > 0.01) {
-      dispatch(setPriceOfEURCinUSDC(priceInUSD));
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: "eurc_sol",
+          exchangeRateUSD: priceInUSD,
+        })
+      );
     } else {
-      dispatch(setPriceOfEURCinUSDC(1.025)); // default
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: "eurc_sol",
+          exchangeRateUSD: 1.025,
+        })
+      );
     }
   }
 
@@ -343,9 +365,19 @@ const getSOLPriceQuote = async (
     const priceInUSD = quote.outAmount / 1000000;
     if (priceInUSD && priceInUSD > 0.01) {
       console.log("SOLANA priceInUSD", priceInUSD);
-      dispatch(setPriceOfSOLinUSDC(priceInUSD));
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: "sol",
+          exchangeRateUSD: priceInUSD,
+        })
+      );
     } else {
-      dispatch(setPriceOfSOLinUSDC(125)); // default
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: "sol",
+          exchangeRateUSD: 125,
+        })
+      );
     }
   }
 
