@@ -20,7 +20,7 @@ const {
 // Create different rate limiters for different endpoints
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // Limit each IP requests per windowMs
+  max: 400, // Limit each IP requests per windowMs
   message: { error: 'Too many requests from this IP, please try again later.' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -79,6 +79,7 @@ const allowedOrigins = [
   "https://d1voqwa9zncr8f.cloudfront.net", // Production (CloudFront)
   "https://myfye.com", // Production (myfye.com)
   "https://www.myfye.com", // Production (www.myfye.com)
+  "https://api.myfye.com", // API domain
 ];
 
 // Add CORS middleware with stricter configuration
@@ -88,13 +89,15 @@ app.use(cors({
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
+        console.log(`Blocked request from origin: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
     credentials: true,
-    maxAge: 86400 // Cache preflight requests for 24 hours
+    maxAge: 86400, // Cache preflight requests for 24 hours
+    exposedHeaders: ['Access-Control-Allow-Origin']
 }));
 
 // Add middleware logging

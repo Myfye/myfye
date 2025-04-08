@@ -33,8 +33,7 @@ export const getUser = async (
   if (userCreationInProgress.has(email)) {
     return null;
   }
-  console.log("MYFYE_BACKEND", MYFYE_BACKEND);
-  console.log("MYFYE_BACKEND_KEY", MYFYE_BACKEND_KEY);
+  
   try {
     const checkUserResponse = await fetch(
       `${MYFYE_BACKEND}/get_user_by_privy_id`,
