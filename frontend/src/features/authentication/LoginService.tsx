@@ -259,12 +259,6 @@ const HandleUserLogIn = async (
 };
 
 const checkMFAState = async (user: any, dispatch: Function) => {
-<<<<<<< HEAD
-  for (const mfaMethod of user.mfaMethods) {
-    if (mfaMethod === "passkey") {
-      dispatch(setMFAStatus("enrolled"));
-      return;
-=======
   if (!user) return;
 
   // Check mfaMethods if they exist
@@ -274,7 +268,6 @@ const checkMFAState = async (user: any, dispatch: Function) => {
         dispatch(setMFAStatus("enrolled"));
         return;
       }
->>>>>>> multi-wallet-feature
     }
   }
 
@@ -287,14 +280,10 @@ const checkMFAState = async (user: any, dispatch: Function) => {
       }
     }
   }
-<<<<<<< HEAD
-};
-=======
 
   // If no MFA is found, set empty status
   dispatch(setMFAStatus(""));
 }
->>>>>>> multi-wallet-feature
 
 export const getUserData = async (
   pubKey: string,
