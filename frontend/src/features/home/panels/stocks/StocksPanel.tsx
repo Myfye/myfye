@@ -1,22 +1,20 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
-  selectAssetsBalanceUSDByGroup,
-  selectAssetsByGroup,
+  selectAbstractedAssetsWithBalanceByDashboard,
+  selectAssetsBalanceUSDByDashboardId,
 } from "@/features/wallet/assets/assetsSlice";
 import AssetPanel from "../../PanelInner";
 
 const StocksPanel = ({}) => {
-  const dispatch = useDispatch();
-
-  const stocksAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "stocks")
+  const assets = useSelector((state: RootState) =>
+    selectAbstractedAssetsWithBalanceByDashboard(state, "stocks")
   );
   const balanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "stocks")
+    selectAssetsBalanceUSDByDashboardId(state, "stocks")
   );
 
-  return <AssetPanel balance={balanceUSD} assets={stocksAssets} />;
+  return <AssetPanel balance={balanceUSD} assets={assets} />;
 };
 
 export default StocksPanel;

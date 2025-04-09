@@ -11,14 +11,31 @@ const AssetIcon = ({ icon }: { icon: Asset["icon"] }) => {
         overflow: hidden;
       `}
     >
-      <img
-        src={icon}
-        css={css`
-          object-fit: cover;
-          width: 100%;
-          height: 100%;
-        `}
-      />
+      {icon.type !== "text" ? (
+        <img
+          src={icon.content}
+          css={css`
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+          `}
+        />
+      ) : (
+        <div
+          css={css`
+            text-align: center;
+            align-content: center;
+            width: 100%;
+            height: 100%;
+            background-color: ${icon.backgroundColor};
+            color: ${icon.color};
+            font-size: var(--fs-xx-small);
+            font-weight: var(--fw-active);
+          `}
+        >
+          <p>{icon.content}</p>
+        </div>
+      )}
     </div>
   );
 };

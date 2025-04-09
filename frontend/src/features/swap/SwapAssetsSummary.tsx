@@ -11,16 +11,25 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useMemo } from "react";
 import { formatUsdAmount, getUsdAmount } from "./utils";
-import { Asset } from "../wallet/assets/types";
+import { AbstractedAsset, Asset } from "../wallet/assets/types";
+import { selectAbstractedAsset } from "../wallet/assets/assetsSlice";
 
 const SwapAsset = ({
   assetId,
+  abstractedAssetId,
   amount,
 }: {
-  assetId: Asset["id"] | null;
+  assetId: Asset["id"];
+  abstractedAssetId: AbstractedAsset["id"] | null;
   amount: number | null;
 }) => {
   const assets = useSelector((state: RootState) => state.assets);
+
+  const abstractedAsset = useSelector((state: RootState) =>
+    abstractedAssetId === null
+      ? null
+      : selectAbstractedAsset(state, abstractedAssetId)
+  );
 
   // let usdBalance = 0;
   // let type = "usdt";
@@ -34,71 +43,14 @@ const SwapAsset = ({
   // }
 
   const usdAmount = useMemo(
-    () => getUsdAmount(assetId, assets, amount),
-    [amount, assetId, assets]
+    () => getUsdAmount(abstractedAssetId, assets, amount),
+    [amount, abstractedAssetId, assets]
   );
 
   const formattedUsdAmount = useMemo(
     () => formatUsdAmount(usdAmount),
     [usdAmount]
   );
-
-  const currentCoin = () => {
-    switch (assetId) {
-      case "btc_sol": {
-        return {
-          title: "Bitcoin",
-          type: "btc",
-          icon: btcIcon,
-        };
-      }
-      case "sol": {
-        return {
-          title: "Solana",
-          type: "sol",
-          icon: solIcon,
-        };
-      }
-      case "usdc_sol": {
-        return {
-          title: "US Dollar",
-          type: "usd",
-          icon: usdCoin,
-        };
-      }
-      case "usdt_sol": {
-        return {
-          title: "US Dollar",
-          type: "usd",
-          icon: usdCoin,
-        };
-      }
-      case "usdy_sol": {
-        return {
-          title: "US Treasury Bonds",
-          type: "usdy",
-          icon: usdyCoin,
-        };
-      }
-      case "eurc_sol": {
-        return {
-          title: "Euro",
-          type: "eurc",
-          icon: eurcCoin,
-        };
-      }
-      default: {
-        return {
-          title: "US Dollar",
-          type: "usdt",
-          icon: usdCoin,
-        };
-      }
-    }
-  };
-
-  const _coin = useMemo(() => currentCoin(), [assetId]);
-  const src = _coin.icon;
 
   return (
     <div
@@ -120,9 +72,9 @@ const SwapAsset = ({
             width: var(--size-500);
           `}
         >
-          <img src={src} alt="" />
+          <img src={abstractedAsset?.icon.content} alt="" />
         </div>
-        <p className="heading-small">{_coin.title}</p>
+        <p className="heading-small">{abstractedAsset?.label}</p>
       </div>
       <div
         css={css`
@@ -138,7 +90,7 @@ const SwapAsset = ({
             color: var(--clr-text-weaker);
           `}
         >
-          {amount} {_coin.type}
+          {amount} {abstractedAsset?.symbol}
         </p>
       </div>
     </div>
@@ -146,11 +98,7 @@ const SwapAsset = ({
 };
 
 const SwapAssetsSummary = () => {
-  const buyInfo = useSelector((state: RootState) => state.swap.transaction.buy);
-  const sellInfo = useSelector(
-    (state: RootState) => state.swap.transaction.sell
-  );
-
+  const transaction = useSelector((state: RootState) => state.swap.transaction);
   return (
     <div
       className="swap-coin-status"
@@ -165,7 +113,10 @@ const SwapAssetsSummary = () => {
       `}
     >
       <section className="sell-coin">
-        <SwapAsset assetId={sellInfo.assetId} amount={sellInfo.amount} />
+        <SwapAsset
+          abstractedAssetId={transaction.sell.abstractedAssetId}
+          amount={transaction.sell.amount}
+        />
       </section>
       <section
         className="icon-wrapper"
@@ -176,7 +127,10 @@ const SwapAssetsSummary = () => {
         <ArrowDown color="var(--clr-icon)" size={24} />
       </section>
       <section className="buy-coin">
-        <SwapAsset assetId={buyInfo.assetId} amount={buyInfo.amount} />
+        <SwapAsset
+          abstractedAssetId={transaction.buy.abstractedAssetId}
+          amount={transaction.buy.amount}
+        />
       </section>
     </div>
   );

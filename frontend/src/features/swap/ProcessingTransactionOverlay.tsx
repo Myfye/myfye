@@ -50,7 +50,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
         );
       }
       default: {
-        return `${transaction.buy.assetId} will be deposited into your wallet once the transaction is complete.`;
+        return `${transaction.buy.abstractedAssetId} will be deposited into your wallet once the transaction is complete.`;
       }
     }
   }, [transaction]);

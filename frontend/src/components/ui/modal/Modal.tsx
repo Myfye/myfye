@@ -69,6 +69,7 @@ const Modal = ({
             <MotionModal
               css={css`
                 display: grid;
+                font-family: var(--font-family);
                 grid-template-rows: auto 1fr;
                 position: absolute;
                 inset: 0;
@@ -77,8 +78,8 @@ const Modal = ({
                 max-width: var(--app-max-width);
                 width: 100%;
                 border-radius: var(--border-radius-medium);
-                border-radius-bottom-left: 0;
-                border-radius-bottom-right: 0;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
                 background-color: var(--clr-surface);

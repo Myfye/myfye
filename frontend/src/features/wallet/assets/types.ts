@@ -5,16 +5,56 @@ import { StocksId } from "./stocks/types";
 
 export type FiatCurrency = "usd" | "eur";
 
+export type DashboardId = "cash" | "crypto" | "stocks";
+
+export type GroupId = "cash" | "crypto" | "stocks" | "earn";
+
+export interface AbstractedAsset {
+  id: string;
+  label: string;
+  assetIds: string[];
+  symbol: string;
+  dashboardId: DashboardId;
+  fiatCurrency: FiatCurrency;
+  groupId: GroupId;
+  color: string;
+  icon:
+    | {
+        content: string;
+        type: "image" | "svg";
+      }
+    | {
+        content: string;
+        type: "text";
+        color: string;
+        backgroundColor: string;
+      };
+  overlay: {
+    isOpen: boolean;
+  };
+}
+
 export interface Asset {
   id: string;
   label: string;
   symbol: string;
+  abstractedAssetId: string;
   fiatCurrency: FiatCurrency;
-  type: "usd" | "stock" | "euro" | "treasury" | "crypto";
+  dashboardId: "cash" | "stocks" | "crypto";
   groupId: AssetGroup["id"];
   balance: number;
   exchangeRateUSD: number;
-  icon: string | null;
+  icon:
+    | {
+        content: string;
+        type: "image" | "svg";
+      }
+    | {
+        content: string;
+        type: "text";
+        color: string;
+        backgroundColor: string;
+      };
   overlay: {
     isOpen: boolean;
   };
@@ -25,12 +65,17 @@ export interface Asset {
 
 export interface AssetsState {
   assetIds: string[];
+  dashboardIds: DashboardId[];
+  abstractedAssetIds: AbstractedAsset["id"][];
   groupIds: AssetGroup["id"][];
   assets: {
     [key: string]: Asset;
   };
   groups: {
     [key in AssetGroup["id"]]: AssetGroup;
+  };
+  abstractedAssets: {
+    [key in AbstractedAsset["id"]]: AbstractedAsset;
   };
 }
 

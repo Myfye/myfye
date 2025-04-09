@@ -23,11 +23,13 @@ import LineChart from "@/components/ui/line-chart/LineChart";
 import { useState } from "react";
 import { Key, useSelect } from "react-aria";
 import {
+  selectAbstractedAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
   selectAssetsByGroup,
   toggleGroupOverlay,
 } from "../assetsSlice";
 import WalletOverlay from "../../WalletOverlay";
+import Switch from "@/components/ui/switch/Switch";
 
 const lineChartData = [
   {
@@ -93,12 +95,12 @@ const StocksOverlay = () => {
     (state: RootState) => state.assets.groups["stocks"].overlay.isOpen
   );
 
-  const onOpenChange = (isOpen: boolean) => {
+  const handleOpen = (isOpen: boolean) => {
     dispatch(toggleGroupOverlay({ isOpen, groupId: "stocks" }));
   };
 
-  const stocksAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "stocks")
+  const assets = useSelector((state: RootState) =>
+    selectAbstractedAssetsWithBalanceByGroup(state, "stocks")
   );
 
   const balanceUSD = useSelector((state: RootState) =>
@@ -109,13 +111,21 @@ const StocksOverlay = () => {
     new Set<Key>(["1D"])
   );
 
+  const [selected, setSelected] = useState(false);
+
+  const onSelectedChange = (e) => {
+    console.log(e);
+    setSelected(e);
+  };
+
   return (
     <>
       <WalletOverlay
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={handleOpen}
         title="Stocks"
         balance={balanceUSD}
+        groupId="stocks"
       >
         <section
           css={css`
@@ -135,7 +145,30 @@ const StocksOverlay = () => {
             margin-block-end: var(--size-250);
           `}
         >
-          <AssetCardList assets={stocksAssets} showOptions={true} />
+          <div
+            className="wrapper"
+            css={css`
+              width: fit-content;
+              margin-inline-start: auto;
+              margin-block-end: var(--size-400);
+            `}
+          >
+            <Switch selected={selected} onChange={onSelectedChange}>
+              <span
+                css={css`
+                  font-weight: var(--fw-active);
+                `}
+              >
+                Show shares?
+              </span>
+            </Switch>
+          </div>
+          <AssetCardList
+            assets={assets}
+            showOptions={true}
+            showBalanceUSD={selected ? false : true}
+            showCurrencySymbol={selected ? false : true}
+          />
         </section>
       </WalletOverlay>
     </>

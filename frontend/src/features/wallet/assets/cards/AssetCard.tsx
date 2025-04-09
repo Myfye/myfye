@@ -12,27 +12,29 @@ import { Asset } from "../types";
 
 const AssetCard = ({
   title,
-  currency,
+  fiatCurrency,
   symbol,
   balance,
   icon,
   ref,
   showOptions,
   showBalance,
+  showCurrencySymbol = true,
   ...restProps
 }: {
   title: Asset["label"];
-  currency: Asset["fiatCurrency"];
+  fiatCurrency: Asset["fiatCurrency"];
   symbol: Asset["symbol"];
   balance: Asset["balance"];
   ref: RefObject<HTMLButtonElement>;
   icon: Asset["icon"];
   showOptions: boolean;
   showBalance: boolean;
+  showCurrencySymbol?: boolean;
 }) => {
   const formattedBalance = useMemo(
-    () => formatBalance(balance, currency),
-    [balance, currency]
+    () => formatBalance(balance, fiatCurrency),
+    [balance, fiatCurrency]
   );
 
   return (
@@ -48,7 +50,7 @@ const AssetCard = ({
           user-select: none;
         `}
       >
-        <AssetIcon icon={asset.icon} />
+        <AssetIcon icon={icon} />
         <div
           className="content"
           css={css`
@@ -88,7 +90,7 @@ const AssetCard = ({
                   margin-block-start: var(--size-075);
                 `}
               >
-                {currency}
+                {symbol}
               </p>
             </div>
             {showBalance && (
@@ -97,7 +99,7 @@ const AssetCard = ({
                   font-weight: var(--fw-active);
                 `}
               >
-                {formattedBalance}
+                {showCurrencySymbol ? formattedBalance : balance}
               </p>
             )}
           </div>

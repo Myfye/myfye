@@ -21,6 +21,7 @@ const SwapModal = () => {
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
   const assets = useSelector((state: RootState) => state.assets);
+  const zIndex = useSelector((state: RootState) => state.swap.modal.zIndex);
 
   const intervalDelete = useRef<NodeJS.Timeout | null>(null);
   const delayDelete = useRef<NodeJS.Timeout | null>(null);
@@ -71,7 +72,11 @@ const SwapModal = () => {
   };
 
   const isInvalidSwapTransaction = useMemo(() => {
-    if (!transaction.sell.assetId || !transaction.buy.assetId) return true;
+    if (
+      !transaction.sell.abstractedAssetId ||
+      !transaction.buy.abstractedAssetId
+    )
+      return true;
     if (
       transaction.sell.amount === 0 ||
       transaction.sell.amount === null ||
@@ -80,7 +85,8 @@ const SwapModal = () => {
     )
       return true;
     if (
-      assets.assets[transaction.sell.assetId].balance < transaction.sell.amount
+      assets.assets[transaction.sell.abstractedAssetId].balance <
+      transaction.sell.amount
     )
       return true;
     return false;
@@ -94,10 +100,10 @@ const SwapModal = () => {
         title="Swap"
         subtitle="Swap crypto to cash, and more!"
         height={height}
-        zIndex={1000}
+        zIndex={zIndex}
         onAnimationComplete={() => {
           if (!isOpen) {
-            dispatch(unmount());
+            dispatch(unmount(undefined));
           }
         }}
       >
@@ -138,9 +144,9 @@ const SwapModal = () => {
           </section>
         </div>
       </Modal>
-      <ConfirmSwapOverlay zIndex={2000} />
-      <SelectCoinOverlay zIndex={2000} />
-      <ProcessingTransactionOverlay zIndex={3000} />
+      <ConfirmSwapOverlay zIndex={9999 + 1} />
+      <SelectCoinOverlay zIndex={9999 + 2} />
+      <ProcessingTransactionOverlay zIndex={9999 + 3} />
     </>
   );
 };

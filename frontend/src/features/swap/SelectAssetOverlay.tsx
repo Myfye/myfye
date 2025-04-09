@@ -5,28 +5,28 @@ import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import Overlay from "@/components/ui/overlay/Overlay";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleOverlay, updateAssetId, updateExchangeRate } from "./swapSlice";
-import { useCallback, useMemo } from "react";
-import { Asset } from "../wallet/assets/types";
-import { selectAssetsByGroup } from "../wallet/assets/assetsSlice";
+import {
+  toggleOverlay,
+  updateAbstractedAssetId,
+  updateExchangeRate,
+} from "./swapSlice";
+import { useCallback } from "react";
+import { AbstractedAsset, Asset } from "../wallet/assets/types";
+import { selectAbstractedAssetsWithBalanceByDashboard } from "../wallet/assets/assetsSlice";
 
 const SelectAssetOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const cashAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "cash")
+    selectAbstractedAssetsWithBalanceByDashboard(state, "cash")
   );
 
   const cryptoAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "crypto")
-  );
-
-  const earnAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "earn")
+    selectAbstractedAssetsWithBalanceByDashboard(state, "crypto")
   );
 
   const stocksAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "stocks")
+    selectAbstractedAssetsWithBalanceByDashboard(state, "stocks")
   );
 
   const isOpen = useSelector(
@@ -39,13 +39,7 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
     (state: RootState) => state.swap.overlays.selectAsset.transactionType
   );
 
-  const buyAssetId = useSelector(
-    (state: RootState) => state.swap.transaction.buy.assetId
-  );
-
-  const sellAssetId = useSelector(
-    (state: RootState) => state.swap.transaction.sell.assetId
-  );
+  const transaction = useSelector((state: RootState) => state.swap.transaction);
 
   const handleOpen = (e: boolean) => {
     dispatch(
@@ -58,18 +52,29 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
   };
 
   const onAssetSelect = useCallback(
-    (asset: Asset) => {
-      console.log("Selecting asset:", asset.label, "with ID:", asset.id);
+    (abstractedAsset: AbstractedAsset) => {
+      console.log(
+        "Selecting asset:",
+        abstractedAsset.label,
+        "with ID:",
+        abstractedAsset.id
+      );
       dispatch(
-        updateAssetId({
+        updateAbstractedAssetId({
           transactionType: transactionType,
-          assetId: asset.id,
+          abstractedAssetId: abstractedAsset.id,
         })
       );
       dispatch(
         updateExchangeRate({
-          buyAssetId: transactionType === "buy" ? asset.id : buyAssetId,
-          sellAssetId: transactionType === "sell" ? asset.id : sellAssetId,
+          buyAbstractedAssetId:
+            transactionType === "buy"
+              ? abstractedAsset.id
+              : transaction.buy.abstractedAssetId,
+          sellAbstractedAssetId:
+            transactionType === "sell"
+              ? abstractedAsset.id
+              : transaction.sell.abstractedAssetId,
           assets: assets,
         })
       );
@@ -94,6 +99,7 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
       <div
         css={css`
           margin-inline: var(--size-250);
+          padding-block-end: var(--size-250);
         `}
       >
         <section
@@ -106,7 +112,7 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
             className="heading-small"
             css={css`
               color: var(--clr-text-weak);
-              margin-block-end: var(--size-300);
+              margin-block-end: var(--size-250);
             `}
           >
             Cash
@@ -127,13 +133,34 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
             className="heading-small"
             css={css`
               color: var(--clr-text-weak);
-              margin-block-end: var(--size-300);
+              margin-block-end: var(--size-250);
             `}
           >
             Crypto
           </h2>
           <AssetCardList
             assets={cryptoAssets}
+            onAssetSelect={onAssetSelect}
+            showBalance={transactionType === "sell"}
+          ></AssetCardList>
+        </section>
+        <section
+          className="crypto"
+          css={css`
+            margin-block-start: var(--size-400);
+          `}
+        >
+          <h2
+            className="heading-small"
+            css={css`
+              color: var(--clr-text-weak);
+              margin-block-end: var(--size-250);
+            `}
+          >
+            Stocks
+          </h2>
+          <AssetCardList
+            assets={stocksAssets}
             onAssetSelect={onAssetSelect}
             showBalance={transactionType === "sell"}
           ></AssetCardList>

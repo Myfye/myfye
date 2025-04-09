@@ -22,18 +22,18 @@ import { AssetGroup } from "./assets/types";
 const WalletCardList = ({ ...restProps }) => {
   const dispatch = useDispatch();
   const assetsGroups = useSelector(selectAssetsGroupsArray);
-  const cashBalanceInUSD = useSelector((state: RootState) =>
+  const cashBalanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "cash")
   );
-  const cryptoBalanceInUSD = useSelector((state: RootState) =>
+  const cryptoBalanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "crypto")
   );
 
-  const earnBalanceInUSD = useSelector((state: RootState) =>
+  const earnBalanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "earn")
   );
 
-  const stocksBalanceInUSD = useSelector((state: RootState) =>
+  const stocksBalanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "stocks")
   );
 
@@ -60,16 +60,16 @@ const WalletCardList = ({ ...restProps }) => {
   const getCardBalance = (groupId: AssetGroup["id"]) => {
     switch (groupId) {
       case "cash": {
-        return cashBalanceInUSD;
+        return cashBalanceUSD;
       }
       case "crypto": {
-        return cryptoBalanceInUSD;
+        return cryptoBalanceUSD;
       }
       case "earn": {
-        return earnBalanceInUSD;
+        return earnBalanceUSD;
       }
       case "stocks": {
-        return stocksBalanceInUSD;
+        return stocksBalanceUSD;
       }
       default: {
         throw new Error("Invalid group id");

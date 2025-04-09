@@ -6,6 +6,7 @@
   --fs-medium: calc(1rem * 16 / 16);
   --fs-small: calc(1rem * 14 / 16);
   --fs-x-small: calc(1rem * 12 / 16);
+  --fs-xx-small: calc(1rem * 11 / 16);
 
   --font-family: "Inter", sans-serif;
   --font-family-mono: "Azeret Mono", monospace;

@@ -14,7 +14,6 @@ import {
   Scan as ScanIcon,
 } from "@phosphor-icons/react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Footer from "./layout/footer/Footer";
 import NavMenu from "./layout/header/nav-menu/NavMenu";
@@ -24,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../ui/button/Button";
 import { motion, AnimatePresence } from "motion/react";
+import Pay from "@/features/pay/Pay";
 
 const tabs = [
   { id: "home", label: "Home" },
@@ -150,7 +150,11 @@ const Router = () => {
                   <Wallet />
                 </motion.div>
               )}
-              {tab.id === "pay" && <div></div>}
+              {tab.id === "pay" && (
+                <div>
+                  <Pay />
+                </div>
+              )}
               {tab.id === "activity" && <div></div>}
             </AriaTabPanel>
           ))}

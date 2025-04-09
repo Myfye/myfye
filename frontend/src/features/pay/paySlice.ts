@@ -7,7 +7,7 @@ const initialState = {
     type: "send",
     status: "idle",
     amount: 0,
-    formattedAmount: "",
+    formattedAmount: "0",
     assetId: null,
     contact: null,
   },
@@ -39,5 +39,5 @@ const paySlice = createSlice({
   },
 });
 
-export const { toggleSendOverlay, toggleRequestOverlay } = paySlice.actions;
+export const { updatePayTransactionType } = paySlice.actions;
 export default paySlice.reducer;

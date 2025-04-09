@@ -21,7 +21,7 @@ export const updateFormattedAmount = (
   }
 
   if (input === "delete") {
-    if (formattedAmount === "0.") return "";
+    if (formattedAmount === "0.") return "0";
     const [integer, decimal] = formattedAmount.split(".");
     const newAmount = formattedAmount.slice(0, -1);
     if (
@@ -52,15 +52,6 @@ export const updateFormattedAmount = (
     return updatedAmountInteger + "." + decimal;
   }
   return updatedAmount;
-};
-
-export const updateFormattedGhostAmount = (formattedGhostAmount: string) => {
-  switch (formattedGhostAmount.length) {
-    case 0:
-      return "0";
-    default:
-      return formattedGhostAmount;
-  }
 };
 
 export const parseFormattedAmount = (formattedAmount: string) => {

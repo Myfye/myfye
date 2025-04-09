@@ -1,13 +1,7 @@
 import { ArrowDown, CaretRight } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import { useMemo } from "react";
-
-import btcIcon from "@/assets/svgs/coins/btc-coin.svg";
-import solIcon from "@/assets/svgs/coins/sol-coin.svg";
-import eurcCoin from "@/assets/svgs/coins/eur-coin.svg";
-import usdCoin from "@/assets/svgs/coins/usd-coin.svg";
-import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
+import { useEffect, useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -16,96 +10,98 @@ import {
   formatUsdAmount,
   getUsdAmount,
 } from "./utils";
-import { toggleOverlay, updateAmount, SwapTransactionType } from "./swapSlice";
+import { toggleOverlay, updateAmount } from "./swapSlice";
 import Button from "@/components/ui/button/Button";
 import TextFit from "@/shared/components/TextFit";
-import { Asset } from "../wallet/assets/types";
-import { selectAsset } from "../wallet/assets/assetsSlice";
+import { AbstractedAsset } from "../wallet/assets/types";
+import {
+  selectAbstractedAsset,
+  selectAbstractedAssetBalance,
+  selectAbstractedAssetWithBalance,
+} from "../wallet/assets/assetsSlice";
+import { SwapTransactionType } from "./types";
 
 const AssetSelectButton = ({
-  assetId,
+  abstractedAssetId,
   ...restProps
 }: {
-  assetId: Asset["id"] | null;
+  abstractedAssetId: AbstractedAsset["id"] | null;
 }) => {
-  const currentCoin = useMemo(() => {
-    switch (assetId) {
-      case "btc_sol": {
-        return {
-          name: "Bitcoin",
-          img: btcIcon,
-        };
-      }
-      case "sol": {
-        return {
-          name: "Solana",
-          img: solIcon,
-        };
-      }
-      case "usdc_sol": {
-        return {
-          name: "US Dollar",
-          img: usdCoin,
-        };
-      }
-      case "usdt_sol": {
-        return {
-          name: "US Dollar",
-          img: usdCoin,
-        };
-      }
-      case "usdy_sol": {
-        return {
-          name: "US Treasury Bonds",
-          img: usdyCoin,
-        };
-      }
-      case "eurc_sol": {
-        return {
-          name: "Euro",
-          img: eurcCoin,
-        };
-      }
-      default: {
-        return {
-          name: "Select coin",
-        };
-      }
-    }
-  }, [assetId]);
+  const asset = useSelector((state: RootState) =>
+    abstractedAssetId ? selectAbstractedAsset(state, abstractedAssetId) : null
+  );
 
   return (
     <Button size="small" color="neutral" {...restProps}>
-      {assetId && (
-        <img
-          src={currentCoin.img}
-          alt=""
+      {asset && (
+        <div
+          className="wrapper"
           css={css`
+            align-content: center;
+            text-align: center;
             width: 24px;
             aspect-ratio: 1;
             border-radius: var(--border-radius-circle);
+            overflow: hidden;
           `}
-        ></img>
+        >
+          {asset.icon.type !== "text" ? (
+            <img
+              src={asset.icon.content}
+              alt=""
+              css={css`
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              `}
+            />
+          ) : (
+            <div
+              css={css`
+                align-content: center;
+                width: 100%;
+                height: 100%;
+                background-color: ${asset.icon.backgroundColor};
+                color: ${asset.icon.color};
+              `}
+            >
+              <p
+                css={css`
+                  font-size: 8px;
+                  font-weight: var(--fw-active);
+                `}
+              >
+                {asset.icon.content}
+              </p>
+            </div>
+          )}
+        </div>
       )}
       <span
         css={css`
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          max-width: ${assetId ? "8ch" : "auto"};
+          max-width: ${abstractedAssetId ? "8ch" : "auto"};
         `}
       >
-        {currentCoin.name}
+        {asset ? asset.label : "Select coin"}
       </span>
       <CaretRight color="var(--clr-icon)" size={16} weight="bold" />
     </Button>
   );
 };
 
-const MaxAmountButton = ({ assetId }: { assetId: Asset["id"] }) => {
+const MaxAmountButton = ({
+  abstractedAssetId,
+}: {
+  abstractedAssetId: AbstractedAsset["id"];
+}) => {
   const dispatch = useDispatch();
 
-  const asset = useSelector((state: RootState) => selectAsset(state, assetId));
+  const asset = useSelector((state: RootState) =>
+    selectAbstractedAssetWithBalance(state, abstractedAssetId)
+  );
 
   return (
     <>
@@ -131,12 +127,12 @@ const SwapControl = ({
   transactionType,
   onSelectAsset,
   formattedAmount,
-  assetId,
+  abstractedAssetId,
 }: {
   transactionType: SwapTransactionType;
   onSelectAsset: () => void;
   formattedAmount: string;
-  assetId: Asset["id"] | null;
+  abstractedAssetId: AbstractedAsset["id"] | null;
 }) => {
   // Formatted Amount
   const formattedAmountArr = useMemo(
@@ -158,7 +154,7 @@ const SwapControl = ({
   const assets = useSelector((state: RootState) => state.assets);
 
   const usdAmount = useMemo(
-    () => getUsdAmount(assetId, assets, amount),
+    () => getUsdAmount(abstractedAssetId, assets, amount),
     [amount]
   );
 
@@ -264,11 +260,14 @@ const SwapControl = ({
         `}
       >
         <li>
-          <AssetSelectButton assetId={assetId} onPress={onSelectAsset} />
+          <AssetSelectButton
+            abstractedAssetId={abstractedAssetId}
+            onPress={onSelectAsset}
+          />
         </li>
         <li>
-          {transactionType === "sell" && assetId && (
-            <MaxAmountButton assetId={assetId} />
+          {transactionType === "sell" && abstractedAssetId && (
+            <MaxAmountButton abstractedAssetId={abstractedAssetId} />
           )}
         </li>
       </menu>
@@ -279,19 +278,7 @@ const SwapControl = ({
 const SwapController = () => {
   const dispatch = useDispatch();
 
-  const formattedBuyAmount = useSelector(
-    (state: RootState) => state.swap.transaction.buy.formattedAmount
-  );
-  const formattedSellAmount = useSelector(
-    (state: RootState) => state.swap.transaction.sell.formattedAmount
-  );
-
-  const buyAssetId = useSelector(
-    (state: RootState) => state.swap.transaction.buy.assetId
-  );
-  const sellAssetId = useSelector(
-    (state: RootState) => state.swap.transaction.sell.assetId
-  );
+  const transaction = useSelector((state: RootState) => state.swap.transaction);
 
   return (
     <div
@@ -305,8 +292,8 @@ const SwapController = () => {
     >
       <SwapControl
         transactionType="sell"
-        assetId={sellAssetId}
-        formattedAmount={formattedSellAmount}
+        abstractedAssetId={transaction.sell.abstractedAssetId}
+        formattedAmount={transaction.sell.formattedAmount}
         onSelectAsset={() => {
           dispatch(
             toggleOverlay({
@@ -335,8 +322,8 @@ const SwapController = () => {
       </div>
       <SwapControl
         transactionType="buy"
-        assetId={buyAssetId}
-        formattedAmount={formattedBuyAmount}
+        abstractedAssetId={transaction.buy.abstractedAssetId}
+        formattedAmount={transaction.buy.formattedAmount}
         onSelectAsset={() => {
           dispatch(
             toggleOverlay({

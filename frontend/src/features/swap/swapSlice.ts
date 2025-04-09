@@ -5,7 +5,7 @@ import {
   updateFormattedAmount,
   parseFormattedAmount,
 } from "./utils";
-import { Asset, AssetsState } from "../wallet/assets/types";
+import { AbstractedAsset, Asset, AssetsState } from "../wallet/assets/types";
 import {
   SwapTransaction,
   SwapTransactionStatus,
@@ -15,6 +15,7 @@ import {
 export interface SwapState {
   modal: {
     isOpen: boolean;
+    zIndex: number;
   };
   overlays: {
     selectAsset: {
@@ -37,6 +38,7 @@ export interface SwapState {
 const initialState: SwapState = {
   modal: {
     isOpen: false,
+    zIndex: 9999,
   },
   overlays: {
     selectAsset: { isOpen: false, transactionType: "sell" },
@@ -44,8 +46,8 @@ const initialState: SwapState = {
     processingTransaction: { isOpen: false },
   },
   transaction: {
-    buy: { amount: null, formattedAmount: "", assetId: null },
-    sell: { amount: null, formattedAmount: "", assetId: null },
+    buy: { amount: null, formattedAmount: "", abstractedAssetId: null },
+    sell: { amount: null, formattedAmount: "", abstractedAssetId: null },
     exchangeRate: null,
     fee: null,
     status: "idle",
@@ -59,11 +61,15 @@ const swapSlice = createSlice({
   reducers: {
     toggleModal(
       state,
-      action: PayloadAction<{ isOpen: boolean; assetId?: Asset["id"] }>
+      action: PayloadAction<{
+        isOpen: boolean;
+        abstractedAssetId?: AbstractedAsset["id"];
+      }>
     ) {
       state.modal.isOpen = action.payload.isOpen;
-      if (action.payload?.assetId)
-        state.transaction.sell.assetId = action.payload.assetId;
+      if (action.payload?.abstractedAssetId)
+        state.transaction.sell.abstractedAssetId =
+          action.payload.abstractedAssetId;
     },
     toggleOverlay(
       state,
@@ -121,28 +127,28 @@ const swapSlice = createSlice({
         true
       );
     },
-    updateAssetId(
+    updateAbstractedAssetId(
       state,
       action: PayloadAction<{
         transactionType: SwapTransactionType;
-        assetId: Asset["id"] | null;
+        abstractedAssetId: AbstractedAsset["id"] | null;
       }>
     ) {
-      state.transaction[action.payload.transactionType].assetId =
-        action.payload.assetId;
+      state.transaction[action.payload.transactionType].abstractedAssetId =
+        action.payload.abstractedAssetId;
     },
     updateExchangeRate(
       state,
       action: PayloadAction<{
         assets: AssetsState;
-        buyAssetId: Asset["id"] | null;
-        sellAssetId: Asset["id"] | null;
+        buyAbstractedAssetId: Asset["id"] | null;
+        sellAbstractedAssetId: Asset["id"] | null;
       }>
     ) {
       state.transaction.exchangeRate = calculateExchangeRate({
         assets: action.payload.assets,
-        buyAssetId: action.payload.buyAssetId,
-        sellAssetId: action.payload.sellAssetId,
+        buyAbstractedAssetId: action.payload.buyAbstractedAssetId,
+        sellAbstractedAssetId: action.payload.sellAbstractedAssetId,
       });
 
       // if no exchange rate or sell amount, don't bother calculating the buy amounts and reset them
@@ -168,6 +174,9 @@ const swapSlice = createSlice({
     updateId(state, action: PayloadAction<string>) {
       state.transaction.id = action.payload;
     },
+    updateZIndex(state, action: PayloadAction<number>) {
+      state.modal.zIndex = action.payload;
+    },
   },
 });
 
@@ -176,7 +185,7 @@ export const {
   toggleOverlay,
   updateAmount,
   updateExchangeRate,
-  updateAssetId,
+  updateAbstractedAssetId,
   unmount,
   updateStatus,
   updateId,

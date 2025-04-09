@@ -1,25 +1,20 @@
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-
-import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
-import Balance from "@/components/ui/balance/Balance";
 import { useSelector } from "react-redux";
 import {
-  selectAssetsBalanceUSDByGroup,
-  selectAssetsByGroup,
+  selectAbstractedAssetsWithBalanceByDashboard,
+  selectAssetsBalanceUSDByDashboardId,
 } from "@/features/wallet/assets/assetsSlice";
 import { RootState } from "@/redux/store";
 import AssetPanel from "../../PanelInner";
 
 const CryptoPanel = ({}) => {
-  const cryptoAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "cash")
+  const assets = useSelector((state: RootState) =>
+    selectAbstractedAssetsWithBalanceByDashboard(state, "crypto")
   );
   const balanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "cash")
+    selectAssetsBalanceUSDByDashboardId(state, "crypto")
   );
 
-  return <AssetPanel balance={balanceUSD} assets={cryptoAssets} />;
+  return <AssetPanel balance={balanceUSD} assets={assets} />;
 };
 
 export default CryptoPanel;

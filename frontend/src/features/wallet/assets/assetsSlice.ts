@@ -1,5 +1,5 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { Asset, AssetGroup, AssetsState } from "./types";
+import { AbstractedAsset, Asset, AssetGroup, AssetsState } from "./types";
 import { RootState } from "@/redux/store";
 import { getAssetsBalanceUSDByGroup, getAssetsByGroup } from "./utils";
 
@@ -27,6 +27,9 @@ const initialState: AssetsState = {
     "KO.d_base",
     "AMC.d_base",
     "GME.d_base",
+    // Crypto
+    "btc_sol",
+    "sol",
     // Cash
     "usdt_sol",
     "usdc_sol",
@@ -35,7 +38,34 @@ const initialState: AssetsState = {
     // Earn
     "usdy_sol",
   ],
+  abstractedAssetIds: [
+    // Stocks
+    "APPL",
+    "MSFT",
+    "GOOGL",
+    "NFLX",
+    "AMZN",
+    "SQ",
+    "DIS",
+    "TSLA",
+    "AMD",
+    "SPY",
+    "MSTR",
+    "IAU",
+    "KO",
+    "AMC",
+    "GME",
+    // Crypto
+    "btc",
+    "sol",
+    // Cash
+    "us_dollar",
+    "euro",
+    // Earn
+    "us_dollar_yield",
+  ],
   groupIds: ["stocks", "earn", "cash", "crypto"],
+  dashboardIds: ["stocks", "cash", "crypto"],
   assets: {
     // Stocks
     "APPL.d_base": {
@@ -43,11 +73,17 @@ const initialState: AssetsState = {
       label: "Apple, Inc.",
       symbol: "APPL",
       fiatCurrency: "usd",
-      type: "stock",
+      abstractedAssetId: "stock",
+      dashboardId: "stocks",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "APPL",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -56,12 +92,19 @@ const initialState: AssetsState = {
       id: "MSFT.d_base",
       label: "Microsoft Corporation",
       symbol: "MSFT",
-      type: "stock",
+
+      dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
+      abstractedAssetId: "stock",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "MSFT",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -70,12 +113,19 @@ const initialState: AssetsState = {
       id: "GOOGL.d_base",
       label: "Alphabet, inc.",
       symbol: "GOOGL",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
-      type: "stock",
+
+      dashboardId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "GOOGL",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -84,12 +134,19 @@ const initialState: AssetsState = {
       id: "NFLX.d_base",
       label: "Netflix, Inc.",
       symbol: "NFLX",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
-      type: "stock",
+
+      dashboardId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "GOOGL",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -98,12 +155,19 @@ const initialState: AssetsState = {
       id: "AMZN.d_base",
       label: "Amazon.com, Inc.",
       symbol: "AMZN",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
-      type: "stock",
+
+      dashboardId: "stocks",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "AMZN",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -112,12 +176,19 @@ const initialState: AssetsState = {
       id: "SQ.d_base",
       label: "Block, Inc.",
       symbol: "SQ",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
-      type: "stock",
+
+      dashboardId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "SQ",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -126,12 +197,19 @@ const initialState: AssetsState = {
       id: "DIS.d_base",
       label: "Walt Disney Company",
       symbol: "DIS",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
-      type: "stock",
+
+      dashboardId: "stocks",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "DIS",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -140,12 +218,18 @@ const initialState: AssetsState = {
       id: "TSLA.d_base",
       label: "Tesla, Inc.",
       symbol: "TSLA",
-      type: "stock",
+      abstractedAssetId: "stock",
+      dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "TSLA",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -154,12 +238,19 @@ const initialState: AssetsState = {
       id: "AMD.d_base",
       label: "Advanced Micro Devices",
       symbol: "AMD",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
-      type: "stock",
+
+      dashboardId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "AMD",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -168,12 +259,19 @@ const initialState: AssetsState = {
       id: "SPY.d_base",
       label: "SPDR S&P 500 ETF Trust",
       symbol: "SPY",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
-      type: "stock",
+
+      dashboardId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "SPY",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -182,12 +280,19 @@ const initialState: AssetsState = {
       id: "MSTR.d_base",
       label: "MicroStrategy, Inc.",
       symbol: "MSTR",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
-      type: "stock",
+
+      dashboardId: "stocks",
       groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "MSTR",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -196,12 +301,19 @@ const initialState: AssetsState = {
       id: "IAU.d_base",
       label: "iShares Gold Trust",
       symbol: "IAU",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
-      type: "stock",
+
+      dashboardId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "IAU",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -210,12 +322,18 @@ const initialState: AssetsState = {
       id: "KO.d_base",
       label: "Coca-Cola Company",
       symbol: "KO",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
-      type: "stock",
+      dashboardId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "KO",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -224,12 +342,18 @@ const initialState: AssetsState = {
       id: "AMC.d_base",
       label: "AMC Entertainment Holdings, Inc.",
       symbol: "AMC",
+      abstractedAssetId: "stock",
       fiatCurrency: "usd",
       groupId: "stocks",
-      type: "stock",
+      dashboardId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "AMC",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -238,12 +362,18 @@ const initialState: AssetsState = {
       id: "GME.d_base",
       label: "GameStop Corp. Class A, Inc.",
       symbol: "GME",
-      type: "stock",
+      abstractedAssetId: "stock",
+      dashboardId: "stocks",
       fiatCurrency: "usd",
-      groupId: "crypto",
+      groupId: "stocks",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: null,
+      icon: {
+        content: "GME",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
       overlay: {
         isOpen: false,
       },
@@ -252,13 +382,17 @@ const initialState: AssetsState = {
     btc_sol: {
       id: "btc_sol",
       label: "Bitcoin",
+      abstractedAssetId: "btc",
       symbol: "CBBTC",
-      type: "crypto",
+      dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: btcCoinIcon,
+      icon: {
+        content: btcCoinIcon,
+        type: "svg",
+      },
       overlay: {
         isOpen: false,
       },
@@ -266,13 +400,17 @@ const initialState: AssetsState = {
     sol: {
       id: "sol",
       label: "Solana",
+      abstractedAssetId: "sol",
       symbol: "SOL",
-      type: "crypto",
+      dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: solCoinIcon,
+      icon: {
+        content: solCoinIcon,
+        type: "svg",
+      },
       overlay: {
         isOpen: false,
       },
@@ -281,13 +419,17 @@ const initialState: AssetsState = {
     usdt_sol: {
       id: "usdt_sol",
       label: "US Dollar",
+      abstractedAssetId: "us_dollar",
       symbol: "USDT",
-      type: "usd",
+      dashboardId: "cash",
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: usdCoinIcon,
+      icon: {
+        content: usdCoinIcon,
+        type: "svg",
+      },
       overlay: {
         isOpen: false,
       },
@@ -295,13 +437,17 @@ const initialState: AssetsState = {
     usdc_sol: {
       id: "usdc_sol",
       label: "US Dollar",
+      abstractedAssetId: "us_dollar",
       symbol: "USDC",
-      type: "usd",
+      dashboardId: "cash",
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: usdCoinIcon,
+      icon: {
+        content: usdCoinIcon,
+        type: "svg",
+      },
       overlay: {
         isOpen: false,
       },
@@ -309,13 +455,17 @@ const initialState: AssetsState = {
     usdc_base: {
       id: "usdc_base",
       label: "US Dollar",
+      abstractedAssetId: "us_dollar",
       symbol: "USDC",
-      type: "usd",
+      dashboardId: "cash",
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: usdCoinIcon,
+      icon: {
+        content: usdCoinIcon,
+        type: "svg",
+      },
       overlay: {
         isOpen: false,
       },
@@ -323,13 +473,17 @@ const initialState: AssetsState = {
     eurc_sol: {
       id: "eurc_sol",
       label: "Euro",
-      symbol: "EUR",
-      type: "euro",
+      abstractedAssetId: "euro",
+      symbol: "EURC",
+      dashboardId: "cash",
       fiatCurrency: "eur",
       groupId: "cash",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: euroCoinIcon,
+      icon: {
+        content: euroCoinIcon,
+        type: "svg",
+      },
       overlay: {
         isOpen: false,
       },
@@ -338,13 +492,17 @@ const initialState: AssetsState = {
     usdy_sol: {
       id: "usdy_sol",
       label: "US Dollar Yield",
-      symbol: "usdy",
-      type: "treasury",
+      abstractedAssetId: "us_dollar_yield",
+      symbol: "USDY",
+      dashboardId: "cash",
       fiatCurrency: "usd",
-      groupId: "cash",
+      groupId: "earn",
       balance: 0,
       exchangeRateUSD: 0,
-      icon: usdyCoinIcon,
+      icon: {
+        content: usdyCoinIcon,
+        type: "svg",
+      },
       overlay: {
         isOpen: false,
       },
@@ -364,8 +522,8 @@ const initialState: AssetsState = {
       overlay: { isOpen: false },
     },
     crypto: {
-      id: "earn",
-      label: "Earn",
+      id: "crypto",
+      label: "Crypto",
       percentChange: 0,
       overlay: { isOpen: false },
     },
@@ -376,15 +534,403 @@ const initialState: AssetsState = {
       overlay: { isOpen: false },
     },
   },
+  abstractedAssets: {
+    // Stocks
+    APPL: {
+      id: "APPL",
+      assetIds: ["APPL.d_base"],
+      label: "Apple, Inc.",
+      symbol: "APPL",
+      color: "var(--clr-surface-lowered)",
+      fiatCurrency: "usd",
+      dashboardId: "stocks",
+      groupId: "stocks",
+      icon: {
+        content: "APPL",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    MSFT: {
+      id: "MSFT",
+      assetIds: ["MSFT.d_base"],
+      label: "Microsoft Corporation",
+      symbol: "MSFT",
+      color: "var(--clr-surface-lowered)",
+      dashboardId: "stocks",
+      fiatCurrency: "usd",
+      groupId: "stocks",
+      icon: {
+        content: "MSFT",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    GOOGL: {
+      id: "GOOGL",
+      assetIds: ["GOOGL.d_base"],
+      label: "Alphabet, inc.",
+      symbol: "GOOGL",
+      color: "var(--clr-surface-lowered)",
+      fiatCurrency: "usd",
+      groupId: "stocks",
+      dashboardId: "stocks",
+      icon: {
+        content: "GOOGL",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    NFLX: {
+      id: "NFLX",
+      assetIds: ["NFLX.d_base"],
+      label: "Netflix, Inc.",
+      symbol: "NFLX",
+      color: "var(--clr-surface-lowered)",
+      fiatCurrency: "usd",
+      groupId: "stocks",
+      dashboardId: "stocks",
+      icon: {
+        content: "GOOGL",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    AMZN: {
+      id: "AMZN",
+      assetIds: ["AMZN.d_base"],
+      label: "Amazon.com, Inc.",
+      symbol: "AMZN",
+      fiatCurrency: "usd",
+      color: "var(--clr-surface-lowered)",
+
+      dashboardId: "stocks",
+      groupId: "stocks",
+      icon: {
+        content: "AMZN",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    SQ: {
+      id: "SQ",
+      assetIds: ["SQ.d_base"],
+      label: "Block, Inc.",
+      color: "var(--clr-surface-lowered)",
+      symbol: "SQ",
+      fiatCurrency: "usd",
+      groupId: "stocks",
+      dashboardId: "stocks",
+      icon: {
+        content: "SQ",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    DIS: {
+      id: "DIS",
+      assetIds: ["DIS.d_base"],
+      label: "Walt Disney Company",
+      symbol: "DIS",
+      fiatCurrency: "usd",
+
+      dashboardId: "stocks",
+      groupId: "stocks",
+      color: "var(--clr-surface-lowered)",
+      icon: {
+        content: "DIS",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    TSLA: {
+      id: "TSLA",
+      assetIds: ["TSLA.d_base"],
+      label: "Tesla, Inc.",
+      symbol: "TSLA",
+      dashboardId: "stocks",
+      fiatCurrency: "usd",
+      color: "var(--clr-surface-lowered)",
+      groupId: "stocks",
+      icon: {
+        content: "TSLA",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    AMD: {
+      id: "AMD",
+      assetIds: ["AMD.d_base"],
+      label: "Advanced Micro Devices",
+      symbol: "AMD",
+      fiatCurrency: "usd",
+      color: "var(--clr-surface-lowered)",
+      groupId: "stocks",
+
+      dashboardId: "stocks",
+      icon: {
+        content: "AMD",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    SPY: {
+      id: "SPY",
+      assetIds: ["SPY.d_base"],
+      label: "SPDR S&P 500 ETF Trust",
+      symbol: "SPY",
+      fiatCurrency: "usd",
+      groupId: "stocks",
+
+      color: "var(--clr-surface-lowered)",
+      dashboardId: "stocks",
+      icon: {
+        content: "SPY",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    MSTR: {
+      id: "MSTR",
+      assetIds: ["MSTR.d_base"],
+      label: "MicroStrategy, Inc.",
+      symbol: "MSTR",
+      color: "var(--clr-surface-lowered)",
+      fiatCurrency: "usd",
+
+      dashboardId: "stocks",
+      groupId: "stocks",
+      icon: {
+        content: "MSTR",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    IAU: {
+      id: "IAU",
+      label: "iShares Gold Trust",
+      symbol: "IAU",
+      fiatCurrency: "usd",
+      color: "var(--clr-surface-lowered)",
+      groupId: "stocks",
+      assetIds: ["IAU.d_base"],
+      dashboardId: "stocks",
+      icon: {
+        content: "IAU",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    KO: {
+      id: "KO",
+      assetIds: ["KO.d_base"],
+      label: "Coca-Cola Company",
+      symbol: "KO",
+      fiatCurrency: "usd",
+      color: "var(--clr-surface-lowered)",
+      groupId: "stocks",
+      dashboardId: "stocks",
+      icon: {
+        content: "KO",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    AMC: {
+      id: "AMC",
+      assetIds: ["AMC.d_base"],
+      label: "AMC Entertainment Holdings, Inc.",
+      symbol: "AMC",
+      fiatCurrency: "usd",
+      groupId: "stocks",
+      color: "var(--clr-surface-lowered)",
+      dashboardId: "stocks",
+      icon: {
+        content: "AMC",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    GME: {
+      id: "GME",
+      assetIds: ["GME.d_base"],
+      label: "GameStop Corp. Class A, Inc.",
+      symbol: "GME",
+      dashboardId: "stocks",
+      fiatCurrency: "usd",
+      groupId: "stocks",
+      color: "var(--clr-surface-lowered)",
+      icon: {
+        content: "GME",
+        type: "text",
+        color: "black",
+        backgroundColor: "var(--clr-surface-lowered)",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    us_dollar: {
+      id: "us_dollar",
+      label: "US Dollar",
+      symbol: "USD",
+      dashboardId: "cash",
+      fiatCurrency: "usd",
+      groupId: "cash",
+      color: "var(--clr-green-400)",
+      assetIds: ["usdc_sol", "usdt_sol", "usdc_base"],
+      icon: {
+        content: usdCoinIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    us_dollar_yield: {
+      id: "us_dollar_yield",
+      label: "US Dollar Yield",
+      assetIds: ["usdy_sol"],
+      symbol: "USD",
+      dashboardId: "cash",
+      fiatCurrency: "usd",
+      groupId: "earn",
+      color: "var(--clr-purple-400)",
+      icon: {
+        content: usdyCoinIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    euro: {
+      id: "euro",
+      label: "Euro",
+      assetIds: ["eurc_sol"],
+      symbol: "EUR",
+      dashboardId: "cash",
+      fiatCurrency: "eur",
+      groupId: "cash",
+      color: "var(--clr-blue-400)",
+      icon: {
+        content: euroCoinIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    sol: {
+      id: "sol",
+      label: "Solana",
+      assetIds: ["sol"],
+      symbol: "SOL",
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      color: "var(--clr-purple-400)",
+      icon: {
+        content: solCoinIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    btc: {
+      id: "btc",
+      label: "Bitcoin",
+      assetIds: ["btc_sol"],
+      symbol: "BTC",
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      color: "orange",
+      icon: {
+        content: btcCoinIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+  },
 };
 
+export const selectAsset = (state: RootState, asset: string) =>
+  state.assets.assets[asset];
+export const selectAbstractedAsset = (
+  state: RootState,
+  abstractedAssetId: AbstractedAsset["id"]
+) => state.assets.abstractedAssets[abstractedAssetId];
 export const selectAssets = (state: RootState) => state.assets;
 export const selectAssetGroupId = (_: RootState, groupId: AssetGroup["id"]) =>
   groupId;
-export const selectAsset = (state: RootState, asset: string) =>
-  state.assets.assets[asset];
-
-export const selectAssetType = (_: RootState, type: Asset["type"]) => type;
+export const selectAssetDashboardId = (
+  _: RootState,
+  dashboardId: Asset["dashboardId"]
+) => dashboardId;
+export const selectAbstractedAssetId = (
+  _: RootState,
+  abstractedAssetId: Asset["abstractedAssetId"]
+) => abstractedAssetId;
 
 export const selectAssetsArray = createSelector([selectAssets], (assets) =>
   assets.assetIds.map((assetId) => assets.assets[assetId])
@@ -399,36 +945,33 @@ export const selectAssetsByGroup = createSelector(
   [selectAssets, selectAssetGroupId],
   (assets, groupId) => getAssetsByGroup(assets, groupId)
 );
-
-export const selectAssetsByType = createSelector(
-  [selectAssets, selectAssetType],
-  (assets, type) => {
-    const assetsArr = assets.assetIds.map((assetId) => assets.assets[assetId]);
-    const labelledAssets = assetsArr.filter((asset) => asset.type === type);
-    return labelledAssets;
-  }
-);
-
-export const selectAssetsBalanceUSDByType = createSelector(
-  [selectAssets, selectAssetType],
-  (assets, type) => {
-    const assetsArr = assets.assetIds.map((assetId) => assets.assets[assetId]);
-    const labelledAssets = assetsArr.filter((asset) => asset.type === type);
-    return labelledAssets.reduce(
-      (acc, val) => acc + val.balance * val.exchangeRateUSD,
-      0
-    );
-  }
-);
-
 export const selectAssetsBalanceUSDByGroup = createSelector(
   [selectAssets, selectAssetGroupId],
   (assets, groupId) => getAssetsBalanceUSDByGroup(assets, groupId)
 );
 
-export const selectAssetBalanceUSD = createSelector(
-  [selectAsset],
-  (asset) => asset.balance * asset.exchangeRateUSD
+export const selectAssetsByDashboardId = createSelector(
+  [selectAssets, selectAssetDashboardId],
+  (assets, dashboardId) => {
+    const assetsArr = assets.assetIds.map((assetId) => assets.assets[assetId]);
+    const labelledAssets = assetsArr.filter(
+      (asset) => asset.dashboardId === dashboardId
+    );
+    return labelledAssets;
+  }
+);
+export const selectAssetsBalanceUSDByDashboardId = createSelector(
+  [selectAssets, selectAssetDashboardId],
+  (assets, dashboardId) => {
+    const assetsArr = assets.assetIds.map((assetId) => assets.assets[assetId]);
+    const labelledAssets = assetsArr.filter(
+      (asset) => asset.dashboardId === dashboardId
+    );
+    return labelledAssets.reduce(
+      (acc, val) => acc + val.balance * val.exchangeRateUSD,
+      0
+    );
+  }
 );
 
 export const selectAssetsBalanceUSD = createSelector(
@@ -440,6 +983,102 @@ export const selectAssetsBalanceUSD = createSelector(
       0
     );
   }
+);
+
+export const selectAbstractedAssetsWithBalance = createSelector(
+  [selectAssets],
+  (assets) => {
+    // find assets
+    const abstractedAssetsArr = assets.abstractedAssetIds.map((id) => {
+      return assets.abstractedAssets[id];
+    });
+    return abstractedAssetsArr.map((abstractedAsset) => {
+      // get assets
+      const filteredAssets = abstractedAsset.assetIds.map(
+        (id) => assets.assets[id]
+      );
+      const balance = filteredAssets.reduce((acc, val) => acc + val.balance, 0);
+      const balanceUSD = filteredAssets.reduce(
+        (acc, val) => acc + val.balance * val.exchangeRateUSD,
+        0
+      );
+      return { ...abstractedAsset, balance, balanceUSD };
+    });
+  }
+);
+
+export const selectAbstractedAssetsBalanceUSD = createSelector(
+  [selectAssets],
+  (assets) => {
+    // find assets
+    const abstractedAssetsArr = assets.abstractedAssetIds.map((id) => {
+      return assets.abstractedAssets[id];
+    });
+    const balanceArr = abstractedAssetsArr.map((abstractedAsset) => {
+      // get assets
+      const mappedAssets = abstractedAsset.assetIds.map(
+        (id) => assets.assets[id]
+      );
+      return mappedAssets.reduce(
+        (acc, val) => acc + val.balance * val.exchangeRateUSD,
+        0
+      );
+    });
+    return balanceArr.reduce((acc, val) => acc + val, 0);
+  }
+);
+
+export const selectAbstractedAssetWithBalance = createSelector(
+  [selectAbstractedAssetsWithBalance, selectAbstractedAssetId],
+  (abstractedAssetsWithBalance, abstractedAssetId) => {
+    // find assets
+    const [result] = abstractedAssetsWithBalance.filter(
+      (asset) => asset.id === abstractedAssetId
+    );
+    return result;
+  }
+);
+
+export const selectAbstractedAssetBalanceUSD = createSelector(
+  [selectAssets, selectAbstractedAssetId],
+  (assets, assetId) => {
+    // find assets
+    const abstractedAsset = assets.abstractedAssets[assetId];
+    // get assets
+    const mappedAssets = abstractedAsset.assetIds.map(
+      (id) => assets.assets[id]
+    );
+
+    return mappedAssets.reduce(
+      (acc, val) => acc + val.balance * val.exchangeRateUSD,
+      0
+    );
+  }
+);
+
+export const selectAbstractedAssetsWithBalanceByGroup = createSelector(
+  [selectAbstractedAssetsWithBalance, selectAssetGroupId],
+  (abstractedAssetsWithBalance, groupId) => {
+    // find assets
+    return abstractedAssetsWithBalance.filter(
+      (asset) => asset.groupId === groupId
+    );
+  }
+);
+
+export const selectAbstractedAssetsWithBalanceByDashboard = createSelector(
+  [selectAbstractedAssetsWithBalance, selectAssetDashboardId],
+  (abstractedAssetsWithBalance, dashboardId) => {
+    // find assets
+    return abstractedAssetsWithBalance.filter(
+      (asset) => asset.dashboardId === dashboardId
+    );
+  }
+);
+
+export const selectAssetBalanceUSD = createSelector(
+  [selectAsset],
+  (asset) => asset.balance * asset.exchangeRateUSD
 );
 
 export const assetsSlice = createSlice({
@@ -457,6 +1096,7 @@ export const assetsSlice = createSlice({
       state,
       action: PayloadAction<{ groupId: AssetGroup["id"]; isOpen: boolean }>
     ) => {
+      console.log(state, action);
       state.groups[action.payload.groupId].overlay.isOpen =
         action.payload.isOpen;
     },

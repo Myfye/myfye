@@ -22,11 +22,18 @@ const AssetPanel = ({
     </section>
     <section
       css={css`
-        margin-block-start: var(--size-400);
+        margin-block-start: var(--size-300);
         padding: 0 var(--size-250);
       `}
     >
-      <AssetCardList assets={assets} showOptions={true} />
+      <div
+        css={css`
+          max-height: 25rem;
+          overflow-y: auto;
+        `}
+      >
+        <AssetCardList assets={assets} showOptions={true} />
+      </div>
     </section>
   </div>
 );

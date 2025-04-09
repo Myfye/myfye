@@ -1,38 +1,21 @@
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
-  selectAssetsBalanceUSDByGroup,
-  selectAssetsByGroup,
+  selectAbstractedAssetsWithBalanceByDashboard,
+  selectAssetsBalanceUSDByDashboardId,
 } from "@/features/wallet/assets/assetsSlice";
 import AssetPanel from "../../PanelInner";
 
 const CashPanel = ({}) => {
   const cashAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "cash")
-  );
-  const cashBalanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "cash")
+    selectAbstractedAssetsWithBalanceByDashboard(state, "cash")
   );
 
-  const earnAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "earn")
-  );
-  const earnBalanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "earn")
+  const balanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByDashboardId(state, "cash")
   );
 
-  const combinedCashAndEarnAssets = useMemo(
-    () => cashAssets.concat(earnAssets),
-    [cashAssets, earnAssets]
-  );
-
-  const balanceUSD = useMemo(
-    () => cashBalanceUSD + earnBalanceUSD,
-    [cashBalanceUSD, earnBalanceUSD]
-  );
-
-  return <AssetPanel balance={balanceUSD} assets={combinedCashAndEarnAssets} />;
+  return <AssetPanel balance={balanceUSD} assets={cashAssets} />;
 };
 
 export default CashPanel;

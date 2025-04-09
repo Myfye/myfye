@@ -19,9 +19,9 @@ import {
 import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
 import {
-  selectAssetBalanceUSD,
+  selectAbstractedAssetBalanceUSD,
+  selectAbstractedAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
-  selectAssetsByGroup,
   toggleGroupOverlay,
 } from "../assetsSlice";
 import WalletOverlay from "../../WalletOverlay";
@@ -30,26 +30,26 @@ const CryptoOverlay = () => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(
-    (state: RootState) => state.assets.groups["earn"].overlay.isOpen
+    (state: RootState) => state.assets.groups["crypto"].overlay.isOpen
   );
 
-  const onOpenChange = (isOpen: boolean) => {
+  const handleOpen = (isOpen: boolean) => {
     dispatch(toggleGroupOverlay({ isOpen, groupId: "crypto" }));
   };
 
-  const cryptoAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "crypto")
+  const assets = useSelector((state: RootState) =>
+    selectAbstractedAssetsWithBalanceByGroup(state, "crypto")
   );
 
   const balanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "crypto")
   );
   const btcBalanceUSD = useSelector((state: RootState) =>
-    selectAssetBalanceUSD(state, "btc_sol")
+    selectAbstractedAssetBalanceUSD(state, "btc")
   );
 
   const solBalanceUSD = useSelector((state: RootState) =>
-    selectAssetBalanceUSD(state, "sol")
+    selectAbstractedAssetBalanceUSD(state, "sol")
   );
 
   const pieChartData = useMemo(() => {
@@ -68,7 +68,7 @@ const CryptoOverlay = () => {
         id: "Solana",
         label: "Solana",
         value: solBalanceUSD,
-        color: "var(--clr-pie-chart-sol)",
+        color: "var(--clr-purple-400)",
       };
       data.push(solData);
     }
@@ -79,13 +79,52 @@ const CryptoOverlay = () => {
     <>
       <WalletOverlay
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={handleOpen}
         title="Crypto"
         balance={balanceUSD}
+        groupId="crypto"
       >
-        <section className="pie-chart-container">
-          <PieChart data={pieChartData}></PieChart>
-        </section>
+        {pieChartData.length > 0 && (
+          <section className="pie-chart-container">
+            <PieChart data={pieChartData}></PieChart>
+          </section>
+        )}
+        {pieChartData.length === 0 && (
+          <section
+            css={css`
+              display: grid;
+              place-items: center;
+              width: 100%;
+              height: 16rem;
+            `}
+          >
+            <div
+              css={css`
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+              `}
+            >
+              <p className="heading-medium">Lorem ipsum</p>
+              <p
+                className="caption"
+                css={css`
+                  color: var(--clr-text-weaker);
+                  margin-block-start: var(--size-050);
+                `}
+              >
+                Lorem ispum dolor, lorum ipsum dolor
+              </p>
+              <div
+                css={css`
+                  margin-block-start: var(--size-200);
+                `}
+              >
+                <Button>Deposit crypto</Button>
+              </div>
+            </div>
+          </section>
+        )}
         <section
           css={css`
             margin-block-start: var(--size-500);
@@ -93,7 +132,7 @@ const CryptoOverlay = () => {
             margin-block-end: var(--size-250);
           `}
         >
-          <AssetCardList assets={cryptoAssets} showOptions={true} />
+          <AssetCardList assets={assets} showOptions={true} />
         </section>
       </WalletOverlay>
     </>

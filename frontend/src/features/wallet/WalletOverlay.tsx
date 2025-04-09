@@ -4,17 +4,16 @@ import { css } from "@emotion/react";
 import Overlay from "@/components/ui/overlay/Overlay";
 import Balance from "@/components/ui/balance/Balance";
 import Button from "@/components/ui/button/Button";
-import {
-  setReceiveModalOpen,
-  setSendModalOpen,
-  setSwapModalOpen,
-} from "@/redux/modalReducers";
+import { setReceiveModalOpen, setSendModalOpen } from "@/redux/modalReducers";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import { ReactNode } from "react";
+import { useDispatch } from "react-redux";
+import { toggleModal } from "../swap/swapSlice";
+import { AssetGroup } from "./assets/types";
 
 const WalletOverlay = ({
   isOpen,
@@ -22,13 +21,16 @@ const WalletOverlay = ({
   balance,
   title,
   children,
+  groupId,
 }: {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   balance: number;
   title: string;
   children: ReactNode;
+  groupId: AssetGroup["id"];
 }) => {
+  const dispatch = useDispatch();
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title={title}>
@@ -66,7 +68,7 @@ const WalletOverlay = ({
           <section
             className="balance-container"
             css={css`
-              margin-block-start: var(--size-150);
+              margin-block-start: var(--size-250);
             `}
           >
             <div
@@ -117,7 +119,30 @@ const WalletOverlay = ({
                   size="x-small"
                   icon={ArrowsLeftRight}
                   onPress={() => {
-                    dispatch(setSwapModalOpen(true));
+                    dispatch(
+                      toggleModal({
+                        isOpen: true,
+                        abstractedAssetId: (() => {
+                          switch (groupId) {
+                            case "cash": {
+                              return "us_dollar";
+                            }
+                            case "crypto": {
+                              return "btc";
+                            }
+                            case "earn": {
+                              return "us_dollar_yield";
+                            }
+                            case "stocks": {
+                              return "APPL";
+                            }
+                            default: {
+                              throw new Error("Invalid group id");
+                            }
+                          }
+                        })(),
+                      })
+                    );
                   }}
                 >
                   Swap

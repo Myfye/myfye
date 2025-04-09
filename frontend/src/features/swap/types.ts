@@ -1,4 +1,4 @@
-import { Asset } from "../wallet/assets/types";
+import { AbstractedAsset, Asset } from "../wallet/assets/types";
 
 export type SwapTransactionType = "buy" | "sell";
 
@@ -8,12 +8,12 @@ export interface SwapTransaction {
   buy: {
     amount: number | null;
     formattedAmount: string;
-    assetId: Asset["id"] | null;
+    abstractedAssetId: AbstractedAsset["id"] | null;
   };
   sell: {
     amount: number | null;
     formattedAmount: string;
-    assetId: Asset["id"] | null;
+    abstractedAssetId: AbstractedAsset["id"] | null;
   };
   fee: number | null;
   exchangeRate: number | null;

@@ -1,26 +1,20 @@
-import Overlay from "@/components/ui/overlay/Overlay";
-import Balance from "@/components/ui/balance/Balance";
 import PieChart from "@/components/ui/pie-chart/PieChart";
-import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setReceiveModalOpen,
-  setSendModalOpen,
-  setSwapModalOpen,
-} from "@/redux/modalReducers";
-import {
-  ArrowCircleDown,
-  ArrowCircleUp,
-  ArrowsLeftRight,
-} from "@phosphor-icons/react";
 import { RootState } from "@/redux/store";
 import {
+  selectAbstractedAssetBalanceUSD,
+  selectAbstractedAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
   selectAssetsByGroup,
   toggleGroupOverlay,
 } from "../assetsSlice";
 import { css } from "@emotion/react";
 import WalletOverlay from "../../WalletOverlay";
+import Card from "@/components/ui/card/Card";
+import { ChartLineUp } from "@phosphor-icons/react";
+import Button from "@/components/ui/button/Button";
+import EarnBreakdownModal from "./EarnBreakdownModal";
+import { useState } from "react";
 
 const pieChartData = [
   {
@@ -84,13 +78,19 @@ const EarnOverlay = () => {
     dispatch(toggleGroupOverlay({ isOpen, groupId: "earn" }));
   };
 
-  const earnAssets = useSelector((state: RootState) =>
-    selectAssetsByGroup(state, "earn")
+  const assets = useSelector((state: RootState) =>
+    selectAbstractedAssetsWithBalanceByGroup(state, "earn")
   );
 
   const balanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "earn")
   );
+
+  const [isBreakdownOpen, setBreakdownOpen] = useState(false);
+
+  const handleBreakdownOpen = (isOpen: boolean) => {
+    setBreakdownOpen(isOpen);
+  };
   return (
     <>
       <WalletOverlay
@@ -98,6 +98,7 @@ const EarnOverlay = () => {
         onOpenChange={handleOpen}
         balance={balanceUSD}
         title="Earn"
+        groupId="earn"
       >
         <section
           className="pie-chart-container"
@@ -105,9 +106,84 @@ const EarnOverlay = () => {
             margin-inline: var(--size-250);
           `}
         >
-          <PieChart data={pieChartData} type="earn"></PieChart>
+          <div
+            className="pie-chart-container"
+            css={css`
+              position: relative;
+            `}
+          >
+            <div
+              className="button-wrapper"
+              css={css`
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                inset: 0;
+                margin: auto;
+                left: auto;
+                right: 0;
+                z-index: 1;
+              `}
+            >
+              <Button
+                size="x-small"
+                color="neutral"
+                onPress={() => void setBreakdownOpen(true)}
+              >
+                View breakdown
+              </Button>
+            </div>
+            <PieChart data={pieChartData} type="earn"></PieChart>
+          </div>
+        </section>
+        <section
+          css={css`
+            padding-block-start: var(--size-200);
+            padding-inline: var(--size-250);
+          `}
+        >
+          <Card
+            title={
+              <span
+                css={css`
+                  display: flex;
+                  flex-direction: column;
+                  align-items: start;
+                `}
+              >
+                <span>US Dollar Yield</span>
+                <span
+                  css={css`
+                    margin-block-start: var(--size-025);
+                    margin-block-end: var(--size-050);
+                    font-size: var(--fs-x-small);
+                    color: var(--clr-accent);
+                    font-weight: var(--fw-default);
+                  `}
+                >
+                  7.00%&nbsp;
+                  <span
+                    css={css`
+                      color: var(--clr-text-weaker);
+                    `}
+                  >
+                    APY
+                  </span>
+                </span>
+              </span>
+            }
+            caption="Earn yield by depositing money into a lending and borrowing protocol."
+            icon={ChartLineUp}
+          />
         </section>
       </WalletOverlay>
+      <EarnBreakdownModal
+        data={pieChartData}
+        isOpen={isBreakdownOpen}
+        onOpenChange={handleBreakdownOpen}
+      />
     </>
   );
 };
