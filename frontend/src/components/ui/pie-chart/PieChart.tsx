@@ -24,7 +24,7 @@ const heading2Style = {
   fontSize: 16,
 };
 
-const BalanceTitle = ({ centerX, centerY }) => {
+const Balance = ({ centerX, centerY }) => {
   const { totalBalanceInUSD } = useBalance();
 
   const formattedBalance = useMemo(
@@ -98,7 +98,7 @@ const PieChart = ({ type, data }) => (
         "arcLinkLabels",
         "arcLabels",
         "legends",
-        type === "earn" ? EarnTitle : BalanceTitle,
+        type === "earn" ? EarnTitle : Balance,
       ]}
       margin={{ top: 24, right: 160, bottom: 24, left: 0 }}
       valueFormat={type === "earn" ? " >-.0%" : " >-$"}

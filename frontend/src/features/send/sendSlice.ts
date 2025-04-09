@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { updateFormattedAmount, parseFormattedAmount } from "../utils";
+import { updateFormattedAmount, parseFormattedAmount } from "./utils";
 import { Asset } from "@/features/wallet/assets/types";
 import { SendTransaction, SendTransactionStatus } from "./types";
 

@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 
 import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
-import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
+import Balance from "@/components/ui/balance/Balance";
 import { useSelector } from "react-redux";
 import {
   selectAssetsBalanceUSDByGroup,

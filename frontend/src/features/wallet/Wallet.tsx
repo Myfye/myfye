@@ -1,4 +1,4 @@
-import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
+import Balance from "@/components/ui/balance/Balance";
 import Button from "@/components/ui/button/Button";
 import WalletCardList from "./WalletCardList.tsx";
 /** @jsxImportSource @emotion/react */

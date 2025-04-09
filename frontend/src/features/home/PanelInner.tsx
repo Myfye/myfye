@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { Asset } from "../wallet/assets/types";
-import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
+import Balance from "@/components/ui/balance/Balance";
 import AssetCardList from "../wallet/assets/cards/AssetCardList";
 
 const AssetPanel = ({
@@ -18,7 +18,7 @@ const AssetPanel = ({
         padding: 0 var(--size-250);
       `}
     >
-      <BalanceTitle balance={balance} />
+      <Balance balance={balance} />
     </section>
     <section
       css={css`

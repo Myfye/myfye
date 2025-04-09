@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 
 import Overlay from "@/components/ui/overlay/Overlay";
-import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
+import Balance from "@/components/ui/balance/Balance";
 import PieChart from "@/components/ui/pie-chart/PieChart";
 import { useMemo } from "react";
 import Button from "@/components/ui/button/Button";

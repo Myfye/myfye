@@ -8,7 +8,7 @@ import {
 
 import { css } from "@emotion/react";
 import PieChart from "../../../../components/ui/pie-chart/PieChart";
-import BalanceTitle from "../../../../components/ui/balance-title/BalanceTitle";
+import Balance from "../../../../components/ui/balance/Balance";
 import CTACarousel from "./cta-carousel/CTACarousel";
 import { useMemo } from "react";
 import {
@@ -101,7 +101,7 @@ const DashboardPanel = ({}) => {
             padding: 0 var(--size-250);
           `}
         >
-          <BalanceTitle balance={balanceUSD} />
+          <Balance balance={balanceUSD} />
         </div>
         <menu
           className="no-scrollbar"
