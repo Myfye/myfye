@@ -22,8 +22,12 @@ import {
   httpsCallable,
   HttpsCallableResult,
 } from "firebase/functions";
+<<<<<<< HEAD
 import { HELIUS_API_KEY, MYFYE_BACKEND } from "../../env.ts";
 import { updateExchangeRateUSD } from "../wallet/assets/assetsSlice.ts";
+=======
+import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env.ts";
+>>>>>>> multi-wallet-feature
 
 const userCreationInProgress = new Set();
 
@@ -34,13 +38,20 @@ export const getUser = async (
   if (userCreationInProgress.has(email)) {
     return null;
   }
+<<<<<<< HEAD
+=======
+  
+>>>>>>> multi-wallet-feature
   try {
     const checkUserResponse = await fetch(
       `${MYFYE_BACKEND}/get_user_by_privy_id`,
       {
         method: "POST",
+        mode: 'cors',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
         },
         body: JSON.stringify({ email }),
       }
@@ -71,6 +82,7 @@ export const createUser = async (
   privyUserId: string
 ): Promise<any> => {
   try {
+<<<<<<< HEAD
     const createUserResponse = await fetch(`${MYFYE_BACKEND}/create_user`, {
       method: "POST",
       headers: {
@@ -90,6 +102,33 @@ export const createUser = async (
         blindPayEvmWalletId: null,
       }),
     });
+=======
+    const createUserResponse = await fetch(
+      `${MYFYE_BACKEND}/create_user`,
+      {
+        method: "POST",
+        mode: 'cors',
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+        body: JSON.stringify({
+          email,
+          phoneNumber: null,
+          firstName: null,
+          lastName: null,
+          country: null,
+          evmPubKey: null,
+          solanaPubKey: null,
+          privyUserId,
+          personaAccountId: null,
+          blindPayReceiverId: null,
+          blindPayEvmWalletId: null,
+        }),
+      }
+    );
+>>>>>>> multi-wallet-feature
 
     const newUser = await createUserResponse.json();
     console.log("Created new user:", newUser);
@@ -107,8 +146,11 @@ export const updateUserEvmPubKey = async (
   try {
     const response = await fetch(`${MYFYE_BACKEND}/update_evm_pub_key`, {
       method: "POST",
+      mode: 'cors',
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
+        "x-api-key": MYFYE_BACKEND_KEY,
       },
       body: JSON.stringify({
         privyUserId,
@@ -130,6 +172,7 @@ export const updateUserSolanaPubKey = async (
   solanaPubKey: string
 ): Promise<any> => {
   try {
+<<<<<<< HEAD
     const response = await fetch(`${MYFYE_BACKEND}/update_solana_pub_key`, {
       method: "POST",
       headers: {
@@ -140,6 +183,22 @@ export const updateUserSolanaPubKey = async (
         solanaPubKey,
       }),
     });
+=======
+    const response = await fetch(
+      `${MYFYE_BACKEND}/update_solana_pub_key`, 
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+        body: JSON.stringify({
+          privyUserId,
+          solanaPubKey,
+        }),
+      }
+    );
+>>>>>>> multi-wallet-feature
 
     const result = await response.json();
     console.log("Updated Solana public key:", result);
@@ -200,19 +259,42 @@ const HandleUserLogIn = async (
 };
 
 const checkMFAState = async (user: any, dispatch: Function) => {
+<<<<<<< HEAD
   for (const mfaMethod of user.mfaMethods) {
     if (mfaMethod === "passkey") {
       dispatch(setMFAStatus("enrolled"));
       return;
+=======
+  if (!user) return;
+
+  // Check mfaMethods if they exist
+  if (user.mfaMethods && Array.isArray(user.mfaMethods)) {
+    for (const mfaMethod of user.mfaMethods) {
+      if (mfaMethod === "passkey") {
+        dispatch(setMFAStatus("enrolled"));
+        return;
+      }
+>>>>>>> multi-wallet-feature
     }
   }
 
-  for (const linkedAccount of user.linkedAccounts) {
-    if (linkedAccount.type === "passkey") {
-      dispatch(setMFAStatus("createdPasskey"));
+  // Check linkedAccounts if they exist
+  if (user.linkedAccounts && Array.isArray(user.linkedAccounts)) {
+    for (const linkedAccount of user.linkedAccounts) {
+      if (linkedAccount.type === "passkey") {
+        dispatch(setMFAStatus("createdPasskey"));
+        return;
+      }
     }
   }
+<<<<<<< HEAD
 };
+=======
+
+  // If no MFA is found, set empty status
+  dispatch(setMFAStatus(""));
+}
+>>>>>>> multi-wallet-feature
 
 export const getUserData = async (
   pubKey: string,
