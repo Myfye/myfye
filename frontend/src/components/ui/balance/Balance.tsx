@@ -1,15 +1,19 @@
 /** @jsxImportSource @emotion/react */
+import { FiatCurrency } from "@/features/wallet/assets/types";
+import { formatBalance } from "@/features/wallet/assets/utils";
 import { css } from "@emotion/react";
 import { useMemo } from "react";
 
-const BalanceTitle = ({ balance = 0, currency = "usd" }) => {
+const Balance = ({
+  balance,
+  currency = "usd",
+}: {
+  balance: number;
+  currency: FiatCurrency;
+}) => {
   const formattedBalance = useMemo(
-    () =>
-      new Intl.NumberFormat("en-EN", {
-        style: "currency",
-        currency: `${currency}`,
-      }).format(balance),
-    [balance]
+    () => formatBalance(balance, currency),
+    [balance, currency]
   );
   return (
     <hgroup
@@ -37,4 +41,4 @@ const BalanceTitle = ({ balance = 0, currency = "usd" }) => {
   );
 };
 
-export default BalanceTitle;
+export default Balance;

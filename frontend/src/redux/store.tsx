@@ -27,6 +27,8 @@ import { currentCoinReducer } from "./coinReducer.tsx";
 import { currentContactReducer } from "./contactReducer.tsx";
 
 import assetsReducer from "@/features/wallet/assets/assetsSlice.ts";
+import sendReducer from "@/features/pay/send/sendSlice.ts";
+import receiveReducer from "@/features/pay/receive/receiveSlice.ts";
 
 const store = configureStore({
   reducer: {
@@ -64,6 +66,12 @@ const store = configureStore({
 
     // Assets
     assets: assetsReducer,
+
+    // Send
+    send: sendReducer,
+
+    // Receive
+    receive: receiveReducer,
   },
 });
 

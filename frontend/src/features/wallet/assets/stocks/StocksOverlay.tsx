@@ -27,6 +27,7 @@ import {
   selectAssetsByGroup,
   toggleGroupOverlay,
 } from "../assetsSlice";
+import WalletOverlay from "../../WalletOverlay";
 
 const lineChartData = [
   {
@@ -110,69 +111,12 @@ const StocksOverlay = () => {
 
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Stocks">
-        <section
-          className="balance-container"
-          css={css`
-            margin-block-start: var(--size-200);
-          `}
-        >
-          <div
-            className="balance-wrapper"
-            css={css`
-              padding: 0 var(--size-250);
-            `}
-          >
-            <BalanceTitle balance={balanceUSD} />
-          </div>
-          <menu
-            className="no-scrollbar"
-            css={css`
-              display: flex;
-              align-items: center;
-              justify-content: flex-start;
-              gap: var(--controls-gap-small);
-              overflow-x: auto;
-              padding: 0 var(--size-250);
-              margin-block-start: var(--size-250);
-              background-color: var(--clr-surface);
-            `}
-          >
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowCircleUp}
-                onPress={() => {
-                  dispatch(setSendModalOpen(true));
-                }}
-              >
-                Send
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowCircleDown}
-                onPress={() => {
-                  dispatch(setReceiveModalOpen(true));
-                }}
-              >
-                Receive
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowsLeftRight}
-                onPress={() => {
-                  dispatch(setSwapModalOpen(true));
-                }}
-              >
-                Swap
-              </Button>
-            </li>
-          </menu>
-        </section>
+      <WalletOverlay
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        title="Stocks"
+        balance={balanceUSD}
+      >
         <section
           css={css`
             margin-block-start: var(--size-400);
@@ -193,7 +137,7 @@ const StocksOverlay = () => {
         >
           <AssetCardList assets={stocksAssets} showOptions={true} />
         </section>
-      </Overlay>
+      </WalletOverlay>
     </>
   );
 };

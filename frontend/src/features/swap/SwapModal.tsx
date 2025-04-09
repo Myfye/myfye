@@ -19,9 +19,8 @@ const SwapModal = () => {
 
   const isOpen = useSelector((state: RootState) => state.swap.modal.isOpen);
 
-  const formattedBuyAmount = useSelector(
-    (state: RootState) => state.swap.transaction.buy.formattedAmount
-  );
+  const transaction = useSelector((state: RootState) => state.swap.transaction);
+  const assets = useSelector((state: RootState) => state.assets);
 
   const intervalDelete = useRef<NodeJS.Timeout | null>(null);
   const delayDelete = useRef<NodeJS.Timeout | null>(null);
@@ -42,8 +41,8 @@ const SwapModal = () => {
   };
 
   useEffect(() => {
-    if (formattedBuyAmount === "") stopDelete();
-  }, [formattedBuyAmount]);
+    if (transaction.buy.formattedAmount === "") stopDelete();
+  }, [transaction]);
 
   const handleOpen = (e: boolean) => {
     dispatch(toggleModal({ isOpen: e }));
@@ -70,9 +69,6 @@ const SwapModal = () => {
   const handleSwapControllerConfirmation = () => {
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
   };
-
-  const transaction = useSelector((state: RootState) => state.swap.transaction);
-  const assets = useSelector((state: RootState) => state.assets);
 
   const isInvalidSwapTransaction = useMemo(() => {
     if (!transaction.sell.assetId || !transaction.buy.assetId) return true;
@@ -101,7 +97,7 @@ const SwapModal = () => {
         zIndex={1000}
         onAnimationComplete={() => {
           if (!isOpen) {
-            dispatch(unmount(undefined));
+            dispatch(unmount());
           }
         }}
       >

@@ -5,70 +5,31 @@ import {
   updateFormattedAmount,
   parseFormattedAmount,
 } from "./utils";
-import { UserWalletDataState } from "@/redux/userWalletData";
 import { Asset, AssetsState } from "../wallet/assets/types";
-
-export type CryptoCoinId = "btcSol" | "sol";
-export type CashCoinId = "usdcSol" | "usdtSol" | "eurcSol";
-export type EarnCoinId = "usdySol";
-export type CoinId = CryptoCoinId | CashCoinId | EarnCoinId;
-
-export interface Coin {
-  id: CoinId;
-  label: string;
-  symbol: string;
-  type: "crypto" | "cash" | "earn" | "stock";
-  fiatEquivalent: string | null;
-  currentExchangeRate: number;
-  iconUrl: string;
-  decimals: number;
-}
-
-export type SwapTransactionType = "buy" | "sell";
-
-export type SwapTransactionStatus = "idle" | "signed" | "success" | "fail";
-
-export interface SwapTransaction {
-  buy: {
-    amount: number | null;
-    formattedAmount: string;
-    assetId: Asset["id"] | null;
-  };
-  sell: {
-    amount: number | null;
-    formattedAmount: string;
-    assetId: Asset["id"] | null;
-  };
-  fee: number | null;
-  exchangeRate: number | null;
-  status: SwapTransactionStatus;
-  id: string | null;
-}
-
-interface ModalState {
-  isOpen: boolean;
-}
-
-type OverlayType = "selectAsset" | "confirmSwap" | "processingTransaction";
-
-interface OverlayState {
-  selectAsset: {
-    isOpen: boolean;
-    transactionType: SwapTransactionType;
-  };
-  confirmSwap: {
-    isOpen: boolean;
-    transactionType?: SwapTransactionType;
-  };
-  processingTransaction: {
-    isOpen: boolean;
-    transactionType?: SwapTransactionType;
-  };
-}
+import {
+  SwapTransaction,
+  SwapTransactionStatus,
+  SwapTransactionType,
+} from "./types";
 
 export interface SwapState {
-  modal: ModalState;
-  overlays: OverlayState;
+  modal: {
+    isOpen: boolean;
+  };
+  overlays: {
+    selectAsset: {
+      isOpen: boolean;
+      transactionType: SwapTransactionType;
+    };
+    confirmSwap: {
+      isOpen: boolean;
+      transactionType?: SwapTransactionType;
+    };
+    processingTransaction: {
+      isOpen: boolean;
+      transactionType?: SwapTransactionType;
+    };
+  };
   transaction: SwapTransaction;
 }
 
@@ -98,7 +59,7 @@ const swapSlice = createSlice({
   reducers: {
     toggleModal(
       state,
-      action: PayloadAction<{ isOpen: boolean; assetId?: CoinId }>
+      action: PayloadAction<{ isOpen: boolean; assetId?: Asset["id"] }>
     ) {
       state.modal.isOpen = action.payload.isOpen;
       if (action.payload?.assetId)
@@ -107,7 +68,7 @@ const swapSlice = createSlice({
     toggleOverlay(
       state,
       action: PayloadAction<{
-        type: OverlayType;
+        type: "selectAsset" | "confirmSwap" | "processingTransaction";
         isOpen: boolean;
         transactionType?: SwapTransactionType;
       }>

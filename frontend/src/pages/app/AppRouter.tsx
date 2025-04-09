@@ -44,6 +44,7 @@ import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import LoadingScreen from "@/components/ui/loading/LoadingScreen.tsx";
+import PrivyUseSolanaWallets from "@/components/PrivyUseSolanaWallets.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -207,6 +208,7 @@ function WebAppInner() {
             />
             <SwapModal />
             <Toaster />
+            <PrivyUseSolanaWallets />
           </div>
         );
       }

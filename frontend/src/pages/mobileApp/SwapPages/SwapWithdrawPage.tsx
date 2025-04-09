@@ -11,7 +11,7 @@ import {
   setusdcSolValue,
 } from "../../../redux/userWalletData.tsx";
 import { swap } from "../../../features/swap/SwapService.tsx";
-import LoadingAnimation from "../../../components/LoadingAnimation.tsx";
+import LoadingAnimation from "../../../components/sunset/LoadingAnimation.tsx";
 import {
   setShowSwapWithdrawPage,
   setSwapWithdrawTransactionStatus,

@@ -12,7 +12,7 @@ export const updateFormattedAmount = (
   formattedAmount: string,
   input: string | number,
   replace?: boolean
-) => {
+): string => {
   // make sure input is a string
   input = input.toString();
 
@@ -88,21 +88,4 @@ export const formatUsdAmount = (amount: number | null) =>
 
 export const getAssetBalance = (assets: AssetsState, assetId: Asset["id"]) => {
   return assets.assets[assetId].balance;
-};
-
-export const calculateExchangeRate = ({
-  assets,
-  buyAssetId,
-  sellAssetId,
-}: {
-  assets: AssetsState;
-  buyAssetId: Asset["id"] | null;
-  sellAssetId: Asset["id"] | null;
-}) => {
-  if (!buyAssetId || !sellAssetId) return null;
-
-  return (
-    assets.assets[sellAssetId].exchangeRateUSD /
-    assets.assets[buyAssetId].exchangeRateUSD
-  );
 };

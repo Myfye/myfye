@@ -20,6 +20,7 @@ import {
   toggleGroupOverlay,
 } from "../assetsSlice";
 import { css } from "@emotion/react";
+import WalletOverlay from "../../WalletOverlay";
 
 const pieChartData = [
   {
@@ -79,7 +80,7 @@ const EarnOverlay = () => {
     (state: RootState) => state.assets.groups["earn"].overlay.isOpen
   );
 
-  const onOpenChange = (isOpen: boolean) => {
+  const handleOpen = (isOpen: boolean) => {
     dispatch(toggleGroupOverlay({ isOpen, groupId: "earn" }));
   };
 
@@ -92,69 +93,12 @@ const EarnOverlay = () => {
   );
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Earn">
-        <section
-          className="balance-container"
-          css={css`
-            margin-block-start: var(--size-150);
-          `}
-        >
-          <div
-            className="balance-wrapper"
-            css={css`
-              padding: 0 var(--size-250);
-            `}
-          >
-            <BalanceTitle balance={balanceUSD} />
-          </div>
-          <menu
-            className="no-scrollbar"
-            css={css`
-              display: flex;
-              align-items: center;
-              justify-content: flex-start;
-              gap: var(--controls-gap-small);
-              overflow-x: auto;
-              padding: 0 var(--size-250);
-              margin-block-start: var(--size-250);
-              background-color: var(--clr-surface);
-            `}
-          >
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowCircleUp}
-                onPress={() => {
-                  dispatch(setSendModalOpen(true));
-                }}
-              >
-                Send
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowCircleDown}
-                onPress={() => {
-                  dispatch(setReceiveModalOpen(true));
-                }}
-              >
-                Receive
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowsLeftRight}
-                onPress={() => {
-                  dispatch(setSwapModalOpen(true));
-                }}
-              >
-                Swap
-              </Button>
-            </li>
-          </menu>
-        </section>
+      <WalletOverlay
+        isOpen={isOpen}
+        onOpenChange={handleOpen}
+        balance={balanceUSD}
+        title="Earn"
+      >
         <section
           className="pie-chart-container"
           css={css`
@@ -163,7 +107,7 @@ const EarnOverlay = () => {
         >
           <PieChart data={pieChartData} type="earn"></PieChart>
         </section>
-      </Overlay>
+      </WalletOverlay>
     </>
   );
 };

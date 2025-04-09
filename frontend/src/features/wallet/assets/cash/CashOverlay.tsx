@@ -1,21 +1,7 @@
 import { css } from "@emotion/react";
-
-import Overlay from "@/components/ui/overlay/Overlay";
-import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
 import PieChart from "@/components/ui/pie-chart/PieChart";
 import { useMemo } from "react";
-import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setDepositModalOpen,
-  setReceiveModalOpen,
-  setSendModalOpen,
-} from "@/redux/modalReducers";
-import {
-  ArrowCircleDown,
-  ArrowCircleUp,
-  ArrowsLeftRight,
-} from "@phosphor-icons/react";
 import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
 import {
@@ -24,6 +10,7 @@ import {
   selectAssetsByGroup,
   toggleGroupOverlay,
 } from "../assetsSlice";
+import WalletOverlay from "../../WalletOverlay";
 
 const CashOverlay = () => {
   const dispatch = useDispatch();
@@ -76,80 +63,25 @@ const CashOverlay = () => {
 
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Cash">
-        <section
-          className="balance-container"
-          css={css`
-            margin-block-start: var(--size-150);
-          `}
-        >
-          <div
-            className="balance-wrapper"
-            css={css`
-              padding: 0 var(--size-250);
-            `}
-          >
-            <BalanceTitle balance={balanceUSD} />
-          </div>
-          <menu
-            className="no-scrollbar"
-            css={css`
-              display: flex;
-              align-items: center;
-              justify-content: flex-start;
-              gap: var(--controls-gap-small);
-              overflow-x: auto;
-              padding: 0 var(--size-250);
-              margin-block-start: var(--size-250);
-              background-color: var(--clr-surface);
-            `}
-          >
-            <li>
-              <Button
-                size="small"
-                icon={ArrowCircleUp}
-                onPress={() => {
-                  dispatch(setSendModalOpen(true));
-                }}
-              >
-                Send
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="small"
-                icon={ArrowCircleDown}
-                onPress={() => {
-                  dispatch(setReceiveModalOpen(true));
-                }}
-              >
-                Receive
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="small"
-                icon={ArrowsLeftRight}
-                onPress={() => {
-                  dispatch(setDepositModalOpen(true));
-                }}
-              >
-                Swap
-              </Button>
-            </li>
-          </menu>
-        </section>
+      <WalletOverlay
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        title="Cash"
+        balance={balanceUSD}
+      >
         <section className="pie-chart-container">
           <PieChart data={pieChartData}></PieChart>
         </section>
         <section
           css={css`
+            margin-block-start: var(--size-500);
             margin-inline: var(--size-250);
+            margin-block-end: var(--size-250);
           `}
         >
           <AssetCardList assets={cashAssets} showOptions={true} />
         </section>
-      </Overlay>
+      </WalletOverlay>
     </>
   );
 };

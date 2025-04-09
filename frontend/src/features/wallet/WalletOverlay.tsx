@@ -2,10 +2,9 @@
 import { css } from "@emotion/react";
 
 import Overlay from "@/components/ui/overlay/Overlay";
-import BalanceTitle from "@/components/ui/balance-title/BalanceTitle";
+import Balance from "@/components/ui/balance/Balance";
 import Button from "@/components/ui/button/Button";
 import {
-  setDepositModalOpen,
   setReceiveModalOpen,
   setSendModalOpen,
   setSwapModalOpen,
@@ -15,10 +14,7 @@ import {
   ArrowCircleUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
-
-import SendModal from "../send/SendModal";
-import ReceiveModal from "../receive/ReceiveModal";
-import SwapModal from "../swap/SwapModal";
+import { ReactNode } from "react";
 
 const WalletOverlay = ({
   isOpen,
@@ -31,11 +27,12 @@ const WalletOverlay = ({
   onOpenChange: (isOpen: boolean) => void;
   balance: number;
   title: string;
+  children: ReactNode;
 }) => {
   return (
     <>
       <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title={title}>
-        {balance === 0 ? (
+        {/* {balance === 0 ? (
           <div
             css={css`
               display: grid;
@@ -64,73 +61,73 @@ const WalletOverlay = ({
               <Button onPress={() => {}}>Deposit Crypto</Button>
             </section>
           </div>
-        ) : (
-          <>
-            <section
-              className="balance-container"
+        ) : ( */}
+        <>
+          <section
+            className="balance-container"
+            css={css`
+              margin-block-start: var(--size-150);
+            `}
+          >
+            <div
+              className="balance-wrapper"
               css={css`
-                margin-block-start: var(--size-150);
+                padding: 0 var(--size-250);
               `}
             >
-              <div
-                className="balance-wrapper"
-                css={css`
-                  padding: 0 var(--size-250);
-                `}
-              >
-                <BalanceTitle balance={balance} />
-              </div>
-              <menu
-                className="no-scrollbar"
-                css={css`
-                  display: flex;
-                  align-items: center;
-                  justify-content: flex-start;
-                  gap: var(--controls-gap-small);
-                  overflow-x: auto;
-                  padding: 0 var(--size-250);
-                  margin-block-start: var(--size-250);
-                  background-color: var(--clr-surface);
-                `}
-              >
-                <li>
-                  <Button
-                    size="x-small"
-                    icon={ArrowCircleUp}
-                    onPress={() => {
-                      dispatch(setSendModalOpen(true));
-                    }}
-                  >
-                    Send
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    size="x-small"
-                    icon={ArrowCircleDown}
-                    onPress={() => {
-                      dispatch(setReceiveModalOpen(true));
-                    }}
-                  >
-                    Receive
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    size="x-small"
-                    icon={ArrowsLeftRight}
-                    onPress={() => {
-                      dispatch(setSwapModalOpen(true));
-                    }}
-                  >
-                    Swap
-                  </Button>
-                </li>
-              </menu>
-            </section>
-            {children}
-          </>
-        )}
+              <Balance balance={balance} />
+            </div>
+            <menu
+              className="no-scrollbar"
+              css={css`
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: var(--controls-gap-small);
+                overflow-x: auto;
+                padding: 0 var(--size-250);
+                margin-block-start: var(--size-250);
+                background-color: var(--clr-surface);
+              `}
+            >
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowCircleUp}
+                  onPress={() => {
+                    dispatch(setSendModalOpen(true));
+                  }}
+                >
+                  Send
+                </Button>
+              </li>
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowCircleDown}
+                  onPress={() => {
+                    dispatch(setReceiveModalOpen(true));
+                  }}
+                >
+                  Receive
+                </Button>
+              </li>
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowsLeftRight}
+                  onPress={() => {
+                    dispatch(setSwapModalOpen(true));
+                  }}
+                >
+                  Swap
+                </Button>
+              </li>
+            </menu>
+          </section>
+          {children}
+        </>
+        {/* )} */}
       </Overlay>
     </>
   );

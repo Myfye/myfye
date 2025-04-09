@@ -24,6 +24,7 @@ import {
   selectAssetsByGroup,
   toggleGroupOverlay,
 } from "../assetsSlice";
+import WalletOverlay from "../../WalletOverlay";
 
 const CryptoOverlay = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ const CryptoOverlay = () => {
     selectAssetsByGroup(state, "crypto")
   );
 
-  const cryptoBalanceUSD = useSelector((state: RootState) =>
+  const balanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "crypto")
   );
   const btcBalanceUSD = useSelector((state: RootState) =>
@@ -76,80 +77,25 @@ const CryptoOverlay = () => {
 
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={onOpenChange} title="Crypto">
-        <section
-          className="balance-container"
-          css={css`
-            margin-block-start: var(--size-150);
-          `}
-        >
-          <div
-            className="balance-wrapper"
-            css={css`
-              padding: 0 var(--size-250);
-            `}
-          >
-            <BalanceTitle balance={cryptoBalanceUSD} />
-          </div>
-          <menu
-            className="no-scrollbar"
-            css={css`
-              display: flex;
-              align-items: center;
-              justify-content: flex-start;
-              gap: var(--controls-gap-small);
-              overflow-x: auto;
-              padding: 0 var(--size-250);
-              margin-block-start: var(--size-250);
-              background-color: var(--clr-surface);
-            `}
-          >
-            <li>
-              <Button
-                size="small"
-                icon={ArrowCircleUp}
-                onPress={() => {
-                  dispatch(setSendModalOpen(true));
-                }}
-              >
-                Send
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="small"
-                icon={ArrowCircleDown}
-                onPress={() => {
-                  dispatch(setReceiveModalOpen(true));
-                }}
-              >
-                Receive
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="small"
-                icon={ArrowsLeftRight}
-                onPress={() => {
-                  dispatch(setDepositModalOpen(true));
-                }}
-              >
-                Swap
-              </Button>
-            </li>
-          </menu>
-        </section>
+      <WalletOverlay
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        title="Crypto"
+        balance={balanceUSD}
+      >
         <section className="pie-chart-container">
           <PieChart data={pieChartData}></PieChart>
         </section>
         <section
           css={css`
+            margin-block-start: var(--size-500);
             margin-inline: var(--size-250);
+            margin-block-end: var(--size-250);
           `}
         >
           <AssetCardList assets={cryptoAssets} showOptions={true} />
         </section>
-      </Overlay>
+      </WalletOverlay>
     </>
   );
 };
