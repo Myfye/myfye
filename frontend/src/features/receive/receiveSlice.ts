@@ -39,5 +39,5 @@ const receiveSlice = createSlice({
   },
 });
 
-export const { toggleModal, toggleWallet } = sendSlice.actions;
-export default sendSlice.reducer;
+export const { toggleModal, toggleWallet } = receiveSlice.actions;
+export default receiveSlice.reducer;
