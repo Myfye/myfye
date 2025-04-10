@@ -4,7 +4,6 @@ const cors = require("cors");
 const geoip = require('geoip-lite');
 const rateLimit = require('express-rate-limit');
 const app = express();
-const PORT = 3001; 
 const { create_new_on_ramp_path } = require('./routes/newBlindPayReceiver');
 const { get_payin_quote } = require('./routes/getPayinQuote');
 const { create_new_payin } = require('./routes/createNewPayin');
@@ -277,9 +276,15 @@ app.listen(PORT, () => {
 });
 */
 
+// Use process.env.PORT for production (Heroku, AWS, etc.), fall back to 3001 in development
+const PORT = process.env.PORT || 3001; 
+
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Backend server running at http://0.0.0.0:${PORT}`); //http://44.242.228.55:3001
+  console.log(`Backend server running at http://0.0.0.0:${PORT}`); 
 });
+
+//http://44.242.228.55:3001
+
 /*
 curl -X POST http://localhost:3001/new_on_ramp \
   -H "Content-Type: application/json" \
