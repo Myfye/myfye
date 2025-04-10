@@ -17,6 +17,39 @@ const {
     updateSolanaPubKey, 
     getUserByPrivyId } = require('./routes/userDb');
 
+app.set('trust proxy', true);
+
+const allowedOrigins = [
+    "http://localhost:3000", // Development (local)
+    "https://d3ewm5gcazpqyv.cloudfront.net", // Staging (CloudFront)
+    "https://d1voqwa9zncr8f.cloudfront.net", // Production (CloudFront)
+    "https://myfye.com", // Production (myfye.com)
+    "https://www.myfye.com", // Production (www.myfye.com)
+    "https://api.myfye.com", // API domain
+  ];
+  
+  // Add CORS middleware with stricter configuration
+  app.use(cors({
+      origin: function (origin, callback) {
+        // Allow requests without origin (e.g., Postman or server-side requests)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          console.log(`Blocked request from origin: ${origin}`);
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
+      credentials: true,
+      maxAge: 86400, // Cache preflight requests for 24 hours
+      exposedHeaders: ['Access-Control-Allow-Origin']
+  }));
+
+// Add explicit OPTIONS handling for preflight requests
+app.options('*', cors());
+
+app.use(express.json());
 // Add middleware logging
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -83,38 +116,8 @@ const blockUnauthorizedIPs = (req, res, next) => {
   next();
 };
 
-const allowedOrigins = [
-  "http://localhost:3000", // Development (local)
-  "https://d3ewm5gcazpqyv.cloudfront.net", // Staging (CloudFront)
-  "https://d1voqwa9zncr8f.cloudfront.net", // Production (CloudFront)
-  "https://myfye.com", // Production (myfye.com)
-  "https://www.myfye.com", // Production (www.myfye.com)
-  "https://api.myfye.com", // API domain
-];
-
-// Add CORS middleware with stricter configuration
-app.use(cors({
-    origin: function (origin, callback) {
-      // Allow requests without origin (e.g., Postman or server-side requests)
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        console.log(`Blocked request from origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
-    credentials: true,
-    maxAge: 86400, // Cache preflight requests for 24 hours
-    exposedHeaders: ['Access-Control-Allow-Origin']
-}));
-
-app.use(express.json());
-
 // Apply general rate limiting to all routes
 app.use(generalLimiter);
-
 // Apply IP blocking and API key validation to all routes
 app.use(blockUnauthorizedIPs);
 
