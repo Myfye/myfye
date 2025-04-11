@@ -13,7 +13,7 @@ import {
   getUsers,
 } from "../../features/authentication/LoginService.tsx";
 import { setMFAStatus } from "../../redux/userWalletData.tsx";
-import appLogo from "@/assets/myfyeleaf.png";
+import appLogo from "@/assets/myfyeLogo3.png";
 
 import { css } from "@emotion/react";
 import QRCodeModal from "../../features/qr-code/QRCodeModal.tsx";
@@ -44,6 +44,7 @@ import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import LoadingScreen from "@/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "@/components/PrivyUseSolanaWallets.tsx";
+import peopleOnMyfye from "@/assets/peopleOnMyfye.png";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -269,10 +270,10 @@ function WebAppInner() {
             <img
               className="aspect-ratio-square"
               css={css`
-                width: var(--size-800);
+                width: var(--size-1600);
               `}
               src={appLogo}
-              alt="MyFye"
+              alt="Myfye"
             />
           </LoginHeader>
           <LoginMain>
@@ -289,14 +290,17 @@ function WebAppInner() {
                     display: grid;
                     place-items: center;
                     width: 50%;
-                    border: 1px solid var(--clr-neutral-200);
                     border-radius: var(--border-radius-medium);
                     aspect-ratio: 1;
                     background-color: var(--clr-surface);
                     margin-inline: auto;
                   `}
                 >
-                  Image
+                  <img 
+                    src={peopleOnMyfye} 
+                    alt="People on Myfye" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--border-radius-medium)' }}
+                  />
                 </div>
               </div>
             </section>
@@ -308,7 +312,7 @@ function WebAppInner() {
               `}
             >
               <h1 className="heading-x-large" css={css``}>
-                Welcome to MyFye
+                Welcome to Myfye
               </h1>
               <p
                 className="subtitle"
@@ -317,7 +321,7 @@ function WebAppInner() {
                   color: var(--clr-text-neutral);
                 `}
               >
-                Hold stocks, crypto, USD/EUR, and more
+                Invest in stocks, crypto, treasuries, and more, fully owned by you, on your phone.
               </p>
             </section>
           </LoginMain>

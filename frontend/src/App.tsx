@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.pcss";
-import AppRouter from "./pages/app/AppRouter temp.tsx";
+import AppRouter from "./pages/app/AppRouter.tsx";
 
 function App() {
   return (
