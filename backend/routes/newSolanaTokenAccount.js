@@ -44,10 +44,6 @@ async function createNewTokenAccount(data) {
                 throw new Error('SOL_PRIV_KEY environment variable is not set');
             }
             
-            // Log the private key length and first few characters for debugging
-            console.log(`Private key length: ${SOL_PRIV_KEY.length}`);
-            console.log(`Private key first 10 chars: ${SOL_PRIV_KEY.substring(0, 10)}...`);
-            
             // Trim any whitespace or newlines that might be present
             const trimmedKey = SOL_PRIV_KEY.trim();
             
@@ -55,7 +51,6 @@ async function createNewTokenAccount(data) {
             try {
                 const decodedPrivateKey = bs58.decode(trimmedKey);
                 payerKeypair = Keypair.fromSecretKey(decodedPrivateKey);
-                console.log("Successfully created keypair from base58 private key");
             } catch (bs58Error) {
                 console.error("Base58 decode error:", bs58Error.message);
                 
@@ -64,7 +59,6 @@ async function createNewTokenAccount(data) {
                     try {
                         const privateKeyArray = JSON.parse(trimmedKey);
                         payerKeypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
-                        console.log("Successfully created keypair from JSON array private key");
                     } catch (jsonError) {
                         console.error("JSON parse error:", jsonError.message);
                         throw new Error('Private key is not in a valid format (neither base58 nor JSON array)');
@@ -75,7 +69,6 @@ async function createNewTokenAccount(data) {
                         // This is a fallback method that might work in some cases
                         const secretKey = new Uint8Array(trimmedKey.split('').map(c => c.charCodeAt(0)));
                         payerKeypair = Keypair.fromSecretKey(secretKey);
-                        console.log("Successfully created keypair from direct string conversion");
                     } catch (directError) {
                         console.error("Direct conversion error:", directError.message);
                         throw new Error('Failed to parse private key. Please ensure it is in base58 format or a JSON array of numbers.');
