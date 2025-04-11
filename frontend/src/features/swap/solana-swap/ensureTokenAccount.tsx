@@ -43,7 +43,7 @@ async function ensureTokenAccount(userPublicKeyString: String, mintAddress: Stri
     if (!receiverAccountInfo) {
     
         try {
-            const response = await fetch(`${MYFYE_BACKEND}/create_token_account`, {
+            const response = await fetch(`${MYFYE_BACKEND}/create_solana_token_account`, {
                 method: 'POST',
                 mode: 'cors',
                 credentials: 'include',
@@ -57,6 +57,15 @@ async function ensureTokenAccount(userPublicKeyString: String, mintAddress: Stri
                     programId: programId
                 })
             });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Backend error:", errorData);
+                throw new Error(`Backend error: ${errorData.error || 'Unknown error'}`);
+            }
+
+            const result = await response.json();
+            console.log("Token account creation result:", result);
 
             // the create new account promise is not working 
             // on the backend so try waiting 10 seconds and then 

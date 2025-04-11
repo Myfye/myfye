@@ -233,9 +233,15 @@ app.post("/new_payin", async (req, res) => {
 
 app.post("/create_solana_token_account", async (req, res) => {
   console.log("\n=== Create Solana Token Account Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
 
   try {
     const { receiverPubKey, mintAddress, programId } = req.body;
+    
+    // Log environment variable status (without exposing the actual key)
+    console.log(`SOL_PRIV_KEY is ${process.env.SOL_PRIV_KEY ? 'set' : 'not set'}`);
+    console.log(`SOL_PRIV_KEY length: ${process.env.SOL_PRIV_KEY ? process.env.SOL_PRIV_KEY.length : 0}`);
+    
     const result = await createNewTokenAccount({
       receiverPubKey,
       mintAddress,
@@ -248,7 +254,12 @@ app.post("/create_solana_token_account", async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error("Error in /create_solana_token_account endpoint:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to create token account",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
