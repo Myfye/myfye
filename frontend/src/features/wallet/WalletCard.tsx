@@ -8,27 +8,34 @@ import {
   CaretDown,
   CaretRight as CaretRightIcon,
   CaretUp,
+  Icon,
 } from "@phosphor-icons/react";
-import { useMemo } from "react";
+import { RefObject, useMemo } from "react";
+import { formatBalance } from "./assets/utils";
+import { FiatCurrency } from "./assets/types";
 
 const WalletCard = ({
-  title = "",
+  title,
   balance,
-  percentChange = 0,
+  percentChange,
   currency = "usd",
-  icon = null,
+  icon,
   ref,
   className = "",
   ...restProps
+}: {
+  title: string;
+  balance: number;
+  percentChange: number;
+  icon: Icon;
+  ref: RefObject<HTMLButtonElement>;
+  className: string;
+  currency: FiatCurrency;
 }) => {
   const Icon = icon;
 
   const formattedBalance = useMemo(
-    () =>
-      new Intl.NumberFormat("en-EN", {
-        style: "currency",
-        currency: currency,
-      }).format(balance),
+    () => formatBalance(balance, currency),
     [balance, currency]
   );
 

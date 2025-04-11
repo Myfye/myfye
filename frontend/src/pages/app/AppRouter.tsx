@@ -12,11 +12,9 @@ import {
   HandleUserLogIn,
   getUsers,
 } from "../../features/authentication/LoginService.tsx";
-import { 
-  setMFAStatus } from '../../redux/userWalletData.tsx';
+import { setMFAStatus } from "../../redux/userWalletData.tsx";
 import appLogo from "@/assets/myfyeleaf.png";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import QRCodeModal from "../../features/qr-code/QRCodeModal.tsx";
 import LoginHeader from "../../features/authentication/LoginHeader.tsx";
@@ -45,6 +43,7 @@ import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import LoadingScreen from "@/components/ui/loading/LoadingScreen.tsx";
+import PrivyUseSolanaWallets from "@/components/PrivyUseSolanaWallets.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -120,7 +119,6 @@ function WebAppInner() {
     getUsers(dispatch);
   }, []);
 
-
   const isSendModalOpen = useSelector((state: any) => state.sendModal.isOpen);
   const isReceiveModalOpen = useSelector(
     (state: any) => state.receiveModal.isOpen
@@ -174,9 +172,7 @@ function WebAppInner() {
   );
 
   if (authenticated) {
-
     if (userDataLoaded) {
-
       if (mfaStatus === "enrolled") {
         return (
           <div className="app-layout">
@@ -203,78 +199,68 @@ function WebAppInner() {
               onOpenChange={(e) => dispatch(setQRCodeModalOpen(e))}
             />
             <SwapModal />
-            {/* Overlays */}
-            <WithdrawCryptoOverlay
-              isOpen={isWithdrawCryptoOverlayOpen}
-              onOpenChange={(e) => dispatch(setWithdrawCryptoOverlayOpen(e))}
-            />
-            <SelectContactOverlay
-              isOpen={isSelectContactOverlayOpen}
-              onOpenChange={(e) => dispatch(setSelectContactOverlayOpen(e))}
-            />
             <Toaster />
+            <PrivyUseSolanaWallets />
           </div>
         );
       }
-      
-      if (mfaStatus === "createdPasskey") { 
+      if (mfaStatus === "createdPasskey") {
         return (
-        <div className="app-layout">
-
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-        <div style={{marginTop: '80px'}}>
-          <button onClick={showMfaEnrollmentModal}
-          style={{
-            color: '#ffffff',
-            fontSize: '25px',
-            fontWeight: 'bold',
-            background: '#447E26',
-          borderRadius: '10px', 
-          border: '3px solid #ffffff',
-          padding: '15px',
-          cursor: 'pointer'}}>
-              Enroll in MFA
-            </button>
+          <div className="app-layout">
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ marginTop: "80px" }}>
+                <button
+                  onClick={showMfaEnrollmentModal}
+                  style={{
+                    color: "#ffffff",
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    background: "#447E26",
+                    borderRadius: "10px",
+                    border: "3px solid #ffffff",
+                    padding: "15px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Enroll in MFA
+                </button>
+              </div>
             </div>
-            
           </div>
-            </div>
-        )
+        );
       }
-
       if (mfaStatus === "" || !mfaStatus) {
         return (
-        <div className="app-layout">
-
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-        <div style={{marginTop: '80px'}}>
-          <button onClick={linkPasskey}
-          style={{
-            color: '#ffffff',
-            fontSize: '25px',
-            fontWeight: 'bold',
-            background: '#447E26',
-          borderRadius: '10px', 
-          border: '3px solid #ffffff',
-          padding: '15px',
-          cursor: 'pointer'}}>
-              Create A Passkey
-            </button>
+          <div className="app-layout">
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ marginTop: "80px" }}>
+                <button
+                  onClick={linkPasskey}
+                  style={{
+                    color: "#ffffff",
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    background: "#447E26",
+                    borderRadius: "10px",
+                    border: "3px solid #ffffff",
+                    padding: "15px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Create A Passkey
+                </button>
+              </div>
             </div>
-            
           </div>
-            </div>
-        ) 
+        );
       }
-
     } else {
       return (
         <div className="app-layout">
           <LoadingScreen />
         </div>
-      )
+      );
     }
-
   } else {
     return (
       <>

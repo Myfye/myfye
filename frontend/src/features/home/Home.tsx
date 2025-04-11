@@ -1,7 +1,4 @@
-import PrivyUseSolanaWallets from "../../components/PrivyUseSolanaWallets";
 import HomeTabs from "@/features/home/HomeTabs";
-
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 const Home = () => {
@@ -12,7 +9,6 @@ const Home = () => {
         height: 100cqh;
       `}
     >
-      <PrivyUseSolanaWallets />
       <HomeTabs></HomeTabs>
     </div>
   );

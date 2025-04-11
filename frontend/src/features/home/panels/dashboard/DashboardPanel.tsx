@@ -6,10 +6,9 @@ import {
   ArrowLineUp as ArrowLineUpIcon,
 } from "@phosphor-icons/react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import PieChart from "../../../../components/ui/pie-chart/PieChart";
-import BalanceTitle from "../../../../components/ui/balance-title/BalanceTitle";
+import Balance from "../../../../components/ui/balance/Balance";
 import CTACarousel from "./cta-carousel/CTACarousel";
 import { useMemo } from "react";
 import {
@@ -18,41 +17,61 @@ import {
   setSendModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers";
-import { useDispatch } from "react-redux";
-import useBalance from "@/hooks/useBalance";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectAssetsBalanceUSD,
+  selectAssetsBalanceUSDByGroup,
+} from "@/features/wallet/assets/assetsSlice";
+import { RootState } from "@/redux/store";
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
 
-  const { cashBalanceInUSD, cryptoBalanceInUSD, usdyBalanceInUSD } =
-    useBalance();
+  const balanceUSD = useSelector(selectAssetsBalanceUSD);
 
-  const totalBalance = useMemo(
-    () => cashBalanceInUSD + cryptoBalanceInUSD + usdyBalanceInUSD,
-    [cashBalanceInUSD, cryptoBalanceInUSD, usdyBalanceInUSD]
+  const cashBalanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "cash")
+  );
+  const earnBalanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "earn")
+  );
+  const cryptoBalanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "crypto")
+  );
+  const stocksBalanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByGroup(state, "stocks")
   );
 
   const pieChartData = useMemo(() => {
     const data = [];
-    if (cashBalanceInUSD > 0 || usdyBalanceInUSD > 0) {
+    if (cashBalanceUSD > 0 || earnBalanceUSD > 0) {
       const cashData = {
         id: "Cash",
         label: "Cash",
-        value: cashBalanceInUSD + usdyBalanceInUSD,
+        value: cashBalanceUSD + earnBalanceUSD,
         color: "var(--clr-pie-chart-usdt)",
       };
       data.push(cashData);
     }
-    if (cryptoBalanceInUSD > 0) {
+    if (cryptoBalanceUSD > 0) {
       const cryptoData = {
         id: "Crypto",
         label: "Crypto",
-        value: cryptoBalanceInUSD,
+        value: cryptoBalanceUSD,
         color: "var(--clr-pie-chart-btc)",
       };
       data.push(cryptoData);
     }
+    if (stocksBalanceUSD > 0) {
+      const stocksData = {
+        id: "Stocks",
+        label: "Stocks",
+        value: stocksBalanceUSD,
+        color: "var(--clr-pie-chart-btc)",
+      };
+      data.push(stocksData);
+    }
     return data;
-  });
+  }, [cashBalanceUSD, earnBalanceUSD, cryptoBalanceUSD, stocksBalanceUSD]);
 
   return (
     <div
@@ -82,7 +101,7 @@ const DashboardPanel = ({}) => {
             padding: 0 var(--size-250);
           `}
         >
-          <BalanceTitle balance={totalBalance} />
+          <Balance balance={balanceUSD} />
         </div>
         <menu
           className="no-scrollbar"
@@ -149,7 +168,7 @@ const DashboardPanel = ({}) => {
           padding-inline: var(--size-250);
         `}
       >
-        {totalBalance === 0 ? (
+        {balanceUSD === 0 ? (
           <div
             css={css`
               display: flex;

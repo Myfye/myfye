@@ -2,72 +2,35 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import {
   calculateExchangeRate,
-  changeFormattedAmount,
+  updateFormattedAmount,
   parseFormattedAmount,
 } from "./utils";
-import { UserWalletDataState } from "@/redux/userWalletData";
-
-export type CryptoCoinId = "btcSol" | "sol";
-export type CashCoinId = "usdcSol" | "usdtSol" | "eurcSol";
-export type EarnCoinId = "usdySol";
-export type CoinId = CryptoCoinId | CashCoinId | EarnCoinId;
-
-export interface Coin {
-  id: CoinId;
-  label: string;
-  symbol: string;
-  type: "crypto" | "cash" | "earn" | "stock";
-  fiatEquivalent: string | null;
-  currentExchangeRate: number;
-  iconUrl: string;
-  decimals: number;
-}
-
-export type SwapTransactionType = "buy" | "sell";
-
-export type SwapTransactionStatus = "idle" | "signed" | "success" | "fail";
-
-export interface SwapTransaction {
-  buy: {
-    amount: number | null;
-    formattedAmount: string;
-    coinId: CoinId | null;
-  };
-  sell: {
-    amount: number | null;
-    formattedAmount: string;
-    coinId: CoinId | null;
-  };
-  fee: number | null;
-  exchangeRate: number | null;
-  status: SwapTransactionStatus;
-  id: string | null;
-}
-
-interface ModalState {
-  isOpen: boolean;
-}
-
-type OverlayType = "selectCoin" | "confirmSwap" | "processingTransaction";
-
-interface OverlayState {
-  selectCoin: {
-    isOpen: boolean;
-    transactionType: SwapTransactionType;
-  };
-  confirmSwap: {
-    isOpen: boolean;
-    transactionType?: SwapTransactionType;
-  };
-  processingTransaction: {
-    isOpen: boolean;
-    transactionType?: SwapTransactionType;
-  };
-}
+import { AbstractedAsset, Asset, AssetsState } from "../wallet/assets/types";
+import {
+  SwapTransaction,
+  SwapTransactionStatus,
+  SwapTransactionType,
+} from "./types";
 
 export interface SwapState {
-  modal: ModalState;
-  overlays: OverlayState;
+  modal: {
+    isOpen: boolean;
+    zIndex: number;
+  };
+  overlays: {
+    selectAsset: {
+      isOpen: boolean;
+      transactionType: SwapTransactionType;
+    };
+    confirmSwap: {
+      isOpen: boolean;
+      transactionType?: SwapTransactionType;
+    };
+    processingTransaction: {
+      isOpen: boolean;
+      transactionType?: SwapTransactionType;
+    };
+  };
   transaction: SwapTransaction;
 }
 
@@ -75,15 +38,16 @@ export interface SwapState {
 const initialState: SwapState = {
   modal: {
     isOpen: false,
+    zIndex: 9999,
   },
   overlays: {
-    selectCoin: { isOpen: false, transactionType: "sell" },
+    selectAsset: { isOpen: false, transactionType: "sell" },
     confirmSwap: { isOpen: false },
     processingTransaction: { isOpen: false },
   },
   transaction: {
-    buy: { amount: null, formattedAmount: "", coinId: null },
-    sell: { amount: null, formattedAmount: "", coinId: null },
+    buy: { amount: null, formattedAmount: "", abstractedAssetId: null },
+    sell: { amount: null, formattedAmount: "", abstractedAssetId: null },
     exchangeRate: null,
     fee: null,
     status: "idle",
@@ -97,16 +61,20 @@ const swapSlice = createSlice({
   reducers: {
     toggleModal(
       state,
-      action: PayloadAction<{ isOpen: boolean; coinId?: CoinId }>
+      action: PayloadAction<{
+        isOpen: boolean;
+        abstractedAssetId?: AbstractedAsset["id"];
+      }>
     ) {
       state.modal.isOpen = action.payload.isOpen;
-      if (action.payload?.coinId)
-        state.transaction.sell.coinId = action.payload.coinId;
+      if (action.payload?.abstractedAssetId)
+        state.transaction.sell.abstractedAssetId =
+          action.payload.abstractedAssetId;
     },
     toggleOverlay(
       state,
       action: PayloadAction<{
-        type: OverlayType;
+        type: "selectAsset" | "confirmSwap" | "processingTransaction";
         isOpen: boolean;
         transactionType?: SwapTransactionType;
       }>
@@ -118,7 +86,7 @@ const swapSlice = createSlice({
       }
     },
     unmount: () => initialState,
-    changeAmount(
+    updateAmount(
       state,
       action: PayloadAction<{
         input: string | number;
@@ -126,7 +94,7 @@ const swapSlice = createSlice({
       }>
     ) {
       // first, change the sell amount label
-      state.transaction.sell.formattedAmount = changeFormattedAmount(
+      state.transaction.sell.formattedAmount = updateFormattedAmount(
         state.transaction.sell.formattedAmount,
         action.payload.input,
         action.payload.replace
@@ -153,34 +121,34 @@ const swapSlice = createSlice({
       state.transaction.buy.amount =
         state.transaction.sell.amount * state.transaction.exchangeRate;
 
-      state.transaction.buy.formattedAmount = changeFormattedAmount(
+      state.transaction.buy.formattedAmount = updateFormattedAmount(
         state.transaction.buy.formattedAmount,
         state.transaction.buy.amount,
         true
       );
     },
-    changeCoinId(
+    updateAbstractedAssetId(
       state,
       action: PayloadAction<{
         transactionType: SwapTransactionType;
-        coinId: CoinId | null;
+        abstractedAssetId: AbstractedAsset["id"] | null;
       }>
     ) {
-      state.transaction[action.payload.transactionType].coinId =
-        action.payload.coinId;
+      state.transaction[action.payload.transactionType].abstractedAssetId =
+        action.payload.abstractedAssetId;
     },
-    changeExchangeRate(
+    updateExchangeRate(
       state,
       action: PayloadAction<{
-        wallet: UserWalletDataState;
-        buyCoinId: CoinId;
-        sellCoinId: CoinId;
+        assets: AssetsState;
+        buyAbstractedAssetId: Asset["id"] | null;
+        sellAbstractedAssetId: Asset["id"] | null;
       }>
     ) {
       state.transaction.exchangeRate = calculateExchangeRate({
-        wallet: action.payload.wallet,
-        buyCoinId: action.payload.buyCoinId,
-        sellCoinId: action.payload.sellCoinId,
+        assets: action.payload.assets,
+        buyAbstractedAssetId: action.payload.buyAbstractedAssetId,
+        sellAbstractedAssetId: action.payload.sellAbstractedAssetId,
       });
 
       // if no exchange rate or sell amount, don't bother calculating the buy amounts and reset them
@@ -194,7 +162,7 @@ const swapSlice = createSlice({
       state.transaction.buy.amount =
         state.transaction.sell.amount * state.transaction.exchangeRate;
 
-      state.transaction.buy.formattedAmount = changeFormattedAmount(
+      state.transaction.buy.formattedAmount = updateFormattedAmount(
         state.transaction.buy.formattedAmount,
         state.transaction.buy.amount,
         true
@@ -206,15 +174,18 @@ const swapSlice = createSlice({
     updateId(state, action: PayloadAction<string>) {
       state.transaction.id = action.payload;
     },
+    updateZIndex(state, action: PayloadAction<number>) {
+      state.modal.zIndex = action.payload;
+    },
   },
 });
 
 export const {
   toggleModal,
   toggleOverlay,
-  changeAmount,
-  changeExchangeRate,
-  changeCoinId,
+  updateAmount,
+  updateExchangeRate,
+  updateAbstractedAssetId,
   unmount,
   updateStatus,
   updateId,

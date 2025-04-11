@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { css } from "@emotion/react";
 
 import { useDispatch, useSelector } from "react-redux";
-import CoinCardList from "@/features/coins/coin-card/CoinCardList";
+import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 
 import usDollarCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
@@ -72,7 +72,7 @@ const WithdrawCryptoOverlay = ({ isOpen, onOpenChange }) => {
     [solBalanceInUSD, btcBalanceInUSD]
   );
 
-  const onCoinSelect = (coin) => {
+  const onAssetSelect = (coin) => {
     dispatch(addCurrentCoin(coin));
     setSelectContactOverlayOpen(true);
   };
@@ -95,10 +95,10 @@ const WithdrawCryptoOverlay = ({ isOpen, onOpenChange }) => {
           >
             Cash
           </p>
-          <CoinCardList
+          <AssetCardList
             coins={cashCoins}
             showOptions={false}
-            onCoinSelect={onCoinSelect}
+            onAssetSelect={onAssetSelect}
           />
         </section>
         <section
@@ -116,10 +116,10 @@ const WithdrawCryptoOverlay = ({ isOpen, onOpenChange }) => {
           >
             Crypto
           </p>
-          <CoinCardList
+          <AssetCardList
             coins={cryptoCoins}
             showOptions={false}
-            onCoinSelect={onCoinSelect}
+            onAssetSelect={onAssetSelect}
           />
         </section>
       </Overlay>

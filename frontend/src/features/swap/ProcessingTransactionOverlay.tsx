@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import HeadlessOverlay from "@/components/ui/overlay/HeadlessOverlay";
-import { DotLottie, DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleOverlay, unmount } from "./swapSlice";
+import { SwapTransactionStatus, toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import leafLoading from "@/assets/lottie/leaf-loading.json";
 import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
@@ -51,7 +50,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
         );
       }
       default: {
-        return `${transaction.buy.coinId} will be deposited into your wallet once the transaction is complete.`;
+        return `${transaction.buy.abstractedAssetId} will be deposited into your wallet once the transaction is complete.`;
       }
     }
   }, [transaction]);
@@ -170,7 +169,11 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
 
 export default ProcessingTransactionOverlay;
 
-const UIAnimation = ({ transactionStatus }) => {
+const UIAnimation = ({
+  transactionStatus,
+}: {
+  transactionStatus: SwapTransactionStatus;
+}) => {
   const options = useMemo(() => {
     switch (transactionStatus) {
       case "success": {

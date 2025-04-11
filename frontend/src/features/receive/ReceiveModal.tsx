@@ -3,11 +3,19 @@ import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
 import { Copy as CopyIcon, X } from "@phosphor-icons/react";
 import QRCode from "../qr-code/QRCode";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/components/ui/modal/Modal";
+import store, { RootState } from "@/redux/store";
+import { toggleModal } from "./receiveSlice";
 
-const ReceiveModal = ({ isOpen, onOpenChange }) => {
-  const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
+const ReceiveModal = () => {
+  const dispatch = useDispatch();
+
+  const isOpen = useSelector((state: RootState) => state.receive);
+  const onOpenChange = (isOpen: boolean) => {
+    dispatch(toggleModal(isOpen));
+  };
+
   return (
     <>
       <Modal
@@ -28,7 +36,7 @@ const ReceiveModal = ({ isOpen, onOpenChange }) => {
             padding-block-end: var(--size-200);
           `}
         >
-          <QRCode data={pubKey} color="#000407" />
+          <QRCode data={""} color="#000407" />
           <Button
             expand
             icon={CopyIcon}

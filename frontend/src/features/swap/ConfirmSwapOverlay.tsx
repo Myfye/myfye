@@ -5,11 +5,12 @@ import Overlay from "@/components/ui/overlay/Overlay";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import SwapCoinSummary from "./SwapCoinSummary";
+import SwapAssetsSummary from "./SwapAssetsSummary";
 import { toggleOverlay } from "./swapSlice";
 import { swap } from "./solana-swap/SwapService";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
-import userWalletData from "@/redux/userWalletData";
+import { useCallback } from "react";
+import { AbstractedAsset } from "../wallet/assets/types";
 
 const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -27,33 +28,63 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: e }));
   };
 
-  const handleSwapConfirmation = () => {
+  const assets = useSelector((state: RootState) => state.assets);
+
+  const getAssetId = (abstractedAssetId: AbstractedAsset["id"] | null) => {
+    switch (abstractedAssetId) {
+      case "us_dollar_yield": {
+        return "usdy_sol";
+      }
+      case "us_dollar": {
+        return "usdc_sol";
+      }
+      case "sol": {
+        return "sol";
+      }
+      case "btc": {
+        return "btc_sol";
+      }
+      case "euro": {
+        return "eurc_sol";
+      }
+      default: {
+        throw new Error("Could not find abstracted Asset Id");
+      }
+    }
+  };
+
+  const handleSwapConfirmation = useCallback(() => {
+    const buyAssetId = getAssetId(transaction.buy.abstractedAssetId);
+    const sellAssetId = getAssetId(transaction.sell.abstractedAssetId);
+
     if (!transaction.sell.amount) {
       throw new Error(`Sell amount is null`);
     }
-    if (!transaction.sell.coinId) {
-      throw new Error(`Sell coinid is null`);
+    if (!transaction.sell.abstractedAssetId) {
+      throw new Error(`Sell abstractedAssetId is null`);
     }
-    if (!transaction.buy.coinId) {
-      throw new Error(`Buy coinid is null`);
+    if (!transaction.buy.abstractedAssetId) {
+      throw new Error(`Buy abstractedAssetId is null`);
     }
+
     swap({
       wallet,
-      walletData,
+      assets,
       publicKey: walletData.solanaPubKey,
       inputAmount: transaction.sell.amount,
-      inputCurrency: transaction.sell.coinId,
-      outputCurrency: transaction.buy.coinId,
+      inputCurrency: sellAssetId,
+      outputCurrency: buyAssetId,
       dispatch,
       transaction,
     });
+
     dispatch(
       toggleOverlay({
         type: "processingTransaction",
         isOpen: true,
       })
     );
-  };
+  }, [transaction]);
   return (
     <>
       <Overlay
@@ -75,7 +106,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
               margin-inline: var(--size-250);
             `}
           >
-            <SwapCoinSummary />
+            <SwapAssetsSummary />
           </section>
           <section
             css={css`

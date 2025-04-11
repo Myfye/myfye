@@ -311,7 +311,7 @@ async function transactionSenderAndConfirmationWaiter({
   const abortableResender = async () => {
     while (!abortSignal.aborted) {
       try {
-        await wait(1_000);
+        await delay(1_000);
         await connection.sendRawTransaction(
           serializedTransaction,
           SEND_OPTIONS
@@ -349,7 +349,7 @@ async function transactionSenderAndConfirmationWaiter({
         }),
       new Promise(async (resolve, reject) => {
         while (!abortSignal.aborted) {
-          await wait(2_000);
+          await delay(2_000);
           const tx = await connection.getSignatureStatus(txid, {
             searchTransactionHistory: false,
           });
@@ -397,20 +397,6 @@ async function transactionSenderAndConfirmationWaiter({
 
   console.log("Transaction response:", response);
   return response;
-}
-
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function updateUI(dispatch: any, type: string, status: string): void {
-  if (type == "withdraw") {
-    dispatch(setSwapWithdrawTransactionStatus(status)); // Update UI
-  } else if (type == "deposit") {
-    dispatch(setSwapDepositTransactionStatus(status)); // Update UI
-  } else {
-    dispatch(setSwapFXTransactionStatus(status)); // Update UI
-  }
 }
 
 function delay(ms: number) {
@@ -471,4 +457,3 @@ function delay(ms: number) {
           console.log("Simulation succeeded. Logs:", simulationResult.value.logs);
       }
           */
-

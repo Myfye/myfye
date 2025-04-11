@@ -4,6 +4,9 @@ import { useMemo } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Button from "../button/Button";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { selectAssetsBalanceUSD } from "@/features/wallet/assets/assetsSlice";
 
 const headingStyle = {
   fontWeight: "500",
@@ -21,19 +24,26 @@ const heading2Style = {
   fontWeight: "500",
   fontFamily: "Inter",
   fill: "var(--clr-text)",
-  fontSize: 16,
+  fontSize: 15,
 };
 
-const BalanceTitle = ({ centerX, centerY }) => {
-  const { totalBalanceInUSD } = useBalance();
-
+const Balance = ({
+  centerX,
+  centerY,
+}: {
+  centerX: number;
+  centerY: number;
+}) => {
+  const balanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSD(state)
+  );
   const formattedBalance = useMemo(
     () =>
       new Intl.NumberFormat("en-EN", {
         style: "currency",
         currency: "usd",
-      }).format(totalBalanceInUSD),
-    [totalBalanceInUSD]
+      }).format(balanceUSD),
+    [balanceUSD]
   );
 
   return (
@@ -58,7 +68,13 @@ const BalanceTitle = ({ centerX, centerY }) => {
   );
 };
 
-const EarnTitle = ({ centerX, centerY }) => {
+const EarnTitle = ({
+  centerX,
+  centerY,
+}: {
+  centerX: number;
+  centerY: number;
+}) => {
   return (
     <>
       <text
@@ -87,7 +103,6 @@ const PieChart = ({ type, data }) => (
     css={css`
       width: 100%;
       height: 16rem;
-      overflow: visible;
       position: relative;
     `}
   >
@@ -98,7 +113,7 @@ const PieChart = ({ type, data }) => (
         "arcLinkLabels",
         "arcLabels",
         "legends",
-        type === "earn" ? EarnTitle : BalanceTitle,
+        type === "earn" ? EarnTitle : Balance,
       ]}
       margin={{ top: 24, right: 160, bottom: 24, left: 0 }}
       valueFormat={type === "earn" ? " >-.0%" : " >-$"}
@@ -128,23 +143,27 @@ const PieChart = ({ type, data }) => (
         from: "color",
         modifiers: [["darker", 2]],
       }}
-      legends={[
-        {
-          anchor: "right",
-          direction: "column",
-          justify: false,
-          translateX: type === "earn" ? 0 : 130,
-          translateY: 0,
-          itemsSpacing: 8,
-          itemWidth: 100,
-          itemHeight: 18,
-          itemTextColor: "#999",
-          itemDirection: "left-to-right",
-          itemOpacity: 1,
-          symbolSize: 18,
-          symbolShape: "circle",
-        },
-      ]}
+      legends={
+        type === "earn"
+          ? undefined
+          : [
+              {
+                anchor: "right",
+                direction: "column",
+                justify: false,
+                translateX: type === "earn" ? 0 : 130,
+                translateY: 0,
+                itemsSpacing: 8,
+                itemWidth: 100,
+                itemHeight: 18,
+                itemTextColor: "#999",
+                itemDirection: "left-to-right",
+                itemOpacity: 1,
+                symbolSize: 18,
+                symbolShape: "circle",
+              },
+            ]
+      }
       theme={{
         background: "var(--clr-surface)",
         text: {
@@ -155,26 +174,6 @@ const PieChart = ({ type, data }) => (
         },
       }}
     />
-    <div
-      className="button-wrapper"
-      css={css`
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        inset: 0;
-        margin: auto;
-        left: auto;
-        right: var(--size-200);
-      `}
-    >
-      {type === "earn" && (
-        <Button size="small" color="neutral">
-          View data
-        </Button>
-      )}
-    </div>
   </div>
 );
 

@@ -1,6 +1,4 @@
-import { UserWalletDataState } from "@/redux/userWalletData";
-import { Coin, CoinId } from "./swapSlice";
-import { User } from "@privy-io/react-auth";
+import { AbstractedAsset, Asset, AssetsState } from "../wallet/assets/types";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
@@ -10,11 +8,11 @@ const getFormattedNumberFromString = (amount: string): string => {
     : parsed.toLocaleString("en-EN", { maximumFractionDigits: 8 });
 };
 
-export const changeFormattedAmount = (
+export const updateFormattedAmount = (
   formattedAmount: string,
   input: string | number,
   replace?: boolean
-): string => {
+) => {
   // make sure input is a string
   input = input.toString();
 
@@ -56,7 +54,7 @@ export const changeFormattedAmount = (
   return updatedAmount;
 };
 
-export const changeFormattedGhostAmount = (formattedGhostAmount: string) => {
+export const updateFormattedGhostAmount = (formattedGhostAmount: string) => {
   switch (formattedGhostAmount.length) {
     case 0:
       return "0";
@@ -69,36 +67,33 @@ export const parseFormattedAmount = (formattedAmount: string) => {
   return parseFloat(formattedAmount.replace(/,/g, ""));
 };
 
+export const getExchangeRate = (
+  abstractedAssetId: AbstractedAsset["id"] | null,
+  assets: AssetsState
+) => {
+  if (!abstractedAssetId) throw new Error("Invalid asset id");
+  // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
+  const exchangeRateUSD = assets.assetIds
+    .map((id) => assets.assets[id])
+    .filter((asset) => asset.abstractedAssetId === abstractedAssetId)
+    .map((asset) => asset.exchangeRateUSD)[0];
+  return exchangeRateUSD;
+};
+
 export const getUsdAmount = (
-  coinId: CoinId | null,
-  wallet: UserWalletDataState,
+  abstractedAssetId: AbstractedAsset["id"] | null,
+  assets: AssetsState,
   amount: number | null
 ) => {
   if (!amount) return 0;
-  switch (coinId) {
-    case "btcSol": {
-      return amount * wallet.priceOfBTCinUSDC;
-    }
-    case "sol": {
-      return amount * 100;
-    }
-    case "usdcSol": {
-      return amount;
-    }
-    case "usdtSol": {
-      return amount;
-    }
-    case "eurcSol": {
-      return amount * wallet.priceOfEURCinUSDC;
-    }
-    case "usdySol": {
-      return amount * wallet.priceOfUSDYinUSDC;
-    }
-    default: {
-      // return 0 if coin is null
-      return 0;
-    }
+  if (!abstractedAssetId) {
+    console.error("invalid asset id");
+    return 0;
   }
+  // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
+  const exchangeRateUSD = getExchangeRate(abstractedAssetId, assets);
+  console.log("exchange rate", exchangeRateUSD);
+  return amount * exchangeRateUSD;
 };
 
 export const formatUsdAmount = (amount: number | null) =>
@@ -110,83 +105,23 @@ export const formatUsdAmount = (amount: number | null) =>
       }).format(amount)
     : "$0";
 
-export const getCoinBalance = (wallet: UserWalletDataState, coinId: CoinId) => {
-  console.log("coinID", coinId);
-  switch (coinId) {
-    case "btcSol": {
-      return wallet.btcSolBalance;
-    }
-    case "sol": {
-      return wallet.solBalance;
-    }
-    case "usdcSol": {
-      return wallet.usdcSolBalance;
-    }
-    case "usdtSol": {
-      return wallet.usdtSolBalance;
-    }
-    case "eurcSol": {
-      return wallet.eurcSolBalance;
-    }
-    case "usdySol": {
-      return wallet.usdySolBalance;
-    }
-    default: {
-      console.error(`No coin balance found for ${coinId}`);
-      return 0;
-    }
-  }
+export const getAssetBalance = (assets: AssetsState, assetId: Asset["id"]) => {
+  return assets.assets[assetId].balance;
 };
 
 export const calculateExchangeRate = ({
-  wallet,
-  buyCoinId,
-  sellCoinId,
+  assets,
+  buyAbstractedAssetId,
+  sellAbstractedAssetId,
 }: {
-  wallet: UserWalletDataState;
-  buyCoinId: CoinId | null;
-  sellCoinId: CoinId | null;
+  assets: AssetsState;
+  buyAbstractedAssetId: AbstractedAsset["id"] | null;
+  sellAbstractedAssetId: AbstractedAsset["id"] | null;
 }) => {
-  if (!buyCoinId || !sellCoinId) return null;
+  if (!buyAbstractedAssetId || !sellAbstractedAssetId) return null;
 
-  const coinUsdPrices = [
-    {
-      coinId: "btcSol",
-      usdPrice: wallet.priceOfBTCinUSDC,
-    },
-    {
-      coinId: "sol",
-      usdPrice: wallet.priceOfSOLinUSDC,
-    },
-    {
-      coinId: "usdtSol",
-      usdPrice: 1,
-    },
-    {
-      coinId: "usdcSol",
-      usdPrice: 1,
-    },
-    {
-      coinId: "usdySol",
-      usdPrice: wallet.priceOfUSDYinUSDC,
-    },
-    {
-      coinId: "eurcSol",
-      usdPrice: wallet.priceOfEURCinUSDC,
-    },
-  ];
+  const buyExchangeRate = getExchangeRate(buyAbstractedAssetId, assets);
+  const sellExchangeRate = getExchangeRate(sellAbstractedAssetId, assets);
 
-  const buyPrice = coinUsdPrices.find(
-    (val) => val.coinId === buyCoinId
-  )?.usdPrice;
-  const sellPrice = coinUsdPrices.find(
-    (val) => val.coinId === sellCoinId
-  )?.usdPrice;
-
-  if (!buyPrice || !sellPrice)
-    throw Error(
-      `Error retreiving buy/sell prices for ${buyCoinId} buy coin and ${sellCoinId} sell coin`
-    );
-
-  return sellPrice / buyPrice;
+  return sellExchangeRate / buyExchangeRate;
 };
