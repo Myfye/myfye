@@ -299,7 +299,12 @@ function WebAppInner() {
                   <img 
                     src={peopleOnMyfye} 
                     alt="People on Myfye" 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'var(--border-radius-medium)' }}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'cover', 
+                      borderRadius: 'var(--border-radius-medium)',
+                      maxWidth: '50vw' }}
                   />
                 </div>
               </div>
