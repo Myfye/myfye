@@ -1,5 +1,5 @@
 import { MenuTrigger, Popover, Menu as AriaMenu } from "react-aria-components";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
 import Button from "../button/Button";
 

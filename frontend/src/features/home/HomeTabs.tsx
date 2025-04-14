@@ -12,15 +12,12 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import DashboardPanel from "./panels/dashboard/DashboardPanel";
 import CashPanel from "./panels/cash/CashPanel";
 import CryptoPanel from "./panels/crypto/CryptoPanel";
-import { useSelector } from "react-redux";
-import useBalance from "@/hooks/useBalance";
 import StocksPanel from "./panels/stocks/StocksPanel";
 
 const tabs = [

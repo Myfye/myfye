@@ -1,19 +1,17 @@
 import Balance from "@/components/ui/balance/Balance";
 import solCoinIcon from "@/assets/svgs/coins/sol-coin.svg";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
 import { useDispatch } from "react-redux";
-import {
-  setDepositModalOpen,
-  setReceiveModalOpen,
-  setSendModalOpen,
-} from "@/redux/modalReducers";
+import { setDepositModalOpen } from "@/redux/modalReducers";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import Button from "@/components/ui/button/Button";
+import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/send/receiveSlice";
 
 const CryptoSummary = () => {
   const dispatch = useDispatch();
@@ -86,10 +84,10 @@ const CryptoSummary = () => {
         >
           <li>
             <Button
-              size="small"
+              size="x-small"
               icon={ArrowCircleUp}
               onPress={() => {
-                dispatch(setSendModalOpen(true));
+                dispatch(toggleSendModal({ isOpen: true, assetId: "btc" }));
               }}
             >
               Send
@@ -97,10 +95,10 @@ const CryptoSummary = () => {
           </li>
           <li>
             <Button
-              size="small"
+              size="x-small"
               icon={ArrowCircleDown}
               onPress={() => {
-                dispatch(setReceiveModalOpen(true));
+                dispatch(toggleReceiveModal(true));
               }}
             >
               Receive

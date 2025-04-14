@@ -15,9 +15,10 @@ import {
   DotsThreeVertical,
 } from "@phosphor-icons/react";
 import { useDispatch } from "react-redux";
-import { setReceiveModalOpen, setSendModalOpen } from "@/redux/modalReducers";
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
-import { Asset } from "../types";
+import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import { AbstractedAsset, Asset } from "../types";
 
 const AssetCardList = ({
   assets,
@@ -46,7 +47,7 @@ const AssetCardList = ({
           gap: var(--size-300);
         `}
       >
-        {assets.map((asset, i) => (
+        {assets.map((asset: AbstractedAsset, i) => (
           <li
             key={`asset-card-${i}`}
             className="coin-card-wrapper"
@@ -97,7 +98,9 @@ const AssetCardList = ({
                           background-color: var(--clr-surface-raised);
                         }
                       `}
-                      onAction={() => dispatch(setSendModalOpen(true))}
+                      onAction={() =>
+                        dispatch(toggleSendModal({ isOpen: true }))
+                      }
                     >
                       <ArrowCircleUp
                         size={16}
@@ -118,7 +121,7 @@ const AssetCardList = ({
                           background-color: var(--clr-surface-raised);
                         }
                       `}
-                      onAction={() => dispatch(setReceiveModalOpen(true))}
+                      onAction={() => dispatch(toggleReceiveModal(true))}
                     >
                       <ArrowCircleDown
                         size={16}

@@ -2,7 +2,6 @@ import NumberPad from "@/components/ui/number-pad/NumberPad";
 import PrivyUseSolanaWallets from "../../components/PrivyUseSolanaWallets";
 import HomeTabs from "@/features/home/HomeTabs";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";

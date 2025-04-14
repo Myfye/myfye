@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";

@@ -4,14 +4,16 @@ import { AnimatePresence, motion } from "motion/react";
 import { X as XIcon, SignOut as SignOutIcon } from "@phosphor-icons/react";
 import Button from "@/components/ui/button/Button";
 import { useSelector } from "react-redux";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
-import {usePrivy} from '@privy-io/react-auth';
+import { usePrivy } from "@privy-io/react-auth";
 
 const NavMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const currentUserEmail = useSelector((state: any) => state.userWalletData.currentUserEmail);
-  const {ready, authenticated, logout} = usePrivy();
+  const currentUserEmail = useSelector(
+    (state: any) => state.userWalletData.currentUserEmail
+  );
+  const { ready, authenticated, logout } = usePrivy();
   // Disable logout when Privy is not ready or the user is not authenticated
   const disableLogout = !ready || (ready && !authenticated);
 
@@ -32,19 +34,19 @@ const NavMenu = () => {
   // Function to truncate long email addresses
   const formatEmail = (email: string) => {
     if (!email) return "";
-    
+
     // Extract username and domain parts
-    const atIndex = email.indexOf('@');
+    const atIndex = email.indexOf("@");
     if (atIndex === -1) return email; // Not a valid email format
-    
+
     const userEmail = email.substring(0, atIndex);
     const domain = email.substring(atIndex);
-    
+
     // If username is long, truncate it
     if (userEmail.length > 8) {
       return `${userEmail.substring(0, 5)}...${domain}`;
     }
-    
+
     return email;
   };
 
@@ -69,15 +71,15 @@ const NavMenu = () => {
                 zIndex: 1000,
               }}
             />
-            
+
             {/* Sliding menu panel */}
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ 
-                duration: 0.4, 
-                ease: [0.32, 0.72, 0, 1] 
+              transition={{
+                duration: 0.4,
+                ease: [0.32, 0.72, 0, 1],
               }}
               style={{
                 position: "fixed",
@@ -100,15 +102,15 @@ const NavMenu = () => {
                   marginBottom: "var(--size-400)",
                 }}
               >
-              <Button
-                iconOnly
-                onPress={closeMenu}
-                icon={XIcon}
-                color="transparent"
-                data-size="large"
-              ></Button>
+                <Button
+                  iconOnly
+                  onPress={closeMenu}
+                  icon={XIcon}
+                  color="transparent"
+                  data-size="large"
+                ></Button>
               </div>
-              
+
               {/* Menu content goes here */}
               <div style={{ flex: 1 }}>
                 {currentUserEmail && (
@@ -117,14 +119,16 @@ const NavMenu = () => {
                   </p>
                 )}
               </div>
-              
+
               {/* Sign Out button at the bottom */}
-              <div style={{ 
-                marginTop: "auto", 
-                paddingBottom: "var(--size-400)",
-                display: "flex",
-                justifyContent: "center"
-              }}>
+              <div
+                style={{
+                  marginTop: "auto",
+                  paddingBottom: "var(--size-400)",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
                 <Button
                   onPress={signOut}
                   color="accent"
@@ -144,4 +148,3 @@ const NavMenu = () => {
 };
 
 export default NavMenu;
-

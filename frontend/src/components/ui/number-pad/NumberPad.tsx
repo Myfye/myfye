@@ -12,7 +12,7 @@ import {
   NumberTwo,
   NumberZero,
 } from "@phosphor-icons/react";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
 import NumberPadButton from "./NumberPadButton";
 

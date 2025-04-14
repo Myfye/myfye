@@ -6,7 +6,6 @@ import QrScanner from "qr-scanner";
 
 import qrScanOutline from "@/assets/svgs/qr-scan-outline.svg";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 const QrReader = ({

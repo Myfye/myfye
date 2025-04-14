@@ -7,7 +7,6 @@ import "swiper/css/pagination";
 import CTACard from "./CTACard";
 import { Pagination } from "swiper/modules";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 const CTACarousel = ({ slides }) => {

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 const CTACard = ({ title, subtitle, icon }) => {

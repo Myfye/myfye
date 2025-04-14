@@ -3,7 +3,6 @@ import solanaLogoBlack from "@/assets/solanaLogoBlack.png";
 import { useEffect, useRef } from "react";
 import QRCodeStyling from "qr-code-styling";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 const QRCode = ({

@@ -8,7 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import Button from "@/components/ui/button/Button";
 import { useSelector } from "react-redux";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
 import { usePrivy } from "@privy-io/react-auth";
 

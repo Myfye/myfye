@@ -1,21 +1,9 @@
 import { css } from "@emotion/react";
 
-import Overlay from "@/components/ui/overlay/Overlay";
-import Balance from "@/components/ui/balance/Balance";
 import PieChart from "@/components/ui/pie-chart/PieChart";
 import { useMemo } from "react";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setDepositModalOpen,
-  setReceiveModalOpen,
-  setSendModalOpen,
-} from "@/redux/modalReducers";
-import {
-  ArrowCircleDown,
-  ArrowCircleUp,
-  ArrowsLeftRight,
-} from "@phosphor-icons/react";
 import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
 import {

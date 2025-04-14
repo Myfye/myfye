@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Avatar from "../avatar/Avatar";
 import ContactCardController from "./ContactCardController";

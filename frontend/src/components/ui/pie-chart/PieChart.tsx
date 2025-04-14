@@ -1,7 +1,7 @@
 import useBalance from "@/hooks/useBalance";
 import { ResponsivePie } from "@nivo/pie";
 import { useMemo } from "react";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
 import Button from "../button/Button";
 import { useSelector } from "react-redux";

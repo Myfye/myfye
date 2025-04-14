@@ -1,10 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 import Overlay from "@/components/ui/overlay/Overlay";
 import Balance from "@/components/ui/balance/Balance";
 import Button from "@/components/ui/button/Button";
-import { setReceiveModalOpen, setSendModalOpen } from "@/redux/modalReducers";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
@@ -12,8 +10,10 @@ import {
 } from "@phosphor-icons/react";
 import { ReactNode } from "react";
 import { useDispatch } from "react-redux";
-import { toggleModal } from "../swap/swapSlice";
+import { toggleModal as toggleSwapModal } from "../swap/swapSlice";
 import { AssetGroup } from "./assets/types";
+import { toggleModal as toggleSendModal } from "../send/sendSlice";
+import { toggleModal as toggleReceiveModal } from "../receive/receiveSlice";
 
 const WalletOverlay = ({
   isOpen,
@@ -97,7 +97,7 @@ const WalletOverlay = ({
                   size="x-small"
                   icon={ArrowCircleUp}
                   onPress={() => {
-                    dispatch(setSendModalOpen(true));
+                    dispatch(toggleSendModal({ isOpen: true }));
                   }}
                 >
                   Send
@@ -108,7 +108,7 @@ const WalletOverlay = ({
                   size="x-small"
                   icon={ArrowCircleDown}
                   onPress={() => {
-                    dispatch(setReceiveModalOpen(true));
+                    dispatch(toggleReceiveModal(true));
                   }}
                 >
                   Receive
@@ -120,7 +120,7 @@ const WalletOverlay = ({
                   icon={ArrowsLeftRight}
                   onPress={() => {
                     dispatch(
-                      toggleModal({
+                      toggleSwapModal({
                         isOpen: true,
                         abstractedAssetId: (() => {
                           switch (groupId) {

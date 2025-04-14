@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import AssetIcon from "./AssetIcon";
 import { RefObject, useMemo } from "react";
@@ -8,7 +7,7 @@ import { RefObject, useMemo } from "react";
 
 import AssetCardController from "./AssetCardController";
 import { formatBalance } from "../utils";
-import { Asset } from "../types";
+import { AbstractedAsset, Asset } from "../types";
 
 const AssetCard = ({
   title,
@@ -22,12 +21,12 @@ const AssetCard = ({
   showCurrencySymbol = true,
   ...restProps
 }: {
-  title: Asset["label"];
+  title: AbstractedAsset["label"];
   fiatCurrency: Asset["fiatCurrency"];
-  symbol: Asset["symbol"];
-  balance: Asset["balance"];
+  symbol: AbstractedAsset["symbol"];
+  balance: number;
   ref: RefObject<HTMLButtonElement>;
-  icon: Asset["icon"];
+  icon: AbstractedAsset["icon"];
   showOptions: boolean;
   showBalance: boolean;
   showCurrencySymbol?: boolean;

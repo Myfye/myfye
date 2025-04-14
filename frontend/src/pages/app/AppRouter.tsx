@@ -26,19 +26,6 @@ import SendModal from "@/features/send/SendModal.tsx";
 import ReceiveModal from "@/features/receive/ReceiveModal.tsx";
 import DepositModal from "@/features/on-offramp/deposit/DepositModal.tsx";
 import WithdrawModal from "@/features/on-offramp/withdraw/WithdrawModal.tsx";
-import {
-  setDepositModalOpen,
-  setQRCodeModalOpen,
-  setReceiveModalOpen,
-  setSendModalOpen,
-  setWithdrawModalOpen,
-} from "@/redux/modalReducers.tsx";
-import WithdrawCryptoOverlay from "@/features/on-offramp/withdraw/crypto/WithdrawCryptoOverlay.tsx";
-import {
-  setSelectContactOverlayOpen,
-  setWithdrawCryptoOverlayOpen,
-} from "@/redux/overlayReducers.tsx";
-import SelectContactOverlay from "@/features/on-offramp/withdraw/crypto/SelectContactOverlay.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
@@ -179,26 +166,11 @@ function WebAppInner() {
           <div className="app-layout">
             <Router />
             {/* Modals */}
-            <SendModal
-              isOpen={isSendModalOpen}
-              onOpenChange={(e) => dispatch(setSendModalOpen(e))}
-            />
-            <ReceiveModal
-              isOpen={isReceiveModalOpen}
-              onOpenChange={(e) => dispatch(setReceiveModalOpen(e))}
-            />
-            <DepositModal
-              isOpen={isDepositModalOpen}
-              onOpenChange={(e) => dispatch(setDepositModalOpen(e))}
-            />
-            <WithdrawModal
-              isOpen={isWithdrawModalOpen}
-              onOpenChange={(e) => dispatch(setWithdrawModalOpen(e))}
-            />
-            <QRCodeModal
-              isOpen={isQRCodeModalOpen}
-              onOpenChange={(e) => dispatch(setQRCodeModalOpen(e))}
-            />
+            <SendModal />
+            <ReceiveModal />
+            <DepositModal />
+            <WithdrawModal />
+            <QRCodeModal />
             <SwapModal />
             <Toaster />
             <PrivyUseSolanaWallets />
@@ -296,15 +268,16 @@ function WebAppInner() {
                     margin-inline: auto;
                   `}
                 >
-                  <img 
-                    src={peopleOnMyfye} 
-                    alt="People on Myfye" 
-                    style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      objectFit: 'cover', 
-                      borderRadius: 'var(--border-radius-medium)',
-                      maxWidth: '50vw' }}
+                  <img
+                    src={peopleOnMyfye}
+                    alt="People on Myfye"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "var(--border-radius-medium)",
+                      maxWidth: "50vw",
+                    }}
                   />
                 </div>
               </div>
@@ -326,7 +299,8 @@ function WebAppInner() {
                   color: var(--clr-text-neutral);
                 `}
               >
-                Invest in stocks, crypto, treasuries, and more, fully owned by you, on your phone.
+                Invest in stocks, crypto, treasuries, and more, fully owned by
+                you, on your phone.
               </p>
             </section>
           </LoginMain>

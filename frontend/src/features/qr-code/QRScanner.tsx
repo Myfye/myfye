@@ -8,7 +8,6 @@ import {
 import { Dialog, Modal, ModalOverlay } from "react-aria-components";
 import { useEffect, useId, useState } from "react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 import QrReader from "./QRReader";
@@ -21,9 +20,10 @@ import {
 } from "@phosphor-icons/react";
 import QRCode from "./QRCode";
 import { useDispatch, useSelector } from "react-redux";
-import { setQRCodeModalOpen, setSendModalOpen } from "@/redux/modalReducers";
+import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Header from "../../components/app/layout/header/Header";
 import { RootState } from "@/redux/store";
+import { toggleModal as toggleSendModal } from "../send/sendSlice";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);
@@ -55,7 +55,7 @@ const QRScanner = ({
 
   const onScanSuccess = ({ data }) => {
     dispatch(setQRCodeModalOpen(false));
-    dispatch(setSendModalOpen(true));
+    dispatch(toggleSendModal({ isOpen: true }));
   };
 
   const onScanFail = (err) => {

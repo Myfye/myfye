@@ -3,7 +3,7 @@ import Button from "../button/Button";
 import { useSearchFieldState } from "react-stately";
 import { useRef, useState } from "react";
 import { useSearchField } from "react-aria";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
 
 const WalletSearchField = ({ ...restProps }) => {

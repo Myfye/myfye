@@ -6,7 +6,6 @@ import {
 } from "@phosphor-icons/react";
 import WalletCard from "./WalletCard";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";

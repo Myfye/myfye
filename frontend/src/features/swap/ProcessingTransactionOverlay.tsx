@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import HeadlessOverlay from "@/components/ui/overlay/HeadlessOverlay";
 import Button from "@/components/ui/button/Button";

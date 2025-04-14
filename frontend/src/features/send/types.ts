@@ -1,4 +1,4 @@
-import { Asset } from "@/features/wallet/assets/types";
+import { AbstractedAsset, Asset } from "@/features/wallet/assets/types";
 
 export type SendTransactionStatus = "idle" | "success" | "fail" | "minted";
 
@@ -6,7 +6,7 @@ export interface SendTransaction {
   id: string | null;
   amount: number | null;
   formattedAmount: string;
-  assetId: Asset["id"] | null;
+  abstractedAssetId: AbstractedAsset["id"] | null;
   fee: number | null;
   status: SendTransactionStatus;
   contact: Contact | null;

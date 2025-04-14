@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { updateFormattedAmount, parseFormattedAmount } from "./utils";
-import { Asset } from "@/features/wallet/assets/types";
+import { AbstractedAsset, Asset } from "@/features/wallet/assets/types";
 import { SendTransaction, SendTransactionStatus } from "./types";
 
 interface SendState {
@@ -37,7 +37,7 @@ const initialState: SendState = {
     contact: null,
     amount: null,
     formattedAmount: "",
-    assetId: null,
+    abstractedAssetId: null,
     fee: null,
     status: "idle",
   },
@@ -49,11 +49,14 @@ const sendSlice = createSlice({
   reducers: {
     toggleModal(
       state,
-      action: PayloadAction<{ isOpen: boolean; assetId?: Asset["id"] }>
+      action: PayloadAction<{
+        isOpen: boolean;
+        abstractedAssetId?: AbstractedAsset["id"];
+      }>
     ) {
       state.modal.isOpen = action.payload.isOpen;
-      if (action.payload?.assetId)
-        state.transaction.assetId = action.payload.assetId;
+      if (action.payload?.abstractedAssetId)
+        state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
     },
     toggleOverlay(
       state,

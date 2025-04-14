@@ -5,7 +5,6 @@ import eurcCoin from "@/assets/svgs/coins/eur-coin.svg";
 import usdCoin from "@/assets/svgs/coins/usd-coin.svg";
 import usdyCoin from "@/assets/svgs/coins/usdy-coin.svg";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";

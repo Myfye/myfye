@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { FiatCurrency } from "@/features/wallet/assets/types";
 import { formatBalance } from "@/features/wallet/assets/utils";
 import { css } from "@emotion/react";

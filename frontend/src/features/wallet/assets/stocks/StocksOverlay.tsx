@@ -1,31 +1,14 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import Overlay from "@/components/ui/overlay/Overlay";
-import Balance from "@/components/ui/balance/Balance";
-import useBalance from "@/hooks/useBalance";
-import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setDepositModalOpen,
-  setReceiveModalOpen,
-  setSendModalOpen,
-  setSwapModalOpen,
-} from "@/redux/modalReducers";
-import {
-  ArrowCircleDown,
-  ArrowCircleUp,
-  ArrowsLeftRight,
-} from "@phosphor-icons/react";
 import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
 import LineChart from "@/components/ui/line-chart/LineChart";
 import { useState } from "react";
-import { Key, useSelect } from "react-aria";
+import { Key } from "react-aria";
 import {
   selectAbstractedAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
-  selectAssetsByGroup,
   toggleGroupOverlay,
 } from "../assetsSlice";
 import WalletOverlay from "../../WalletOverlay";
@@ -113,8 +96,7 @@ const StocksOverlay = () => {
 
   const [selected, setSelected] = useState(false);
 
-  const onSelectedChange = (e) => {
-    console.log(e);
+  const onSelectedChange = (e: boolean) => {
     setSelected(e);
   };
 

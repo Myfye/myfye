@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import CoinIcon from "./CoinIcon";
 import { useMemo } from "react";

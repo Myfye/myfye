@@ -1,7 +1,7 @@
 import Balance from "@/components/ui/balance/Balance";
 import Button from "@/components/ui/button/Button";
 import WalletCardList from "./WalletCardList.tsx";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
 import { useDispatch } from "react-redux";
 import {

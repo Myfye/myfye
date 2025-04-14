@@ -1,5 +1,5 @@
 import { MenuItemProps, MenuItem as AriaMenuItem } from "react-aria-components";
-/** @jsxImportSource @emotion/react */
+
 import { css } from "@emotion/react";
 
 const MenuItem = (props: MenuItemProps) => {

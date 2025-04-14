@@ -2,7 +2,6 @@ import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import { Dialog, Modal, ModalOverlay } from "react-aria-components";
 import { ReactNode, useId } from "react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";

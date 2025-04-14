@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
 import { Bank, Copy, Wallet, X } from "@phosphor-icons/react";
 import ModalButton from "../ModalButton";
 import QRCode from "../../qr-code/QRCode";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/components/ui/modal/Modal";
+import { RootState } from "@/redux/store";
+import { setDepositModalOpen } from "@/redux/modalReducers";
 // import toast from "react-hot-toast/headless";
 
-const DepositModal = ({ isOpen, onOpenChange }) => {
+const DepositModal = () => {
+  const dispatch = useDispatch();
+  const isOpen = useSelector((state: RootState) => state.depositModal.isOpen);
+  const onOpenChange = (isOpen: boolean) => {
+    dispatch(setDepositModalOpen(isOpen));
+  };
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
   const solanaPubKey = useSelector(
     (state: any) => state.userWalletData.solanaPubKey
@@ -39,7 +45,7 @@ const DepositModal = ({ isOpen, onOpenChange }) => {
     navigator.clipboard.writeText(selectedAddress);
     setShowCopiedAddress(true);
     onOpenChange(false);
-    toast(selectedChain === "base" ? "Base" : "Solana");
+    // toast(selectedChain === "base" ? "Base" : "Solana");
   };
 
   const getTruncatedAddress = (address: string) => {

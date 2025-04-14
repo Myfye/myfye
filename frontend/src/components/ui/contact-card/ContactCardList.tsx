@@ -1,6 +1,5 @@
 import Contact from "./ContactCard";
 
-/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 const ContactCardList = ({ contacts, onContactSelect }) => {

@@ -13,8 +13,6 @@ import CTACarousel from "./cta-carousel/CTACarousel";
 import { useMemo } from "react";
 import {
   setDepositModalOpen,
-  setReceiveModalOpen,
-  setSendModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +21,8 @@ import {
   selectAssetsBalanceUSDByGroup,
 } from "@/features/wallet/assets/assetsSlice";
 import { RootState } from "@/redux/store";
+import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
 
@@ -121,7 +121,7 @@ const DashboardPanel = ({}) => {
               size="x-small"
               icon={ArrowCircleUpIcon}
               onPress={() => {
-                dispatch(setSendModalOpen(true));
+                dispatch(toggleSendModal({ isOpen: true }));
               }}
             >
               Send
@@ -132,7 +132,7 @@ const DashboardPanel = ({}) => {
               size="x-small"
               icon={ArrowCircleDownIcon}
               onPress={() => {
-                dispatch(setReceiveModalOpen(true));
+                dispatch(toggleReceiveModal(true));
               }}
             >
               Receive
