@@ -1,7 +1,7 @@
 import { ArrowDown, CaretRight } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -16,7 +16,6 @@ import TextFit from "@/shared/components/TextFit";
 import { AbstractedAsset } from "../wallet/assets/types";
 import {
   selectAbstractedAsset,
-  selectAbstractedAssetBalance,
   selectAbstractedAssetWithBalance,
 } from "../wallet/assets/assetsSlice";
 import { SwapTransactionType } from "./types";

@@ -111,8 +111,12 @@ export const updateUserEvmPubKey = async (
   privyUserId: string,
   evmPubKey: string
 ): Promise<any> => {
-
-  console.log("Updating EVM public key MYFYE_BACKEND", MYFYE_BACKEND, "MYFYE_BACKEND_KEY", MYFYE_BACKEND_KEY);
+  console.log(
+    "Updating EVM public key MYFYE_BACKEND",
+    MYFYE_BACKEND,
+    "MYFYE_BACKEND_KEY",
+    MYFYE_BACKEND_KEY
+  );
   try {
     const response = await fetch(`${MYFYE_BACKEND}/update_evm_pub_key`, {
       method: "POST",
@@ -204,6 +208,9 @@ const HandleUserLogIn = async (
       getEURCPriceQuote(priceOfEURCinUSDC, dispatch),
       getSOLPriceQuote(priceOfSOLinUSDC, dispatch),
       getUserData(user.wallet.address, dispatch),
+      updateExchangeRateUSD({ assetId: "usdc_sol", exchangeRateUSD: 1 }),
+      updateExchangeRateUSD({ assetId: "usdt_sol", exchangeRateUSD: 1 }),
+      updateExchangeRateUSD({ assetId: "usdc_base", exchangeRateUSD: 1 }),
     ]);
     return { success: true };
   } catch (e) {

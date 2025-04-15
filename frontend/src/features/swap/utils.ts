@@ -73,10 +73,14 @@ export const getExchangeRate = (
 ) => {
   if (!abstractedAssetId) throw new Error("Invalid asset id");
   // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
-  const exchangeRateUSD = assets.assetIds
-    .map((id) => assets.assets[id])
-    .filter((asset) => asset.abstractedAssetId === abstractedAssetId)
-    .map((asset) => asset.exchangeRateUSD)[0];
+  const exchangeRateUSD = assets.abstractedAssetIds
+    .map((id) => assets.abstractedAssets[id])
+    .filter((asset) => asset.id === abstractedAssetId)
+    .map((asset) => {
+      const usdRateAsset = asset.assetIds[0];
+      const _asset = assets.assets[usdRateAsset];
+      return _asset.exchangeRateUSD;
+    })[0];
   return exchangeRateUSD;
 };
 

@@ -78,6 +78,11 @@ const SwapModal = () => {
     )
       return true;
     if (
+      !assets.assets[transaction.sell.abstractedAssetId] ||
+      !assets.assets[transaction.buy.abstractedAssetId]
+    )
+      return true;
+    if (
       transaction.sell.amount === 0 ||
       transaction.sell.amount === null ||
       transaction.buy.amount === null ||
@@ -85,8 +90,9 @@ const SwapModal = () => {
     )
       return true;
     if (
+      assets.assets[transaction.sell.abstractedAssetId] &&
       assets.assets[transaction.sell.abstractedAssetId].balance <
-      transaction.sell.amount
+        transaction.sell.amount
     )
       return true;
     return false;
