@@ -89,11 +89,18 @@ const SwapModal = () => {
       transaction.buy.amount === 0
     )
       return true;
-    if (
-      assets.assets[transaction.sell.abstractedAssetId] &&
-      assets.assets[transaction.sell.abstractedAssetId].balance <
-        transaction.sell.amount
-    )
+
+    // Find the specific asset ID that corresponds to the abstracted asset ID
+    const sellAbstractedAsset =
+      assets.abstractedAssets[transaction.sell.abstractedAssetId];
+    if (!sellAbstractedAsset) return true;
+
+    // Get the first asset ID from the abstracted asset's assetIds array
+    const sellAssetId = sellAbstractedAsset.assetIds[0];
+    if (!sellAssetId) return true;
+
+    // Now check the balance using the specific asset ID
+    if (assets.assets[sellAssetId].balance < transaction.sell.amount)
       return true;
     return false;
   }, [transaction, assets]);
