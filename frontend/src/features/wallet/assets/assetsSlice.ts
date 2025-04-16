@@ -425,7 +425,7 @@ const initialState: AssetsState = {
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
-      exchangeRateUSD: 0,
+      exchangeRateUSD: 1,
       icon: {
         content: usdCoinIcon,
         type: "svg",
@@ -443,7 +443,7 @@ const initialState: AssetsState = {
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
-      exchangeRateUSD: 0,
+      exchangeRateUSD: 1,
       icon: {
         content: usdCoinIcon,
         type: "svg",
@@ -461,7 +461,7 @@ const initialState: AssetsState = {
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
-      exchangeRateUSD: 0,
+      exchangeRateUSD: 1,
       icon: {
         content: usdCoinIcon,
         type: "svg",

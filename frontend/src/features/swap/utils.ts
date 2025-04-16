@@ -81,6 +81,7 @@ export const getExchangeRate = (
       const _asset = assets.assets[usdRateAsset];
       return _asset.exchangeRateUSD;
     })[0];
+  console.log("exhcnage rate usd", exchangeRateUSD);
   return exchangeRateUSD;
 };
 
