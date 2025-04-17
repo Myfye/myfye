@@ -148,7 +148,7 @@ const _Link = ({
 
   const iconSize = getIconSize(size, iconOnly);
 
-  const { linkProps, isPressed } = useLink(restProps, ref);
+  const test = useLink(restProps, ref);
 
   return (
     // @ts-ignore
@@ -177,7 +177,7 @@ const Button = ({
   children,
   ...restProps
 }: {
-  href: string | undefined;
+  href?: string;
   children: ReactNode;
   restProps: LinkProps | ButtonProps;
 }) => {

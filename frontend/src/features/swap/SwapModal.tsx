@@ -71,24 +71,23 @@ const SwapModal = () => {
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
   };
 
-  const isInvalidSwapTransaction = useMemo(() => {
+  const checkIfInvalidSwapTransaction = () => {
     if (
       !transaction.sell.abstractedAssetId ||
       !transaction.buy.abstractedAssetId
-    )
+    ) {
+      console.warn("No buy/sell available");
       return true;
-    if (
-      !assets.assets[transaction.sell.abstractedAssetId] ||
-      !assets.assets[transaction.buy.abstractedAssetId]
-    )
-      return true;
+    }
     if (
       transaction.sell.amount === 0 ||
       transaction.sell.amount === null ||
       transaction.buy.amount === null ||
       transaction.buy.amount === 0
-    )
+    ) {
+      console.warn("No buy/sell amounts");
       return true;
+    }
 
     // Find the specific asset ID that corresponds to the abstracted asset ID
     const sellAbstractedAsset =
@@ -96,6 +95,7 @@ const SwapModal = () => {
     if (!sellAbstractedAsset) return true;
 
     // Get the first asset ID from the abstracted asset's assetIds array
+    // We need to do a for loop to make sure this is correct
     const sellAssetId = sellAbstractedAsset.assetIds[0];
     if (!sellAssetId) return true;
 
@@ -103,7 +103,9 @@ const SwapModal = () => {
     if (assets.assets[sellAssetId].balance < transaction.sell.amount)
       return true;
     return false;
-  }, [transaction, assets]);
+  };
+
+  const isInvalidSwapTransaction = checkIfInvalidSwapTransaction();
 
   return (
     <>
@@ -124,8 +126,8 @@ const SwapModal = () => {
           css={css`
             display: flex;
             flex-direction: column;
-            min-height: fit-content;
-            gap: var(--size-400);
+            height: 100cqh;
+            justify-content: space-between;
           `}
         >
           <section
@@ -145,6 +147,7 @@ const SwapModal = () => {
           <section
             css={css`
               margin-inline: var(--size-200);
+              margin-block-end: var(--size-200);
             `}
           >
             <Button
