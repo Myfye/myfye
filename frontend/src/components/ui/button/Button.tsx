@@ -148,7 +148,7 @@ const _Link = ({
 
   const iconSize = getIconSize(size, iconOnly);
 
-  const test = useLink(restProps, ref);
+  const { linkProps, isPressed } = useLink(restProps, ref);
 
   return (
     // @ts-ignore
