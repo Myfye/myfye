@@ -11,7 +11,7 @@
     "@nivo/line": "^0.88.0",
     "@nivo/pie": "^0.88.0",
     "@phosphor-icons/react": "^2.1.7",
-    "@privy-io/react-auth": "^2.2.1",
+    "@privy-io/react-auth": "^2.9.1",
     "@reduxjs/toolkit": "^2.5.1",
     "@solana/spl-token": "^0.4.12",
     "@solana/web3.js": "^1.98.0",

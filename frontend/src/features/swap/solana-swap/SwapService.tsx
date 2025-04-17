@@ -193,23 +193,6 @@ const swapTransaction = async (
   });
 
   const fullySignedTx = await wallet.signTransaction(serverSignedTransaction);
-  console.log("Fully Signed Transaction Details:", {
-    feePayer: fullySignedTx.message.staticAccountKeys[0].toString(),
-    numSigners: fullySignedTx.message.header.numRequiredSignatures,
-    staticAccountKeys: fullySignedTx.message.staticAccountKeys.map((key) =>
-      key.toString()
-    ),
-  });
-
-  // Log the actual transaction data
-  console.log("Transaction Data:", {
-    serialized: Buffer.from(fullySignedTx.serialize()).toString("base64"),
-    message: fullySignedTx.message,
-    signatures: fullySignedTx.signatures.map((sig) =>
-      sig ? Buffer.from(sig).toString("base64") : null
-    ),
-  });
-
   //simulate(fullySignedTx);
 
   const transactionId = await wallet.sendTransaction!(
