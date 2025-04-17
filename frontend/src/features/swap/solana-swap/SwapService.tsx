@@ -139,9 +139,9 @@ async function getSwapQuote(
 const swapTransaction = async (
   wallet: any,
   quoteData: any,
-  userPublicKey: String,
+  userPublicKey: string,
   dispatch: Dispatch,
-  type: String,
+  type: string,
   platformFeeAccountData: any,
   transaction: any,
   assets: AssetsState

@@ -11,7 +11,7 @@ import {
   Modal as AriaModal,
   ModalOverlay,
 } from "react-aria-components";
-import { useId } from "react";
+import { ReactNode, useId } from "react";
 
 import { css } from "@emotion/react";
 import Button from "@/components/ui/button/Button";
@@ -41,6 +41,13 @@ const Modal = ({
   zIndex = 1000,
   children,
   ...restProps
+}: {
+  children: ReactNode;
+  zIndex: number;
+  title: string;
+  height: number;
+  onOpenChange: () => void;
+  isOpen: boolean;
 }) => {
   const top = window.innerHeight - height > 0 ? window.innerHeight - height : 0;
   const h = Math.min(window.innerHeight, height);
@@ -110,7 +117,7 @@ const Modal = ({
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: ${height}px;
+                  height: ${h}px;
                   gap: var(--size-200);
                 `}
               >
@@ -130,7 +137,7 @@ const Modal = ({
                   css={css`
                     display: grid;
                     grid-template-rows: auto 1fr;
-                    gap: var(--size-400);
+                    gap: var(--size-300);
                   `}
                 >
                   <header

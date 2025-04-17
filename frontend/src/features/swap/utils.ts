@@ -81,7 +81,6 @@ export const getExchangeRate = (
       const _asset = assets.assets[usdRateAsset];
       return _asset.exchangeRateUSD;
     })[0];
-  console.log("exhcnage rate usd", exchangeRateUSD);
   return exchangeRateUSD;
 };
 
@@ -97,7 +96,6 @@ export const getUsdAmount = (
   }
   // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
   const exchangeRateUSD = getExchangeRate(abstractedAssetId, assets);
-  console.log("exchange rate", exchangeRateUSD);
   return amount * exchangeRateUSD;
 };
 

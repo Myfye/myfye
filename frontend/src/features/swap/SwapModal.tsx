@@ -71,39 +71,39 @@ const SwapModal = () => {
     dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
   };
 
-  const isInvalidSwapTransaction = useMemo(() => {
+  const checkIfInvalidSwapTransaction = () => {
     if (
       !transaction.sell.abstractedAssetId ||
       !transaction.buy.abstractedAssetId
-    )
+    ) {
+      console.warn("No buy/sell available");
       return true;
-    if (
-      !assets.assets[transaction.sell.abstractedAssetId] ||
-      !assets.assets[transaction.buy.abstractedAssetId]
-    )
-      return true;
+    }
     if (
       transaction.sell.amount === 0 ||
       transaction.sell.amount === null ||
       transaction.buy.amount === null ||
       transaction.buy.amount === 0
-    )
+    ) {
+      console.warn("No buy/sell amounts");
       return true;
+    }
 
     // Find the specific asset ID that corresponds to the abstracted asset ID
     const sellAbstractedAsset =
       assets.abstractedAssets[transaction.sell.abstractedAssetId];
     if (!sellAbstractedAsset) return true;
 
-    // Get the first asset ID from the abstracted asset's assetIds array
-    const sellAssetId = sellAbstractedAsset.assetIds[0];
-    if (!sellAssetId) return true;
-
+    // Loop through assets to make sure that user has assets within an abstracted asset
+    const totalBalance = sellAbstractedAsset.assetIds
+      .map((assetId) => assets.assets[assetId])
+      .reduce((acc, val) => acc + val.balance, 0);
     // Now check the balance using the specific asset ID
-    if (assets.assets[sellAssetId].balance < transaction.sell.amount)
-      return true;
+    if (totalBalance < transaction.sell.amount) return true;
     return false;
-  }, [transaction, assets]);
+  };
+
+  const isInvalidSwapTransaction = checkIfInvalidSwapTransaction();
 
   return (
     <>
@@ -124,8 +124,8 @@ const SwapModal = () => {
           css={css`
             display: flex;
             flex-direction: column;
-            min-height: fit-content;
-            gap: var(--size-400);
+            height: 100cqh;
+            justify-content: space-between;
           `}
         >
           <section
@@ -145,6 +145,7 @@ const SwapModal = () => {
           <section
             css={css`
               margin-inline: var(--size-200);
+              margin-block-end: var(--size-200);
             `}
           >
             <Button

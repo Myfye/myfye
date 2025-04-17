@@ -177,7 +177,7 @@ const Button = ({
   children,
   ...restProps
 }: {
-  href: string | undefined;
+  href?: string;
   children: ReactNode;
   restProps: LinkProps | ButtonProps;
 }) => {

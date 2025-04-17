@@ -8,13 +8,8 @@ import {
   TransactionExpiredBlockheightExceededError,
   VersionedTransactionResponse,
 } from "@solana/web3.js";
-import {
-  setSwapFXTransactionStatus,
-  setSwapWithdrawTransactionStatus,
-  setSwapDepositTransactionStatus,
-} from "../../redux/userWalletData.tsx"; // For managing UI
+
 import { HELIUS_API_KEY } from "../../env.ts";
-import calculateBasisPoints from "../../functions/CalculateBasisPoints.tsx";
 import getTokenAccountData from "../../functions/GetSolanaTokenAccount.tsx";
 import { updateStatus } from "./swapSlice.ts";
 

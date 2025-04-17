@@ -208,6 +208,7 @@ const HandleUserLogIn = async (
       getEURCPriceQuote(priceOfEURCinUSDC, dispatch),
       getSOLPriceQuote(priceOfSOLinUSDC, dispatch),
       getUserData(user.wallet.address, dispatch),
+      // need to update these
       updateExchangeRateUSD({ assetId: "usdc_sol", exchangeRateUSD: 1 }),
       updateExchangeRateUSD({ assetId: "usdt_sol", exchangeRateUSD: 1 }),
       updateExchangeRateUSD({ assetId: "usdc_base", exchangeRateUSD: 1 }),
