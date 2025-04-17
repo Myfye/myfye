@@ -94,14 +94,12 @@ const SwapModal = () => {
       assets.abstractedAssets[transaction.sell.abstractedAssetId];
     if (!sellAbstractedAsset) return true;
 
-    // Get the first asset ID from the abstracted asset's assetIds array
-    // We need to do a for loop to make sure this is correct
-    const sellAssetId = sellAbstractedAsset.assetIds[0];
-    if (!sellAssetId) return true;
-
+    // Loop through assets to make sure that user has assets within an abstracted asset
+    const totalBalance = sellAbstractedAsset.assetIds
+      .map((assetId) => assets.assets[assetId])
+      .reduce((acc, val) => acc + val.balance, 0);
     // Now check the balance using the specific asset ID
-    if (assets.assets[sellAssetId].balance < transaction.sell.amount)
-      return true;
+    if (totalBalance < transaction.sell.amount) return true;
     return false;
   };
 
