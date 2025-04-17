@@ -21,6 +21,7 @@ app.set('trust proxy', true);
 const allowedOrigins = [
     "http://localhost:3000", // Development (local)
     "https://d3ewm5gcazpqyv.cloudfront.net", // Staging (CloudFront)
+    "https://dev.myfye.com", // Staging (dev.myfye.com)
     "https://d1voqwa9zncr8f.cloudfront.net", // Production (CloudFront)
     "https://myfye.com", // Production (myfye.com)
     "https://www.myfye.com", // Production (www.myfye.com)
