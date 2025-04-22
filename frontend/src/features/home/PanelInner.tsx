@@ -1,39 +1,48 @@
 import { css } from "@emotion/react";
-import { Asset } from "../wallet/assets/types";
+import { AbstractedAsset } from "../assets/types";
 import Balance from "@/components/ui/balance/Balance";
-import AssetCardList from "../wallet/assets/cards/AssetCardList";
+import AssetCardList from "../assets/cards/AssetCardList";
 
 const AssetPanel = ({
   balance,
   assets,
 }: {
   balance: number;
-  assets: Asset[];
+  assets: AbstractedAsset[];
 }) => (
-  <div className="panel-inner">
+  <div
+    className="panel-inner"
+    css={css`
+      display: grid;
+      grid-template-rows: auto 1fr;
+      height: 100cqh;
+      gap: var(--size-300);
+      padding-inline: var(--size-250);
+    `}
+  >
     <section
-      className="balance-container"
       css={css`
-        margin-block-start: var(--size-250);
-        padding: 0 var(--size-250);
-      `}
-    >
-      <Balance balance={balance} />
-    </section>
-    <section
-      css={css`
-        margin-block-start: var(--size-300);
-        padding: 0 var(--size-250);
+        padding-block-start: var(--size-200);
       `}
     >
       <div
+        className="balance-container"
         css={css`
-          max-height: 25rem;
-          overflow-y: auto;
+          padding: var(--size-150);
+          background-color: var(--clr-surface-raised);
+          border-radius: var(--border-radius-medium);
         `}
       >
-        <AssetCardList assets={assets} showOptions={true} />
+        <Balance balance={balance} />
       </div>
+    </section>
+    <section
+      css={css`
+        overflow-y: auto;
+        padding-block-end: var(--size-250);
+      `}
+    >
+      <AssetCardList assets={assets} showOptions={true} />
     </section>
   </div>
 );

@@ -1,4 +1,4 @@
-import { AbstractedAsset, Asset } from "../wallet/assets/types";
+import { AbstractedAsset, Asset } from "../assets/types";
 
 export type SwapTransactionType = "buy" | "sell";
 

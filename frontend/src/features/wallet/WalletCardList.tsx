@@ -15,8 +15,8 @@ import {
   selectAssetsBalanceUSDByGroup,
   selectAssetsGroupsArray,
   toggleGroupOverlay,
-} from "./assets/assetsSlice";
-import { AssetGroup } from "./assets/types";
+} from "../assets/assetsSlice";
+import { AssetGroup } from "../assets/types";
 
 const WalletCardList = ({ ...restProps }) => {
   const dispatch = useDispatch();

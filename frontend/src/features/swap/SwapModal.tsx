@@ -111,7 +111,6 @@ const SwapModal = () => {
         isOpen={isOpen}
         onOpenChange={handleOpen}
         title="Swap"
-        subtitle="Swap crypto to cash, and more!"
         height={height}
         zIndex={zIndex}
         onAnimationComplete={() => {
@@ -135,7 +134,13 @@ const SwapModal = () => {
           >
             <SwapController />
           </section>
-          <section>
+          <section
+            css={css`
+              margin-block-start: auto;
+              margin-block-end: var(--size-200);
+              padding-inline: var(--size-200);
+            `}
+          >
             <NumberPad
               onNumberPress={handleNumberPress}
               onNumberPressStart={handleNumberPressStart}

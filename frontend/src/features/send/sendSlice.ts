@@ -1,14 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { updateFormattedAmount, parseFormattedAmount } from "./utils";
-import { AbstractedAsset, Asset } from "@/features/wallet/assets/types";
-import { SendTransaction, SendTransactionStatus } from "./types";
+import { AbstractedAsset } from "@/features/assets/types";
+import { PresetAmountOption, SendTransaction } from "./types";
 
 interface SendState {
   modal: {
     isOpen: boolean;
   };
   overlays: {
+    selectAsset: {
+      isOpen: boolean;
+    };
     selectContact: {
       isOpen: boolean;
     };
@@ -31,6 +34,7 @@ const initialState: SendState = {
     selectContact: { isOpen: false },
     confirmSend: { isOpen: false },
     processingTransaction: { isOpen: false },
+    selectAsset: { isOpen: false },
   },
   transaction: {
     id: null,
@@ -40,6 +44,8 @@ const initialState: SendState = {
     abstractedAssetId: null,
     fee: null,
     status: "idle",
+    presetAmount: null,
+    fiatCurrency: "usd",
   },
 };
 
@@ -61,13 +67,20 @@ const sendSlice = createSlice({
     toggleOverlay(
       state,
       action: PayloadAction<{
-        type: "selectContact" | "confirmSend" | "processingTransaction";
+        type:
+          | "selectContact"
+          | "confirmSend"
+          | "processingTransaction"
+          | "selectAsset";
         isOpen: boolean;
       }>
     ) {
       state.overlays[action.payload.type].isOpen = action.payload.isOpen;
     },
     unmount: () => initialState,
+    updatePresetAmount: (state, action: PayloadAction<PresetAmountOption>) => {
+      state.transaction.presetAmount = action.payload;
+    },
     updateAmount(
       state,
       action: PayloadAction<{
@@ -91,14 +104,13 @@ const sendSlice = createSlice({
         ? (state.transaction.amount = null)
         : (state.transaction.amount = parsedFormattedSellAmount);
     },
-    updateAssetId(state, action: PayloadAction<Asset["id"] | null>) {
-      state.transaction.assetId = action.payload;
-    },
-    updateStatus(state, action: PayloadAction<SendTransactionStatus>) {
-      state.transaction.status = action.payload;
-    },
-    updateId(state, action: PayloadAction<string>) {
-      state.transaction.id = action.payload;
+    updateAbstractedAssetId(
+      state,
+      action: PayloadAction<{
+        abstractedAssetId: AbstractedAsset["id"] | null;
+      }>
+    ) {
+      state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
     },
   },
 });
@@ -107,9 +119,8 @@ export const {
   toggleModal,
   toggleOverlay,
   updateAmount,
-  updateAssetId,
   unmount,
-  updateStatus,
-  updateId,
+  updateAbstractedAssetId,
+  updatePresetAmount,
 } = sendSlice.actions;
 export default sendSlice.reducer;

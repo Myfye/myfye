@@ -11,7 +11,7 @@ import ensureTokenAccount from "./ensureTokenAccount.tsx";
 import { SwapTransaction, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
-import { Asset, AssetsState } from "@/features/wallet/assets/types.ts";
+import { Asset, AssetsState } from "@/features/assets/types.ts";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);

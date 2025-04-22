@@ -3,8 +3,8 @@ import { HELIUS_API_KEY } from "../../../env.ts";
 import { SwapTransaction, updateId, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
-import { AssetsState } from "@/features/wallet/assets/types.ts";
-import { updateBalance } from "@/features/wallet/assets/assetsSlice.ts";
+import { AssetsState } from "@/features/assets/types.ts";
+import { updateBalance } from "@/features/assets/assetsSlice.ts";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);

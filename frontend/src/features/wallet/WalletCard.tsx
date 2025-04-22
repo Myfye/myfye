@@ -10,8 +10,8 @@ import {
   Icon,
 } from "@phosphor-icons/react";
 import { RefObject, useMemo } from "react";
-import { formatBalance } from "./assets/utils";
-import { FiatCurrency } from "./assets/types";
+import { formatBalance } from "../assets/utils";
+import { FiatCurrency } from "../assets/types";
 
 const WalletCard = ({
   title,
@@ -65,9 +65,8 @@ const WalletCard = ({
         container: wallet-card / size;
         width: 100%;
         aspect-ratio: 1;
-        padding: var(--size-200);
+        padding: var(--size-150);
         background-color: var(--clr-surface-raised);
-        box-shadow: var(--box-shadow-card);
         border-radius: var(--border-radius-medium);
       `}
       {...buttonProps}
@@ -76,7 +75,14 @@ const WalletCard = ({
         scale: isPressed ? 0.97 : 1,
       }}
     >
-      <p className="heading-small">{title}</p>
+      <p
+        className="heading-small"
+        css={css`
+          color: var(--clr-text);
+        `}
+      >
+        {title}
+      </p>
       <div
         className="icon-wrapper"
         css={css`
@@ -86,17 +92,23 @@ const WalletCard = ({
         {Icon && <Icon size="100%" color="var(--clr-accent)" weight="light" />}
       </div>
       <div>
-        <p className="balance | heading-medium">{formattedBalance}</p>
+        <p
+          className="balance | heading-x-large"
+          css={css`
+            color: var(--clr-text);
+          `}
+        >
+          {formattedBalance}
+        </p>
         {!isNaN(percentChange) && (
           <p
             className="percent-change"
             css={css`
               display: inline-flex;
               align-items: center;
-              gap: var(--size-050);
-              font-size: var(--fs-small);
+              gap: var(--size-025);
+              font-size: var(--fs-x-small);
               margin-block-start: var(--size-050);
-              font-weight: var(--fw-active);
               color: ${percentChange > 0
                 ? "var(--clr-text-success)"
                 : "var(--clr-text-danger)"};

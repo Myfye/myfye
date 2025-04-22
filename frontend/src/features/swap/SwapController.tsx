@@ -1,4 +1,4 @@
-import { ArrowDown, CaretRight } from "@phosphor-icons/react";
+import { ArrowDown, ArrowsDownUp, CaretRight } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
 import { useMemo } from "react";
@@ -10,14 +10,14 @@ import {
   formatUsdAmount,
   getUsdAmount,
 } from "./utils";
-import { toggleOverlay, updateAmount } from "./swapSlice";
+import { switchCurrencies, toggleOverlay, updateAmount } from "./swapSlice";
 import Button from "@/components/ui/button/Button";
 import TextFit from "@/shared/components/TextFit";
-import { AbstractedAsset } from "../wallet/assets/types";
+import { AbstractedAsset } from "../assets/types";
 import {
   selectAbstractedAsset,
   selectAbstractedAssetWithBalance,
-} from "../wallet/assets/assetsSlice";
+} from "../assets/assetsSlice";
 import { SwapTransactionType } from "./types";
 
 const AssetSelectButton = ({
@@ -94,20 +94,24 @@ const AssetSelectButton = ({
 const MaxAmountButton = ({
   abstractedAssetId,
 }: {
-  abstractedAssetId: AbstractedAsset["id"];
+  abstractedAssetId: AbstractedAsset["id"] | null;
 }) => {
   const dispatch = useDispatch();
 
   const asset = useSelector((state: RootState) =>
-    selectAbstractedAssetWithBalance(state, abstractedAssetId)
+    abstractedAssetId
+      ? selectAbstractedAssetWithBalance(state, abstractedAssetId)
+      : null
   );
 
   return (
     <>
       <Button
+        isDisabled={abstractedAssetId === null}
         size="x-small"
         color="neutral"
         onPress={() => {
+          if (!asset) return;
           dispatch(
             updateAmount({
               input: asset.balance,
@@ -134,17 +138,11 @@ const SwapControl = ({
   abstractedAssetId: AbstractedAsset["id"] | null;
 }) => {
   // Formatted Amount
-  const formattedAmountArr = useMemo(
-    () => formattedAmount.split(""),
-    [formattedAmount]
-  );
+  const formattedAmountArr = formattedAmount.split("");
 
   // Ghost amount
-  const ghostValue = useMemo(
-    () => updateFormattedGhostAmount(formattedAmount),
-    [formattedAmount]
-  );
-  const ghostValueArr = useMemo(() => ghostValue.split(""), [ghostValue]);
+  const ghostValue = updateFormattedGhostAmount(formattedAmount);
+  const ghostValueArr = ghostValue.split("");
 
   const amount = useSelector(
     (state: RootState) => state.swap.transaction[transactionType].amount
@@ -152,15 +150,10 @@ const SwapControl = ({
 
   const assets = useSelector((state: RootState) => state.assets);
 
-  const usdAmount = useMemo(
-    () => getUsdAmount(abstractedAssetId, assets, amount),
-    [amount]
-  );
+  const usdAmount = getUsdAmount(abstractedAssetId, assets, amount);
 
-  const formattedUsdAmount = useMemo(
-    () => formatUsdAmount(usdAmount),
-    [usdAmount]
-  );
+  const formattedUsdAmount = formatUsdAmount(usdAmount);
+
   return (
     <div
       className="swap-control"
@@ -177,7 +170,7 @@ const SwapControl = ({
         <p
           css={css`
             font-size: var(--fs-small);
-            color: var(--clr-text-weak);
+            color: var(--clr-text-weaker);
             line-height: var(--line-height-tight);
           `}
         >
@@ -265,7 +258,7 @@ const SwapControl = ({
           />
         </li>
         <li>
-          {transactionType === "sell" && abstractedAssetId && (
+          {transactionType === "sell" && (
             <MaxAmountButton abstractedAssetId={abstractedAssetId} />
           )}
         </li>
@@ -285,7 +278,7 @@ const SwapController = () => {
       css={css`
         display: flex;
         flex-direction: column;
-        gap: var(--size-075);
+        gap: var(--size-050);
         position: relative;
       `}
     >
@@ -304,6 +297,9 @@ const SwapController = () => {
         }}
       />
       <div
+        onClick={() => {
+          dispatch(switchCurrencies(null));
+        }}
         className="icon-wrapper"
         css={css`
           position: absolute;
@@ -313,11 +309,11 @@ const SwapController = () => {
           z-index: 1;
           background-color: var(--clr-surface-raised);
           border-radius: var(--border-radius-medium);
-          padding: var(--size-100);
+          padding: var(--size-075);
           box-shadow: var(--box-shadow-card);
         `}
       >
-        <ArrowDown size={24} color="var(--clr-icon)" />
+        <ArrowsDownUp size={20} color="var(--clr-icon)" />
       </div>
       <SwapControl
         transactionType="buy"

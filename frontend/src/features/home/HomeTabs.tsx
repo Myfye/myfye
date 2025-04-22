@@ -149,7 +149,7 @@ const HomeTabs = () => {
           ref={tabListRef}
           css={css`
             display: flex;
-            gap: var(--size-250);
+            gap: var(--size-200);
           `}
           items={tabs}
         >
@@ -162,7 +162,7 @@ const HomeTabs = () => {
                 justify-content: flex-end;
                 font-size: var(--fs-medium);
                 font-weight: var(--fw-active);
-                height: 2.5rem;
+                height: 2.25rem;
                 padding-block-end: 0.625rem;
                 cursor: pointer;
                 color: var(--clr-text-neutral-strong);
@@ -209,6 +209,7 @@ const HomeTabs = () => {
                 width: 100%;
                 flex-shrink: 0;
                 scroll-snap-align: start;
+                container: ${tab.id}-panel / size;
               `}
             >
               {tab.id === "dashboard" && <DashboardPanel />}

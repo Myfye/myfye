@@ -5,7 +5,7 @@ import {
   updateFormattedAmount,
   parseFormattedAmount,
 } from "./utils";
-import { AbstractedAsset, Asset, AssetsState } from "../wallet/assets/types";
+import { AbstractedAsset, Asset, AssetsState } from "../assets/types";
 import {
   SwapTransaction,
   SwapTransactionStatus,
@@ -177,6 +177,17 @@ const swapSlice = createSlice({
     updateZIndex(state, action: PayloadAction<number>) {
       state.modal.zIndex = action.payload;
     },
+    switchCurrencies(state, _: PayloadAction<void | unknown>) {
+      const buyClone = { ...state.transaction.buy };
+      const sellClone = { ...state.transaction.sell };
+      state.transaction.buy = sellClone;
+      state.transaction.sell = buyClone;
+
+      if (state.transaction.buy.amount === 0) {
+        state.transaction.buy.amount = null;
+        state.transaction.buy.formattedAmount = "";
+      }
+    },
   },
 });
 
@@ -189,5 +200,6 @@ export const {
   unmount,
   updateStatus,
   updateId,
+  switchCurrencies,
 } = swapSlice.actions;
 export default swapSlice.reducer;

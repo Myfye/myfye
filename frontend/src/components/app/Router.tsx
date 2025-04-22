@@ -116,7 +116,7 @@ const Router = () => {
             iconOnly
             icon={ScanIcon}
             onPress={() => dispatch(setQRCodeModalOpen(true))}
-            color="transparent"
+            color="white"
           ></Button>
         </Header>
         <main>
@@ -174,7 +174,7 @@ const Router = () => {
                   display: block;
                   align-content: center;
                   width: var(--size-800);
-                  padding-block-start: var(--size-075);
+                  padding-block-start: var(--size-050);
                   padding-block-end: var(--size-025);
                   user-select: none;
                 `}
@@ -185,7 +185,7 @@ const Router = () => {
                     {getTabIcon(tab.id, isSelected)}
                     <p
                       css={css`
-                        margin-top: var(--size-025);
+                        margin-block-start: calc(1 / 16 * 1rem);
                         font-weight: var(--fw-active);
                         font-size: var(--fs-x-small);
                         text-align: center;

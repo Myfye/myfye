@@ -20,15 +20,18 @@ const LineChart = ({
   onDateRangeSelectionChange: (keys: Set<Key>) => void;
 }) => {
   return (
-    <div className="line-chart-container">
-      <div
-        className="line-chart-wrapper"
-        css={css`
-          width: 100%;
-          height: 16rem;
-          overflow-x: hidden;
-        `}
-      >
+    <div
+      className="line-chart-container"
+      css={css`
+        height: 16rem;
+        container: line-chart / size;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        overflow-x: hidden;
+        gap: var(--size-200);
+      `}
+    >
+      <div className="line-chart-wrapper">
         <ResponsiveLine
           data={data}
           curve="cardinal"
@@ -78,7 +81,6 @@ const LineChart = ({
       </div>
       <div
         css={css`
-          margin-block-start: var(--size-200);
           padding-inline: var(--size-250);
         `}
       >

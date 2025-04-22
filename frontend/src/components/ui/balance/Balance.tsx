@@ -1,5 +1,5 @@
-import { FiatCurrency } from "@/features/wallet/assets/types";
-import { formatBalance } from "@/features/wallet/assets/utils";
+import { FiatCurrency } from "@/features/assets/types";
+import { formatBalance } from "@/features/assets/utils";
 import { css } from "@emotion/react";
 import { useMemo } from "react";
 
@@ -8,7 +8,7 @@ const Balance = ({
   currency = "usd",
 }: {
   balance: number;
-  currency: FiatCurrency;
+  currency?: FiatCurrency;
 }) => {
   const formattedBalance = useMemo(
     () => formatBalance(balance, currency),
@@ -23,13 +23,13 @@ const Balance = ({
       <h1
         css={css`
           font-size: var(--fs-small);
-          color: var(--clr-text-weak);
+          color: var(--clr-text-weaker);
         `}
       >
         Balance
       </h1>
       <p
-        className="heading-x-large"
+        className="heading-xx-large"
         css={css`
           margin-block-start: var(--size-050);
         `}

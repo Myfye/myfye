@@ -1,6 +1,6 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../env";
-import { updateBalance } from "@/features/wallet/assets/assetsSlice.ts";
+import { updateBalance } from "@/features/assets/assetsSlice";
 
 const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
   try {

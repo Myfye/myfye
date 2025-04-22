@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
+import AssetCardList from "@/features/assets/cards/AssetCardList";
 import Overlay from "@/components/ui/overlay/Overlay";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,8 +10,9 @@ import {
   updateExchangeRate,
 } from "./swapSlice";
 import { useCallback } from "react";
-import { AbstractedAsset, Asset } from "../wallet/assets/types";
-import { selectAbstractedAssetsWithBalanceByDashboard } from "../wallet/assets/assetsSlice";
+import { AbstractedAsset, Asset } from "../assets/types";
+import { selectAbstractedAssetsWithBalanceByDashboard } from "../assets/assetsSlice";
+import AssetCardListSelect from "../assets/cards/AssetCardListSelect";
 
 const SelectAssetOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -51,28 +52,23 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
   };
 
   const onAssetSelect = useCallback(
-    (abstractedAsset: AbstractedAsset) => {
-      console.log(
-        "Selecting asset:",
-        abstractedAsset.label,
-        "with ID:",
-        abstractedAsset.id
-      );
+    (abstractedAssetId: AbstractedAsset["id"]) => {
+      console.log("Selecting asset:", abstractedAssetId);
       dispatch(
         updateAbstractedAssetId({
           transactionType: transactionType,
-          abstractedAssetId: abstractedAsset.id,
+          abstractedAssetId: abstractedAssetId,
         })
       );
       dispatch(
         updateExchangeRate({
           buyAbstractedAssetId:
             transactionType === "buy"
-              ? abstractedAsset.id
+              ? abstractedAssetId
               : transaction.buy.abstractedAssetId,
           sellAbstractedAssetId:
             transactionType === "sell"
-              ? abstractedAsset.id
+              ? abstractedAssetId
               : transaction.sell.abstractedAssetId,
           assets: assets,
         })
@@ -110,17 +106,22 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
           <h2
             className="heading-small"
             css={css`
-              color: var(--clr-text-weak);
+              color: var(--clr-text-weaker);
               margin-block-end: var(--size-250);
             `}
           >
             Cash
           </h2>
-          <AssetCardList
+          <AssetCardListSelect
             assets={cashAssets}
+            selectedAsset={
+              transactionType === "sell"
+                ? transaction.sell.abstractedAssetId
+                : transaction.buy.abstractedAssetId
+            }
             onAssetSelect={onAssetSelect}
             showBalance={transactionType === "sell"}
-          ></AssetCardList>
+          ></AssetCardListSelect>
         </section>
         <section
           className="crypto"
@@ -131,17 +132,22 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
           <h2
             className="heading-small"
             css={css`
-              color: var(--clr-text-weak);
+              color: var(--clr-text-weaker);
               margin-block-end: var(--size-250);
             `}
           >
             Crypto
           </h2>
-          <AssetCardList
+          <AssetCardListSelect
             assets={cryptoAssets}
+            selectedAsset={
+              transactionType === "sell"
+                ? transaction.sell.abstractedAssetId
+                : transaction.buy.abstractedAssetId
+            }
             onAssetSelect={onAssetSelect}
             showBalance={transactionType === "sell"}
-          ></AssetCardList>
+          ></AssetCardListSelect>
         </section>
         <section
           className="crypto"
@@ -152,17 +158,22 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
           <h2
             className="heading-small"
             css={css`
-              color: var(--clr-text-weak);
+              color: var(--clr-text-weaker);
               margin-block-end: var(--size-250);
             `}
           >
             Stocks
           </h2>
-          <AssetCardList
+          <AssetCardListSelect
             assets={stocksAssets}
+            selectedAsset={
+              transactionType === "sell"
+                ? transaction.sell.abstractedAssetId
+                : transaction.buy.abstractedAssetId
+            }
             onAssetSelect={onAssetSelect}
             showBalance={transactionType === "sell"}
-          ></AssetCardList>
+          ></AssetCardListSelect>
         </section>
       </div>
     </Overlay>

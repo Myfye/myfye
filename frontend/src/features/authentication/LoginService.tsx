@@ -23,7 +23,7 @@ import {
   HttpsCallableResult,
 } from "firebase/functions";
 import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env.ts";
-import { updateExchangeRateUSD } from "../wallet/assets/assetsSlice.ts";
+import { updateExchangeRateUSD } from "../assets/assetsSlice.ts";
 
 const userCreationInProgress = new Set();
 

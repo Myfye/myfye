@@ -18,10 +18,9 @@ const Card = ({
   return (
     <div
       css={css`
-        padding: var(--size-250);
+        padding: var(--size-200);
         border-radius: var(--border-radius-medium);
         background-color: var(--clr-surface-raised);
-        box-shadow: var(--box-shadow-card);
       `}
     >
       <div
@@ -48,7 +47,7 @@ const Card = ({
           <p
             className="caption-small"
             css={css`
-              margin-block-start: var(--size-050);
+              margin-block-start: var(--size-100);
               color: var(--clr-text-weaker);
             `}
           >

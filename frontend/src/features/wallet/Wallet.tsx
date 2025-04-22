@@ -8,10 +8,11 @@ import {
   setDepositModalOpen,
   setWithdrawModalOpen,
 } from "@/redux/modalReducers.tsx";
-import EarnOverlay from "./assets/earn/EarnOverlay.tsx";
-import CryptoOverlay from "./assets/crypto/CryptoOverlay.tsx";
-import CashOverlay from "./assets/cash/CashOverlay.tsx";
-import StocksOverlay from "./assets/stocks/StocksOverlay.tsx";
+import EarnOverlay from "../assets/earn/EarnOverlay.tsx";
+import CryptoOverlay from "../assets/crypto/CryptoOverlay.tsx";
+import CashOverlay from "../assets/cash/CashOverlay.tsx";
+import StocksOverlay from "../assets/stocks/StocksOverlay.tsx";
+import { ArrowSquareOut } from "@phosphor-icons/react";
 
 const Wallet = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ const Wallet = () => {
               align-items: flex-start;
               justify-content: center;
               padding-inline: var(--size-250);
-              height: var(--size-600);
+              height: 2.25rem;
             `}
           >
             Wallet
@@ -46,34 +47,34 @@ const Wallet = () => {
         <section
           css={css`
             padding-inline: var(--size-250);
-            margin-block-start: var(--size-300);
-            margin-block-end: auto;
+            margin-block-start: var(--size-200);
           `}
         >
           <WalletCardList />
         </section>
-        {/* <section>
-        <a
-          href="/"
-          css={css`
-            display: flex;
-            align-items: center;
-            gap: var(--control-gap-medium);
-            text-align: center;
-            font-size: var(--fs-small);
-            line-height: var(--line-height-tight);
-            color: var(--clr-text-weaker);
-            margin-inline: auto;
-            width: fit-content;
-            font-weight: var(--fw-active);
-          `}
-        >
-          Show wallet info <ArrowSquareOut size={18} />
-        </a>
-      </section> */}
+        <section>
+          <a
+            href="/"
+            css={css`
+              display: flex;
+              align-items: center;
+              gap: var(--control-gap-medium);
+              text-align: center;
+              font-size: var(--fs-small);
+              line-height: var(--line-height-tight);
+              color: var(--clr-text-weaker);
+              margin-inline: auto;
+              width: fit-content;
+              font-weight: var(--fw-active);
+              margin-block-start: var(--size-250);
+            `}
+          >
+            Show wallet info <ArrowSquareOut size={16} />
+          </a>
+        </section>
         <section
           css={css`
-            margin-block-start: var(--size-400);
+            margin-block-start: auto;
             margin-block-end: var(--size-250);
             margin-inline: var(--size-250);
           `}

@@ -1,19 +1,18 @@
-import { AbstractedAsset, Asset } from "@/features/wallet/assets/types";
+import { AbstractedAsset, Asset, FiatCurrency } from "@/features/assets/types";
+import { Contact } from "../contacts/types";
 
 export type SendTransactionStatus = "idle" | "success" | "fail" | "minted";
 
+export type PresetAmountOption = "10" | "50" | "100" | "max" | null;
+
 export interface SendTransaction {
   id: string | null;
+  status: SendTransactionStatus;
+  abstractedAssetId: AbstractedAsset["id"] | null;
   amount: number | null;
   formattedAmount: string;
-  abstractedAssetId: AbstractedAsset["id"] | null;
+  fiatCurrency: FiatCurrency;
   fee: number | null;
-  status: SendTransactionStatus;
   contact: Contact | null;
-}
-
-export interface Contact {
-  id: string;
-  label: string;
-  wallet_address: string;
+  presetAmount: PresetAmountOption;
 }
