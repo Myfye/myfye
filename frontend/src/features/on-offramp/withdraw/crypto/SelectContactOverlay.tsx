@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 import Overlay from "@/components/ui/overlay/Overlay";
 import { Input, Label, Button as AriaButton } from "react-aria-components";
 import SearchField from "@/components/ui/search/SearchField";
-import ContactCardList from "@/components/ui/contact-card/ContactCardList";
+import ContactCardList from "@/features/contacts/ContactCardList";
 import WalletSearchField from "@/components/ui/search/WalletSearchField";
 
 const SelectContactOverlay = ({ isOpen, onOpenChange }) => {

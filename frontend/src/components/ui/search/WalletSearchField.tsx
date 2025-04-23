@@ -6,36 +6,32 @@ import { useSearchField } from "react-aria";
 
 import { css } from "@emotion/react";
 
-const WalletSearchField = ({ ...restProps }) => {
-  const [text, setText] = useState("");
-  const state = useSearchFieldState({
-    ...restProps,
-    onChange(e) {
-      setText(e);
-    },
-  });
-  const inputRef = useRef(null);
-  const { labelProps, inputProps, clearButtonProps } = useSearchField(
-    restProps,
+const WalletSearchField = (props) => {
+  const { label } = props;
+  let state = useSearchFieldState(props);
+  let ref = useRef(null);
+  let { labelProps, inputProps, clearButtonProps } = useSearchField(
+    props,
     state,
-    inputRef
+    ref
   );
 
   return (
     <div className="search-field">
       <label {...labelProps} className="visually-hidden">
-        Search wallet address
+        {label}
       </label>
       <div
         css={css`
           display: grid;
+          font-size: var(--fs-medium);
+          background-color: var(--clr-surface-raised);
           grid-template-columns: 1fr auto;
           align-items: center;
           width: 100%;
           border-radius: var(--border-radius-medium);
           height: var(--control-size-medium);
           max-height: var(--control-size-medium);
-          border: 1px solid var(--clr-border-neutral);
           input::placeholder {
             color: var(--clr-text-weakest);
           }
@@ -45,7 +41,7 @@ const WalletSearchField = ({ ...restProps }) => {
         <input
           {...inputProps}
           placeholder="Search contact or address"
-          ref={inputRef}
+          ref={ref}
         />
         {state.value !== "" ? (
           <Button
@@ -66,15 +62,14 @@ const WalletSearchField = ({ ...restProps }) => {
           >
             <li>
               <Button
-                variant="transparent"
+                color="transparent"
                 size="small"
                 onPress={async () => {
-                  if (!inputRef.current) return;
+                  if (!ref.current) return;
                   try {
                     const text = await navigator.clipboard.readText();
-                    setText(text);
-                    console.log("Text pasted.");
-                  } catch (error) {
+                    state.setValue(text);
+                  } catch (err) {
                     console.log("Failed to read clipboard");
                   }
                 }}
@@ -84,7 +79,7 @@ const WalletSearchField = ({ ...restProps }) => {
             </li>
             <li>
               <Button
-                variant="transparent"
+                color="transparent"
                 size="small"
                 iconOnly
                 icon={ScanIcon}

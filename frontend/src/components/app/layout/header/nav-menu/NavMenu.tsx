@@ -5,12 +5,15 @@ import {
   X as XIcon,
   SignOut as SignOutIcon,
   CaretRight,
+  ShieldCheck,
+  PaperPlaneTilt,
 } from "@phosphor-icons/react";
 import Button from "@/components/ui/button/Button";
 import { useSelector } from "react-redux";
 
 import { css } from "@emotion/react";
 import { usePrivy } from "@privy-io/react-auth";
+import Header from "../Header";
 
 const NavMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -97,7 +100,6 @@ const NavMenu = () => {
                 height: 100svh;
                 background-color: var(--clr-surface);
                 z-index: 9999;
-                padding: var(--size-100);
                 box-shadow: var(--box-shadow-nav);
               `}
             >
@@ -111,21 +113,14 @@ const NavMenu = () => {
                   margin-inline: auto;
                 `}
               >
-                <header
-                  css={css`
-                    display: flex;
-                    justify-content: flex-start;
-                    margin-block-end: var(--size-400);
-                    padding-inline: var(--size-100);
-                  `}
-                >
+                <Header>
                   <Button
                     iconOnly
                     onPress={closeMenu}
                     icon={XIcon}
                     color="transparent"
                   ></Button>
-                </header>
+                </Header>
                 {/* Menu content goes here */}
                 <main>
                   <button
@@ -154,9 +149,15 @@ const NavMenu = () => {
                       `}
                     >
                       {currentUserEmail && (
-                        <p>{formatEmail(currentUserEmail)}</p>
+                        <p
+                          css={css`
+                            font-size: var(--fs-medium);
+                          `}
+                        >
+                          {formatEmail(currentUserEmail)}
+                        </p>
                       )}
-                      <CaretRight size={24} color="var(--clr-text)" />
+                      <CaretRight size={20} color="var(--clr-text)" />
                     </div>
                   </button>
                   <section
@@ -170,16 +171,23 @@ const NavMenu = () => {
                     `}
                   >
                     <section>
-                      <p class="heading-large">Pay</p>
+                      <menu>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                      </menu>
                     </section>
                     <section>
-                      <p class="heading-large">Wallet</p>
+                      <p className="heading-large">Pay</p>
                     </section>
                     <section>
-                      <p class="heading-large">Earn</p>
+                      <p className="heading-large">Wallet</p>
                     </section>
                     <section>
-                      <p class="heading-large">Crypto</p>
+                      <p className="heading-large">Earn</p>
+                    </section>
+                    <section>
+                      <p className="heading-large">Crypto</p>
                     </section>
                   </section>
                 </main>
@@ -192,16 +200,30 @@ const NavMenu = () => {
                     padding-bottom: var(--size-250);
                   `}
                 >
-                  <Button
-                    onPress={signOut}
-                    color="accent"
-                    variant="neutral"
-                    size="medium"
-                    expand
-                    isDisabled={disableLogout}
+                  <menu
+                    css={css`
+                      width: 100%;
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--controls-gap-medium);
+                    `}
                   >
-                    Sign Out
-                  </Button>
+                    <li>
+                      <Button variant="primary" expand icon={ShieldCheck}>
+                        Verify KYC
+                      </Button>
+                    </li>
+                    <li>
+                      <Button
+                        onPress={signOut}
+                        variant="secondary"
+                        expand
+                        isDisabled={disableLogout}
+                      >
+                        Sign Out
+                      </Button>
+                    </li>
+                  </menu>
                 </footer>
               </div>
             </motion.div>

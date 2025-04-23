@@ -9,7 +9,7 @@ import { toggleOverlay } from "./swapSlice";
 import { swap } from "./solana-swap/SwapService";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
 import { useCallback } from "react";
-import { AbstractedAsset } from "../wallet/assets/types";
+import { AbstractedAsset } from "../assets/types";
 
 const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -101,7 +101,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
         >
           <section
             css={css`
-              margin-block-start: var(--size-400);
+              margin-block-start: var(--size-300);
               margin-inline: var(--size-250);
             `}
           >
@@ -132,7 +132,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
                 <span className="heading-small">CBBTC contract</span>
                 <span
                   css={css`
-                    margin-inline-start: auto;
+                    font-size: var(--fs-medium);
                     color: var(--clr-text);
                   `}
                 >
@@ -148,6 +148,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
                 <span className="heading-small">Slippage tolerance</span>{" "}
                 <span
                   css={css`
+                    font-size: var(--fs-medium);
                     color: var(--clr-text);
                   `}
                 >
@@ -163,6 +164,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
                 <span className="heading-small">Coinbase fee</span>{" "}
                 <span
                   css={css`
+                    font-size: var(--fs-medium);
                     color: var(--clr-text);
                   `}
                 >
@@ -178,6 +180,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
                 <span className="heading-small">Network fee</span>{" "}
                 <span
                   css={css`
+                    font-size: var(--fs-medium);
                     color: var(--clr-text);
                   `}
                 >

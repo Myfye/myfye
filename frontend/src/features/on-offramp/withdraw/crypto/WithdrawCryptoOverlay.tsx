@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { css } from "@emotion/react";
 
 import { useDispatch, useSelector } from "react-redux";
-import AssetCardList from "@/features/wallet/assets/cards/AssetCardList";
+import AssetCardList from "@/features/assets/cards/AssetCardList";
 
 import usDollarCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
@@ -88,7 +88,7 @@ const WithdrawCryptoOverlay = ({ isOpen, onOpenChange }) => {
           <p
             className="caption"
             css={css`
-              color: var(--clr-text-weak);
+              color: var(--clr-text-weaker);
               margin-block-end: var(--size-300);
             `}
           >
@@ -109,7 +109,7 @@ const WithdrawCryptoOverlay = ({ isOpen, onOpenChange }) => {
           <p
             className="caption"
             css={css`
-              color: var(--clr-text-weak);
+              color: var(--clr-text-weaker);
               margin-block-end: var(--size-300);
             `}
           >

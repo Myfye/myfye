@@ -3,7 +3,7 @@ import { RootState } from "@/redux/store";
 import {
   selectAbstractedAssetsWithBalanceByDashboard,
   selectAssetsBalanceUSDByDashboardId,
-} from "@/features/wallet/assets/assetsSlice";
+} from "@/features/assets/assetsSlice";
 import AssetPanel from "../../PanelInner";
 
 const StocksPanel = ({}) => {

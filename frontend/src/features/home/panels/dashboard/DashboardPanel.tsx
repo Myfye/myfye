@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectAssetsBalanceUSD,
   selectAssetsBalanceUSDByGroup,
-} from "@/features/wallet/assets/assetsSlice";
+} from "@/features/assets/assetsSlice";
 import { RootState } from "@/redux/store";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
@@ -90,81 +90,93 @@ const DashboardPanel = ({}) => {
       `}
     >
       <section
-        className="balance-container"
         css={css`
-          margin-block-start: var(--size-250);
+          margin-block-start: var(--size-200);
+          padding-inline: var(--size-250);
         `}
       >
         <div
-          className="balance-wrapper"
           css={css`
-            padding: 0 var(--size-250);
+            padding-block: var(--size-150);
+            background-color: var(--clr-surface-raised);
+            border-radius: var(--border-radius-medium);
           `}
         >
-          <Balance balance={balanceUSD} />
+          <section
+            css={css`
+              padding-inline: var(--size-150);
+            `}
+          >
+            <Balance balance={balanceUSD} />
+          </section>
+          <section
+            css={css`
+              margin-block-start: var(--size-200);
+            `}
+          >
+            <menu
+              className="no-scrollbar"
+              css={css`
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: var(--controls-gap-small);
+                overflow-x: auto;
+                padding-inline: var(--size-150);
+              `}
+            >
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowCircleUpIcon}
+                  onPress={() => {
+                    dispatch(toggleSendModal({ isOpen: true }));
+                  }}
+                >
+                  Send
+                </Button>
+              </li>
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowCircleDownIcon}
+                  onPress={() => {
+                    dispatch(toggleReceiveModal(true));
+                  }}
+                >
+                  Receive
+                </Button>
+              </li>
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowLineUpIcon}
+                  onPress={() => {
+                    dispatch(setDepositModalOpen(true));
+                  }}
+                >
+                  Deposit
+                </Button>
+              </li>
+              <li>
+                <Button
+                  size="x-small"
+                  icon={ArrowLineDownIcon}
+                  onPress={() => {
+                    dispatch(setWithdrawModalOpen(true));
+                  }}
+                >
+                  Withdraw
+                </Button>
+              </li>
+            </menu>
+          </section>
         </div>
-        <menu
-          className="no-scrollbar"
-          css={css`
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: var(--controls-gap-small);
-            overflow-x: auto;
-            padding: 0 var(--size-250);
-            margin-block-start: var(--size-200);
-            background-color: var(--clr-surface);
-          `}
-        >
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowCircleUpIcon}
-              onPress={() => {
-                dispatch(toggleSendModal({ isOpen: true }));
-              }}
-            >
-              Send
-            </Button>
-          </li>
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowCircleDownIcon}
-              onPress={() => {
-                dispatch(toggleReceiveModal(true));
-              }}
-            >
-              Receive
-            </Button>
-          </li>
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowLineUpIcon}
-              onPress={() => {
-                dispatch(setDepositModalOpen(true));
-              }}
-            >
-              Deposit
-            </Button>
-          </li>
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowLineDownIcon}
-              onPress={() => {
-                dispatch(setWithdrawModalOpen(true));
-              }}
-            >
-              Withdraw
-            </Button>
-          </li>
-        </menu>
       </section>
       <section
-        className="pie-chart-container"
         css={css`
+          margin-block-start: var(--size-200);
+          margin-block-end: auto;
           padding-inline: var(--size-250);
         `}
       >
@@ -207,7 +219,16 @@ const DashboardPanel = ({}) => {
             </Button>
           </div>
         ) : (
-          <PieChart data={pieChartData}></PieChart>
+          <div
+            className="pie-chart-card"
+            css={css`
+              padding: var(--size-150);
+              background-color: var(--clr-surface-raised);
+              border-radius: var(--border-radius-medium);
+            `}
+          >
+            <PieChart data={pieChartData}></PieChart>
+          </div>
         )}
       </section>
       <section className="cta-carousel-container">

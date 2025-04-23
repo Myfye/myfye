@@ -36,7 +36,9 @@ const NumberPad = ({ onNumberPress, onNumberPressStart, onNumberPressEnd }) => {
     <div
       className="number-pad-container"
       css={css`
-        background-color: var(--clr-surface);
+        border-radius: var(--border-radius-medium);
+
+        background-color: var(--clr-surface-raised);
       `}
     >
       <ul
@@ -44,7 +46,7 @@ const NumberPad = ({ onNumberPress, onNumberPressStart, onNumberPressEnd }) => {
         css={css`
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          grid-auto-rows: 3.75rem;
+          grid-auto-rows: 3.5rem;
         `}
       >
         {buttons.map((button) => (

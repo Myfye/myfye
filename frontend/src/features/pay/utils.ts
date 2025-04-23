@@ -1,11 +1,10 @@
-import { Asset, AssetsState } from "../wallet/assets/types";
+import { Asset, AssetsState } from "../assets/types";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
-  const parsed = parseFormattedAmount(amount);
-  return isNaN(parsed)
-    ? ""
-    : parsed.toLocaleString("en-EN", { maximumFractionDigits: 8 });
+  let parsed = parseFormattedAmount(amount);
+  parsed = Math.floor(parsed * 100) / 100;
+  return isNaN(parsed) ? "" : parsed.toLocaleString("en-EN");
 };
 
 export const updateFormattedAmount = (
@@ -45,6 +44,8 @@ export const updateFormattedAmount = (
   if (formattedAmount === "0") return input; // Replace leading zero with input
 
   const updatedAmount = getFormattedNumberFromString(formattedAmount + input);
+  const [integer, decimal] = updatedAmount.split(".");
+  if (decimal?.length >= 2) return integer + "." + `${decimal[0]}${decimal[1]}`;
   if (input === "0" && formattedAmount.includes(".")) {
     formattedAmount += "0";
     const [_, decimal] = formattedAmount.split(".");

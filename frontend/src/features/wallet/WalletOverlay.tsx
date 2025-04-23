@@ -11,7 +11,7 @@ import {
 import { ReactNode } from "react";
 import { useDispatch } from "react-redux";
 import { toggleModal as toggleSwapModal } from "../swap/swapSlice";
-import { AssetGroup } from "./assets/types";
+import { AssetGroup } from "../assets/types";
 import { toggleModal as toggleSendModal } from "../send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "../receive/receiveSlice";
 
@@ -54,7 +54,7 @@ const WalletOverlay = ({
                   className="caption-medium"
                   css={css`
                     margin-block-start: var(--size-100);
-                    color: var(--clr-text-weak);
+                    color: var(--clr-text-weaker);
                   `}
                 >
                   Lorem ipsum dolor
@@ -68,7 +68,7 @@ const WalletOverlay = ({
           <section
             className="balance-container"
             css={css`
-              margin-block-start: var(--size-250);
+              margin-block-start: var(--size-100);
             `}
           >
             <div
@@ -88,7 +88,7 @@ const WalletOverlay = ({
                 gap: var(--controls-gap-small);
                 overflow-x: auto;
                 padding: 0 var(--size-250);
-                margin-block-start: var(--size-250);
+                margin-block-start: var(--size-200);
                 background-color: var(--clr-surface);
               `}
             >

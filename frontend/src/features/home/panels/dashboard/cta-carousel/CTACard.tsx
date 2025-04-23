@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import ondoFinanceIcon from "@/assets/icons/ondo_finance.svg";
 
 const CTACard = ({ title, subtitle, icon }) => {
   return (
@@ -8,10 +9,9 @@ const CTACard = ({ title, subtitle, icon }) => {
         display: grid;
         grid-template-columns: auto 1fr;
         gap: var(--size-150);
-        padding: var(--size-250);
+        padding: var(--size-200);
         width: calc(100% - var(--size-500));
         border-radius: var(--border-radius-medium);
-        box-shadow: var(--box-shadow-card);
         align-content: center;
         background-color: var(--clr-surface-raised);
         user-select: none;
@@ -20,27 +20,40 @@ const CTACard = ({ title, subtitle, icon }) => {
       <div
         className="icon-wrapper"
         css={css`
-          width: var(--size-500);
+          width: 2.75rem;
           aspect-ratio: 1;
-          background-color: var(--clr-surface-lowered);
-          border-radius: var(--border-radius-small);
+          border-radius: var(--border-radius-circle);
+          overflow: hidden;
         `}
-      ></div>
-      <div className="content">
-        <p
+      >
+        <img
+          src={ondoFinanceIcon}
+          alt="Ondo finance"
           css={css`
-            font-weight: var(--fw-active);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          `}
+        />
+      </div>
+      <div
+        className="content"
+        css={css`
+          align-content: center;
+        `}
+      >
+        <p
+          className="heading-small"
+          css={css`
             color: var(--clr-text);
-            font-size: var(--fs-small);
           `}
         >
           {title}
         </p>
         <p
+          className="caption-small"
           css={css`
-            font-weight: var(--fw-active);
-            font-size: var(--fs-x-small);
-            color: var(--clr-text-neutral);
+            color: var(--clr-text-weaker);
             margin-block-start: var(--size-050);
           `}
         >

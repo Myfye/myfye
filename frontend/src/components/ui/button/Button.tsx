@@ -56,6 +56,7 @@ const _Button = ({
   iconRight,
   wrap = false,
   expand = false,
+  iconProps,
   children,
   ...restProps
 }: ButtonProps) => {
@@ -64,16 +65,16 @@ const _Button = ({
   const iconSize = useMemo(() => {
     switch (size) {
       case "x-small": {
-        return !iconOnly ? 18 : 20;
+        return !iconOnly ? 16 : 16;
       }
       case "small": {
-        return !iconOnly ? 18 : 20;
+        return !iconOnly ? 16 : 18;
       }
       case "medium": {
-        return !iconOnly ? 18 : 24;
+        return !iconOnly ? 18 : 20;
       }
       case "large": {
-        return !iconOnly ? 20 : 32;
+        return !iconOnly ? 20 : 24;
       }
     }
   }, [size]);
@@ -102,7 +103,7 @@ const _Button = ({
         scale: isPressed ? 0.9 : 1,
       }}
     >
-      {Icon && <Icon size={iconSize} />}
+      {Icon && <Icon size={iconSize} {...iconProps} />}
       {children}
     </motion.button>
   );
@@ -122,6 +123,7 @@ const _Link = ({
   wrap = false,
   expand = false,
   children,
+  iconProps,
   ...restProps
 }: LinkProps) => {
   const Icon = icon;
@@ -130,16 +132,16 @@ const _Link = ({
     (size: string, iconOnly: boolean) => {
       switch (size) {
         case "x-small": {
-          return !iconOnly ? 18 : 20;
+          return !iconOnly ? 16 : 16;
         }
         case "small": {
-          return !iconOnly ? 18 : 20;
+          return !iconOnly ? 16 : 18;
         }
         case "medium": {
-          return !iconOnly ? 18 : 24;
+          return !iconOnly ? 18 : 20;
         }
         case "large": {
-          return !iconOnly ? 20 : 32;
+          return !iconOnly ? 20 : 24;
         }
       }
     },
@@ -166,7 +168,7 @@ const _Link = ({
         scale: isPressed ? 0.9 : 1,
       }}
     >
-      {Icon && <Icon size={iconSize} />}
+      {Icon && <Icon size={iconSize} {...iconProps} />}
       {children}
     </motion.a>
   );

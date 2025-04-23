@@ -64,7 +64,7 @@ const QRCodeModal = () => {
     dispatch(toggleSendModal({ isOpen: true }));
   };
 
-  const onScanFail = (err) => {
+  const onScanFail = (err: unknown) => {
     console.log(err);
   };
 
@@ -194,7 +194,8 @@ const QRCodeModal = () => {
                         css={css`
                           color: var(--clr-text-on-accent);
                           text-align: center;
-                          margin-block-start: var(--size-200);
+                          margin-block-start: var(--size-150);
+                          font-size: var(--fs-medium);
                         `}
                       >
                         {isQRCodeVisible
@@ -218,11 +219,12 @@ const QRCodeModal = () => {
                       css={css`
                         color: var(--clr-neutral-300);
                         text-align: center;
-                        margin-block-end: var(--size-400);
+                        margin-block-end: var(--size-300);
                         max-width: 35ch;
                         margin-inline: auto;
                         word-break: break-all;
                         white-space: normal;
+                        font-size: var(--fs-medium);
                       `}
                     >
                       {isQRCodeVisible

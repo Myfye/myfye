@@ -3,12 +3,7 @@ import { List as ListIcon } from "@phosphor-icons/react";
 
 const NavTrigger = ({ ...restProps }) => {
   return (
-    <Button
-      iconOnly
-      icon={ListIcon}
-      color="transparent"
-      {...restProps}
-    ></Button>
+    <Button iconOnly icon={ListIcon} color="white" {...restProps}></Button>
   );
 };
 

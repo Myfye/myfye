@@ -67,7 +67,7 @@ const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
           className="description"
           css={css`
             font-size: var(--fs-small);
-            color: var(--clr-text-weak);
+            color: var(--clr-text-weaker);
             margin-block-start: var(--size-050);
           `}
         >

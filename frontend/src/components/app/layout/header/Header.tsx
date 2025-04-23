@@ -23,7 +23,7 @@ const Header = ({
           align-items: center;
           justify-content: space-between;
           height: 100%;
-          padding-inline: 0.375rem;
+          padding-inline: calc(var(--size-250) - 0.25rem);
         `}
       >
         {children}

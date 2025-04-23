@@ -10,8 +10,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useMemo } from "react";
 import { formatUsdAmount, getUsdAmount } from "./utils";
-import { AbstractedAsset, Asset } from "../wallet/assets/types";
-import { selectAbstractedAsset } from "../wallet/assets/assetsSlice";
+import { AbstractedAsset, Asset } from "../assets/types";
+import { selectAbstractedAsset } from "../assets/assetsSlice";
 
 const SwapAsset = ({
   assetId,
@@ -41,15 +41,9 @@ const SwapAsset = ({
   //   type = "usdc_sol";
   // }
 
-  const usdAmount = useMemo(
-    () => getUsdAmount(abstractedAssetId, assets, amount),
-    [amount, abstractedAssetId, assets]
-  );
+  const usdAmount = getUsdAmount(abstractedAssetId, assets, amount);
 
-  const formattedUsdAmount = useMemo(
-    () => formatUsdAmount(usdAmount),
-    [usdAmount]
-  );
+  const formattedUsdAmount = formatUsdAmount(usdAmount);
 
   return (
     <div
@@ -68,7 +62,9 @@ const SwapAsset = ({
       >
         <div
           css={css`
-            width: var(--size-500);
+            width: 2.75rem;
+            border-radius: var(--border-radius-circle);
+            overflow: hidden;
           `}
         >
           <img src={abstractedAsset?.icon.content} alt="" />
@@ -120,10 +116,10 @@ const SwapAssetsSummary = () => {
       <section
         className="icon-wrapper"
         css={css`
-          padding-inline-start: var(--size-100);
+          padding-inline-start: 0.675rem;
         `}
       >
-        <ArrowDown color="var(--clr-icon)" size={24} />
+        <ArrowDown color="var(--clr-icon)" size={20} />
       </section>
       <section className="buy-coin">
         <SwapAsset

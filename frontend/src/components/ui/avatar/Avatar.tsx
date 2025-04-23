@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { Wallet } from "@phosphor-icons/react";
 
-const Avatar = ({ src = "", size = "var(--size-600)" }) => {
+const Avatar = ({ src = "", size = "2.75rem" }) => {
   return (
     <div
       className="avatar-wrapper | aspect-ratio-square"

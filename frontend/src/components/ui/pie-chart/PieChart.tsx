@@ -6,7 +6,7 @@ import { css } from "@emotion/react";
 import Button from "../button/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { selectAssetsBalanceUSD } from "@/features/wallet/assets/assetsSlice";
+import { selectAssetsBalanceUSD } from "@/features/assets/assetsSlice";
 
 const headingStyle = {
   fontWeight: "500",
@@ -102,7 +102,7 @@ const PieChart = ({ type, data }) => (
     className="pie-chart-wrapper"
     css={css`
       width: 100%;
-      height: 16rem;
+      height: 12rem;
       position: relative;
     `}
   >
@@ -115,7 +115,7 @@ const PieChart = ({ type, data }) => (
         "legends",
         type === "earn" ? EarnTitle : Balance,
       ]}
-      margin={{ top: 24, right: 160, bottom: 24, left: 0 }}
+      margin={{ top: 5, right: 160, bottom: 5, left: 5 }}
       valueFormat={type === "earn" ? " >-.0%" : " >-$"}
       innerRadius={0.55}
       padAngle={0.7}
@@ -165,7 +165,7 @@ const PieChart = ({ type, data }) => (
             ]
       }
       theme={{
-        background: "var(--clr-surface)",
+        background: "transparent",
         text: {
           fontSize: 12,
           fill: "var(--clr-text)",

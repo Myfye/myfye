@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import {
   selectAbstractedAssetsWithBalanceByDashboard,
   selectAssetsBalanceUSDByDashboardId,
-} from "@/features/wallet/assets/assetsSlice";
+} from "@/features/assets/assetsSlice";
 import { RootState } from "@/redux/store";
 import AssetPanel from "../../PanelInner";
 

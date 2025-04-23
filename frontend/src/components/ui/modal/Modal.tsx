@@ -46,7 +46,7 @@ const Modal = ({
   zIndex: number;
   title: string;
   height: number;
-  onOpenChange: () => void;
+  onOpenChange: (isOpen: boolean) => void;
   isOpen: boolean;
 }) => {
   const top = window.innerHeight - height > 0 ? window.innerHeight - height : 0;
@@ -71,7 +71,7 @@ const Modal = ({
               z-index: ${zIndex};
               isolation: isolate;
             `}
-            style={{ backgroundColor: bg as any }}
+            style={{ backgroundColor: bg }}
           >
             <MotionModal
               css={css`
@@ -104,7 +104,7 @@ const Modal = ({
               }}
               drag="y"
               dragConstraints={{ top: 0 }}
-              onDragEnd={(e, { offset, velocity }) => {
+              onDragEnd={(_, { offset, velocity }) => {
                 if (offset.y > window.innerHeight * 0.75 || velocity.y > 10) {
                   onOpenChange(false);
                 } else {
@@ -125,10 +125,10 @@ const Modal = ({
                   data-drag-affordance
                   css={css`
                     margin-inline: auto;
-                    width: var(--size-1000);
-                    height: var(--size-075);
+                    width: var(--size-800);
+                    height: var(--size-050);
                     background-color: var(--clr-neutral-300);
-                    margin-block-start: var(--size-200);
+                    margin-block-start: var(--size-100);
                     border-radius: var(--border-radius-pill);
                   `}
                 />

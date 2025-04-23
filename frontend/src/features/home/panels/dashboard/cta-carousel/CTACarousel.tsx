@@ -20,14 +20,14 @@ const CTACarousel = ({ slides }) => {
       }}
       css={css`
         padding-block-start: var(--size-025);
-        padding-block-end: var(--size-400);
+        padding-block-end: var(--size-300);
         --swiper-theme-color: var(--clr-text);
         --swiper-pagination-bullet-inactive-color: var(--clr-surface-lowered);
         --swiper-pagination-bullet-inactive-opacity: 1;
         --swiper-pagination-bottom: 0;
       `}
     >
-      {slides.map((slide, i) => (
+      {slides.map((slide, i: number) => (
         <SwiperSlide key={`slide=${i}`}>
           <div
             className="slide-inner"

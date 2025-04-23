@@ -1,4 +1,4 @@
-import { AbstractedAsset, Asset, AssetsState } from "../wallet/assets/types";
+import { AbstractedAsset, Asset, AssetsState } from "../assets/types";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
