@@ -21,7 +21,7 @@ const DepositModal = () => {
   const solanaPubKey = useSelector(
     (state: any) => state.userWalletData.solanaPubKey
   );
-  const [selectedChain, setSelectedChain] = useState<"base" | "solana">("base");
+  const [selectedChain, setSelectedChain] = useState('solana') // Disable base for now
   const [showCopiedAddress, setShowCopiedAddress] = useState(false);
 
   const [isWalletOpen, setWalletOpen] = useState(false);
@@ -92,6 +92,8 @@ const DepositModal = () => {
         ) : (
           <div className="qr-code-container">
             <section>
+
+              {/* Disable base for now 
               <menu
                 css={css`
                   display: flex;
@@ -120,6 +122,7 @@ const DepositModal = () => {
                   </Button>
                 </li>
               </menu>
+              */}
             </section>
             <section
               css={css`
