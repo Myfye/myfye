@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS recently_used_evm_addresses (
   addresses TEXT[] NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS swap_transaction (
+CREATE TABLE IF NOT EXISTS swap_transactions (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(uid),
   input_amount NUMERIC NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS swap_transaction (
   transaction_hash TEXT
 );
 
-CREATE TABLE IF NOT EXISTS pay_transaction (
+CREATE TABLE IF NOT EXISTS pay_transactions (
   id SERIAL PRIMARY KEY,
   sender_id INTEGER NOT NULL REFERENCES users(uid),
   sender_public_key TEXT,
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS pay_transaction (
   transaction_hash TEXT
 );
 
-CREATE TABLE IF NOT EXISTS error_log (
+CREATE TABLE IF NOT EXISTS error_logs (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(uid),
   creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS error_log (
   error_stack_trace TEXT
 );
 
-CREATE TABLE IF NOT EXISTS user_session (
+CREATE TABLE IF NOT EXISTS user_sessions (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(uid),
   ip_address TEXT,
@@ -78,3 +78,15 @@ CREATE TABLE IF NOT EXISTS user_session (
   login_time TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
   logout_time TIMESTAMP WITH TIME ZONE
 );
+
+CREATE TABLE IF NOT EXISTS user_contacts (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(uid),
+  contact_id INTEGER NOT NULL REFERENCES users(uid),
+  UNIQUE(user_id, contact_id)
+);
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX ON users USING gin (first_name gin_trgm_ops);
+CREATE INDEX ON users USING gin (last_name gin_trgm_ops);
+CREATE INDEX ON users USING gin (email gin_trgm_ops);
