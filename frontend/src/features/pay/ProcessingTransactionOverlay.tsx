@@ -32,10 +32,8 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
       isOpen={isOpen}
       onOpenChange={handleOpen}
       zIndex={zIndex}
-      onAnimationComplete={() => {
-        if (!isOpen) {
-          handleSuccess();
-        }
+      onExitComplete={() => {
+        handleSuccess();
       }}
     >
       <div
