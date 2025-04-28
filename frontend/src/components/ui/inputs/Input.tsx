@@ -1,21 +1,48 @@
+import { css } from "@emotion/react";
 import { ReactNode } from "react";
 
-type InputProps = {
+const Input = ({
+  label,
+  id,
+  hideLabel,
+  ...restProps
+}: {
   label: string;
   children: ReactNode;
   id: string;
-};
-
-const Input = ({ label, children, id }: InputProps) => {
+  hideLabel: boolean;
+}) => {
   return (
     <div className="wrapper">
       <label
-        className="block mb-2 text-xs font-medium text-gray-900 dark:text-white"
+        className={`${hideLabel ? "visually-hidden" : ""}`}
+        css={css`
+          font-size: var(--fs-small);
+        `}
         htmlFor={id}
       >
         {label}
       </label>
-      {children}
+      <div
+        css={css`
+          background-color: var(--clr-surface-raised);
+          height: var(--clr-);
+        `}
+      >
+        <input
+          css={css`
+            width: 100%;
+            height: var(--control-size-medium);
+            line-height: var(--line-height-form);
+            padding: var(--size-150);
+            border-radius: var(--border-radius-medium);
+            &::placeholder {
+              color: var(--clr-text-weaker);
+            }
+          `}
+          {...restProps}
+        />
+      </div>
     </div>
   );
 };

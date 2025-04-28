@@ -85,7 +85,7 @@ const swapSlice = createSlice({
           action.payload.transactionType;
       }
     },
-    unmount: () => initialState,
+    unmount: () => ({ ...initialState }),
     updateAmount(
       state,
       action: PayloadAction<{

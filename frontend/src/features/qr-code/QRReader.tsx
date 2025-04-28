@@ -66,7 +66,7 @@ const QrReader = ({
       css={css`
         position: relative;
         width: 100%;
-        height: 100svh;
+        height: 100dvh;
       `}
       {...restProps}
     >
@@ -80,7 +80,7 @@ const QrReader = ({
           color: var(--clr-white);
           overflow: hidden;
           width: 100%;
-          height: 100svh;
+          height: 100dvh;
         `}
       >
         <video
@@ -89,7 +89,7 @@ const QrReader = ({
             object-fit: cover;
             grid-area: 1/1;
             width: 100%;
-            height: 100svh;
+            height: 100dvh;
           `}
         ></video>
         <img

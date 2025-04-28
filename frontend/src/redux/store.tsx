@@ -30,6 +30,9 @@ import assetsReducer from "@/features/assets/assetsSlice.ts";
 import sendReducer from "@/features/send/sendSlice.ts";
 import receiveReducer from "@/features/receive/receiveSlice.ts";
 import payReducer from "@/features/pay/paySlice.ts";
+import { usersApi } from "@/features/users/usersApi.ts";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { contactsApi } from "@/features/contacts/contactsApi.ts";
 
 const store = configureStore({
   reducer: {
@@ -76,12 +79,23 @@ const store = configureStore({
 
     // Pay
     pay: payReducer,
+
+    // APIs
+    [usersApi.reducerPath]: usersApi.reducer,
+    [contactsApi.reducerPath]: contactsApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat([
+      usersApi.middleware,
+      contactsApi.middleware,
+    ]),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
+
+setupListeners(store.dispatch);
 
 export default store;

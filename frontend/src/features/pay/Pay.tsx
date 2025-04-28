@@ -13,7 +13,10 @@ import {
 } from "./paySlice";
 import PayController from "./PayController";
 import { useEffect, useRef } from "react";
-import SelectContactOverlay from "./SelectContactOverlay";
+import SelectContactOverlay from "./SelectUserOverlay";
+import SelectUserOverlay from "./SelectUserOverlay";
+import ConfirmTransactionOverlay from "./ConfirmTransactionOverlay";
+import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
 
 const Pay = () => {
   const dispatch = useDispatch();
@@ -91,12 +94,12 @@ const Pay = () => {
 
   const handleRequest = () => {
     dispatch(updateTransactionType("request"));
-    dispatch(toggleOverlay({ type: "selectContact", isOpen: true }));
+    dispatch(toggleOverlay({ type: "selectUser", isOpen: true }));
   };
 
   const handlePay = () => {
     dispatch(updateTransactionType("send"));
-    dispatch(toggleOverlay({ type: "selectContact", isOpen: true }));
+    dispatch(toggleOverlay({ type: "selectUser", isOpen: true }));
   };
 
   return (
@@ -164,9 +167,9 @@ const Pay = () => {
         </div>
       </div>
       <SelectAssetOverlay zIndex={2000} />
-      <SelectContactOverlay />
-      {/* <RequestOverlay />
-      <SendOverlay /> */}
+      <SelectUserOverlay zIndex={2001} />
+      <ConfirmTransactionOverlay zIndex={2002} />
+      <ProcessingTransactionOverlay zIndex={2003} />
     </>
   );
 };

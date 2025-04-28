@@ -1,10 +1,12 @@
 import { css } from "@emotion/react";
-import Avatar from "../../components/ui/avatar/Avatar";
-import ContactCardController from "./ContactCardController";
+import Avatar from "../../../components/ui/avatar/Avatar";
+import UserCardController from "./UserCardController";
+import { useRef } from "react";
 
-const ContactCard = ({ name = "", walletAddress = "", ref, ...restProps }) => {
+const UserCard = ({ name = "", email = "", ...restProps }) => {
+  const ref = useRef(null!);
   return (
-    <ContactCardController {...restProps} ref={ref}>
+    <UserCardController {...restProps} ref={ref}>
       <div
         className="contact-card"
         css={css`
@@ -27,7 +29,7 @@ const ContactCard = ({ name = "", walletAddress = "", ref, ...restProps }) => {
             display: grid;
             grid-template-columns: 1fr auto;
             align-items: center;
-            gap: var(--size-200);
+            gap: var(--size-150);
           `}
         >
           <div
@@ -59,21 +61,20 @@ const ContactCard = ({ name = "", walletAddress = "", ref, ...restProps }) => {
                 css={css`
                   font-size: var(--fs-small);
                   color: var(--clr-text-weaker);
-                  text-transform: uppercase;
                   margin-block-start: var(--size-050);
                   max-width: 80cqw;
                   text-overflow: ellipsis;
                   overflow: hidden;
                 `}
               >
-                {walletAddress}
+                {email}
               </p>
             </div>
           </div>
         </div>
       </div>
-    </ContactCardController>
+    </UserCardController>
   );
 };
 
-export default ContactCard;
+export default UserCard;

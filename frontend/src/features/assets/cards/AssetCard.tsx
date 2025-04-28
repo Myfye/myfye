@@ -67,13 +67,9 @@ const AssetCard = ({
       className="asset-card"
       css={css`
         display: grid;
-        grid-template-columns: ${showOptions
-          ? "1fr auto"
-          : radio
-          ? "auto 1fr"
-          : "1fr"};
+        grid-template-columns: ${showOptions ? "1fr auto" : "1fr"};
         align-items: center;
-        gap: ${showOptions ? "var(--size-200)" : radio ? "var(--size-150)" : 0};
+        gap: ${showOptions ? "var(--size-200)" : 0};
         width: 100%;
         background-color: ${isSelected
           ? "var(--clr-green-100)"
@@ -96,34 +92,6 @@ const AssetCard = ({
         }
       `}
     >
-      {radio && (
-        <div
-          css={css`
-            display: grid;
-            place-items: center;
-            width: var(--size-250);
-            aspect-ratio: 1;
-            border-radius: var(--border-radius-circle);
-            border: 1px solid
-              ${isSelected ? "var(--clr-accent)" : "var(--clr-neutral-300)"};
-            background-color: ${isSelected
-              ? "var(--clr-accent)"
-              : "transparent"};
-          `}
-        >
-          {isSelected && (
-            <Check
-              weight="bold"
-              color="var(--clr-white)"
-              size={12}
-              css={css`
-                position: absolute;
-                z-index: 1;
-              `}
-            />
-          )}
-        </div>
-      )}
       <div
         css={css`
           display: grid;

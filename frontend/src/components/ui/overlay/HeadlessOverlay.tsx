@@ -24,6 +24,7 @@ const HeadlessOverlay = ({
   backgroundColor = "var(--clr-surface)",
   zIndex = 1000,
   children,
+  ...restProps
 }) => {
   let w = window.innerWidth;
   let x = useMotionValue(w);
@@ -53,7 +54,7 @@ const HeadlessOverlay = ({
                 bottom: 0;
                 width: 100%;
                 will-change: transform;
-                height: 100svh;
+                height: 100dvh;
                 z-index: 1;
               `}
               initial={{ x: w }}
@@ -66,12 +67,13 @@ const HeadlessOverlay = ({
                 // Extra padding at the right to account for rubber band scrolling.
                 paddingRight: window.screen.width,
               }}
+              {...restProps}
             >
               <Dialog
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: 100svh;
+                  height: 100dvh;
                   max-width: var(--app-max-width);
                   width: 100vw;
                 `}

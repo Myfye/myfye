@@ -81,3 +81,12 @@ export const formatUsdAmount = (amount: number | null) =>
 export const getAssetBalance = (assets: AssetsState, assetId: Asset["id"]) => {
   return assets.assets[assetId].balance;
 };
+
+export const updateFormattedGhostAmount = (formattedGhostAmount: string) => {
+  switch (formattedGhostAmount.length) {
+    case 0:
+      return "0";
+    default:
+      return formattedGhostAmount;
+  }
+};

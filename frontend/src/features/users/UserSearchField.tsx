@@ -1,12 +1,12 @@
 import { Scan as ScanIcon, X as XIcon } from "@phosphor-icons/react";
-import Button from "../button/Button";
+import Button from "../../components/ui/button/Button";
 import { useSearchFieldState } from "react-stately";
 import { useRef, useState } from "react";
 import { useSearchField } from "react-aria";
 
 import { css } from "@emotion/react";
 
-const WalletSearchField = (props) => {
+const UserSearchField = (props) => {
   const { label } = props;
   let state = useSearchFieldState(props);
   let ref = useRef(null);
@@ -40,7 +40,7 @@ const WalletSearchField = (props) => {
       >
         <input
           {...inputProps}
-          placeholder="Search contact or address"
+          placeholder="Name, phone number, email"
           ref={ref}
         />
         {state.value !== "" ? (
@@ -83,6 +83,7 @@ const WalletSearchField = (props) => {
                 size="small"
                 iconOnly
                 icon={ScanIcon}
+                onPress={props.onScanTogglerPress}
               ></Button>
             </li>
           </menu>
@@ -92,4 +93,4 @@ const WalletSearchField = (props) => {
   );
 };
 
-export default WalletSearchField;
+export default UserSearchField;
