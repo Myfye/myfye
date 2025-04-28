@@ -24,7 +24,7 @@ const HeadlessOverlay = ({
   backgroundColor = "var(--clr-surface)",
   zIndex = 1000,
   children,
-  ...restProps
+  onExitComplete,
 }) => {
   let w = window.innerWidth;
   let x = useMotionValue(w);
@@ -33,7 +33,7 @@ const HeadlessOverlay = ({
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={onExitComplete}>
         {isOpen && (
           <MotionModalOverlay
             isOpen
@@ -67,7 +67,6 @@ const HeadlessOverlay = ({
                 // Extra padding at the right to account for rubber band scrolling.
                 paddingRight: window.screen.width,
               }}
-              {...restProps}
             >
               <Dialog
                 css={css`
