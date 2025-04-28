@@ -107,58 +107,6 @@ function WebAppInner() {
     getUsers(dispatch);
   }, []);
 
-  const isSendModalOpen = useSelector((state: any) => state.sendModal.isOpen);
-  const isReceiveModalOpen = useSelector(
-    (state: any) => state.receiveModal.isOpen
-  );
-  const isDepositModalOpen = useSelector(
-    (state: any) => state.depositModal.isOpen
-  );
-  const isWithdrawModalOpen = useSelector(
-    (state: any) => state.withdrawModal.isOpen
-  );
-  const isQRCodeModalOpen = useSelector(
-    (state: any) => state.QRCodeModal.isOpen
-  );
-  const isAddContactModalOpen = useSelector(
-    (state: any) => state.addContactModal.isOpen
-  );
-
-  // Overlays
-  const isWithdrawFiatOverlayOpen = useSelector(
-    (state: any) => state.withdrawFiatOverlay.isOpen
-  );
-  const isWithdrawCryptoOverlayOpen = useSelector(
-    (state: any) => state.withdrawCryptoOverlay.isOpen
-  );
-  const isCashBalanceOverlayOpen = useSelector(
-    (state: any) => state.cashBalanceOverlay.isOpen
-  );
-  const isCryptoBalanceOverlayOpen = useSelector(
-    (state: any) => state.cryptoBalanceOverlay.isOpen
-  );
-  const isSendOverlayOpen = useSelector(
-    (state: any) => state.sendOverlay.isOpen
-  );
-  const isRequestOverlayOpen = useSelector(
-    (state: any) => state.requestOverlay.isOpen
-  );
-  const isDepositFiatOverlayOpen = useSelector(
-    (state: any) => state.depositFiatOverlay.isOpen
-  );
-  const isUserInfoOverlayOpen = useSelector(
-    (state: any) => state.userInfoOverlay.isOpen
-  );
-  const isSettingsOverlayOpen = useSelector(
-    (state: any) => state.settingsOverlay.isOpen
-  );
-  const isSelectContactOverlayOpen = useSelector(
-    (state: any) => state.selectContactOverlay.isOpen
-  );
-  const isCoinSummaryOverlayOpen = useSelector(
-    (state: any) => state.coinSummaryOverlay.isOpen
-  );
-
   if (authenticated) {
     if (userDataLoaded) {
       if (mfaStatus === "enrolled") {
@@ -172,8 +120,8 @@ function WebAppInner() {
             <WithdrawModal />
             <QRCodeModal />
             <SwapModal />
-            <Toaster />
             <PrivyUseSolanaWallets />
+            <Toaster />
           </div>
         );
       }
