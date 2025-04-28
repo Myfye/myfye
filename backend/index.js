@@ -15,6 +15,17 @@ const {
     updateEvmPubKey, 
     updateSolanaPubKey, 
     getUserByPrivyId } = require('./routes/userDb');
+const { createErrorLog } = require('./routes/errorLog');
+const { 
+    createContact, 
+    getContacts, 
+    searchUser, 
+    getTopContacts 
+} = require('./routes/interUser');
+const { 
+    createSwapTransaction, 
+    getSwapTransactionsByUserId 
+} = require('./routes/transactions');
 
 app.set('trust proxy', true);
 
@@ -60,7 +71,7 @@ app.use((req, res, next) => {
 
 // Create different rate limiters for different endpoints
 const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 60 * 1000, // 1 minutes
   max: 400, // Limit each IP requests per windowMs
   message: { error: 'Too many requests from this IP, please try again later.' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
@@ -69,7 +80,7 @@ const generalLimiter = rateLimit({
 
 // Stricter limiter for authentication endpoints
 const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
+  windowMs: 60 * 1000, // 1 minute
   max: 10, // Limit each IP requests per windowMs
   message: { error: 'Too many authentication attempts, please try again later.' },
   standardHeaders: true,
@@ -78,7 +89,7 @@ const authLimiter = rateLimit({
 
 // Very strict limiter for sensitive operations
 const sensitiveLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
+  windowMs: 60 * 1000, // 1 minute
   max: 6, // Limit each IP per windowMs
   message: { error: 'Too many sensitive operations attempted, please try again later.' },
   standardHeaders: true,
@@ -186,6 +197,32 @@ app.post('/update_solana_pub_key', sensitiveLimiter, async (req, res) => {
     }
 });
 
+/* Swap transaction endpoints */
+app.post('/create_swap_transaction', generalLimiter, async (req, res) => {
+    try {
+        const swapData = req.body;
+        const result = await createSwapTransaction(swapData);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /create_swap_transaction endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/get_swap_transactions', generalLimiter, async (req, res) => {
+    try {
+        const { user_id } = req.body;
+        if (!user_id) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+        const transactions = await getSwapTransactionsByUserId(user_id);
+        res.json(transactions);
+    } catch (error) {
+        console.error("Error in /get_swap_transactions endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 /* Blind pay API */
 app.post("/new_on_ramp", async (req, res) => {
   console.log("\n=== New On-Ramp Request Received ===");
@@ -264,6 +301,25 @@ app.post("/create_solana_token_account", async (req, res) => {
   }
 });
 
+app.post("/log_error", async (req, res) => {
+  console.log("\n=== Error Log Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const errorData = req.body;
+    const result = await createErrorLog(errorData);
+    console.log("Error log result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /log_error endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to log error",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
 
 app.get("/bridge_swap", async (req, res) => {
   console.log("\n=== Bridge Swap Request Received ===");
@@ -281,6 +337,87 @@ app.get("/bridge_swap", async (req, res) => {
   } catch (error) {
     console.error("Error in /bridge_swap endpoint:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+/* Contact management routes */
+app.post("/create_contact", async (req, res) => {
+  console.log("\n=== Create Contact Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const contactData = req.body;
+    const result = await createContact(contactData);
+    console.log("Contact creation result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /create_contact endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to create contact",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_contacts", async (req, res) => {
+  console.log("\n=== Get Contacts Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await getContacts(data);
+    console.log("Get contacts result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_contacts endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get contacts",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/search_users", async (req, res) => {
+  console.log("\n=== Search Users Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const searchData = req.body;
+    const result = await searchUser(searchData);
+    console.log("User search result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /search_users endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to search users",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_top_contacts", async (req, res) => {
+  console.log("\n=== Get Top Contacts Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await getTopContacts(data);
+    console.log("Get top contacts result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_top_contacts endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get top contacts",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 

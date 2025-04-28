@@ -14,13 +14,21 @@ export const contactsApi = createApi({
   }),
   endpoints: (build) => ({
     getTopContacts: build.query<string, string>({
-      query: (userId) => ({
-        url: `/search_users`,
-        method: "POST",
-        body: {
-          current_user_id: userId,
-        },
-      }),
+      query: (userId) => {
+        console.log("getTopContacts - userId:", userId);
+        console.log("getTopContacts - userId type:", typeof userId);
+        return {
+          url: `/search_users`,
+          method: "POST",
+          body: {
+            current_user_id: userId,
+          },
+        };
+      },
+      transformResponse: (response) => {
+        console.log("getTopContacts - API response:", response);
+        return response;
+      },
     }),
   }),
 });

@@ -13,7 +13,8 @@ import { useCallback } from "react";
 import { AbstractedAsset, Asset } from "../assets/types";
 import { selectAbstractedAssetsWithBalanceByDashboard } from "../assets/assetsSlice";
 import AssetCardListSelect from "../assets/cards/AssetCardListSelect";
-
+import ensureTokenAccount from "./solana-swap/ensureTokenAccount";
+import mintAddress from "./solana-swap/MintAddress";
 const SelectAssetOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
@@ -35,6 +36,8 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
 
   const assets = useSelector((state: RootState) => state.assets);
 
+  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
+
   const transactionType = useSelector(
     (state: RootState) => state.swap.overlays.selectAsset.transactionType
   );
@@ -53,7 +56,12 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
 
   const onAssetSelect = useCallback(
     (abstractedAssetId: AbstractedAsset["id"]) => {
-      console.log("Selecting asset:", abstractedAssetId);
+      console.log("Selecting asset:", abstractedAssetId, "for transaction type:", transactionType);
+      // to do: ensure token account
+      if (transactionType === "buy") {
+        console.log("Ensuring token account for ", abstractedAssetId);
+        ensureTokenAccountForSwap(abstractedAssetId);
+      }
       dispatch(
         updateAbstractedAssetId({
           transactionType: transactionType,
@@ -83,6 +91,37 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
     },
     [transactionType]
   );
+
+  const ensureTokenAccountForSwap = (abstractedAssetId: any) => {
+    console.log("Ensuring token account for ", abstractedAssetId, "solanaPubKey", solanaPubKey);
+
+    try {
+      const output_mint = mintAddress(abstractedAssetId);
+
+      if (abstractedAssetId == "us_dollar") {
+        console.log("Ensuring token account for USDC");
+      }
+      if (abstractedAssetId == "euro") {
+        console.log("Ensuring token account for EURC");
+      }
+      if (abstractedAssetId == "us_dollar_yield") {
+        console.log("Ensuring token account for USDY");
+      }
+      if (abstractedAssetId == "btc") {
+        console.log("Ensuring token account for BTC");
+      }
+      if (abstractedAssetId == "sol") {
+        console.log("Ensuring token account for SOL");
+      }
+      
+      ensureTokenAccount(String(solanaPubKey), output_mint);
+
+    } catch (error) {
+      console.error("Error could not pre check token account:", error);
+      throw error;
+    }
+    
+  }
 
   return (
     <Overlay

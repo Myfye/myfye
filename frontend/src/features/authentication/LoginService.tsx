@@ -46,7 +46,7 @@ export const getUser = async (
           "Content-Type": "application/json",
           "x-api-key": MYFYE_BACKEND_KEY,
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ privyUserId }),
       }
     );
 
@@ -57,12 +57,13 @@ export const getUser = async (
 
       try {
         const newUser = await createUser(email, privyUserId);
+        console.log("Created new user:", newUser);
         return newUser;
       } finally {
         userCreationInProgress.delete(email);
       }
     }
-
+    console.log("Existing user:", existingUser);
     return existingUser;
   } catch (error) {
     console.error("Error in getUser:", error);
@@ -99,7 +100,7 @@ export const createUser = async (
     });
 
     const newUser = await createUserResponse.json();
-    console.log("Created new user:", newUser);
+    console.log("User response:", newUser);
     return newUser;
   } catch (error) {
     console.error("Error in createUser:", error);
@@ -179,9 +180,11 @@ const HandleUserLogIn = async (
   dispatch(setPrivyUserId(user.id));
   if (user) {
     try {
-      const dbUser = await getUser(user.email.address, user.id);
-      if (dbUser && dbUser.id) {
-        dispatch(setCurrentUserID(dbUser.id));
+      const dbUser = await getUser(user.email.address, user.id); // user.id is privyUserId 
+      if (dbUser && dbUser.uid) {
+        dispatch(setCurrentUserID(dbUser.uid));
+        console.log("dbUser.KYCverified", dbUser.kyc_verified);
+        dispatch(setCurrentUserKYCVerified(dbUser.kyc_verified));
       }
     } catch (error) {
       console.error("Error handling user:", error);
