@@ -9,14 +9,19 @@ export interface SwapTransaction {
     amount: number | null;
     formattedAmount: string;
     abstractedAssetId: AbstractedAsset["id"] | null;
+    assetId?: string;
+    chain?: string;
   };
   sell: {
     amount: number | null;
     formattedAmount: string;
     abstractedAssetId: AbstractedAsset["id"] | null;
+    assetId?: string;
+    chain?: string;
   };
   fee: number | null;
   exchangeRate: number | null;
   status: SwapTransactionStatus;
   id: string | null;
+  transactionType?: string;
 }

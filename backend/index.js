@@ -22,6 +22,10 @@ const {
     searchUser, 
     getTopContacts 
 } = require('./routes/interUser');
+const { 
+    createSwapTransaction, 
+    getSwapTransactionsByUserId 
+} = require('./routes/transactions');
 
 app.set('trust proxy', true);
 
@@ -189,6 +193,32 @@ app.post('/update_solana_pub_key', sensitiveLimiter, async (req, res) => {
         res.json(result);
     } catch (error) {
         console.error("Error in /update_solana_pub_key endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+/* Swap transaction endpoints */
+app.post('/create_swap_transaction', generalLimiter, async (req, res) => {
+    try {
+        const swapData = req.body;
+        const result = await createSwapTransaction(swapData);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /create_swap_transaction endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/get_swap_transactions', generalLimiter, async (req, res) => {
+    try {
+        const { user_id } = req.body;
+        if (!user_id) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+        const transactions = await getSwapTransactionsByUserId(user_id);
+        res.json(transactions);
+    } catch (error) {
+        console.error("Error in /get_swap_transactions endpoint:", error);
         res.status(500).json({ error: error.message });
     }
 });

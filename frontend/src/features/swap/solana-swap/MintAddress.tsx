@@ -9,19 +9,19 @@ const WSOL_MINT_ADDRESS = "So11111111111111111111111111111111111111112";
 
 function mintAddress(currencyCode: String): String {
   let mintAddress = USDC_MINT_ADDRESS;
-  if (currencyCode === "usdc_sol") {
+  if (currencyCode === "usdc_sol" || currencyCode === "us_dollar") {
     mintAddress = USDC_MINT_ADDRESS;
   } else if (currencyCode === "usdt_sol") {
     mintAddress = USDT_MINT_ADDRESS;
-  } else if (currencyCode === "usdy_sol") {
+  } else if (currencyCode === "usdy_sol" || currencyCode === "us_dollar_yield") {
     mintAddress = USDY_MINT_ADDRESS;
   } else if (currencyCode === "pyusd_sol") {
     mintAddress = PYUSD_MINT_ADDRESS;
-  } else if (currencyCode === "eurc_sol") {
+  } else if (currencyCode === "eurc_sol" || currencyCode === "euro") {
     mintAddress = EURC_MINT_ADDRESS;
-  } else if (currencyCode === "btc_sol") {
+  } else if (currencyCode === "btc_sol" || currencyCode === "btc") {
     mintAddress = BTC_MINT_ADDRESS;
-  } else if (currencyCode === "sol" || currencyCode === "w_sol") {
+  } else if (currencyCode === "sol" || currencyCode === "w_sol" || currencyCode === "sol") {
     mintAddress = WSOL_MINT_ADDRESS;
   }
   return mintAddress;

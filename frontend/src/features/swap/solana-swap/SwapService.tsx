@@ -12,6 +12,7 @@ import { SwapTransaction, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
 import { Asset, AssetsState } from "@/features/assets/types.ts";
+import { logError } from "../../../functions/LogError.tsx";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -68,6 +69,7 @@ export const swap = async ({
 
   const microInputAmount = convertToMicro(inputAmount, inputCurrency);
 
+  console.log("Calling getSwapQuote...");
   getSwapQuote(
     microInputAmount,
     inputCurrency,
@@ -75,6 +77,7 @@ export const swap = async ({
     microPlatformFeeAmount
   )
     .then((quote) => {
+      console.log("getSwapQuote succeeded with quote:", quote);
       swapTransaction(
         wallet,
         quote,
@@ -87,21 +90,21 @@ export const swap = async ({
       );
     })
     .catch((error) => {
-      dispatch(updateStatus("fail"));
       console.error(
         "Error calling getSwapQuote retrying becuase error: ",
         error
       );
+      dispatch(updateStatus("fail"));
     });
 };
 
 const convertToMicro = (amount: number, currency: string) => {
   if (currency === "btc_sol") {
-    return amount * 100000000;
+    return Math.round(amount * 100000000);
   } else if (currency === "w_sol" || currency === "sol") {
-    return amount * 1000000000;
+    return Math.round(amount * 1000000000);
   } else {
-    return amount * 1000000;
+    return Math.round(amount * 1000000);
   }
 };
 
@@ -114,6 +117,13 @@ async function getSwapQuote(
   outputMint: String = "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6", // default to some mint address (USDY)
   microPlatformFeeAmount: number = 0
 ) {
+  console.log("getSwapQuote called with:", {
+    microInputAmount,
+    inputCurrencyType,
+    outputMint,
+    microPlatformFeeAmount
+  });
+  
   // Input mint
   const inputMintAddress = mintAddress(inputCurrencyType);
 
@@ -124,11 +134,38 @@ async function getSwapQuote(
       url += `&platformFeeBps=100`;
     }
     console.log("Quote url", url);
-    const quoteResponse = await fetch(url).then((response) => response.json());
-
-    return quoteResponse;
+    
+    console.log("Fetching quote from Jupiter API...");
+    const response = await fetch(url);
+    console.log("Response status:", response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Jupiter API error response:", errorText);
+      throw new Error(`Jupiter API error: ${response.status} ${errorText}`);
+    }
+    
+    const quoteResponse = await response.json();
+    console.log("Quote response:", quoteResponse);
+    
+    // Ensure the response has the expected structure
+    if (!quoteResponse.inputAmount || !quoteResponse.outputAmount) {
+      console.error("Quote response missing required fields:", quoteResponse);
+    }
+    
+    // Add the input and output mint addresses to the response for easier access
+    return {
+      ...quoteResponse,
+      inputMint: inputMintAddress,
+      outputMint: outputMint
+    };
   } catch (error) {
-    console.error("Error fetching swap quote:", error);
+    console.error("Error in getSwapQuote:", error);
+    const errorLogMessage = "Error getting the swap quote"
+    const errorStackTrace = `${error} Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
+
+    // to do log the error
+    logError(errorLogMessage, "swap", errorStackTrace);
     throw error; // rethrow the error if you want to handle it in the calling function
   }
 }
@@ -200,14 +237,67 @@ const swapTransaction = async (
     connection
   );
 
-  await verifyTransaction(
-    transactionId,
-    dispatch,
-    type,
-    transaction,
-    wallet,
-    assets
-  );
+  // Update the transaction object with the correct amounts from the quote
+  if (quoteData && transaction) {
+    console.log("Quote data:", quoteData);
+    console.log("Original transaction:", JSON.stringify(transaction, null, 2));
+    
+    // Extract the amounts from the quote data
+    let inputAmount = null;
+    let outputAmount = null;
+    
+    if (quoteData.inputAmount && quoteData.outputAmount) {
+      inputAmount = quoteData.inputAmount / 1e9;
+      outputAmount = quoteData.outputAmount / 1e9;
+    } else if (transaction.sell.amount && transaction.buy.amount) {
+      // Fallback to using the original transaction amounts
+      console.log("Using original transaction amounts as fallback");
+      inputAmount = transaction.sell.amount;
+      outputAmount = transaction.buy.amount;
+    }
+    
+    console.log("Extracted amounts:", { inputAmount, outputAmount });
+    
+    // Create a new transaction object instead of modifying the existing one
+    const updatedTransaction = {
+      ...transaction,
+      buy: {
+        ...transaction.buy,
+        amount: outputAmount || transaction.buy.amount,
+        assetId: transaction.buy.assetId || quoteData.outputMint
+      },
+      sell: {
+        ...transaction.sell,
+        amount: inputAmount || transaction.sell.amount,
+        assetId: transaction.sell.assetId || quoteData.inputMint
+      }
+    };
+    
+    console.log("Updated transaction object:", JSON.stringify(updatedTransaction, null, 2));
+
+    await verifyTransaction(
+      transactionId,
+      dispatch,
+      type,
+      updatedTransaction,
+      wallet,
+      assets
+    );
+  } else {
+    console.log("Missing quote data or transaction:", { 
+      hasQuoteData: !!quoteData, 
+      hasTransaction: !!transaction 
+    });
+    
+    await verifyTransaction(
+      transactionId,
+      dispatch,
+      type,
+      transaction,
+      wallet,
+      assets
+    );
+  }
 };
 
 {

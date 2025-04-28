@@ -5,15 +5,15 @@ CREATE TABLE IF NOT EXISTS users (
     last_login_date TIMESTAMP WITH TIME ZONE,
     email VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20),
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    country VARCHAR(100),
-    evm_pub_key VARCHAR(255),
-    solana_pub_key VARCHAR(255),
-    privy_user_id VARCHAR(255) UNIQUE,
-    persona_account_id VARCHAR(255),
-    blind_pay_receiver_id VARCHAR(255),
-    blind_pay_evm_wallet_id VARCHAR(255)
+    first_name TEXT,
+    last_name TEXT,
+    country TEXT,
+    evm_pub_key TEXT,
+    solana_pub_key TEXT,
+    privy_user_id TEXT UNIQUE,
+    persona_account_id TEXT,
+    blind_pay_receiver_id TEXT,
+    blind_pay_evm_wallet_id TEXT
 ); 
 
 
@@ -37,11 +37,12 @@ CREATE TABLE IF NOT EXISTS swap_transactions (
   input_chain TEXT,
   output_chain TEXT,
   creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
-  public_key TEXT,
+  public_key TEXT NOT NULL,
   input_currency TEXT,
   output_currency TEXT,
   transaction_type TEXT,
-  transaction_hash TEXT
+  transaction_hash TEXT NOT NULL,
+  transaction_status TEXT
 );
 
 CREATE TABLE IF NOT EXISTS pay_transactions (
@@ -49,14 +50,15 @@ CREATE TABLE IF NOT EXISTS pay_transactions (
   sender_id INTEGER NOT NULL REFERENCES users(uid),
   sender_public_key TEXT,
   receiver_id INTEGER REFERENCES users(uid),
-  receiver_phone_number VARCHAR(20),
-  receiver_email VARCHAR(255),
+  receiver_phone_number TEXT,
+  receiver_email TEXT,
   receiver_public_key TEXT,
   amount NUMERIC NOT NULL,
   currency TEXT NOT NULL,
   chain TEXT NOT NULL,
   creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
-  transaction_hash TEXT
+  transaction_hash TEXT NOT NULL,
+  transaction_status TEXT
 );
 
 CREATE TABLE IF NOT EXISTS error_logs (
