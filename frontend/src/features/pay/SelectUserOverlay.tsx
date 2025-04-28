@@ -92,15 +92,20 @@ const TopContacts = ({ onUserSelect }) => {
   );
   const { data, isFetching, isLoading, isSuccess, isError, isUninitialized } =
     useGetTopContactsQuery(userId);
+  
+  console.log("TopContacts - userId:", userId);
+  console.log("TopContacts - data:", data);
+  
   if (isLoading || isUninitialized || isFetching) {
     return <div>Loading...</div>;
   }
-
   if (isSuccess) {
-    <section>
-      <h2>Top contacts</h2>
-      <UserCardList users={data} onUserSelect={onUserSelect} />;
-    </section>;
+    return (
+      <section>
+        <h2>Top contacts</h2>
+        <UserCardList users={data} onUserSelect={onUserSelect} />
+      </section>
+    );
   }
   return <div>Error loading contacts. Please try again.</div>;
 };
@@ -111,14 +116,20 @@ const SearchedUsers = ({ query, onUserSelect }) => {
   );
   const { data, isFetching, isLoading, isSuccess, isError, isUninitialized } =
     useSearchUsersQuery({ query, userId });
+  
+  console.log("SearchedUsers - userId:", userId);
+  console.log("SearchedUsers - data:", data);
+  
   if (isLoading || isUninitialized || isFetching) {
     return <div>Loading...</div>;
   }
   if (isSuccess) {
-    <section>
-      <h2>Search people</h2>
-      <UserCardList users={data} onUserSelect={onUserSelect} />;
-    </section>;
+    return (
+      <section>
+        <h2>Search people</h2>
+        <UserCardList users={data} onUserSelect={onUserSelect} />
+      </section>
+    );
   }
-  return <div>Error loading contacts. Please try again.</div>;
+  return <div>Error loading search results. Please try again.</div>;
 };

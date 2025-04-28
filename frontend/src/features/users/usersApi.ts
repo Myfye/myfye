@@ -13,15 +13,21 @@ export const usersApi = createApi({
     },
   }),
   endpoints: (build) => ({
-    searchUsers: build.query<string, { query: string; userId: string }>({
-      query: ({ query, userId }) => ({
-        url: `/search_users`,
-        method: "POST",
-        body: {
-          current_user_id: userId,
-          query,
-        },
-      }),
+    searchUsers: build.query<string, { query: string; userId: number }>({
+      query: ({ query, userId }) => {
+        return {
+          url: `/search_users`,
+          method: "POST",
+          body: {
+            current_user_id: userId,
+            query,
+          },
+        };
+      },
+      transformResponse: (response) => {
+        console.log("searchUsers - API response:", response);
+        return response;
+      },
     }),
   }),
 });

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserWalletDataState {
   wallet: any;
-  currentUserID: string;
+  currentUserID: number;
   currentUserFirstName: string;
   currentUserLastName: string;
   currentUserEmail: string;
@@ -170,7 +170,7 @@ export const userWalletDataSlice = createSlice({
       state.currentUserFirstName = action.payload;
     },
 
-    setcurrentUserLastName: (state, action: PayloadAction<string>) => {
+    setcurrentUserLastName: (state, action: PayloadAction<number>) => {
       state.currentUserLastName = action.payload;
     },
 
