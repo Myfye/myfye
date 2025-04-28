@@ -72,21 +72,16 @@ const paySlice = createSlice({
     ) => {
       state.overlays[action.payload.type].isOpen = action.payload.isOpen;
     },
-    closeOverlays: (state, action) => {
-      state.overlays = {
-        selectAsset: {
-          isOpen: false,
-        },
-        selectUser: {
-          isOpen: false,
-        },
-        confirmTransaction: {
-          isOpen: false,
-        },
-        processingTransaction: {
-          isOpen: false,
-        },
-      };
+    unmountOverlays: (state, action) => {
+      state.overlays = { ...initialState.overlays };
+      state.transaction.type = initialState.transaction.type;
+      state.transaction.amount = initialState.transaction.amount;
+      state.transaction.formattedAmount =
+        initialState.transaction.formattedAmount;
+      state.transaction.presetAmount = initialState.transaction.presetAmount;
+      state.transaction.user = initialState.transaction.user;
+      state.transaction.abstractedAssetId =
+        initialState.transaction.abstractedAssetId;
     },
     updateTransactionType: (
       state,
@@ -143,6 +138,6 @@ export const {
   updatePresetAmount,
   updateUser,
   unmount,
-  closeOverlays,
+  unmountOverlays,
 } = paySlice.actions;
 export default paySlice.reducer;

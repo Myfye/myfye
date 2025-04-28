@@ -8,7 +8,7 @@ import leafLoading from "@/assets/lottie/leaf-loading.json";
 import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
 import { useLottie } from "lottie-react";
-import { closeOverlays, toggleOverlay, unmount } from "./paySlice";
+import { unmountOverlays, toggleOverlay, unmount } from "./paySlice";
 import { PayTransactionStatus } from "./types";
 import toast from "react-hot-toast/headless";
 
@@ -16,15 +16,17 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const isOpen = useSelector(
     (state: RootState) => state.pay.overlays.processingTransaction.isOpen
   );
-  const handleOpen = (e: boolean) => {
-    toggleOverlay({ type: "processingTransaction", isOpen: e });
+  const handleOpen = (isOpen: boolean) => {
+    toggleOverlay({ type: "processingTransaction", isOpen });
   };
 
   const dispatch = useDispatch();
   const transaction = useSelector((state: RootState) => state.pay.transaction);
 
   const handleSuccess = () => {
+    console.log("Success");
     toast.success("$21.43 sent to John");
+    dispatch(unmount());
   };
 
   return (
@@ -67,7 +69,11 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
               >
                 Sending...
               </h1>
-              <button onClick={() => dispatch(closeOverlays(null))}>
+              <button
+                onClick={() => {
+                  dispatch(unmountOverlays(undefined));
+                }}
+              >
                 Click to toast
               </button>
             </hgroup>

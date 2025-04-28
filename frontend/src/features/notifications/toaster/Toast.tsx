@@ -1,6 +1,8 @@
+import Button from "@/components/ui/button/Button";
 import { css } from "@emotion/react";
-import { CheckCircle, Info, Spinner, XCircle } from "@phosphor-icons/react";
-import { ReactNode, RefCallback, RefObject } from "react";
+import { CheckCircle, Info, Spinner, X, XCircle } from "@phosphor-icons/react";
+import { AnimatePresence, motion } from "motion/react";
+import { ReactNode, RefCallback, RefObject, useEffect } from "react";
 import {
   Renderable,
   Toast as ToastObj,
@@ -16,6 +18,8 @@ const Toast = ({
   message,
   duration,
   removeDelay,
+  singleton,
+  onDismiss,
   ...restProps
 }: {
   ref: RefCallback<HTMLLIElement> | RefObject<HTMLLIElement>;
@@ -25,6 +29,8 @@ const Toast = ({
   message: ValueOrFunction<Renderable, ToastObj>;
   duration?: number;
   removeDelay?: number;
+  singleton: boolean;
+  onDismiss: () => void;
 }) => {
   const Icon = (() => {
     switch (type) {
@@ -41,34 +47,44 @@ const Toast = ({
     }
   })();
 
-  const totalDuration = (duration ?? 0) + (removeDelay ?? 0);
-
   return (
-    <li
-      className="toast"
-      ref={ref}
-      data-type={type}
-      css={css`
-        opacity: ${visible ? 1 : 0};
-        transform: translateY(${offset}px);
-        overflow: hidden;
-        &::before {
-          content: "";
-          display: ${totalDuration === 0 ? "none" : "block"};
-          bottom: 0;
-          left: 0;
-          position: absolute;
-          width: 100%;
-          height: 3px;
-          background-color: var(--_color-active);
-          animation: toast-time ${totalDuration}ms linear;
-        }
-      `}
-      {...restProps}
-    >
-      {Icon && <Icon size={28} weight="fill"></Icon>}
-      {message as ReactNode}
-    </li>
+    <>
+      <AnimatePresence>
+        {visible && (
+          <motion.li
+            className="toast"
+            ref={ref}
+            data-type={type}
+            initial={{ y: singleton ? -100 : 0, opacity: 0 }}
+            animate={{ y: offset, opacity: 1 }}
+            exit={{ opacity: 0 }}
+            css={css`
+              overflow: hidden;
+              /* &::before {
+              content: "";
+              bottom: 0;
+              left: 0;
+              position: absolute;
+              width: 100%;
+              height: 3px;
+              background-color: var(--_color-active);
+            } */
+            `}
+            {...restProps}
+          >
+            {Icon && <Icon size={28} weight="fill"></Icon>}
+            {message as ReactNode}
+            <Button
+              size="small"
+              iconOnly
+              icon={X}
+              onPress={onDismiss}
+              color="transparent"
+            />
+          </motion.li>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

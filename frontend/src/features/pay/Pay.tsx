@@ -17,6 +17,7 @@ import SelectContactOverlay from "./SelectUserOverlay";
 import SelectUserOverlay from "./SelectUserOverlay";
 import ConfirmTransactionOverlay from "./ConfirmTransactionOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
+import toast from "react-hot-toast/headless";
 
 const Pay = () => {
   const dispatch = useDispatch();
@@ -140,7 +141,7 @@ const Pay = () => {
             <menu
               css={css`
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr 1fr 1fr;
                 gap: var(--controls-gap-medium);
               `}
             >
@@ -160,6 +161,11 @@ const Pay = () => {
                   isDisabled={isInvalidSwapTransaction}
                 >
                   Pay
+                </Button>
+              </li>
+              <li>
+                <Button expand onPress={() => toast.success("Success")}>
+                  Toast test
                 </Button>
               </li>
             </menu>

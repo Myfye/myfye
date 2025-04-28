@@ -1,6 +1,7 @@
 import { useToaster } from "react-hot-toast/headless";
 import { css } from "@emotion/react";
 import Toast from "./Toast";
+import { toast as toastStore } from "react-hot-toast/headless";
 
 const Toaster = () => {
   const { toasts, handlers } = useToaster();
@@ -33,18 +34,19 @@ const Toaster = () => {
           }
         };
         return (
-          <>
-            <Toast
-              ref={ref}
-              {...toast.ariaProps}
-              visible={toast.visible}
-              offset={offset}
-              type={toast.type}
-              message={toast.message}
-              duration={toast.duration}
-              removeDelay={toast.removeDelay}
-            />
-          </>
+          <Toast
+            key={toast.id}
+            singleton={toasts.length === 1}
+            ref={ref}
+            visible={toast.visible}
+            offset={offset}
+            type={toast.type}
+            message={toast.message}
+            duration={toast.duration}
+            removeDelay={toast.removeDelay}
+            onDismiss={() => toastStore.dismiss(toast.id)}
+            {...toast.ariaProps}
+          />
         );
       })}
     </ul>
