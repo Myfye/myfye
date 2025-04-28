@@ -1,8 +1,15 @@
-import User from "./UserCard";
+import { User } from "@/features/user/types";
+import UserCard from "./UserCard";
 
 import { css } from "@emotion/react";
 
-const UserCardList = ({ users, onUserSelect }) => {
+const UserCardList = ({
+  users,
+  onUserSelect,
+}: {
+  users: User[];
+  onUserSelect: (user: User) => void;
+}) => {
   return (
     <ul
       className="user-card-list"
@@ -16,16 +23,18 @@ const UserCardList = ({ users, onUserSelect }) => {
     >
       {users.map((user) => (
         <li
-          key={`user-${user.id}`}
+          key={`user-${user.uid}`}
           className="user-card-wrapper"
           css={css`
             display: block;
             width: 100%;
           `}
         >
-          <User
-            name={user.name}
+          <UserCard
+            key={user.uid}
+            name={user.first_name}
             email={user.email}
+            phoneNumber={user.phone_number}
             onPress={() => onUserSelect(user)}
           />
         </li>

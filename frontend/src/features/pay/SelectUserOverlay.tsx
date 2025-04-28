@@ -13,6 +13,7 @@ import QRScanner from "../qr-code/QRScanner";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "@/env";
 import { useGetTopContactsQuery } from "../contacts/contactsApi";
 import { useSearchUsersQuery } from "../users/usersApi";
+import { User } from "@privy-io/react-auth";
 
 const SelectUserOverlay = ({ zIndex = 2000 }) => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const SelectUserOverlay = ({ zIndex = 2000 }) => {
     setQRScannerOpen(isOpen);
   };
 
-  const onUserSelect = (user) => {
+  const onUserSelect = (user: User) => {
     dispatch(updateUser(user));
     dispatch(toggleOverlay({ type: "confirmTransaction", isOpen: true }));
   };
@@ -66,10 +67,7 @@ const SelectUserOverlay = ({ zIndex = 2000 }) => {
               <SearchedUsers query={query} onUserSelect={onUserSelect} />
             ) : (
               <>
-                <TopContacts onUserSelect={onUserSelect} />
-                <button onClick={() => onUserSelect(null)}>
-                  Click me to continue
-                </button>
+                <TopContacts query={query} onUserSelect={onUserSelect} />
               </>
             )}
           </section>
@@ -86,20 +84,23 @@ const SelectUserOverlay = ({ zIndex = 2000 }) => {
 
 export default SelectUserOverlay;
 
-const TopContacts = ({ onUserSelect }) => {
+const TopContacts = ({ query, onUserSelect }) => {
   const userId = useSelector(
     (state: RootState) => state.userWalletData.currentUserID
   );
-  const { data, isFetching, isLoading, isSuccess, isError, isUninitialized } =
+  const { data, isFetching, isLoading, isSuccess, isUninitialized } =
     useGetTopContactsQuery(userId);
-  
+
   console.log("TopContacts - userId:", userId);
   console.log("TopContacts - data:", data);
-  
+
   if (isLoading || isUninitialized || isFetching) {
     return <div>Loading...</div>;
   }
   if (isSuccess) {
+    if (data.length === 0) {
+      return <div>Search users</div>;
+    }
     return (
       <section>
         <h2>Top contacts</h2>
@@ -107,19 +108,24 @@ const TopContacts = ({ onUserSelect }) => {
       </section>
     );
   }
-  return <div>Error loading contacts. Please try again.</div>;
 };
 
-const SearchedUsers = ({ query, onUserSelect }) => {
+const SearchedUsers = ({
+  query,
+  onUserSelect,
+}: {
+  query: string;
+  onUserSelect: (user: User) => void;
+}) => {
   const userId = useSelector(
     (state: RootState) => state.userWalletData.currentUserID
   );
-  const { data, isFetching, isLoading, isSuccess, isError, isUninitialized } =
+  const { data, isFetching, isLoading, isSuccess, isUninitialized } =
     useSearchUsersQuery({ query, userId });
-  
+
   console.log("SearchedUsers - userId:", userId);
   console.log("SearchedUsers - data:", data);
-  
+
   if (isLoading || isUninitialized || isFetching) {
     return <div>Loading...</div>;
   }

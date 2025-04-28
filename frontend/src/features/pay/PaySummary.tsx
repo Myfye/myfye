@@ -7,6 +7,7 @@ import { formatUsdAmount, getUsdAmount } from "./utils";
 import { AbstractedAsset, Asset } from "../assets/types";
 import { selectAbstractedAsset } from "../assets/assetsSlice";
 import Avatar from "@/components/ui/avatar/Avatar";
+import { User } from "../user/types";
 
 const AssetSection = ({
   abstractedAssetId,
@@ -74,7 +75,7 @@ const AssetSection = ({
   );
 };
 
-const UserSection = ({ user }) => {
+const UserSection = ({ user }: { user: User }) => {
   return (
     <div
       css={css`
@@ -99,8 +100,10 @@ const UserSection = ({ user }) => {
         >
           <Avatar />
         </div>
-        <p className="heading-small">{user?.name}</p>
-        <p>{user?.email || user?.phone_number}</p>
+        <p className="heading-small">
+          {user?.first_name || user?.email || user?.phone_number}
+        </p>
+        {user?.first_name && <p>{user?.email || user?.phone_number}</p>}
       </div>
     </div>
   );

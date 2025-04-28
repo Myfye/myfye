@@ -18,7 +18,7 @@ export const contactsApi = createApi({
         console.log("getTopContacts - userId:", userId);
         console.log("getTopContacts - userId type:", typeof userId);
         return {
-          url: `/search_users`,
+          url: `/get_top_contacts`,
           method: "POST",
           body: {
             current_user_id: userId,
