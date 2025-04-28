@@ -14,10 +14,13 @@ interface PayState {
     selectAsset: {
       isOpen: boolean;
     };
-    selectContact: {
+    selectUser: {
       isOpen: boolean;
     };
-    confirm: {
+    confirmTransaction: {
+      isOpen: boolean;
+    };
+    processingTransaction: {
       isOpen: boolean;
     };
   };
@@ -31,7 +34,7 @@ const initialState: PayState = {
     amount: 0,
     formattedAmount: "0",
     abstractedAssetId: "us_dollar",
-    contact: null,
+    user: null,
     fiatCurrency: "usd",
     fee: 0,
     presetAmount: null,
@@ -40,10 +43,13 @@ const initialState: PayState = {
     selectAsset: {
       isOpen: false,
     },
-    selectContact: {
+    selectUser: {
       isOpen: false,
     },
-    confirm: {
+    confirmTransaction: {
+      isOpen: false,
+    },
+    processingTransaction: {
       isOpen: false,
     },
   },
@@ -56,11 +62,31 @@ const paySlice = createSlice({
     toggleOverlay: (
       state,
       action: PayloadAction<{
-        type: "selectAsset" | "selectContact" | "confirm";
+        type:
+          | "selectAsset"
+          | "selectUser"
+          | "confirmTransaction"
+          | "processingTransaction";
         isOpen: boolean;
       }>
     ) => {
       state.overlays[action.payload.type].isOpen = action.payload.isOpen;
+    },
+    closeOverlays: (state, action) => {
+      state.overlays = {
+        selectAsset: {
+          isOpen: false,
+        },
+        selectUser: {
+          isOpen: false,
+        },
+        confirmTransaction: {
+          isOpen: false,
+        },
+        processingTransaction: {
+          isOpen: false,
+        },
+      };
     },
     updateTransactionType: (
       state,
@@ -102,10 +128,10 @@ const paySlice = createSlice({
     ) {
       state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
     },
-    updateContact(state, action: PayloadAction<Contact | null>) {
-      state.transaction.contact = action.payload;
+    updateUser(state, action: PayloadAction<Contact | null>) {
+      state.transaction.user = action.payload;
     },
-    unmount: () => initialState,
+    unmount: () => ({ ...initialState }),
   },
 });
 
@@ -115,6 +141,8 @@ export const {
   toggleOverlay,
   updateAmount,
   updatePresetAmount,
-  updateContact,
+  updateUser,
+  unmount,
+  closeOverlays,
 } = paySlice.actions;
 export default paySlice.reducer;

@@ -84,7 +84,7 @@ function Home() {
           margin: "0 auto",
           maxWidth: "1500px",
           gap: "-40px",
-          height: "calc(100svh - 70px)",
+          height: "calc(100dvh - 70px)",
           whiteSpace: "nowrap",
           marginTop: "-85px",
         }}
@@ -177,7 +177,7 @@ function Home() {
         </div>
         {/*
     <img src = {manWithPhone3} style={{
-      height: 'calc(100svh-200px)', 
+      height: 'calc(100dvh-200px)', 
       width: 'auto',
       marginLeft: '-10vw',
       zIndex: -1
@@ -187,7 +187,7 @@ function Home() {
 
       <div
         style={{
-          height: "100svh",
+          height: "100dvh",
           marginTop: "10px",
           marginBottom: "100px",
           backgroundColor: "#ffffff",

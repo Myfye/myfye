@@ -6,8 +6,9 @@ import { RootState } from "@/redux/store";
 import { formatUsdAmount, getUsdAmount } from "./utils";
 import { AbstractedAsset, Asset } from "../assets/types";
 import { selectAbstractedAsset } from "../assets/assetsSlice";
+import Avatar from "@/components/ui/avatar/Avatar";
 
-const SwapAsset = ({
+const AssetSection = ({
   abstractedAssetId,
   amount,
 }: {
@@ -21,17 +22,6 @@ const SwapAsset = ({
       ? null
       : selectAbstractedAsset(state, abstractedAssetId)
   );
-
-  // let usdBalance = 0;
-  // let type = "usdt";
-
-  // if (usdtSolBalance > usdcSolBalance) {
-  //   usdBalance = usdtSolBalance;
-  //   type = "usdt_sol";
-  // } else {
-  //   usdBalance = usdcSolBalance;
-  //   type = "usdc_sol";
-  // }
 
   const usdAmount = getUsdAmount(abstractedAssetId, assets, amount);
 
@@ -84,8 +74,40 @@ const SwapAsset = ({
   );
 };
 
-const SwapAssetsSummary = () => {
-  const transaction = useSelector((state: RootState) => state.swap.transaction);
+const UserSection = ({ user }) => {
+  return (
+    <div
+      css={css`
+        display: grid;
+        grid-template-columns: 1fr auto;
+        line-height: var(--line-height-tight);
+      `}
+    >
+      <div
+        css={css`
+          display: flex;
+          align-items: center;
+          gap: var(--size-150);
+        `}
+      >
+        <div
+          css={css`
+            width: 2.75rem;
+            border-radius: var(--border-radius-circle);
+            overflow: hidden;
+          `}
+        >
+          <Avatar />
+        </div>
+        <p className="heading-small">{user?.name}</p>
+        <p>{user?.email || user?.phone_number}</p>
+      </div>
+    </div>
+  );
+};
+
+const PaySummary = () => {
+  const transaction = useSelector((state: RootState) => state.pay.transaction);
   return (
     <div
       className="swap-coin-status"
@@ -99,11 +121,12 @@ const SwapAssetsSummary = () => {
         border-radius: var(--border-radius-medium);
       `}
     >
-      <section className="sell-coin">
-        <SwapAsset
-          abstractedAssetId={transaction.sell.abstractedAssetId}
-          amount={transaction.sell.amount}
-        />
+      <section>
+        {transaction.type === "send" ? (
+          <AssetSection abstractedAssetId={"us_dollar_yield"} amount={0} />
+        ) : (
+          <UserSection user={transaction.user}></UserSection>
+        )}
       </section>
       <section
         className="icon-wrapper"
@@ -113,14 +136,15 @@ const SwapAssetsSummary = () => {
       >
         <ArrowDown color="var(--clr-icon)" size={20} />
       </section>
-      <section className="buy-coin">
-        <SwapAsset
-          abstractedAssetId={transaction.buy.abstractedAssetId}
-          amount={transaction.buy.amount}
-        />
+      <section>
+        {transaction.type === "send" ? (
+          <UserSection user={transaction.user}></UserSection>
+        ) : (
+          <AssetSection abstractedAssetId={"us_dollar_yield"} amount={0} />
+        )}
       </section>
     </div>
   );
 };
 
-export default SwapAssetsSummary;
+export default PaySummary;

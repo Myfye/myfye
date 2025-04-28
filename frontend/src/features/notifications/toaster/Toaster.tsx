@@ -11,9 +11,9 @@ const Toaster = () => {
       className="toaster"
       css={css`
         position: fixed;
-        z-index: 99999;
+        z-index: 999999;
         inset: 0;
-        top: 100px;
+        top: var(--size-500);
         bottom: auto;
         margin: auto;
         isolation: isolate;
@@ -24,15 +24,14 @@ const Toaster = () => {
       {toasts.map((toast) => {
         const offset = calculateOffset(toast, {
           reverseOrder: false,
-          gutter: 8,
+          gutter: 6,
         });
-        const ref = (el: HTMLLIElement) => {
-          if (el && typeof toast.height !== "number") {
-            const height = el.getBoundingClientRect().height;
+        const ref = (node: HTMLLIElement) => {
+          if (node && typeof toast.height !== "number") {
+            const height = node.getBoundingClientRect().height;
             updateHeight(toast.id, height);
           }
         };
-        console.log(toast);
         return (
           <>
             <Toast
@@ -40,9 +39,11 @@ const Toaster = () => {
               {...toast.ariaProps}
               visible={toast.visible}
               offset={offset}
-            >
-              {toast.message}
-            </Toast>
+              type={toast.type}
+              message={toast.message}
+              duration={toast.duration}
+              removeDelay={toast.removeDelay}
+            />
           </>
         );
       })}

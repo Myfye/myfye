@@ -16,6 +16,6 @@ export interface PayTransaction {
   formattedAmount: string;
   fiatCurrency: FiatCurrency;
   fee: number | null;
-  contact: Contact | null;
+  user: Contact | null;
   presetAmount: PresetAmountOption;
 }

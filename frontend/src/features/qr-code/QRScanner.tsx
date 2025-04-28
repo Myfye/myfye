@@ -12,18 +12,8 @@ import { css } from "@emotion/react";
 
 import QrReader from "./QRReader";
 import Button from "@/components/ui/button/Button";
-import {
-  CaretLeft as CaretLeftIcon,
-  Copy as CopyIcon,
-  QuestionMark as QuestionMarkIcon,
-  X as XIcon,
-} from "@phosphor-icons/react";
-import QRCode from "./QRCode";
-import { useDispatch, useSelector } from "react-redux";
-import { setQRCodeModalOpen } from "@/redux/modalReducers";
+import { X } from "@phosphor-icons/react";
 import Header from "../../components/app/layout/header/Header";
-import { RootState } from "@/redux/store";
-import { toggleModal as toggleSendModal } from "../send/sendSlice";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);
@@ -37,30 +27,22 @@ const staticTransition = {
 const QRScanner = ({
   isOpen = false,
   onOpenChange,
+  onScanSuccess,
+  onScanFail,
+  zIndex = 1000,
 }: {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
+  onScanSuccess: (e: unknown) => void;
+  onScanFail: (err: unknown) => void;
+  zIndex: number;
 }) => {
   let h = window.innerHeight;
   let y = useMotionValue(h);
   let bgOpacity = useTransform(y, [0, h], [0.4, 0]);
   let bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
-  const dispatch = useDispatch();
-
-  const [isQRCodeVisible, setQRCodeVisible] = useState(false);
-
-  const pubKey = useSelector((state: any) => state.userWalletData.pubKey);
 
   const id = useId();
-
-  const onScanSuccess = ({ data }) => {
-    dispatch(setQRCodeModalOpen(false));
-    dispatch(toggleSendModal({ isOpen: true }));
-  };
-
-  const onScanFail = (err) => {
-    console.log(err);
-  };
 
   return (
     <>
@@ -72,7 +54,7 @@ const QRScanner = ({
             css={css`
               position: fixed;
               inset: 0;
-              z-index: var(--z-index-modal);
+              z-index: ${zIndex};
               max-width: 420px;
               margin-inline: auto;
             `}
@@ -86,7 +68,7 @@ const QRScanner = ({
                 width: 100%;
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
-                height: 100svh;
+                height: 100dvh;
                 z-index: 1;
               `}
               initial={{ y: h }}
@@ -99,62 +81,37 @@ const QRScanner = ({
                 // Extra padding at the bottom to account for rubber band scrolling.
                 paddingBottom: window.screen.height,
               }}
-              onAnimationComplete={() => {
-                setQRCodeVisible(false);
-              }}
             >
               <Dialog
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: 100svh;
+                  height: 100dvh;
                   overflow-y: auto;
                   position: relative;
                 `}
                 aria-labelledby={id}
               >
-                {!isQRCodeVisible && (
-                  <section
-                    css={css`
-                      position: absolute;
-                      z-index: -1;
-                      width: 100%;
-                      height: 100%;
-                    `}
-                  >
-                    <QrReader
-                      onScanFail={onScanFail}
-                      onScanSuccess={onScanSuccess}
-                    />
-                  </section>
-                )}
+                <section
+                  css={css`
+                    position: absolute;
+                    z-index: -1;
+                    width: 100%;
+                    height: 100%;
+                  `}
+                >
+                  <QrReader
+                    onScanFail={onScanFail}
+                    onScanSuccess={onScanSuccess}
+                  />
+                </section>
                 <Header>
-                  {isQRCodeVisible ? (
-                    <>
-                      <Button
-                        iconOnly
-                        icon={CaretLeftIcon}
-                        color="transparent-invert"
-                        onPress={() => setQRCodeVisible(false)}
-                      ></Button>
-                      <Button
-                        iconOnly
-                        icon={QuestionMarkIcon}
-                        color="transparent-invert"
-                        onPress={() => onOpenChange(false)}
-                      ></Button>
-                    </>
-                  ) : (
-                    <Button
-                      iconOnly
-                      icon={XIcon}
-                      color="transparent-invert"
-                      onPress={() => onOpenChange(false)}
-                      css={css`
-                        margin-left: auto;
-                      `}
-                    ></Button>
-                  )}
+                  <Button
+                    iconOnly
+                    icon={X}
+                    color="transparent-invert"
+                    onPress={() => onOpenChange(false)}
+                  ></Button>
                 </Header>
                 <div
                   className="content"
@@ -182,72 +139,19 @@ const QRScanner = ({
                           text-align: center;
                         `}
                       >
-                        {isQRCodeVisible ? "Receive tokens" : "Send tokens"}
+                        Scan QR Code
                       </p>
                       <p
+                        className="caption"
                         css={css`
                           color: var(--clr-text-on-accent);
                           text-align: center;
-                          margin-block-start: var(--size-200);
+                          margin-block-start: var(--size-150);
                         `}
                       >
-                        {isQRCodeVisible
-                          ? "Share this wallet address to receive tokens"
-                          : "Scan a QR Code to send tokens to another wallet"}
+                        Scan a QR Code to copy a user's wallet
                       </p>
                     </hgroup>
-                  </section>
-                  {isQRCodeVisible && (
-                    <section className="qr-container">
-                      <QRCode visible={isQRCodeVisible} data={pubKey} />
-                    </section>
-                  )}
-                  <section
-                    css={css`
-                      margin-block-start: var(--size-400);
-                      width: 100%;
-                    `}
-                  >
-                    <p
-                      css={css`
-                        color: var(--clr-neutral-300);
-                        text-align: center;
-                        margin-block-end: var(--size-400);
-                        max-width: 35ch;
-                        margin-inline: auto;
-                        word-break: break-all;
-                        white-space: normal;
-                      `}
-                    >
-                      {isQRCodeVisible
-                        ? pubKey
-                        : "Only send money to a wallet you trust"}
-                    </p>
-
-                    {isQRCodeVisible ? (
-                      <Button
-                        expand
-                        color="invert"
-                        icon={CopyIcon}
-                        onPress={() => {
-                          navigator.clipboard.writeText(pubKey);
-                          onOpenChange(false);
-                          // dispatch toaster to confirm copy
-                        }}
-                      >
-                        Copy Wallet Address
-                      </Button>
-                    ) : (
-                      <Button
-                        expand
-                        color="invert"
-                        onPress={() => {
-                          setQRCodeVisible(true);
-                        }}
-                      >
-                        View QR Code
-                      </Button>
-                    )}
                   </section>
                 </div>
               </Dialog>

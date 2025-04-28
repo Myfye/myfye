@@ -1,37 +1,73 @@
 import { css } from "@emotion/react";
-import { ReactNode, RefObject } from "react";
+import { CheckCircle, Info, Spinner, XCircle } from "@phosphor-icons/react";
+import { ReactNode, RefCallback, RefObject } from "react";
+import {
+  Renderable,
+  Toast as ToastObj,
+  ToastType,
+  ValueOrFunction,
+} from "react-hot-toast/headless";
+
 const Toast = ({
   ref,
   offset,
   visible,
-  children,
+  type,
+  message,
+  duration,
+  removeDelay,
   ...restProps
 }: {
-  ref: RefObject<HTMLLIElement>;
+  ref: RefCallback<HTMLLIElement> | RefObject<HTMLLIElement>;
   offset: number;
+  type: ToastType;
   visible: boolean;
-  children: ReactNode;
+  message: ValueOrFunction<Renderable, ToastObj>;
+  duration?: number;
+  removeDelay?: number;
 }) => {
+  const Icon = (() => {
+    switch (type) {
+      case "error": {
+        return XCircle;
+      }
+      case "success": {
+        return CheckCircle;
+      }
+
+      default: {
+        return Info;
+      }
+    }
+  })();
+
+  const totalDuration = (duration ?? 0) + (removeDelay ?? 0);
+
   return (
     <li
+      className="toast"
       ref={ref}
+      data-type={type}
       css={css`
-        position: absolute;
-        inset: 0;
-        margin: auto;
-        width: 15rem;
-        height: 4rem;
-        display: grid;
-        place-items: center;
-        backgroundcolor: var(--clr-surface-raised);
-        box-shadow: var(--box-shadow-popout);
-        transition: all 0.5s ease-out;
         opacity: ${visible ? 1 : 0};
         transform: translateY(${offset}px);
+        overflow: hidden;
+        &::before {
+          content: "";
+          display: ${totalDuration === 0 ? "none" : "block"};
+          bottom: 0;
+          left: 0;
+          position: absolute;
+          width: 100%;
+          height: 3px;
+          background-color: var(--_color-active);
+          animation: toast-time ${totalDuration}ms linear;
+        }
       `}
       {...restProps}
     >
-      {children}
+      {Icon && <Icon size={28} weight="fill"></Icon>}
+      {message as ReactNode}
     </li>
   );
 };
