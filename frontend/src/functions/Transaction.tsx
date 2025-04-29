@@ -1,4 +1,4 @@
-import { HELIUS_API_KEY } from '../env.ts';
+import { HELIUS_API_KEY, SERVER_PUBLIC_KEY } from '../env.ts';
 import { 
     createTransferInstruction, 
     TOKEN_PROGRAM_ID } from '@solana/spl-token';
@@ -24,6 +24,7 @@ import {useSendTransaction} from '@privy-io/react-auth';
   const USDY_MINT_ADDRESS = 'A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6';
   const PYUSD_MINT_ADDRESS = '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo';
   const EURC_MINT_ADDRESS = 'HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr';
+import { logError } from "./LogError.tsx";
 
 export const tokenTransfer = async (
     payerPubKey: string, 
@@ -31,33 +32,53 @@ export const tokenTransfer = async (
     amountSmallestDenomination: number, 
     currencySelected: string, 
     wallet: any
-    ): Promise<boolean> => {
+    ): Promise<any> => {
+      try {
+        console.log("tokenTransfer", payerPubKey, receiverPubKey, amountSmallestDenomination, currencySelected, wallet);
   
+        console.log("SERVER_PUBLIC_KEY", SERVER_PUBLIC_KEY);
+        // Validate public keys
+        if (!payerPubKey || typeof payerPubKey !== 'string') {
+          throw new Error(`Invalid payer public key: ${payerPubKey}`);
+        }
+        if (!receiverPubKey || typeof receiverPubKey !== 'string') {
+          throw new Error(`Invalid receiver public key: ${receiverPubKey}`);
+        }
 
-      const PRIORITY_RATE = 1001000; // MICRO_LAMPORTS 1^-15 solana  250000
-      const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({microLamports: PRIORITY_RATE});
+        // Validate amount
+        if (!amountSmallestDenomination || typeof amountSmallestDenomination !== 'number') {
+          throw new Error(`Invalid amount: ${amountSmallestDenomination}`);
+        }
 
-      const senderPublicKey = new PublicKey(payerPubKey);
-      const destinationPublicKey = new PublicKey(receiverPubKey);
+        // Validate wallet
+        if (!wallet) {
+          throw new Error('Wallet is required');
+        }
 
-      let mintAddress: string;
-      let programId: string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      if (currencySelected === 'usdcSol') {
-          mintAddress = USDC_MINT_ADDRESS;
-      } else if (currencySelected === 'usdtSol') {
-          mintAddress = USDT_MINT_ADDRESS;
-      } else if (currencySelected === 'usdySol') {
-        mintAddress = USDY_MINT_ADDRESS;
-      } else if (currencySelected === 'eurcSol') {
-        mintAddress = EURC_MINT_ADDRESS;
-      } else if (currencySelected === 'pyusdSol') {
-        mintAddress = PYUSD_MINT_ADDRESS;
-        programId = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
-      }
+        const PRIORITY_RATE = 1001000; // MICRO_LAMPORTS 1^-15 solana  250000
+        const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({microLamports: PRIORITY_RATE});
+
+        const senderPublicKey = new PublicKey(payerPubKey);
+        const destinationPublicKey = new PublicKey(receiverPubKey);
+
+        let mintAddress: string;
+        let programId: string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+        if (currencySelected === 'usdcSol') {
+            mintAddress = USDC_MINT_ADDRESS;
+        } else if (currencySelected === 'usdtSol') {
+            mintAddress = USDT_MINT_ADDRESS;
+        } else if (currencySelected === 'usdySol') {
+          mintAddress = USDY_MINT_ADDRESS;
+        } else if (currencySelected === 'eurcSol') {
+          mintAddress = EURC_MINT_ADDRESS;
+        } else if (currencySelected === 'pyusdSol') {
+          mintAddress = PYUSD_MINT_ADDRESS;
+          programId = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
+        }
+        
+        const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
+        const connection = new Connection(RPC);
       
-      const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
-      const connection = new Connection(RPC);
-    
         const payerParsedTokenAccounts = await connection.getParsedTokenAccountsByOwner(
           senderPublicKey,
           { programId: new PublicKey(programId) }
@@ -69,7 +90,7 @@ export const tokenTransfer = async (
         );
         
         if (!payerAccountInfo) {
-          throw new Error(currencySelected + " account not found for payer.", payerAccountInfo);
+          throw new Error(currencySelected + " account not found for payer.");
         } else {
           console.log(currencySelected + " account found for payer.");
         }
@@ -83,7 +104,6 @@ export const tokenTransfer = async (
           (accountInfo: { account: { data: { parsed: { info: { mint: string } } } } }) => accountInfo.account.data.parsed.info.mint === mintAddress
         );
         
-
         if (!receiverAccountInfo) {
           const functions = getFunctions();
           const newTokenAccount = httpsCallable(functions, 'createNewTokenAccount');
@@ -95,10 +115,6 @@ export const tokenTransfer = async (
               mintAddress: mintAddress!,
               programId: programId,
             });
-
-            // the create new account promise is not working 
-            // on the backend so try waiting 10 seconds and then 
-            // search for it again
 
             let attempts = 0;
             const maxAttempts = 10;
@@ -131,16 +147,14 @@ export const tokenTransfer = async (
             }
 
           } catch (error) {
-            console.error("Failed to create or fetch the token account:", error);
-            return false;
+            throw new Error("Failed to create or fetch the token account: " + error);
           }
         } else {
           console.log(currencySelected + " account found for receiver.");
         }
   
         if (!payerAccountInfo || !receiverAccountInfo) {
-          console.error(currencySelected + " account not found");
-          return false;
+          throw new Error(currencySelected + " account not found");
         }
   
         const senderTokenAccount = new PublicKey(payerAccountInfo.pubkey);
@@ -154,50 +168,43 @@ export const tokenTransfer = async (
           senderPublicKey, // Owner of source account: PublicKey
           amountSmallestDenomination, // Amount: number | bigint
           [], // multiSigners
-          programIdKey, // Amount: number | bigint
+          programIdKey,
         );
 
         const blockhashInfo = await connection.getLatestBlockhash();
         
-        // Create the priority transaction
-        const transaction = new Transaction();
-        transaction.add(transferInstruction);
-        transaction.feePayer = senderPublicKey;
-        transaction.recentBlockhash = blockhashInfo.blockhash;
-        transaction.lastValidBlockHeight = blockhashInfo.lastValidBlockHeight;
-  
-        
+        const feePayerPublicKey = new PublicKey(SERVER_PUBLIC_KEY!);
+
         // Create the priority transaction
         const txPriority = new Transaction();
         txPriority.add(transferInstruction);
         txPriority.add(PRIORITY_FEE_IX); // Add priority fee instruction
-        txPriority.feePayer = senderPublicKey;
         txPriority.recentBlockhash = blockhashInfo.blockhash;
         txPriority.lastValidBlockHeight = blockhashInfo.lastValidBlockHeight;
+        txPriority.feePayer = feePayerPublicKey;
 
-      try {
+        const functions = getFunctions();
+        const signTransactionFn = httpsCallable(functions, "signTransaction");
+
+        // Serialize the transaction (before signing)
+        const serializedTx = txPriority.serialize({ requireAllSignatures: false }).toString("base64");
+
+        // Send to Firebase for signing
+        const { data } = await signTransactionFn({ serializedTransaction: serializedTx }) as { data: { signedTransaction?: string; error?: string } };
+
+        if (data.error) {
+          throw new Error("Server signing failed: " + data.error);
+        }
+
+        if (!data.signedTransaction) {
+          throw new Error("Server signing failed: No signed transaction returned");
+        }
+
+        // Deserialize the signed transaction
+        const signedTx = Transaction.from(Buffer.from(data.signedTransaction, "base64"));
+
+        const transactionId = await wallet.sendTransaction!(signedTx, connection);
         
-        /*
-        await wallet.signTransaction!(transaction, connection);
-        const transactionId = await wallet.sendTransaction!(transaction, connection);
-        */
-
-        /*
-        const signedTX = await wallet.signTransaction(
-          transaction
-        );*/
-
-        const transactionId = await wallet.sendTransaction!(txPriority, connection);
-        
-        
-        /*
-        const transactionId = await sendAndConfirmTransaction(
-          connection,
-          signedTX.serialize(),
-          [], //Signers
-        );
-        */
-
         if (transactionId) {
           let transactionConfirmed = false
           for (let attempt = 1; attempt <= 3 && !transactionConfirmed; attempt++) {
@@ -206,29 +213,27 @@ export const tokenTransfer = async (
               console.log('got confirmation', confirmation, 'on attempt', attempt);
               if (confirmation && confirmation.value && confirmation.value.err === null) {
                 console.log(`Transaction successful: https://solscan.io/tx/${transactionId}`);
-                return true;
+                return { success: true, transactionId };
               }
-              } catch (error) {
-                console.error('Error sending transaction or in post-processing:', error, 'on attempt', attempt);
-              }
-              if (!transactionConfirmed) {
-                await delay(1000); // Delay in milliseconds
-              }
+            } catch (error) {
+              console.error('Error sending transaction or in post-processing:', error, 'on attempt', attempt);
+              throw new Error("Transaction confirmation failed: " + error);
             }
-            console.log("Transaction Uncomfirmed");
-            return false
+            if (!transactionConfirmed) {
+              await delay(1000); // Delay in milliseconds
+            }
+          }
+          throw new Error("Transaction Unconfirmed after 3 attempts");
         } else {
-          console.log("Transaction Failed: transactionID: ", transactionId);
-          return false;
+          throw new Error("Transaction Failed: No transaction ID returned");
         }
   
       } catch (error) {
         console.error("Transaction Failed with error: ", error);
-        return false;
+        logError(error.message, "tokenTransfer", error.stack);
+        return { success: false, error: error.message };
       }
-
   }
-
 
   function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
