@@ -1,6 +1,3 @@
-import { css } from "@emotion/react";
-
-import Overlay from "@/components/ui/overlay/Overlay";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,19 +5,27 @@ import {
   updateAbstractedAssetId,
   updateAmount,
 } from "./sendSlice";
-import { AbstractedAsset } from "../assets/types";
+import { AbstractedAsset, AbstractedAssetSection } from "../assets/types";
 import {
   selectAbstractedAssetsWithBalanceByDashboard,
   selectAbstractedAssetWithBalance,
 } from "../assets/assetsSlice";
-import AssetCardListSelect from "../assets/cards/AssetCardListSelect";
+import SelectAssetOverlay from "../assets/SelectAssetOverlay";
 
-const SelectAssetOverlay = ({ zIndex = 1000 }) => {
+const SendSelectAssetOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const cashAssets = useSelector((state: RootState) =>
     selectAbstractedAssetsWithBalanceByDashboard(state, "cash")
   );
+
+  const abstractedAssetSections: AbstractedAssetSection[] = [
+    {
+      id: "cash",
+      label: "Cash",
+      abstractedAssets: cashAssets,
+    },
+  ];
 
   const isOpen = useSelector(
     (state: RootState) => state.send.overlays.selectAsset.isOpen
@@ -47,7 +52,7 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
     );
   };
 
-  const onAssetSelect = (abstractedAssetId: AbstractedAsset["id"]) => {
+  const handleAssetSelect = (abstractedAssetId: AbstractedAsset["id"]) => {
     dispatch(
       updateAbstractedAssetId({
         abstractedAssetId: abstractedAssetId,
@@ -66,42 +71,17 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
   };
 
   return (
-    <Overlay
-      title="Select coin"
-      isOpen={isOpen}
-      onOpenChange={handleOpen}
-      zIndex={zIndex}
-    >
-      <div
-        css={css`
-          margin-inline: var(--size-250);
-          padding-block-end: var(--size-250);
-        `}
-      >
-        <section
-          className="cash"
-          css={css`
-            margin-block-start: var(--size-400);
-          `}
-        >
-          <h2
-            className="heading-small"
-            css={css`
-              color: var(--clr-text);
-              margin-block-end: var(--size-200);
-            `}
-          >
-            Cash
-          </h2>
-          <AssetCardListSelect
-            assets={cashAssets}
-            onAssetSelect={onAssetSelect}
-            selectedAsset={selectedAbstractedAssetId}
-          ></AssetCardListSelect>
-        </section>
-      </div>
-    </Overlay>
+    <>
+      <SelectAssetOverlay
+        zIndex={zIndex}
+        isOpen={isOpen}
+        onOpenChange={handleOpen}
+        onAssetSelect={handleAssetSelect}
+        abstractedAssetSections={abstractedAssetSections}
+        selectedAbstractedAssetId={selectedAbstractedAssetId}
+      />
+    </>
   );
 };
 
-export default SelectAssetOverlay;
+export default SendSelectAssetOverlay;

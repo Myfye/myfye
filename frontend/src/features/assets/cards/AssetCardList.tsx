@@ -48,6 +48,7 @@ const AssetCardList = ({
               balance={showBalanceUSD ? asset.balanceUSD : asset.balance}
               showCurrencySymbol={showCurrencySymbol}
               icon={asset.icon}
+              groupId={asset.groupId}
               onPress={() => onAssetSelect && onAssetSelect(asset)}
               showBalance={showBalance}
               showOptions={showOptions}

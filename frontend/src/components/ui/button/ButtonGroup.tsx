@@ -1,8 +1,15 @@
+import { ReactNode } from "react";
+
 const ButtonGroup = ({
   size = "medium",
   direction = "horizontal",
   scroll = true,
   children,
+}: {
+  size: "small" | "medium" | "large";
+  direction: "horizontal" | "vertical";
+  scroll?: boolean;
+  children: ReactNode;
 }) => {
   return (
     <menu

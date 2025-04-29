@@ -1,10 +1,8 @@
 import NumberPad from "@/components/ui/number-pad/NumberPad";
 
 import { css } from "@emotion/react";
-import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import SelectAssetOverlay from "./SelectAssetOverlay";
 import {
   toggleOverlay,
   updateAmount,
@@ -13,11 +11,12 @@ import {
 } from "./paySlice";
 import PayController from "./PayController";
 import { useEffect, useRef } from "react";
-import SelectContactOverlay from "./SelectUserOverlay";
-import SelectUserOverlay from "./SelectUserOverlay";
-import ConfirmTransactionOverlay from "./ConfirmTransactionOverlay";
+import PaySelectUserOverlay from "./PaySelectUserOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
-import toast from "react-hot-toast/headless";
+import ButtonGroup from "@/components/ui/button/ButtonGroup";
+import PaySelectAssetOverlay from "./PaySelectAssetOverlay";
+import ButtonGroupItem from "@/components/ui/button/ButtonGroupItem";
+import PayConfirmTransactionOverlay from "./PayConfirmTransactionOverlay";
 
 const Pay = () => {
   const dispatch = useDispatch();
@@ -138,44 +137,29 @@ const Pay = () => {
               padding-inline: var(--size-250);
             `}
           >
-            <menu
-              css={css`
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: var(--controls-gap-medium);
-              `}
-            >
-              <li>
-                <Button
-                  expand
-                  onPress={handleRequest}
-                  isDisabled={isInvalidSwapTransaction}
-                >
-                  Request
-                </Button>
-              </li>
-              <li>
-                <Button
-                  expand
-                  onPress={handlePay}
-                  isDisabled={isInvalidSwapTransaction}
-                >
-                  Pay
-                </Button>
-              </li>
-              <li>
-                <Button expand onPress={() => toast.success("Success")}>
-                  Toast test
-                </Button>
-              </li>
-            </menu>
+            <ButtonGroup scroll={false} direction="horizontal" size="medium">
+              <ButtonGroupItem
+                expand
+                onPress={handleRequest}
+                isDisabled={isInvalidSwapTransaction}
+              >
+                Request
+              </ButtonGroupItem>
+              <ButtonGroupItem
+                expand
+                onPress={handlePay}
+                isDisabled={isInvalidSwapTransaction}
+              >
+                Pay
+              </ButtonGroupItem>
+            </ButtonGroup>
           </section>
         </div>
       </div>
-      <SelectAssetOverlay zIndex={2000} />
-      <SelectUserOverlay zIndex={2001} />
-      <ConfirmTransactionOverlay zIndex={2002} />
-      <ProcessingTransactionOverlay zIndex={2003} />
+      <PaySelectAssetOverlay zIndex={2000} />
+      <PaySelectUserOverlay zIndex={3000} />
+      <PayConfirmTransactionOverlay zIndex={4000} />
+      <ProcessingTransactionOverlay zIndex={5000} />
     </>
   );
 };

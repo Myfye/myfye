@@ -21,24 +21,32 @@ const UserCardList = ({
         gap: var(--size-150);
       `}
     >
-      {users.map((user) => (
-        <li
-          key={`user-${user.uid}`}
-          className="user-card-wrapper"
-          css={css`
-            display: block;
-            width: 100%;
-          `}
-        >
-          <UserCard
-            key={user.uid}
-            name={user.first_name}
-            email={user.email}
-            phoneNumber={user.phone_number}
-            onPress={() => onUserSelect(user)}
-          />
-        </li>
-      ))}
+      {users.map((user) => {
+        const fullName = user?.last_name
+          ? user?.first_name + user?.last_name
+          : user?.first_name;
+        return (
+          <li
+            key={`user-${user.uid}`}
+            className="user-card-wrapper"
+            css={css`
+              display: block;
+              width: 100%;
+            `}
+          >
+            <UserCard
+              key={user.uid}
+              name={fullName}
+              email={user.email}
+              phone={user.phone_number}
+              onPress={() => {
+                console.log(user);
+                onUserSelect(user);
+              }}
+            />
+          </li>
+        );
+      })}
     </ul>
   );
 };

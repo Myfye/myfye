@@ -4,10 +4,14 @@ import UserCardController from "./UserCardController";
 import { useRef } from "react";
 
 const UserCard = ({
-  name = "",
-  email = "",
-  phoneNumber = "",
+  name,
+  email,
+  phone,
   ...restProps
+}: {
+  name: string | null;
+  email: string | null;
+  phone: string | null;
 }) => {
   const ref = useRef(null!);
   return (
@@ -60,7 +64,7 @@ const UserCard = ({
                   font-weight: var(--fw-active);
                 `}
               >
-                {name || email || phoneNumber}
+                {name || email || phone}
               </p>
               {name && (
                 <p
@@ -73,7 +77,7 @@ const UserCard = ({
                     overflow: hidden;
                   `}
                 >
-                  {email || phoneNumber}
+                  {email || phone}
                 </p>
               )}
             </div>

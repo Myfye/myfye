@@ -23,6 +23,8 @@ import {
 import { RootState } from "@/redux/store";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import DonutChart3D from "./DonutChart3D";
+import BalanceCard from "@/components/ui/balance/BalanceCard";
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
 
@@ -44,34 +46,72 @@ const DashboardPanel = ({}) => {
   const pieChartData = useMemo(() => {
     const data = [];
     if (cashBalanceUSD > 0 || earnBalanceUSD > 0) {
-      const cashData = {
-        id: "Cash",
-        label: "Cash",
-        value: cashBalanceUSD + earnBalanceUSD,
-        color: "var(--clr-pie-chart-usdt)",
-      };
+      // const cashData = {
+      //   name: "Cash",
+      //   data: [cashBalanceUSD + earnBalanceUSD],
+      //   color: "var(--clr-pie-chart-usdt)",
+      // };
+      const cashData = ["Cash", cashBalanceUSD + earnBalanceUSD];
       data.push(cashData);
     }
     if (cryptoBalanceUSD > 0) {
-      const cryptoData = {
-        id: "Crypto",
-        label: "Crypto",
-        value: cryptoBalanceUSD,
-        color: "var(--clr-pie-chart-btc)",
-      };
+      // const cryptoData = {
+      //   name: "Crypto",
+      //   data: [cryptoBalanceUSD],
+      //   color: "var(--clr-pie-chart-btc)",
+      // };
+      const cryptoData = ["Crypto", cryptoBalanceUSD];
       data.push(cryptoData);
     }
     if (stocksBalanceUSD > 0) {
-      const stocksData = {
-        id: "Stocks",
-        label: "Stocks",
-        value: stocksBalanceUSD,
-        color: "var(--clr-pie-chart-btc)",
-      };
+      // const stocksData = {
+      //   name: "Stocks",
+      //   data: [stocksBalanceUSD],
+      //   color: "var(--clr-pie-chart-btc)",
+      // };
+      const stocksData = ["Stocks", stocksBalanceUSD];
       data.push(stocksData);
     }
     return data;
   }, [cashBalanceUSD, earnBalanceUSD, cryptoBalanceUSD, stocksBalanceUSD]);
+
+  const donutChartOptions: Highcharts.Options = {
+    chart: {
+      type: "pie",
+      options3d: {
+        enabled: true,
+        alpha: 20,
+      },
+    },
+    plotOptions: {
+      pie: {
+        innerSize: 50,
+        depth: 45,
+      },
+    },
+    title: {
+      text: "",
+    },
+    tooltip: {
+      valuePrefix: "$",
+    },
+    series: [
+      // @ts-ignore
+      {
+        name: "Portfolio",
+        data: pieChartData,
+      },
+    ],
+    responsive: {
+      rules: [
+        {
+          condition: {
+            maxWidth: 400,
+          },
+        },
+      ],
+    },
+  };
 
   return (
     <div
@@ -95,83 +135,69 @@ const DashboardPanel = ({}) => {
           padding-inline: var(--size-250);
         `}
       >
-        <div
+        <BalanceCard balance={balanceUSD}></BalanceCard>
+      </section>
+      <section
+        css={css`
+          margin-block-start: var(--size-200);
+        `}
+      >
+        <menu
+          className="no-scrollbar"
           css={css`
-            padding-block: var(--size-150);
-            background-color: var(--clr-surface-raised);
-            border-radius: var(--border-radius-medium);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: var(--controls-gap-small);
+            overflow-x: auto;
+            padding-inline: var(--size-250);
           `}
         >
-          <section
-            css={css`
-              padding-inline: var(--size-150);
-            `}
-          >
-            <Balance balance={balanceUSD} />
-          </section>
-          <section
-            css={css`
-              margin-block-start: var(--size-200);
-            `}
-          >
-            <menu
-              className="no-scrollbar"
-              css={css`
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: var(--controls-gap-small);
-                overflow-x: auto;
-                padding-inline: var(--size-150);
-              `}
+          <li>
+            <Button
+              size="x-small"
+              icon={ArrowCircleUpIcon}
+              onPress={() => {
+                dispatch(toggleSendModal({ isOpen: true }));
+              }}
             >
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowCircleUpIcon}
-                  onPress={() => {
-                    dispatch(toggleSendModal({ isOpen: true }));
-                  }}
-                >
-                  Send
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowCircleDownIcon}
-                  onPress={() => {
-                    dispatch(toggleReceiveModal(true));
-                  }}
-                >
-                  Receive
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowLineUpIcon}
-                  onPress={() => {
-                    dispatch(setDepositModalOpen(true));
-                  }}
-                >
-                  Deposit
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowLineDownIcon}
-                  onPress={() => {
-                    dispatch(setWithdrawModalOpen(true));
-                  }}
-                >
-                  Withdraw
-                </Button>
-              </li>
-            </menu>
-          </section>
-        </div>
+              Send
+            </Button>
+          </li>
+          <li>
+            <Button
+              size="x-small"
+              icon={ArrowCircleDownIcon}
+              onPress={() => {
+                dispatch(toggleReceiveModal(true));
+              }}
+            >
+              Receive
+            </Button>
+          </li>
+          <li>
+            <Button
+              size="x-small"
+              icon={ArrowLineUpIcon}
+              onPress={() => {
+                dispatch(setDepositModalOpen(true));
+              }}
+            >
+              Deposit
+            </Button>
+          </li>
+          <li>
+            <Button
+              size="x-small"
+              icon={ArrowLineDownIcon}
+              onPress={() => {
+                dispatch(setWithdrawModalOpen(true));
+              }}
+            >
+              Withdraw
+            </Button>
+          </li>
+        </menu>
       </section>
       <section
         css={css`
@@ -227,7 +253,7 @@ const DashboardPanel = ({}) => {
               border-radius: var(--border-radius-medium);
             `}
           >
-            <PieChart data={pieChartData}></PieChart>
+            <DonutChart3D options={donutChartOptions} />
           </div>
         )}
       </section>

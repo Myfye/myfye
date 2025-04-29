@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { updateFormattedAmount, parseFormattedAmount } from "./utils";
 import { AbstractedAsset } from "@/features/assets/types";
 import { PresetAmountOption, SendTransaction } from "./types";
+import { User } from "../users/types";
 
 interface SendState {
   modal: {
@@ -12,10 +13,10 @@ interface SendState {
     selectAsset: {
       isOpen: boolean;
     };
-    selectContact: {
+    selectUser: {
       isOpen: boolean;
     };
-    confirmSend: {
+    confirmTransaction: {
       isOpen: boolean;
     };
     processingTransaction: {
@@ -31,16 +32,16 @@ const initialState: SendState = {
     isOpen: false,
   },
   overlays: {
-    selectContact: { isOpen: false },
-    confirmSend: { isOpen: false },
+    selectUser: { isOpen: false },
+    confirmTransaction: { isOpen: false },
     processingTransaction: { isOpen: false },
     selectAsset: { isOpen: false },
   },
   transaction: {
     id: null,
-    contact: null,
+    user: null,
     amount: null,
-    formattedAmount: "",
+    formattedAmount: "0",
     abstractedAssetId: null,
     fee: null,
     status: "idle",
@@ -64,20 +65,29 @@ const sendSlice = createSlice({
       if (action.payload?.abstractedAssetId)
         state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
     },
-    toggleOverlay(
+    toggleOverlay: (
       state,
       action: PayloadAction<{
         type:
-          | "selectContact"
-          | "confirmSend"
-          | "processingTransaction"
-          | "selectAsset";
+          | "selectAsset"
+          | "selectUser"
+          | "confirmTransaction"
+          | "processingTransaction";
         isOpen: boolean;
       }>
-    ) {
+    ) => {
       state.overlays[action.payload.type].isOpen = action.payload.isOpen;
     },
-    unmount: () => initialState,
+    unmountOverlays: (state, action) => {
+      state.overlays = { ...initialState.overlays };
+      state.transaction.amount = initialState.transaction.amount;
+      state.transaction.formattedAmount =
+        initialState.transaction.formattedAmount;
+      state.transaction.presetAmount = initialState.transaction.presetAmount;
+      state.transaction.user = initialState.transaction.user;
+      state.transaction.abstractedAssetId =
+        initialState.transaction.abstractedAssetId;
+    },
     updatePresetAmount: (state, action: PayloadAction<PresetAmountOption>) => {
       state.transaction.presetAmount = action.payload;
     },
@@ -112,6 +122,10 @@ const sendSlice = createSlice({
     ) {
       state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
     },
+    updateUser(state, action: PayloadAction<User | null>) {
+      state.transaction.user = action.payload;
+    },
+    unmount: () => ({ ...initialState }),
   },
 });
 
@@ -122,5 +136,7 @@ export const {
   unmount,
   updateAbstractedAssetId,
   updatePresetAmount,
+  updateUser,
+  unmountOverlays,
 } = sendSlice.actions;
 export default sendSlice.reducer;

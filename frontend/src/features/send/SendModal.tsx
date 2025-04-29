@@ -4,10 +4,18 @@ import NumberPad from "@/components/ui/number-pad/NumberPad";
 import Modal from "@/components/ui/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { toggleModal, updateAmount, updatePresetAmount } from "./sendSlice";
+import {
+  toggleModal,
+  toggleOverlay,
+  updateAmount,
+  updatePresetAmount,
+} from "./sendSlice";
 import { useEffect, useRef } from "react";
 import SendController from "./SendController";
-import SelectAssetOverlay from "./SelectAssetOverlay";
+import SendSelectAssetOverlay from "./SendSelectAssetOverlay";
+import SendSelectUserOverlay from "./SendSelectUserOverlay";
+import SendConfirmTransactionOverlay from "./SendConfirmTransactionOverlay";
+import SendProcessingTransactionOverlay from "./SendProcessingTransactionOverlay";
 
 const SendModal = () => {
   const isOpen = useSelector((state: RootState) => state.send.modal.isOpen);
@@ -123,36 +131,22 @@ const SendModal = () => {
               padding-inline: var(--size-250);
             `}
           >
-            <menu
-              css={css`
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: var(--controls-gap-medium);
-              `}
+            <Button
+              expand
+              onPress={() => {
+                dispatch(toggleOverlay({ type: "selectUser", isOpen: true }));
+              }}
+              isDisabled={isInvalidSwapTransaction}
             >
-              <li>
-                <Button
-                  expand
-                  onPress={() => {}}
-                  isDisabled={isInvalidSwapTransaction}
-                >
-                  Request
-                </Button>
-              </li>
-              <li>
-                <Button
-                  expand
-                  onPress={() => {}}
-                  isDisabled={isInvalidSwapTransaction}
-                >
-                  Pay
-                </Button>
-              </li>
-            </menu>
+              Next
+            </Button>
           </section>
         </div>
       </Modal>
-      <SelectAssetOverlay zIndex={2000} />
+      <SendSelectAssetOverlay zIndex={2000} />
+      <SendSelectUserOverlay zIndex={2000} />
+      <SendConfirmTransactionOverlay zIndex={3000} />
+      <SendProcessingTransactionOverlay zIndex={4000} />
     </>
   );
 };

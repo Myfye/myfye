@@ -4,21 +4,19 @@ import Overlay from "@/components/ui/overlay/Overlay";
 import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { toggleOverlay } from "./paySlice";
-import PaySummary from "./PaySummary";
+import { toggleOverlay } from "./sendSlice";
+import SendSummary from "./SendSummary";
 
-const ConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
+const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(
-    (state: RootState) => state.pay.overlays.confirmTransaction.isOpen
+    (state: RootState) => state.send.overlays.confirmTransaction.isOpen
   );
 
   const handleOpen = (isOpen: boolean) => {
     dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
   };
-
-  const transaction = useSelector((state: RootState) => state.pay.transaction);
 
   // const assets = useSelector((state: RootState) => state.assets);
 
@@ -54,7 +52,7 @@ const ConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       <Overlay
         isOpen={isOpen}
         onOpenChange={handleOpen}
-        title="Confirm Swap"
+        title="Confirm Send"
         zIndex={zIndex}
       >
         <div
@@ -70,7 +68,7 @@ const ConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
               margin-inline: var(--size-250);
             `}
           >
-            <PaySummary />
+            <SendSummary />
           </section>
           <section
             css={css`
@@ -186,7 +184,7 @@ const ConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
               </li>
               <li>
                 <Button expand onPress={handleTransactionSubmit}>
-                  {transaction.type === "send" ? "Send" : "Request"}
+                  Send
                 </Button>
               </li>
             </menu>
@@ -197,4 +195,4 @@ const ConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   );
 };
 
-export default ConfirmTransactionOverlay;
+export default SendConfirmTransactionOverlay;

@@ -1,6 +1,16 @@
 import { css } from "@emotion/react";
+import { ReactNode } from "react";
 
-const Section = ({ title = "", action, children, ...restProps }) => {
+const Section = ({
+  title = "",
+  action,
+  children,
+  ...restProps
+}: {
+  title?: string;
+  action?: ReactNode;
+  children: ReactNode;
+}) => {
   return (
     <section {...restProps}>
       <hgroup

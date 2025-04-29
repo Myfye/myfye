@@ -5,12 +5,15 @@ import { css } from "@emotion/react";
 import Overlay from "@/components/ui/overlay/Overlay";
 import UserCardList from "@/features/users/cards/UserCardList";
 import UserSearchField from "@/features/users/UserSearchField";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import QRScanner from "../qr-code/QRScanner";
 import { useGetTopContactsQuery } from "../contacts/contactsApi";
 import { useSearchUsersQuery } from "../users/usersApi";
-import { User } from "@privy-io/react-auth";
+import { User } from "./types";
+import Section from "@/components/ui/section/Section";
+import CardSkeleton from "@/shared/components/ui/card/CardSkeleton";
+import { Link } from "react-aria-components";
 
 const SelectUserOverlay = ({
   isOpen,
@@ -23,17 +26,17 @@ const SelectUserOverlay = ({
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onUserSelect: (user: User) => void;
-  onScanSuccess: (e: unknown) => void;
-  onScanFail: (e: unknown) => void;
-  zIndex: number;
+  onScanSuccess?: (e: unknown) => void;
+  onScanFail?: (e: unknown) => void;
+  zIndex?: number;
 }) => {
+  const [query, setQuery] = useState("");
+
   const [isQRScannerOpen, setQRScannerOpen] = useState(false);
 
   const handleQRScannerOpen = (isOpen: boolean) => {
     setQRScannerOpen(isOpen);
   };
-
-  const [query, setQuery] = useState("");
 
   return (
     <>
@@ -43,17 +46,23 @@ const SelectUserOverlay = ({
         title="Choose Recepient"
         zIndex={zIndex}
       >
-        <section
+        <div
           css={css`
-            margin-block-start: var(--size-300);
             padding: 0 var(--size-250);
+            height: 100%;
           `}
         >
-          <UserSearchField
-            value={query}
-            onChange={(e: string) => setQuery(e)}
-            onScanTogglerPress={() => setQRScannerOpen(true)}
-          />
+          <section
+            css={css`
+              padding-block-start: var(--size-300);
+            `}
+          >
+            <UserSearchField
+              value={query}
+              onChange={(e: string) => setQuery(e)}
+              onScanTogglerPress={() => setQRScannerOpen(true)}
+            />
+          </section>
           <section
             css={css`
               margin-block-start: var(--size-500);
@@ -67,13 +76,16 @@ const SelectUserOverlay = ({
               </>
             )}
           </section>
-        </section>
+        </div>
       </Overlay>
       <QRScanner
         isOpen={isQRScannerOpen}
         onOpenChange={handleQRScannerOpen}
         onScanSuccess={onScanSuccess}
-        onScanFail={onScanFail}
+        onScanFail={(e) => {
+          setQRScannerOpen(false);
+          onScanFail(e);
+        }}
         zIndex={2001}
       />
     </>
@@ -83,7 +95,6 @@ const SelectUserOverlay = ({
 export default SelectUserOverlay;
 
 const TopContacts = ({
-  query,
   onUserSelect,
 }: {
   query: string;
@@ -98,18 +109,39 @@ const TopContacts = ({
   console.log("TopContacts - userId:", userId);
   console.log("TopContacts - data:", data);
 
-  if (isLoading || isUninitialized || isFetching) {
-    return <div>Loading...</div>;
+  const isPending = isLoading || isUninitialized || isFetching;
+
+  if (isPending) {
+    return (
+      <>
+        <Section title="Top Contacts">
+          <div
+            css={css`
+              display: grid;
+              gap: var(--size-100);
+            `}
+          >
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+          </div>
+        </Section>
+      </>
+    );
   }
+
   if (isSuccess) {
     if (data.length === 0) {
-      return <div>Search users</div>;
+      return (
+        <>
+          <section>Search users</section>
+        </>
+      );
     }
     return (
-      <section>
-        <h2>Top contacts</h2>
+      <Section title="Top Contacts">
         <UserCardList users={data} onUserSelect={onUserSelect} />
-      </section>
+      </Section>
     );
   }
 };
@@ -131,14 +163,40 @@ const SearchedUsers = ({
   console.log("SearchedUsers - data:", data);
 
   if (isLoading || isUninitialized || isFetching) {
-    return <div>Loading...</div>;
+    return (
+      <Section title="Search People">
+        <div
+          css={css`
+            display: grid;
+            gap: var(--size-100);
+          `}
+        >
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
+      </Section>
+    );
   }
   if (isSuccess) {
     return (
-      <section>
-        <h2>Search people</h2>
-        <UserCardList users={data} onUserSelect={onUserSelect} />
-      </section>
+      <Section title="Search People">
+        {data.length === 0 ? (
+          <div>
+            <Link
+              css={css`
+                font-size: var(--fs-medium);
+                color: var(--clr-accent);
+                font-weight: var(--fw-heading);
+              `}
+            >
+              Invite contact to Myfye
+            </Link>
+          </div>
+        ) : (
+          <UserCardList users={data} onUserSelect={onUserSelect} />
+        )}
+      </Section>
     );
   }
   return <div>Error loading search results. Please try again.</div>;

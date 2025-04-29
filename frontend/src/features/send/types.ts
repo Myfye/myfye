@@ -1,5 +1,5 @@
-import { AbstractedAsset, Asset, FiatCurrency } from "@/features/assets/types";
-import { Contact } from "../contacts/types";
+import { AbstractedAsset, FiatCurrency } from "@/features/assets/types";
+import { User } from "../users/types";
 
 export type SendTransactionStatus = "idle" | "success" | "fail" | "minted";
 
@@ -13,6 +13,6 @@ export interface SendTransaction {
   formattedAmount: string;
   fiatCurrency: FiatCurrency;
   fee: number | null;
-  contact: Contact | null;
+  user: User | null;
   presetAmount: PresetAmountOption;
 }
