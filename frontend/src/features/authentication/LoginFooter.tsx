@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
+import { ReactNode } from "react";
 
-const LoginFooter = ({ children }) => {
+const LoginFooter = ({ children }: { children: ReactNode }) => {
   return (
     <footer
       css={css`

@@ -1,6 +1,6 @@
 import { AbstractedAsset, FiatCurrency } from "../assets/types";
 import { Contact } from "../contacts/types";
-import { User } from "../user/types";
+import { User } from "../users/types";
 
 export type PayTransactionStatus = "idle" | "success" | "fail" | "minted";
 

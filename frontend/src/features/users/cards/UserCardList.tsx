@@ -1,4 +1,4 @@
-import { User } from "@/features/user/types";
+import { User } from "@/features/users/types";
 import UserCard from "./UserCard";
 
 import { css } from "@emotion/react";
