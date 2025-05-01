@@ -82,13 +82,6 @@ async function searchUser(data) {
         throw new Error('Current user ID and search query are required');
     }
 
-    // Convert current_user_id to integer if it's a string
-    const userId = typeof current_user_id === 'string' ? parseInt(current_user_id, 10) : current_user_id;
-    
-    if (isNaN(userId)) {
-        throw new Error('Invalid user ID format');
-    }
-
     const searchQuery = `
         SELECT u.*,
         CASE 
@@ -110,7 +103,7 @@ async function searchUser(data) {
     `;
 
     try {
-        const result = await pool.query(searchQuery, [userId, query]);
+        const result = await pool.query(searchQuery, [current_user_id, query]);
         console.log(`Found ${result.rows.length} users matching query "${query}"`);
         return result.rows;
     } catch (error) {
@@ -131,13 +124,6 @@ async function getTopContacts(data) {
     if (!current_user_id) {
         throw new Error('Current user ID is required');
     }
-    
-    // Convert current_user_id to integer if it's a string
-    const userId = typeof current_user_id === 'string' ? parseInt(current_user_id, 10) : current_user_id;
-    
-    if (isNaN(userId)) {
-        throw new Error('Invalid user ID format');
-    }
 
     const query = `
         SELECT u.*, COUNT(*) as freq
@@ -150,8 +136,8 @@ async function getTopContacts(data) {
     `;
 
     try {
-        const result = await pool.query(query, [userId]);
-        console.log(`Found ${result.rows.length} top contacts for user ${userId}`);
+        const result = await pool.query(query, [current_user_id]);
+        console.log(`Found ${result.rows.length} top contacts for user ${current_user_id}`);
         return result.rows;
     } catch (error) {
         console.error('Error getting top contacts:', error);
