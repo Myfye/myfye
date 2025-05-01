@@ -1,7 +1,6 @@
-import { ArrowDown, ArrowsDownUp, CaretRight } from "@phosphor-icons/react";
+import { ArrowsDownUp, CaretRight } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import { useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -12,7 +11,7 @@ import {
 } from "./utils";
 import { switchCurrencies, toggleOverlay, updateAmount } from "./swapSlice";
 import Button from "@/components/ui/button/Button";
-import TextFit from "@/shared/components/TextFit";
+import TextFit from "@/shared/components/ui/TextFit";
 import { AbstractedAsset } from "../assets/types";
 import {
   selectAbstractedAsset,

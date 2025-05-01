@@ -87,3 +87,9 @@ export interface AssetGroup {
     isOpen: boolean;
   };
 }
+
+export interface AbstractedAssetSection {
+  id: string;
+  label: string;
+  abstractedAssets: AbstractedAsset[];
+}

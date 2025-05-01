@@ -12,7 +12,7 @@ import { ReactNode } from "react";
 import { useDispatch } from "react-redux";
 import { toggleModal as toggleSwapModal } from "../swap/swapSlice";
 import { AssetGroup } from "../assets/types";
-import { toggleModal as toggleSendModal } from "../send/sendSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "../receive/receiveSlice";
 
 const WalletOverlay = ({

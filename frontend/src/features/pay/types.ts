@@ -1,5 +1,6 @@
 import { AbstractedAsset, FiatCurrency } from "../assets/types";
 import { Contact } from "../contacts/types";
+import { User } from "../users/types";
 
 export type PayTransactionStatus = "idle" | "success" | "fail" | "minted";
 
@@ -16,6 +17,6 @@ export interface PayTransaction {
   formattedAmount: string;
   fiatCurrency: FiatCurrency;
   fee: number | null;
-  user: Contact | null;
+  user: User | null;
   presetAmount: PresetAmountOption;
 }

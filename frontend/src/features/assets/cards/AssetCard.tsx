@@ -21,8 +21,6 @@ import {
   ArrowCircleDown,
   ArrowCircleUp,
   ArrowLineDown,
-  Check,
-  CheckCircle,
   DotsThreeVertical,
 } from "@phosphor-icons/react";
 import { useDispatch } from "react-redux";
@@ -35,6 +33,7 @@ const AssetCard = ({
   title,
   fiatCurrency,
   symbol,
+  groupId,
   balance,
   icon,
   ref,
@@ -49,6 +48,7 @@ const AssetCard = ({
   title: AbstractedAsset["label"];
   fiatCurrency: Asset["fiatCurrency"];
   symbol: AbstractedAsset["symbol"];
+  groupId: AbstractedAsset["groupId"];
   balance: number;
   ref: RefObject<HTMLButtonElement>;
   icon: AbstractedAsset["icon"];
@@ -186,52 +186,56 @@ const AssetCard = ({
                 user-select: none;
               `}
             >
-              <MenuItem
-                css={css`
-                  display: flex;
-                  align-items: center;
-                  border-radius: var(--border-radius-medium);
-                  padding: var(--size-150) var(--size-150);
-                  width: 100%;
-                  &[data-hovered="true"] {
-                    background-color: var(--clr-surface-raised);
-                  }
-                `}
-                onAction={() =>
-                  dispatch(
-                    toggleSendModal({ isOpen: true, abstractedAssetId: id })
-                  )
-                }
-              >
-                <ArrowCircleUp
-                  size={16}
+              {groupId !== "crypto" && groupId !== "stocks" && (
+                <MenuItem
                   css={css`
-                    margin-inline-end: var(--size-100);
+                    display: flex;
+                    align-items: center;
+                    border-radius: var(--border-radius-medium);
+                    padding: var(--size-150) var(--size-150);
+                    width: 100%;
+                    &[data-hovered="true"] {
+                      background-color: var(--clr-surface-raised);
+                    }
                   `}
-                />
-                Send
-              </MenuItem>
-              <MenuItem
-                css={css`
-                  display: flex;
-                  align-items: center;
-                  border-radius: var(--border-radius-medium);
-                  padding: var(--size-150) var(--size-150);
-                  width: 100%;
-                  &[data-hovered="true"] {
-                    background-color: var(--clr-surface-raised);
+                  onAction={() =>
+                    dispatch(
+                      toggleSendModal({ isOpen: true, abstractedAssetId: id })
+                    )
                   }
-                `}
-                onAction={() => dispatch(toggleReceiveModal(true))}
-              >
-                <ArrowCircleDown
-                  size={16}
+                >
+                  <ArrowCircleUp
+                    size={16}
+                    css={css`
+                      margin-inline-end: var(--size-100);
+                    `}
+                  />
+                  Send
+                </MenuItem>
+              )}
+              {groupId !== "crypto" && groupId !== "stocks" && (
+                <MenuItem
                   css={css`
-                    margin-inline-end: var(--size-100);
+                    display: flex;
+                    align-items: center;
+                    border-radius: var(--border-radius-medium);
+                    padding: var(--size-150) var(--size-150);
+                    width: 100%;
+                    &[data-hovered="true"] {
+                      background-color: var(--clr-surface-raised);
+                    }
                   `}
-                />
-                Receive
-              </MenuItem>
+                  onAction={() => dispatch(toggleReceiveModal(true))}
+                >
+                  <ArrowCircleDown
+                    size={16}
+                    css={css`
+                      margin-inline-end: var(--size-100);
+                    `}
+                  />
+                  Receive
+                </MenuItem>
+              )}
               <MenuItem
                 css={css`
                   display: flex;

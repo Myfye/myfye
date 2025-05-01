@@ -100,8 +100,8 @@ const UserSection = ({ user }: { user: User }) => {
   );
 };
 
-const PaySummary = () => {
-  const transaction = useSelector((state: RootState) => state.pay.transaction);
+const SendSummary = () => {
+  const transaction = useSelector((state: RootState) => state.send.transaction);
   return (
     <div
       className="swap-coin-status"
@@ -116,11 +116,7 @@ const PaySummary = () => {
       `}
     >
       <section>
-        {transaction.type === "send" ? (
-          <AssetSection abstractedAssetId={"us_dollar_yield"} amount={0} />
-        ) : (
-          <UserSection user={transaction.user}></UserSection>
-        )}
+        <AssetSection abstractedAssetId={"us_dollar_yield"} amount={0} />
       </section>
       <section
         className="icon-wrapper"
@@ -131,14 +127,10 @@ const PaySummary = () => {
         <ArrowDown color="var(--clr-icon)" size={20} />
       </section>
       <section>
-        {transaction.type === "send" ? (
-          <UserSection user={transaction.user}></UserSection>
-        ) : (
-          <AssetSection abstractedAssetId={"us_dollar_yield"} amount={0} />
-        )}
+        <UserSection user={transaction.user}></UserSection>
       </section>
     </div>
   );
 };
 
-export default PaySummary;
+export default SendSummary;

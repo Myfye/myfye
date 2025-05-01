@@ -3,7 +3,16 @@ import Avatar from "../../../components/ui/avatar/Avatar";
 import UserCardController from "./UserCardController";
 import { useRef } from "react";
 
-const UserCard = ({ name = "", email = "", ...restProps }) => {
+const UserCard = ({
+  name,
+  email,
+  phone,
+  ...restProps
+}: {
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+}) => {
   const ref = useRef(null!);
   return (
     <UserCardController {...restProps} ref={ref}>
@@ -55,20 +64,22 @@ const UserCard = ({ name = "", email = "", ...restProps }) => {
                   font-weight: var(--fw-active);
                 `}
               >
-                {name}
+                {name || email || phone}
               </p>
-              <p
-                css={css`
-                  font-size: var(--fs-small);
-                  color: var(--clr-text-weaker);
-                  margin-block-start: var(--size-050);
-                  max-width: 80cqw;
-                  text-overflow: ellipsis;
-                  overflow: hidden;
-                `}
-              >
-                {email}
-              </p>
+              {name && (
+                <p
+                  css={css`
+                    font-size: var(--fs-small);
+                    color: var(--clr-text-weaker);
+                    margin-block-start: var(--size-050);
+                    max-width: 80cqw;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                  `}
+                >
+                  {email || phone}
+                </p>
+              )}
             </div>
           </div>
         </div>

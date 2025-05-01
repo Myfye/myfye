@@ -244,7 +244,7 @@ const SendController = () => {
     (state: RootState) => state.send.transaction.formattedAmount
   );
 
-  const formattedAmountArray = formattedAmount.split("");
+  const formattedAmountArr = formattedAmount.split("");
   const abstractedAssetId = useSelector(
     (state: RootState) => state.send.transaction.abstractedAssetId
   );
@@ -278,19 +278,29 @@ const SendController = () => {
           margin-block-end: var(--size-200);
         `}
       >
-        <p
+        <div
           css={css`
-            text-align: center;
-            line-height: var(--line-height-tight);
-            font-size: 2.5rem;
-            font-weight: var(--fw-heading);
-            color: var(--clr-text);
-            line-height: 1.75;
+            display: grid;
+            place-items: center;
+            height: 100%;
+            isolation: isolate;
+            position: relative;
           `}
         >
-          <span>$</span>
-          {...formattedAmountArray.map((val) => <span>{val}</span>)}
-        </p>
+          <p
+            css={css`
+              color: var(--clr-text);
+              line-height: var(--line-height-tight);
+              font-size: 3rem;
+              font-weight: var(--fw-heading);
+            `}
+          >
+            <span>$</span>
+            {formattedAmountArr.map((val, i) => {
+              return <span key={`value-${i}`}>{val}</span>;
+            })}
+          </p>
+        </div>
       </section>
       <section>
         <AmountSelectorGroup

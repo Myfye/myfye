@@ -6,7 +6,7 @@ import {
   PayTransactionType,
   PresetAmountOption,
 } from "./types";
-import { Contact } from "../contacts/types";
+import { User } from "../users/types";
 
 interface PayState {
   transaction: PayTransaction;
@@ -123,7 +123,7 @@ const paySlice = createSlice({
     ) {
       state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
     },
-    updateUser(state, action: PayloadAction<Contact | null>) {
+    updateUser(state, action: PayloadAction<User | null>) {
       state.transaction.user = action.payload;
     },
     unmount: () => ({ ...initialState }),

@@ -1,4 +1,4 @@
-import { Asset, AssetsState } from "../assets/types";
+import { Asset, AssetsState } from "../../assets/types";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
@@ -29,7 +29,8 @@ export const updateFormattedAmount = (
         decimal[decimal.length - 2] === "0")
     )
       return newAmount;
-    const newStr = getFormattedNumberFromString(newAmount);
+    let newStr = getFormattedNumberFromString(newAmount);
+    if (newStr === "") newStr = "0";
     return newStr;
   }
 

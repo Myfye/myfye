@@ -10,7 +10,7 @@ import {
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import Button from "@/components/ui/button/Button";
-import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import { toggleModal as toggleSendModal } from "@/features/pay/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/send/receiveSlice";
 
 const CryptoSummary = () => {

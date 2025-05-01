@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import HeadlessOverlay from "@/components/ui/overlay/HeadlessOverlay";
-import Button from "@/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useMemo } from "react";
@@ -8,24 +7,25 @@ import leafLoading from "@/assets/lottie/leaf-loading.json";
 import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
 import { useLottie } from "lottie-react";
-import { unmountOverlays, toggleOverlay, unmount } from "./paySlice";
-import { PayTransactionStatus } from "./types";
 import toast from "react-hot-toast/headless";
+import { SendTransactionStatus } from "./types";
+import { toggleModal, unmountOverlays } from "./sendSlice";
+import { toggleOverlay, unmount } from "./sendSlice";
 
-const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
+const SendProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const isOpen = useSelector(
-    (state: RootState) => state.pay.overlays.processingTransaction.isOpen
+    (state: RootState) => state.send.overlays.processingTransaction.isOpen
   );
   const handleOpen = (isOpen: boolean) => {
     toggleOverlay({ type: "processingTransaction", isOpen });
   };
 
   const dispatch = useDispatch();
-  const transaction = useSelector((state: RootState) => state.pay.transaction);
+  const transaction = useSelector((state: RootState) => state.send.transaction);
 
   const handleSuccess = () => {
     console.log("Success");
-    toast.success("$21.43 sent to John");
+    toast.success("$65.32 sent to Phil");
     dispatch(unmount(undefined));
   };
 
@@ -76,6 +76,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
                 `}
                 onClick={() => {
                   dispatch(unmountOverlays(undefined));
+                  dispatch(toggleModal({ isOpen: false }));
                 }}
               >
                 Click to toast
@@ -91,7 +92,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
 const UIAnimation = ({
   transactionStatus,
 }: {
-  transactionStatus: PayTransactionStatus;
+  transactionStatus: SendTransactionStatus;
 }) => {
   const options = useMemo(() => {
     switch (transactionStatus) {
@@ -124,4 +125,4 @@ const UIAnimation = ({
   return <>{View}</>;
 };
 
-export default ProcessingTransactionOverlay;
+export default SendProcessingTransactionOverlay;

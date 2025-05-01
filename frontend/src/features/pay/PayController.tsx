@@ -17,6 +17,7 @@ import { useRadioGroupState } from "react-stately";
 import { useContext, useRef, createContext, useState } from "react";
 import { motion } from "motion/react";
 import { PresetAmountOption } from "./types";
+import { updateFormattedGhostAmount } from "./utils";
 
 const AssetSelectButton = ({
   abstractedAssetId,
@@ -246,7 +247,6 @@ const PayController = () => {
     (state: RootState) => state.pay.transaction.formattedAmount
   );
 
-  const formattedAmountArray = formattedAmount.split("");
   const abstractedAssetId = useSelector(
     (state: RootState) => state.pay.transaction.abstractedAssetId
   );
@@ -271,6 +271,13 @@ const PayController = () => {
       })
     );
   };
+
+  // Formatted Amount
+  const formattedAmountArr = formattedAmount.split("");
+
+  // Ghost amount
+  const ghostValue = updateFormattedGhostAmount(formattedAmount);
+  const ghostValueArr = ghostValue.split("");
   return (
     <>
       <section
@@ -283,17 +290,29 @@ const PayController = () => {
           isolation: isolate;
         `}
       >
-        <p
+        <div
           css={css`
-            line-height: var(--line-height-tight);
-            font-size: 3rem;
-            font-weight: var(--fw-heading);
-            color: var(--clr-text);
+            display: grid;
+            place-items: center;
+            height: 100%;
+            isolation: isolate;
+            position: relative;
           `}
         >
-          <span>$</span>
-          {...formattedAmountArray.map((val) => <span>{val}</span>)}
-        </p>
+          <p
+            css={css`
+              color: var(--clr-text);
+              line-height: var(--line-height-tight);
+              font-size: 3rem;
+              font-weight: var(--fw-heading);
+            `}
+          >
+            <span>$</span>
+            {formattedAmountArr.map((val, i) => {
+              return <span key={`value-${i}`}>{val}</span>;
+            })}
+          </p>
+        </div>
       </section>
       <section>
         <AmountSelectorGroup
