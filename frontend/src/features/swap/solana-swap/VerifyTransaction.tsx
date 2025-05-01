@@ -1,11 +1,12 @@
 import { Connection } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
-import { SwapTransaction, updateId, updateStatus } from "../swapSlice.ts";
+import { updateId, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
 import { AssetsState } from "@/features/assets/types.ts";
 import { updateBalance } from "@/features/assets/assetsSlice.ts";
 import { saveNewSwapTransaction } from "@/functions/SaveNewTransaction.tsx";
+import { SwapTransaction } from "../types.ts";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -39,33 +40,48 @@ async function verifyTransaction(
           console.log(
             `Transaction successful: https://solscan.io/tx/${transactionId}`
           );
-          console.log("Transaction details:", JSON.stringify(transaction, null, 2));
-          console.log("Transaction: ", 
-            "user_id", 
-            "input_amount", transaction.sell.amount,
-            "output_amount", transaction.buy.amount,
-            "input_chain", "solana",
-            "output_chain", transaction.buy.chain,
-            "creation_date", new Date().toISOString(),
-            "public_key", wallet.publicKey,
-            "input_currency", transaction.sell.assetId,
-            "output_currency", transaction.buy.assetId,
-            "transaction_type", transaction.transactionType,
-            "transaction_hash", transactionId,
-            "transaction_status", "success"
+          console.log(
+            "Transaction details:",
+            JSON.stringify(transaction, null, 2)
+          );
+          console.log(
+            "Transaction: ",
+            "user_id",
+            "input_amount",
+            transaction.sell.amount,
+            "output_amount",
+            transaction.buy.amount,
+            "input_chain",
+            "solana",
+            "output_chain",
+            transaction.buy.chain,
+            "creation_date",
+            new Date().toISOString(),
+            "public_key",
+            wallet.publicKey,
+            "input_currency",
+            transaction.sell.assetId,
+            "output_currency",
+            transaction.buy.assetId,
+            "transaction_type",
+            transaction.transactionType,
+            "transaction_hash",
+            transactionId,
+            "transaction_status",
+            "success"
           );
           dispatch(updateStatus("success"));
           dispatch(updateId(transactionId));
-          
+
           // Check if amounts are null before calling updateBalances
           if (!transaction.sell.amount || !transaction.buy.amount) {
             console.error("Amounts are null, cannot update balances:", {
               sellAmount: transaction.sell.amount,
-              buyAmount: transaction.buy.amount
+              buyAmount: transaction.buy.amount,
             });
             return true;
           }
-          
+
           updateBalances(dispatch, transaction, assets);
           return true;
         }
@@ -112,7 +128,7 @@ function updateBalances(
   if (!sell.amount || !buy.amount) {
     console.warn(`Buy or sell amount is null, cannot update balances:`, {
       sellAmount: sell.amount,
-      buyAmount: buy.amount
+      buyAmount: buy.amount,
     });
     return; // Return early instead of throwing an error
   }
@@ -226,7 +242,7 @@ function updateBalances(
     console.error("Invalid asset IDs:", { sellAssetId, buyAssetId });
     return; // Return early instead of throwing an error
   }
-  
+
   sellActions[sellAssetId]();
   buyActions[buyAssetId]();
 }
@@ -235,13 +251,13 @@ function updateBalances(
 function mapMintToAssetId(mintAddress: string): string {
   // Map of mint addresses to asset IDs
   const mintToAssetMap: Record<string, string> = {
-    "So11111111111111111111111111111111111111112": "sol",
-    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "usdc_sol",
-    "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6": "usdy_sol",
+    So11111111111111111111111111111111111111112: "sol",
+    EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: "usdc_sol",
+    A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6: "usdy_sol",
     "2wpTqWqJwYwUp3UF9L3on7bq8GpAVydo1bHh5gqZq5Y": "eurc_sol",
     "9n4nb2ow5xB2ywvDy8v52N2qkqZZzQ3H5PJsrZnSGxan": "btc_sol",
     // Add more mappings as needed
   };
-  
+
   return mintToAssetMap[mintAddress] || mintAddress;
 }
