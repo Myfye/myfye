@@ -49,6 +49,7 @@ const AssetSelectButton = ({
           grid-template-columns: 1fr auto;
           align-items: center;
           gap: var(--size-100);
+          height: 100%;
         `}
       >
         <div

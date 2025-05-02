@@ -7,8 +7,6 @@ import {
 } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import PieChart from "../../../../../../components/ui/pie-chart/PieChart";
-import Balance from "../../../../../../components/ui/balance/Balance";
 import CTACarousel from "./cta-carousel/CTACarousel";
 import { useMemo } from "react";
 import {
@@ -21,7 +19,8 @@ import {
   selectAssetsBalanceUSDByGroup,
 } from "@/features/assets/assetsSlice";
 import { RootState } from "@/redux/store";
-import { toggleModal as toggleSendModal } from "@/features/pay/sendSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
 import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 import PieChartCard from "@/shared/components/ui/pie-chart/PieChartCard";
@@ -119,6 +118,17 @@ const DashboardPanel = ({}) => {
               padding-inline: var(--size-250);
             `}
           >
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowCircleUpIcon}
+                onPress={() => {
+                  dispatch(toggleSwapModal({ isOpen: true }));
+                }}
+              >
+                Swap
+              </Button>
+            </li>
             <li>
               <Button
                 size="x-small"

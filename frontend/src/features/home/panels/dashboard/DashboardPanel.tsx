@@ -4,11 +4,10 @@ import {
   ArrowCircleUp as ArrowCircleUpIcon,
   ArrowLineDown as ArrowLineDownIcon,
   ArrowLineUp as ArrowLineUpIcon,
+  ArrowsDownUp,
 } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import PieChart from "../../../../components/ui/pie-chart/PieChart";
-import Balance from "../../../../components/ui/balance/Balance";
 import CTACarousel from "./cta-carousel/CTACarousel";
 import { useMemo } from "react";
 import {
@@ -23,6 +22,7 @@ import {
 import { RootState } from "@/redux/store";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 import DonutChart3D from "./DonutChart3D";
 import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 const DashboardPanel = ({}) => {
@@ -49,9 +49,13 @@ const DashboardPanel = ({}) => {
       // const cashData = {
       //   name: "Cash",
       //   data: [cashBalanceUSD + earnBalanceUSD],
-      //   color: "var(--clr-pie-chart-usdt)",
+      //   color: "var(--clr-green-400)",
       // };
-      const cashData = ["Cash", cashBalanceUSD + earnBalanceUSD];
+      const cashData = {
+        name: "Cash",
+        y: cashBalanceUSD + earnBalanceUSD,
+        color: "var(--clr-green-400)",
+      };
       data.push(cashData);
     }
     if (cryptoBalanceUSD > 0) {
@@ -60,7 +64,11 @@ const DashboardPanel = ({}) => {
       //   data: [cryptoBalanceUSD],
       //   color: "var(--clr-pie-chart-btc)",
       // };
-      const cryptoData = ["Crypto", cryptoBalanceUSD];
+      const cryptoData = {
+        name: "Crypto",
+        y: cryptoBalanceUSD,
+        color: "var(--clr-blue-400)",
+      };
       data.push(cryptoData);
     }
     if (stocksBalanceUSD > 0) {
@@ -69,7 +77,11 @@ const DashboardPanel = ({}) => {
       //   data: [stocksBalanceUSD],
       //   color: "var(--clr-pie-chart-btc)",
       // };
-      const stocksData = ["Stocks", stocksBalanceUSD];
+      const stocksData = {
+        name: "Stocks",
+        y: stocksBalanceUSD,
+        color: "var(--clr-purple-300)",
+      };
       data.push(stocksData);
     }
     return data;
@@ -78,6 +90,17 @@ const DashboardPanel = ({}) => {
   const donutChartOptions: Highcharts.Options = {
     chart: {
       type: "pie",
+      width: 320,
+      height: 300,
+      backgroundColor: "transparent",
+      spacingBottom: 0,
+      spacingLeft: 6,
+      spacingRight: 0,
+      spacingTop: 4,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
       options3d: {
         enabled: true,
         alpha: 20,
@@ -85,32 +108,84 @@ const DashboardPanel = ({}) => {
     },
     plotOptions: {
       pie: {
-        innerSize: 50,
+        center: ["28%", "40%"],
+        showInLegend: true,
+        innerSize: "33.33%",
+        size: "60%",
         depth: 45,
+        allowPointSelect: true,
+        cursor: "pointer",
+        dataLabels: [
+          {
+            enabled: true,
+            distance: -32,
+            format: "{point.percentage:.2f}%",
+            style: {
+              fontSize: "16px",
+              textOutline: "none",
+              opacity: 1,
+              color: "var(--clr-white)",
+              textOverflow: "none",
+            },
+            filter: {
+              operator: ">",
+              property: "percentage",
+              value: 1,
+            },
+          },
+        ],
       },
     },
     title: {
-      text: "",
+      text: "MyFye Portfolio",
+      align: "left",
+      style: {
+        fontSize: "var(--fs-x-large)",
+        fontWeight: "var(--fw-heading)",
+        lineHeight: "var(--line-height-heading)",
+        color: "var(--clr-text)",
+      },
     },
     tooltip: {
-      valuePrefix: "$",
+      enabled: true,
+      pointFormat: "Balance: <b>${point.y:.2f}</b>",
+    },
+    legend: {
+      backgroundColor: "transparent",
+      enabled: true,
+      floating: true,
+      align: "right",
+      verticalAlign: "middle",
+      layout: "vertical",
+      x: 12,
+      y: -40,
+      width: 120,
+      itemMarginTop: 4,
+      itemMarginBottom: 4,
+      itemStyle: {
+        fontSize: "12px",
+        fontFamily: "Inter",
+        color: "var(--clr-text-weak)",
+      },
+      labelFormatter: function () {
+        return (
+          this.name +
+          " " +
+          new Intl.NumberFormat("en-EN", {
+            style: "currency",
+            currency: "usd",
+          }).format(this.y)
+        );
+      },
     },
     series: [
       // @ts-ignore
       {
         name: "Portfolio",
+        colorByPoint: true,
         data: pieChartData,
       },
     ],
-    responsive: {
-      rules: [
-        {
-          condition: {
-            maxWidth: 400,
-          },
-        },
-      ],
-    },
   };
 
   return (
@@ -153,6 +228,17 @@ const DashboardPanel = ({}) => {
             padding-inline: var(--size-250);
           `}
         >
+          <li>
+            <Button
+              size="x-small"
+              icon={ArrowsDownUp}
+              onPress={() => {
+                dispatch(toggleSwapModal({ isOpen: true }));
+              }}
+            >
+              Swap
+            </Button>
+          </li>
           <li>
             <Button
               size="x-small"
@@ -251,6 +337,8 @@ const DashboardPanel = ({}) => {
               padding: var(--size-150);
               background-color: var(--clr-surface-raised);
               border-radius: var(--border-radius-medium);
+              overflow: hidden;
+              max-height: 16rem;
             `}
           >
             <DonutChart3D options={donutChartOptions} />

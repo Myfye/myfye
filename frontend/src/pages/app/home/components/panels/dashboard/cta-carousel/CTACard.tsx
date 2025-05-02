@@ -51,7 +51,7 @@ const CTACard = ({ title, subtitle, icon }) => {
           {title}
         </p>
         <p
-          className="caption-small"
+          className="caption-x-small"
           css={css`
             color: var(--clr-text-weaker);
             margin-block-start: var(--size-050);

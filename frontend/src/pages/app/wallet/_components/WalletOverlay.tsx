@@ -14,6 +14,7 @@ import { toggleModal as toggleSwapModal } from "../../../../features/swap/swapSl
 import { AssetGroup } from "../../../../features/assets/types";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "../../../../features/receive/receiveSlice";
+import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 
 const WalletOverlay = ({
   isOpen,
@@ -71,14 +72,7 @@ const WalletOverlay = ({
               margin-block-start: var(--size-100);
             `}
           >
-            <div
-              className="balance-wrapper"
-              css={css`
-                padding: 0 var(--size-250);
-              `}
-            >
-              <Balance balance={balance} />
-            </div>
+            <BalanceCard balance={balance} />
             <menu
               className="no-scrollbar"
               css={css`

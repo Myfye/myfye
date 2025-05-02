@@ -112,7 +112,7 @@ const SendModal = () => {
             padding-block-end: var(--size-250);
           `}
         >
-          <SendController />{" "}
+          <SendController />
           <section
             css={css`
               margin-block-start: auto;
