@@ -1,5 +1,19 @@
+-- Function to generate unique IDs
+CREATE OR REPLACE FUNCTION generate_unique_id() RETURNS TEXT AS $$
+DECLARE
+    chars TEXT := 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    result TEXT := '';
+    i INTEGER := 0;
+BEGIN
+    FOR i IN 1..20 LOOP
+        result := result || substr(chars, floor(random() * length(chars) + 1)::integer, 1);
+    END LOOP;
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE TABLE IF NOT EXISTS users (
-    uid SERIAL PRIMARY KEY,
+    uid TEXT PRIMARY KEY DEFAULT generate_unique_id(),
     kyc_verified BOOLEAN DEFAULT FALSE,
     creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
     last_login_date TIMESTAMP WITH TIME ZONE,
@@ -16,22 +30,21 @@ CREATE TABLE IF NOT EXISTS users (
     blind_pay_evm_wallet_id TEXT
 ); 
 
-
 CREATE TABLE IF NOT EXISTS recently_used_solana_addresses (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(uid),
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  user_id TEXT NOT NULL REFERENCES users(uid),
   addresses TEXT[] NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS recently_used_evm_addresses (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(uid),
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  user_id TEXT NOT NULL REFERENCES users(uid),
   addresses TEXT[] NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS swap_transactions (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(uid),
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  user_id TEXT NOT NULL REFERENCES users(uid),
   input_amount NUMERIC NOT NULL,
   output_amount NUMERIC,
   input_chain TEXT,
@@ -46,10 +59,10 @@ CREATE TABLE IF NOT EXISTS swap_transactions (
 );
 
 CREATE TABLE IF NOT EXISTS pay_transactions (
-  id SERIAL PRIMARY KEY,
-  sender_id INTEGER NOT NULL REFERENCES users(uid),
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  sender_id TEXT NOT NULL REFERENCES users(uid),
   sender_public_key TEXT,
-  receiver_id INTEGER REFERENCES users(uid),
+  receiver_id TEXT REFERENCES users(uid),
   receiver_phone_number TEXT,
   receiver_email TEXT,
   receiver_public_key TEXT,
@@ -62,8 +75,8 @@ CREATE TABLE IF NOT EXISTS pay_transactions (
 );
 
 CREATE TABLE IF NOT EXISTS error_logs (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(uid),
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  user_id TEXT REFERENCES users(uid),
   creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
   error_message TEXT NOT NULL,
   error_type TEXT NOT NULL,
@@ -71,8 +84,8 @@ CREATE TABLE IF NOT EXISTS error_logs (
 );
 
 CREATE TABLE IF NOT EXISTS user_sessions (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(uid),
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  user_id TEXT NOT NULL REFERENCES users(uid),
   ip_address TEXT,
   device TEXT,
   device_id TEXT,
@@ -82,9 +95,9 @@ CREATE TABLE IF NOT EXISTS user_sessions (
 );
 
 CREATE TABLE IF NOT EXISTS user_contacts (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(uid),
-  contact_id INTEGER NOT NULL REFERENCES users(uid),
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  user_id TEXT NOT NULL REFERENCES users(uid),
+  contact_id TEXT NOT NULL REFERENCES users(uid),
   UNIQUE(user_id, contact_id)
 );
 

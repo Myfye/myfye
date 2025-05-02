@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserWalletDataState {
   wallet: any;
-  currentUserID: number;
+  currentUserID: string;
   currentUserFirstName: string;
   currentUserLastName: string;
   currentUserEmail: string;

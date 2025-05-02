@@ -31,11 +31,35 @@ import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "@/shared/components/PrivyUseSolanaWallets.tsx";
 import peopleOnMyfye from "@/assets/peopleOnMyfye.png";
-
+import { useNavigate } from "react-router-dom";
 function WebAppInner() {
   window.Buffer = Buffer;
 
   const { showMfaEnrollmentModal } = useMfaEnrollment();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const isSmallScreen = window.innerWidth <= 768;
+      if (!isSmallScreen) {
+        console.log("Large screen");
+        navigate("/landing");
+      } else {
+        console.log("Small screen");
+      }
+    };
+
+    // Check on initial render
+    checkScreenSize();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkScreenSize);
+
+    // Cleanup function to remove event listener
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, [navigate]);
 
   const firstNameUI = useSelector(
     (state: RootState) => state.userWalletData.currentUserFirstName
