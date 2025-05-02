@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
-import Button from "@/components/ui/button/Button";
+import Button from "@/shared/components/ui/button/Button";
 import { Copy as CopyIcon, X } from "@phosphor-icons/react";
 import QRCode from "../qr-code/QRCode";
 import { useDispatch, useSelector } from "react-redux";
-import Modal from "@/components/ui/modal/Modal";
+import Modal from "@/shared/components/ui/modal/Modal";
 import { RootState } from "@/redux/store";
 import { toggleModal } from "./receiveSlice";
 

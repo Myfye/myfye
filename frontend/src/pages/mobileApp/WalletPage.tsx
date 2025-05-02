@@ -23,7 +23,7 @@ import usdtSol from "../../assets/usdtSol.png";
 import eurcSol from "../../assets/eurcSol.png";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { swap } from "../../features/swap/SwapService.tsx";
-import LoadingAnimation from "../../components/sunset/LoadingAnimation.tsx";
+import LoadingAnimation from "../../_old/sunset/LoadingAnimation.tsx";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
 
 function WalletPage() {

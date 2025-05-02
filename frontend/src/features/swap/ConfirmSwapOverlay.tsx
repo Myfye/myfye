@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 
-import Overlay from "@/components/ui/overlay/Overlay";
-import Button from "@/components/ui/button/Button";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
+import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import SwapAssetsSummary from "./SwapAssetsSummary";

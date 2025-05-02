@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { css } from "@emotion/react";
-import Button from "@/components/ui/button/Button";
+import Button from "@/shared/components/ui/button/Button";
 import { Bank, Copy, Wallet, X } from "@phosphor-icons/react";
 import ModalButton from "../ModalButton";
 import QRCode from "../../qr-code/QRCode";
 import { useDispatch, useSelector } from "react-redux";
-import Modal from "@/components/ui/modal/Modal";
+import Modal from "@/shared/components/ui/modal/Modal";
 import { RootState } from "@/redux/store";
 import { setDepositModalOpen } from "@/redux/modalReducers";
 // import toast from "react-hot-toast/headless";
@@ -21,7 +21,7 @@ const DepositModal = () => {
   const solanaPubKey = useSelector(
     (state: any) => state.userWalletData.solanaPubKey
   );
-  const [selectedChain, setSelectedChain] = useState('solana') // Disable base for now
+  const [selectedChain, setSelectedChain] = useState("solana"); // Disable base for now
   const [showCopiedAddress, setShowCopiedAddress] = useState(false);
 
   const [isWalletOpen, setWalletOpen] = useState(false);
@@ -92,7 +92,6 @@ const DepositModal = () => {
         ) : (
           <div className="qr-code-container">
             <section>
-
               {/* Disable base for now 
               <menu
                 css={css`

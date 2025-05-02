@@ -8,7 +8,7 @@ import AssetCardList from "@/features/assets/cards/AssetCardList";
 import usDollarCoinIcon from "@/assets/svgs/coins/usd-coin.svg";
 import euroCoinIcon from "@/assets/svgs/coins/eur-coin.svg";
 import usdyCoinIcon from "@/assets/svgs/coins/usdy-coin.svg";
-import Overlay from "@/components/ui/overlay/Overlay";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
 import useBalance from "@/hooks/useBalance";
 import { setWithdrawCryptoOverlayOpen } from "@/redux/overlayReducers";
 import SelectContactOverlay from "./select-contact-overlay/SelectContactOverlay";

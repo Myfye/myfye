@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import Avatar from "../../../components/ui/avatar/Avatar";
+import Avatar from "@/shared/components/ui/avatar/Avatar";
 import UserCardController from "./UserCardController";
 import { useRef } from "react";
 

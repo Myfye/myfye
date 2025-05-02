@@ -1,4 +1,4 @@
-import NumberPad from "@/components/ui/number-pad/NumberPad";
+import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
 
 import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,9 +13,9 @@ import PayController from "./PayController";
 import { useEffect, useRef } from "react";
 import PaySelectUserOverlay from "./PaySelectUserOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
-import ButtonGroup from "@/components/ui/button/ButtonGroup";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import PaySelectAssetOverlay from "./PaySelectAssetOverlay";
-import ButtonGroupItem from "@/components/ui/button/ButtonGroupItem";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 import PayConfirmTransactionOverlay from "./PayConfirmTransactionOverlay";
 
 const Pay = () => {

@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 
 import AssetCardList from "@/features/assets/cards/AssetCardList";
-import Overlay from "@/components/ui/overlay/Overlay";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -37,7 +37,9 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
 
   const assets = useSelector((state: RootState) => state.assets);
 
-  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
+  const solanaPubKey = useSelector(
+    (state: any) => state.userWalletData.solanaPubKey
+  );
 
   const transactionType = useSelector(
     (state: RootState) => state.swap.overlays.selectAsset.transactionType
@@ -57,7 +59,12 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
 
   const onAssetSelect = useCallback(
     (abstractedAssetId: AbstractedAsset["id"]) => {
-      console.log("Selecting asset:", abstractedAssetId, "for transaction type:", transactionType);
+      console.log(
+        "Selecting asset:",
+        abstractedAssetId,
+        "for transaction type:",
+        transactionType
+      );
       // to do: ensure token account
       if (transactionType === "buy") {
         console.log("Ensuring token account for ", abstractedAssetId);
@@ -94,7 +101,12 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
   );
 
   const ensureTokenAccountForSwap = (abstractedAssetId: any) => {
-    console.log("Ensuring token account for ", abstractedAssetId, "solanaPubKey", solanaPubKey);
+    console.log(
+      "Ensuring token account for ",
+      abstractedAssetId,
+      "solanaPubKey",
+      solanaPubKey
+    );
 
     try {
       const output_mint = mintAddress(abstractedAssetId);
@@ -114,15 +126,13 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
       if (abstractedAssetId == "sol") {
         console.log("Ensuring token account for SOL");
       }
-      
-      ensureTokenAccount(String(solanaPubKey), output_mint);
 
+      ensureTokenAccount(String(solanaPubKey), output_mint);
     } catch (error) {
       console.error("Error could not pre check token account:", error);
       throw error;
     }
-    
-  }
+  };
 
   return (
     <Overlay

@@ -3,7 +3,7 @@
 // import { css } from "@emotion/react";
 // import { useSelector } from "react-redux";
 // import { RootState } from "@/redux/store";
-// import Avatar from "@/components/ui/avatar/Avatar";
+// import Avatar from "@/shared/components/ui/avatar/Avatar";
 // import { AbstractedAsset } from "@/features/assets/types";
 // import { User } from "@/features/users/types";
 // import { PayTransaction } from "@/features/pay/types";

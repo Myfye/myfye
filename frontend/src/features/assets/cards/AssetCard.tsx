@@ -2,8 +2,8 @@ import { css } from "@emotion/react";
 import AssetIcon from "../AssetIcon";
 import { RefObject } from "react";
 
-// import Button from "@/components/ui/button/Button";
-// import Menu from "@/components/ui/menu/Menu";
+// import Button from "@/shared/components/ui/button/Button";
+// import Menu from "@/shared/components/ui/menu/Menu";
 
 import AssetCardController from "./AssetCardController";
 import { formatBalance } from "../utils";

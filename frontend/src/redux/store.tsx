@@ -23,8 +23,6 @@ import {
   withdrawCryptoOverlayReducer,
   withdrawFiatOverlayReducer,
 } from "./overlayReducers.tsx";
-import { currentCoinReducer } from "./coinReducer.tsx";
-import { currentContactReducer } from "./contactReducer.tsx";
 
 import assetsReducer from "@/features/assets/assetsSlice.ts";
 import sendReducer from "@/features/send/sendSlice.ts";
@@ -57,10 +55,6 @@ const store = configureStore({
     userInfoOverlay: userInfoOverlayReducer,
     settingsOverlay: settingsOverlayReducer,
     selectContactOverlay: selectContactOverlayReducer,
-
-    // Current coin/contact for sending/receiving
-    currentCoin: currentCoinReducer,
-    currentContact: currentContactReducer,
 
     // Coin overlay
     coinSummaryOverlay: coinSummaryOverlayReducer,

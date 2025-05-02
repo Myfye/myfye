@@ -1,5 +1,5 @@
 import { Scan as ScanIcon, X as XIcon } from "@phosphor-icons/react";
-import Button from "../../components/ui/button/Button";
+import Button from "@/shared/components/ui/button/Button";
 import { useSearchFieldState } from "react-stately";
 import { useRef, useState } from "react";
 import { useSearchField } from "react-aria";

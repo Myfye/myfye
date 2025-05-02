@@ -6,7 +6,7 @@ import { RootState } from "@/redux/store";
 import { formatUsdAmount, getUsdAmount } from "./utils";
 import { AbstractedAsset } from "../assets/types";
 import { selectAbstractedAsset } from "../assets/assetsSlice";
-import Avatar from "@/components/ui/avatar/Avatar";
+import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { User } from "../users/types";
 
 const AssetSection = ({

@@ -1,4 +1,4 @@
-import Overlay from "@/components/ui/overlay/Overlay";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
 
 const AssetOverlay = ({
   isOpen,

@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 
-import Overlay from "@/components/ui/overlay/Overlay";
-import Button from "@/components/ui/button/Button";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
+import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { toggleOverlay } from "./paySlice";
@@ -9,9 +9,6 @@ import PaySummary from "./PaySummary";
 import { tokenTransfer } from "@/functions/Transaction";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
 import { KeyReturn } from "@phosphor-icons/react";
-
-
-
 
 const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -27,7 +24,9 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
   };
 
-  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
+  const solanaPubKey = useSelector(
+    (state: any) => state.userWalletData.solanaPubKey
+  );
 
   const transaction = useSelector((state: RootState) => state.pay.transaction);
 
@@ -67,15 +66,16 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     const associatedAssets = sellAbstractedAsset.assetIds.map(
       (assetId) => assets.assets[assetId]
     );
-    
+
     // Calculate the total balance in USD
     const totalBalance = associatedAssets.reduce(
       (total, asset) => total + asset.balance,
       0
     );
-    
+
     // Fix: Ensure sendAmount is capped at the totalBalance
-    const sendAmount = transaction.amount > totalBalance ? totalBalance : transaction.amount;
+    const sendAmount =
+      transaction.amount > totalBalance ? totalBalance : transaction.amount;
 
     const sendAmountMicro = sendAmount * 1000000;
 
@@ -95,7 +95,10 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     console.log("sendAmount", sendAmount);
     console.log("transaction:", transaction);
     console.log("solanaPubKey:", solanaPubKey);
-    console.log("transaction.user.solana_pub_key:", transaction.user.solana_pub_key);
+    console.log(
+      "transaction.user.solana_pub_key:",
+      transaction.user.solana_pub_key
+    );
     console.log("transaction.amount:", transaction.amount);
     console.log("assetCode", assetCode);
     console.log("wallet:", wallet);
@@ -104,21 +107,22 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
 
     const result = await tokenTransfer(
-      solanaPubKey, 
-      transaction.user.solana_pub_key, 
+      solanaPubKey,
+      transaction.user.solana_pub_key,
       sendAmountMicro, // Use sendAmount instead of transaction.amount
-      assetCode, 
-      wallet);
+      assetCode,
+      wallet
+    );
 
-      if (result.success) {
-        console.log("Transaction successful:", result.transactionId);
-        // TODO save transaction to db
+    if (result.success) {
+      console.log("Transaction successful:", result.transactionId);
+      // TODO save transaction to db
 
-        // TODO update user balance 
-        // TODO update suer interface
-      } else {
-        console.error("Transaction failed:", result.error);
-      }
+      // TODO update user balance
+      // TODO update suer interface
+    } else {
+      console.error("Transaction failed:", result.error);
+    }
   };
 
   return (

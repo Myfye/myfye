@@ -3,7 +3,7 @@ import { useState } from "react";
 import { css } from "@emotion/react";
 import { Bank, Wallet } from "@phosphor-icons/react";
 import ModalButton from "../ModalButton";
-import Modal from "@/components/ui/modal/Modal";
+import Modal from "@/shared/components/ui/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSelectContactOverlayOpen,

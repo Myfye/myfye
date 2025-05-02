@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import HeadlessOverlay from "@/components/ui/overlay/HeadlessOverlay";
+import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useMemo } from "react";

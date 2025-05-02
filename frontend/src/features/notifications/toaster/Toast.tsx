@@ -1,4 +1,4 @@
-import Button from "@/components/ui/button/Button";
+import Button from "@/shared/components/ui/button/Button";
 import { css } from "@emotion/react";
 import { CheckCircle, Info, Spinner, X, XCircle } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "motion/react";

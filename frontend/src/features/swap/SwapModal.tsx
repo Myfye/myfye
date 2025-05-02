@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { css } from "@emotion/react";
-import Modal from "@/components/ui/modal/Modal";
-import NumberPad from "@/components/ui/number-pad/NumberPad";
-import Button from "@/components/ui/button/Button";
+import Modal from "@/shared/components/ui/modal/Modal";
+import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
+import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleModal, toggleOverlay, unmount, updateAmount } from "./swapSlice";
 import SwapController from "./SwapController";

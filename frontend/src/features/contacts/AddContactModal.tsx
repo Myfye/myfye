@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
-import Button from "@/components/ui/button/Button";
-import NumberPad from "@/components/ui/number-pad/NumberPad";
-import Modal from "@/components/ui/modal/Modal";
+import Button from "@/shared/components/ui/button/Button";
+import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
+import Modal from "@/shared/components/ui/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect, useRef } from "react";

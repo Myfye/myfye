@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
-import HeadlessOverlay from "@/components/ui/overlay/HeadlessOverlay";
-import Button from "@/components/ui/button/Button";
+import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
+import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { SwapTransactionStatus, toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";

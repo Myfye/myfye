@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { css } from "@emotion/react";
 
-import Overlay from "@/components/ui/overlay/Overlay";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
 import UserCardList from "@/features/users/cards/UserCardList";
 import UserSearchField from "@/features/users/UserSearchField";
 import { useSelector } from "react-redux";
@@ -11,7 +11,7 @@ import QRScanner from "../qr-code/QRScanner";
 import { useGetTopContactsQuery } from "../contacts/contactsApi";
 import { useSearchUsersQuery } from "../users/usersApi";
 import { User } from "./types";
-import Section from "@/components/ui/section/Section";
+import Section from "@/shared/components/ui/section/Section";
 import CardSkeleton from "@/shared/components/ui/card/CardSkeleton";
 import { Link } from "react-aria-components";
 

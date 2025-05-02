@@ -6,7 +6,7 @@ import AssetIcon from "../assets/AssetIcon";
 import { toggleOverlay, updateAmount, updatePresetAmount } from "./paySlice";
 import { selectAbstractedAssetWithBalance } from "../assets/assetsSlice";
 import { AbstractedAsset } from "../assets/types";
-import Button from "@/components/ui/button/Button";
+import Button from "@/shared/components/ui/button/Button";
 import {
   useFocusRing,
   useRadio,

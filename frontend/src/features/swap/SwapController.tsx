@@ -10,7 +10,7 @@ import {
   getUsdAmount,
 } from "./utils";
 import { switchCurrencies, toggleOverlay, updateAmount } from "./swapSlice";
-import Button from "@/components/ui/button/Button";
+import Button from "@/shared/components/ui/button/Button";
 import TextFit from "@/shared/components/ui/TextFit";
 import { AbstractedAsset } from "../assets/types";
 import {

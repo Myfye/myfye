@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import Overlay from "@/components/ui/overlay/Overlay";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
 import { AbstractedAsset, AbstractedAssetSection } from "../assets/types";
 import AssetCardListSelect from "./cards/AssetCardListSelect";
 

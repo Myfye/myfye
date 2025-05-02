@@ -1,4 +1,4 @@
-import Button from "@/components/ui/button/Button";
+import Button from "@/shared/components/ui/button/Button";
 import {
   ArrowCircleDown as ArrowCircleDownIcon,
   ArrowCircleUp as ArrowCircleUpIcon,
@@ -23,9 +23,9 @@ import {
 import { RootState } from "@/redux/store";
 import { toggleModal as toggleSendModal } from "@/features/pay/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
-import BalanceCard from "@/components/ui/balance/BalanceCard";
-import PieChartCard from "@/components/ui/pie-chart/PieChartCard";
-import Section from "@/components/ui/section/Section";
+import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
+import PieChartCard from "@/shared/components/ui/pie-chart/PieChartCard";
+import Section from "@/shared/components/ui/section/Section";
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
 

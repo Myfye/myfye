@@ -11,9 +11,9 @@ import { useEffect, useId, useState } from "react";
 import { css } from "@emotion/react";
 
 import QrReader from "./QRReader";
-import Button from "@/components/ui/button/Button";
+import Button from "@/shared/components/ui/button/Button";
 import { X } from "@phosphor-icons/react";
-import Header from "../../components/app/layout/header/Header";
+import Header from "../../shared/components/layout/nav/header/Header";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionModal = motion(Modal);

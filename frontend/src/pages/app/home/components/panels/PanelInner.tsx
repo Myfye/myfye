@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import { AbstractedAsset } from "../../../../../features/assets/types";
-import Balance from "@/components/ui/balance/Balance";
+import Balance from "@/shared/components/ui/balance/Balance";
 import AssetCardList from "../../../../../features/assets/cards/AssetCardList";
-import BalanceCard from "@/components/ui/balance/BalanceCard";
+import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 
 const AssetPanel = ({
   balance,
