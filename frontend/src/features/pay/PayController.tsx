@@ -285,7 +285,6 @@ const PayController = () => {
           display: grid;
           place-items: center;
           width: 100%;
-          height: 14rem;
           position: relative;
           isolation: isolate;
         `}
