@@ -9,7 +9,7 @@ async function create_new_payin(data) {
     const response = await axios.post(
       `https://api.blindpay.com/v1/instances/${BLIND_PAY_DEV_INSTANCE_ID}/payins/evm`,
       {
-        payin_quote_id: "qu_LH2MJBLYysHX",
+        payin_quote_id: "qu_2OUHsaoYlGXl",
       },
       {
         headers: {
