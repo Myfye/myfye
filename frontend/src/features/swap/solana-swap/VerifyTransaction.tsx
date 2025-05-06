@@ -247,17 +247,17 @@ function updateBalances(
   buyActions[buyAssetId]();
 }
 
-// Helper function to map mint addresses to asset IDs
-function mapMintToAssetId(mintAddress: string): string {
-  // Map of mint addresses to asset IDs
-  const mintToAssetMap: Record<string, string> = {
-    So11111111111111111111111111111111111111112: "sol",
-    EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: "usdc_sol",
-    A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6: "usdy_sol",
-    "2wpTqWqJwYwUp3UF9L3on7bq8GpAVydo1bHh5gqZq5Y": "eurc_sol",
-    "9n4nb2ow5xB2ywvDy8v52N2qkqZZzQ3H5PJsrZnSGxan": "btc_sol",
+// Helper function to map asset IDs to mint addresses
+function mapMintToAssetId(assetId: string): string {
+  // Map of asset IDs to mint addresses
+  const assetToMintMap: Record<string, string> = {
+    "sol": "So11111111111111111111111111111111111111112",
+    "usdc_sol": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "usdy_sol": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+    "eurc_sol": "2wpTqWqJwYwUp3UF9L3on7bq8GpAVydo1bHh5gqZq5Y",
+    "btc_sol": "9n4nb2ow5xB2ywvDy8v52N2qN1xzybapC8G4wEGGkZwyTDt1v",
     // Add more mappings as needed
   };
 
-  return mintToAssetMap[mintAddress] || mintAddress;
+  return assetToMintMap[assetId] || assetId;
 }
