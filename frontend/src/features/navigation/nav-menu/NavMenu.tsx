@@ -131,7 +131,7 @@ const NavMenu = () => {
               >
                 <Button
                   onPress={signOut}
-                  color="accent"
+                  color="primary"
                   variant="primary"
                   size="medium"
                   disabled={disableLogout}

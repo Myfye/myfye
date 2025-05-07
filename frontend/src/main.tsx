@@ -9,7 +9,7 @@ import { getAnalytics } from "firebase/analytics";
 import { getFunctions } from "firebase/functions";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { StrictMode } from "react";
-import {base} from 'viem/chains';
+import { base } from "viem/chains";
 
 const root = createRoot(document.getElementById("root")!);
 
@@ -20,32 +20,28 @@ root.render(
     <PrivyProvider
       appId="cm4ucmtf8091nkywlgy9os418"
       config={{
-        loginMethods: ['email'],
+        loginMethods: ["email"],
         appearance: {
-          theme: 'light',
-          accentColor: '#447E26',
-          logo: 'https://project-eli-lewitt.s3.us-west-2.amazonaws.com/logo512.png',
-          walletChainType: 'ethereum-and-solana',
+          theme: "light",
+          primaryColor: "#447E26",
+          logo: "https://project-eli-lewitt.s3.us-west-2.amazonaws.com/logo512.png",
+          walletChainType: "ethereum-and-solana",
         },
         embeddedWallets: {
-          createOnLogin: 'all-users',
+          createOnLogin: "all-users",
           showWalletUIs: false,
         },
         solanaClusters: [
           {
-            name: 'mainnet-beta',
+            name: "mainnet-beta",
             rpcUrl: `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`,
           },
         ],
         defaultChain: base,
-        supportedChains: [base]
+        supportedChains: [base],
       }}
-      children={
-        <Provider store={store} children={<App />}>
-        </Provider>
-      }
-    >
-    </PrivyProvider>
+      children={<Provider store={store} children={<App />}></Provider>}
+    ></PrivyProvider>
   </StrictMode>
 );
 

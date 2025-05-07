@@ -23,21 +23,8 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
   const transaction = useSelector((state: RootState) => state.pay.transaction);
 
-  const handleSuccess = () => {
-    console.log("Success");
-    toast.success("$21.43 sent to John");
-    dispatch(unmount(undefined));
-  };
-
   return (
-    <HeadlessOverlay
-      isOpen={isOpen}
-      onOpenChange={handleOpen}
-      zIndex={zIndex}
-      onExitComplete={() => {
-        handleSuccess();
-      }}
-    >
+    <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
       <div
         css={css`
           display: flex;

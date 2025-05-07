@@ -13,6 +13,7 @@ import {
 } from "../../../../features/assets/assetsSlice";
 import WalletOverlay from "../_components/WalletOverlay";
 import Switch from "@/shared/components/ui/switch/Switch";
+import Section from "@/shared/components/ui/section/Section";
 
 const lineChartData = [
   {
@@ -120,38 +121,39 @@ const StocksOverlay = () => {
             onDateRangeSelectionChange={(key) => setSelectedDateRange(key)}
           />
         </section>
-        <section
+
+        <Section
+          title="Assets"
           css={css`
             margin-block-start: var(--size-400);
-            margin-inline: var(--size-250);
-            margin-block-end: var(--size-250);
+            padding-inline: var(--size-250);
           `}
+          action={
+            <div
+              className="wrapper"
+              css={css`
+                width: fit-content;
+              `}
+            >
+              <Switch selected={selected} onChange={onSelectedChange}>
+                <span
+                  css={css`
+                    font-weight: var(--fw-active);
+                  `}
+                >
+                  Show shares?
+                </span>
+              </Switch>
+            </div>
+          }
         >
-          <div
-            className="wrapper"
-            css={css`
-              width: fit-content;
-              margin-inline-start: auto;
-              margin-block-end: var(--size-250);
-            `}
-          >
-            <Switch selected={selected} onChange={onSelectedChange}>
-              <span
-                css={css`
-                  font-weight: var(--fw-active);
-                `}
-              >
-                Show shares?
-              </span>
-            </Switch>
-          </div>
           <AssetCardList
             assets={assets}
             showOptions={true}
             showBalanceUSD={selected ? false : true}
             showCurrencySymbol={selected ? false : true}
           />
-        </section>
+        </Section>
       </WalletOverlay>
     </>
   );

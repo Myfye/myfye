@@ -4,8 +4,12 @@ import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { toggleOverlay } from "./sendSlice";
+import { toggleOverlay, unmount } from "./sendSlice";
 import SendSummary from "./SendSummary";
+import { useSolanaWallets } from "@privy-io/react-auth";
+import { tokenTransfer } from "@/functions/Transaction";
+import toast from "react-hot-toast/headless";
+import { updateBalance } from "../assets/assetsSlice";
 
 const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -17,6 +21,16 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const handleOpen = (isOpen: boolean) => {
     dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
   };
+
+  const transaction = useSelector((state: RootState) => state.send.transaction);
+  const assets = useSelector((state: RootState) => state.assets);
+
+  const { wallets } = useSolanaWallets();
+  const wallet = wallets[0];
+
+  const solanaPubKey = useSelector(
+    (state: any) => state.userWalletData.solanaPubKey
+  );
 
   // const assets = useSelector((state: RootState) => state.assets);
 
@@ -43,8 +57,86 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   //   }
   // };
 
-  const handleTransactionSubmit = () => {
+  const handleTransactionSubmit = async () => {
+    if (!transaction.amount) return;
+    if (!transaction.user) return;
+    if (!transaction.abstractedAssetId) return;
+
+    // toggle overlay
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
+
+    // next, go through transaction
+
+    const sellAbstractedAsset =
+      assets.abstractedAssets[transaction.abstractedAssetId];
+    if (!sellAbstractedAsset) return;
+
+    // Get all assets associated with this abstracted asset
+    const associatedAssets = sellAbstractedAsset.assetIds.map(
+      (assetId) => assets.assets[assetId]
+    );
+
+    // Calculate the total balance in USD
+    const totalBalance = associatedAssets.reduce(
+      (total, asset) => total + asset.balance,
+      0
+    );
+
+    // Fix: Ensure sendAmount is capped at the totalBalance
+    const sendAmount =
+      transaction.amount > totalBalance ? totalBalance : transaction.amount;
+
+    const sendAmountMicro = sendAmount * 1000000;
+
+    let assetCode = "";
+    if (transaction.abstractedAssetId === "us_dollar_yield") {
+      assetCode = "usdySol";
+    } else if (transaction.abstractedAssetId === "us_dollar") {
+      assetCode = "usdcSol";
+    } else if (transaction.abstractedAssetId === "sol") {
+      assetCode = "sol";
+    } else if (transaction.abstractedAssetId === "euro") {
+      assetCode = "eurcSol";
+    } else if (transaction.abstractedAssetId === "btc") {
+      assetCode = "btcSol";
+    }
+
+    console.log("sendAmount", sendAmount);
+    console.log("transaction:", transaction);
+    console.log("solanaPubKey:", solanaPubKey);
+    console.log(
+      "transaction.user.solana_pub_key:",
+      transaction.user.solana_pub_key
+    );
+    console.log("transaction.amount:", transaction.amount);
+    console.log("assetCode", assetCode);
+    console.log("wallet:", wallet);
+    console.log("totalBalance:", totalBalance); // Add this log to verify the total balance
+
+    const result = await tokenTransfer(
+      solanaPubKey,
+      transaction.user.solana_pub_key,
+      sendAmountMicro, // Use sendAmount instead of transaction.amount
+      assetCode,
+      wallet
+    );
+
+    if (result.success) {
+      console.log("Transaction successful:", result.transactionId);
+      dispatch(unmount());
+      toast.success(
+        `Sent $${transaction.formattedAmount} to ${
+          transaction.user?.first_name ?? "user"
+        }`
+      );
+      // TODO save transaction to db
+
+      // TODO update user balance
+      // TODO update suer interface
+    } else {
+      console.error("Transaction failed:", result.error);
+      toast.error(`Error sending money. Please try again`);
+    }
   };
 
   return (

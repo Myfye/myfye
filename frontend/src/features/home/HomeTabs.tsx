@@ -167,10 +167,10 @@ const HomeTabs = () => {
                 cursor: pointer;
                 color: var(--clr-text-neutral-strong);
                 &:hover {
-                  color: var(--clr-accent);
+                  color: var(--clr-primary);
                 }
                 &[data-selected="true"] {
-                  color: var(--clr-accent);
+                  color: var(--clr-primary);
                 }
               `}
             >
@@ -185,7 +185,7 @@ const HomeTabs = () => {
             left: 0;
             bottom: 0;
             z-index: 1;
-            background-color: var(--clr-accent);
+            background-color: var(--clr-primary);
             height: 3px;
           `}
           style={{ x, width }}

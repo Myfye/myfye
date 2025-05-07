@@ -84,7 +84,11 @@ const DashboardPanel = ({}) => {
       };
       data.push(stocksData);
     }
-    return data;
+    return [
+      { name: "Cash", y: 105.32, color: "var(--clr-green-400)" },
+      { name: "Crypto", y: 28.85, color: "var(--clr-purple-400)" },
+      { name: "Stocks", y: 57.01, color: "var(--clr-blue-400)" },
+    ];
   }, [cashBalanceUSD, earnBalanceUSD, cryptoBalanceUSD, stocksBalanceUSD]);
 
   const donutChartOptions: Highcharts.Options = {
@@ -287,7 +291,7 @@ const DashboardPanel = ({}) => {
       </section>
       <section
         css={css`
-          margin-block-start: var(--size-200);
+          margin-block-start: max(var(--size-200), 4vh);
           margin-block-end: auto;
           padding-inline: var(--size-250);
         `}

@@ -32,8 +32,11 @@ const PaySelectAssetOverlay = ({ zIndex = 1000 }) => {
   );
 
   const asset = useSelector((state: RootState) =>
-    selectedAbstractedAssetId
-      ? selectAbstractedAssetWithBalance(state, selectedAbstractedAssetId)
+    state.pay.transaction.abstractedAssetId
+      ? selectAbstractedAssetWithBalance(
+          state,
+          state.pay.transaction.abstractedAssetId
+        )
       : null
   );
 

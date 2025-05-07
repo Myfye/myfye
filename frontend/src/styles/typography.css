@@ -1,7 +1,8 @@
 :root {
+  --fs-6x-large: calc(1rem * 48 / 16);
   --fs-5x-large: calc(1rem * 40 / 16);
   --fs-4x-large: calc(1rem * 32 / 16);
-  --fs-xxx-large: calc(1rem * 26 / 16);
+  --fs-3x-large: calc(1rem * 26 / 16);
   --fs-xx-large: calc(1rem * 22 / 16);
   --fs-x-large: calc(1rem * 18 / 16);
   --fs-large: calc(1rem * 16 / 16);
@@ -25,15 +26,27 @@
   --line-height-form: calc(1rem * 16 / 16);
 }
 
-.heading-display {
+.heading-5x-large {
   line-height: var(--line-height-heading);
-  font-size: var(--fs-xxx-large);
+  font-size: var(--fs-6x-large);
+  font-weight: 700;
+}
+
+.heading-4x-large {
+  line-height: var(--line-height-heading);
+  font-size: var(--fs-5x-large);
+  font-weight: var(--fw-heading);
+}
+
+.heading-3x-large {
+  line-height: var(--line-height-heading);
+  font-size: var(--fs-4x-large);
   font-weight: var(--fw-heading);
 }
 
 .heading-xx-large {
   line-height: var(--line-height-heading);
-  font-size: var(--fs-xxx-large);
+  font-size: var(--fs-3x-large);
   font-weight: var(--fw-heading);
 }
 
@@ -61,9 +74,30 @@
   font-weight: var(--fw-active);
 }
 
+.heading-x-small {
+  line-height: var(--line-height-heading);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-active);
+}
+
 .subtitle {
   line-height: var(--line-height-caption);
   font-size: var(--fs-medium);
+}
+
+.caption-xx-large {
+  line-height: var(--line-height-caption);
+  font-size: var(--fs-xx-large);
+}
+
+.caption-x-large {
+  line-height: var(--line-height-caption);
+  font-size: var(--fs-x-large);
+}
+
+.caption-large {
+  line-height: var(--line-height-caption);
+  font-size: var(--fs-large);
 }
 
 .caption {

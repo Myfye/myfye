@@ -6,6 +6,7 @@
   "dependencies": {
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
+    "@headlessui/react": "^2.2.2",
     "@lottiefiles/dotlottie-react": "^0.13.2",
     "@nivo/core": "^0.88.0",
     "@nivo/line": "^0.88.0",

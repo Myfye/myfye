@@ -186,7 +186,7 @@ const SearchedUsers = ({
             <Link
               css={css`
                 font-size: var(--fs-medium);
-                color: var(--clr-accent);
+                color: var(--clr-primary);
                 font-weight: var(--fw-heading);
               `}
             >

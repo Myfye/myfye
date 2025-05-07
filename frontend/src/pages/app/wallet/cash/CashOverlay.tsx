@@ -12,6 +12,7 @@ import {
 } from "../../../../features/assets/assetsSlice";
 import WalletOverlay from "../_components/WalletOverlay";
 import Button from "@/shared/components/ui/button/Button";
+import Section from "@/shared/components/ui/section/Section";
 
 const CashOverlay = () => {
   const dispatch = useDispatch();
@@ -113,15 +114,15 @@ const CashOverlay = () => {
             </div>
           </section>
         )}
-        <section
+        <Section
+          title="Assets"
           css={css`
-            margin-block-start: var(--size-500);
-            margin-inline: var(--size-250);
-            margin-block-end: var(--size-250);
+            margin-block-start: var(--size-400);
+            padding-inline: var(--size-250);
           `}
         >
           <AssetCardList assets={assets} showOptions={true} />
-        </section>
+        </Section>
       </WalletOverlay>
     </>
   );

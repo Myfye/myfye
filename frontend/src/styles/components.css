@@ -46,14 +46,23 @@
 
     /* Variants */
     &[data-variant="primary"] {
-      &[data-color="accent"] {
-        --_background-color: var(--clr-accent);
-        --_border-color: var(--clr-accent);
-        --_color: var(--clr-text-on-accent);
+      &[data-color="primary"] {
+        --_background-color: var(--clr-primary);
+        --_border-color: var(--clr-primary);
+        --_color: var(--clr-text-on-primary);
 
-        --_background-color-active: var(--clr-accent-active);
-        --_border-color-active: var(--clr-accent-active);
-        --_color-active: var(--clr-text-on-accent);
+        --_background-color-active: var(--clr-primary-active);
+        --_border-color-active: var(--clr-primary-active);
+        --_color-active: var(--clr-text-on-primary);
+      }
+      &[data-color="primary-light"] {
+        --_background-color: var(--clr-green-300);
+        --_border-color: var(--clr-green-300);
+        --_color: var(--clr-text);
+
+        --_background-color-active: var(--clr-primary-active);
+        --_border-color-active: var(--clr-primary-active);
+        --_color-active: var(--clr-text-on-primary);
       }
       &[data-color="neutral"] {
         --_background-color: var(--clr-surface-raised);
@@ -67,11 +76,11 @@
       &[data-color="danger"] {
         --_background-color: var(--clr-status-danger);
         --_border-color: var(--clr-status-danger);
-        --_color: var(--clr-text-on-accent);
+        --_color: var(--clr-text-on-primary);
 
         --_background-color-active: var(--clr-status-danger-active);
         --_border-color-active: var(--clr-status-danger-active);
-        --_color-active: var(--clr-text-on-accent);
+        --_color-active: var(--clr-text-on-primary);
       }
       &[data-color="transparent"] {
         --_background-color: transparent;
@@ -112,21 +121,21 @@
       }
     }
     &[data-variant="secondary"] {
-      &[data-color="accent"] {
+      &[data-color="primary"] {
         --_background-color: transparent;
-        --_border-color: var(--clr-accent);
-        --_color: var(--clr-accent);
+        --_border-color: var(--clr-primary);
+        --_color: var(--clr-primary);
 
-        --_background-color-active: var(--clr-accent-active);
-        --_border-color-active: var(--clr-accent-active);
-        --_color-active: var(--clr-text-on-accent);
+        --_background-color-active: var(--clr-primary-active);
+        --_border-color-active: var(--clr-primary-active);
+        --_color-active: var(--clr-text-on-primary);
       }
     }
     &[data-variant="ghost"] {
-      &[data-color="accent"] {
+      &[data-color="primary"] {
         --_background-color: transparent;
         --_border-color: transparent;
-        --_color: var(--clr-accent);
+        --_color: var(--clr-primary);
 
         --_background-color-active: transparent;
         --_border-color-active: transparent;
@@ -204,6 +213,7 @@
     &[data-size="large"] {
       --_size: var(--control-size-large);
       --_gap: var(--control-gap-large);
+      --_font-size: var(--fs-large);
 
       --_padding-inline: var(--control-padding-inline-large);
       --_padding-block: var(--control-padding-block-large);
@@ -318,11 +328,17 @@
 
   .skeleton-shimmer {
     position: relative;
+    overflow: hidden;
   }
 
   .skeleton-shimmer::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
     position: absolute;
     inset: 0;
+    margin: auto;
     transform: translateX(-100%);
     background-image: linear-gradient(
       90deg,
@@ -332,7 +348,6 @@
       rgba(255, 255, 255, 0)
     );
     animation: shimmer 2s infinite;
-    content: "";
   }
   @keyframes shimmer {
     100% {

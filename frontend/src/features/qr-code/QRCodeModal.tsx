@@ -184,7 +184,7 @@ const QRCodeModal = () => {
                         className="heading-x-large"
                         id={id}
                         css={css`
-                          color: var(--clr-text-on-accent);
+                          color: var(--clr-text-on-primary);
                           text-align: center;
                         `}
                       >
@@ -192,7 +192,7 @@ const QRCodeModal = () => {
                       </p>
                       <p
                         css={css`
-                          color: var(--clr-text-on-accent);
+                          color: var(--clr-text-on-primary);
                           text-align: center;
                           margin-block-start: var(--size-150);
                           font-size: var(--fs-medium);

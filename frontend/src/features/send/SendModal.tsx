@@ -106,41 +106,45 @@ const SendModal = () => {
       >
         <div
           css={css`
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: 1fr auto;
+            gap: var(--size-200);
             height: 100%;
-            padding-block-end: var(--size-250);
+            padding-block-end: var(--size-200);
           `}
         >
-          <SendController />
-          <section
-            css={css`
-              margin-block-start: auto;
-              margin-block-end: var(--size-200);
-              padding-inline: var(--size-250);
-            `}
-          >
-            <NumberPad
-              onNumberPress={handleNumberPress}
-              onNumberPressEnd={handleNumberPressEnd}
-              onNumberPressStart={handleNumberPressStart}
-            ></NumberPad>
-          </section>
-          <section
-            css={css`
-              padding-inline: var(--size-250);
-            `}
-          >
-            <Button
-              expand
-              onPress={() => {
-                dispatch(toggleOverlay({ type: "selectUser", isOpen: true }));
-              }}
-              isDisabled={isInvalidSwapTransaction}
+          <div>
+            <SendController />
+          </div>
+          <div>
+            <section
+              css={css`
+                padding-inline: var(--size-250);
+              `}
             >
-              Next
-            </Button>
-          </section>
+              <NumberPad
+                onNumberPress={handleNumberPress}
+                onNumberPressEnd={handleNumberPressEnd}
+                onNumberPressStart={handleNumberPressStart}
+              ></NumberPad>
+            </section>
+            <section
+              css={css`
+                margin-block-start: var(--size-200);
+                padding-inline: var(--size-250);
+              `}
+            >
+              <Button
+                expand
+                onPress={() => {
+                  dispatch(toggleOverlay({ type: "selectUser", isOpen: true }));
+                }}
+                isDisabled={isInvalidSwapTransaction}
+              >
+                Next
+              </Button>
+            </section>
+          </div>
         </div>
       </Modal>
       <SendSelectAssetOverlay zIndex={2000} />

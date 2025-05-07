@@ -39,7 +39,7 @@ const Switch = (props) => {
             padding: 3px;
             transition: 100ms ease-in-out all;
             background-color: ${state.isSelected
-              ? "var(--clr-accent)"
+              ? "var(--clr-primary)"
               : "var(--clr-neutral-300)"};
           `}
         >

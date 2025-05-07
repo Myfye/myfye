@@ -135,7 +135,7 @@ const QRScanner = ({
                         className="heading-x-large"
                         id={id}
                         css={css`
-                          color: var(--clr-text-on-accent);
+                          color: var(--clr-text-on-primary);
                           text-align: center;
                         `}
                       >
@@ -144,7 +144,7 @@ const QRScanner = ({
                       <p
                         className="caption"
                         css={css`
-                          color: var(--clr-text-on-accent);
+                          color: var(--clr-text-on-primary);
                           text-align: center;
                           margin-block-start: var(--size-150);
                         `}

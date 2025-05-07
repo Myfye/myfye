@@ -1,4 +1,4 @@
-import { useEffect, useState, useState } from "react";
+import { useState } from "react";
 import {
   TabList as AriaTabList,
   Tabs as AriaTabs,
@@ -37,7 +37,7 @@ const Router = () => {
   let [selectedKey, setSelectedKey] = useState(tabs[0].id);
 
   const getTabIcon = (id: string, isSelected: boolean) => {
-    const color = isSelected ? "var(--clr-accent)" : "var(--clr-neutral-700)";
+    const color = isSelected ? "var(--clr-primary)" : "var(--clr-neutral-700)";
     const weight = isSelected ? "fill" : "regular";
     switch (id) {
       case "home": {
@@ -190,7 +190,7 @@ const Router = () => {
                         font-size: var(--fs-x-small);
                         text-align: center;
                         color: ${isSelected
-                          ? "var(--clr-accent)"
+                          ? "var(--clr-primary)"
                           : "var(--clr-neutral-700)"};
                       `}
                     >

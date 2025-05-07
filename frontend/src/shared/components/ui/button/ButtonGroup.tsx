@@ -5,6 +5,7 @@ const ButtonGroup = ({
   direction = "horizontal",
   scroll = true,
   children,
+  ...restProps
 }: {
   size: "small" | "medium" | "large";
   direction: "horizontal" | "vertical";
@@ -17,6 +18,7 @@ const ButtonGroup = ({
       data-size={size}
       data-direction={direction}
       data-scroll={scroll}
+      {...restProps}
     >
       {children}
     </menu>
