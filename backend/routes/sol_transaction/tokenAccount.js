@@ -9,7 +9,7 @@ const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
 
-async function createNewTokenAccount(data) {
+async function ensureTokenAccount(data) {
     /*
     Take in the user's solana pub key and create
     a new token account for them if they do not
@@ -99,5 +99,5 @@ async function createNewTokenAccount(data) {
 
 // Export functions for use in other modules
 module.exports = {
-    createNewTokenAccount
+    ensureTokenAccount
 }; 

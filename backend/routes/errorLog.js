@@ -9,8 +9,9 @@ async function createErrorLog(data) {
             user_id,
             error_message,
             error_type,
-            error_stack_trace
-        ) VALUES ($1, $2, $3, $4)
+            error_stack_trace,
+            creation_date
+        ) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
         RETURNING *
     `;
 
@@ -34,6 +35,31 @@ async function createErrorLog(data) {
     }
 }
 
+async function getErrorLogs() {
+    console.log("\n=== Fetching All Error Logs ===");
+
+    const query = `
+        SELECT 
+            el.*,
+            u.email as user_email,
+            u.first_name as user_first_name,
+            u.last_name as user_last_name
+        FROM error_logs el
+        LEFT JOIN users u ON el.user_id = u.uid
+        ORDER BY el.creation_date DESC
+    `;
+
+    try {
+        const result = await pool.query(query);
+        console.log(`Found ${result.rows.length} error logs`);
+        return result.rows;
+    } catch (error) {
+        console.error('Error fetching error logs:', error);
+        throw error;
+    }
+}
+
 module.exports = {
-    createErrorLog
+    createErrorLog,
+    getErrorLogs
 };

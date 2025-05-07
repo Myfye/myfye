@@ -8,14 +8,16 @@ const { create_new_on_ramp_path } = require('./routes/newBlindPayReceiver');
 const { get_payin_quote } = require('./routes/getPayinQuote');
 const { create_new_payin } = require('./routes/createNewPayin');
 const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
-const { createNewTokenAccount } = require('./routes/newSolanaTokenAccount');
+const { ensureTokenAccount } = require('./routes/sol_transaction/tokenAccount');
+const { signTransaction, signVersionedTransaction } = require('./routes/sol_transaction/solanaTransaction');
 const { 
     createUser, 
     getUserByEmail, 
     updateEvmPubKey, 
     updateSolanaPubKey, 
-    getUserByPrivyId } = require('./routes/userDb');
-const { createErrorLog } = require('./routes/errorLog');
+    getUserByPrivyId,
+    getAllUsers } = require('./routes/userDb');
+const { createErrorLog, getErrorLogs } = require('./routes/errorLog');
 const { 
     createContact, 
     getContacts, 
@@ -280,7 +282,7 @@ app.post("/create_solana_token_account", async (req, res) => {
     console.log(`SOL_PRIV_KEY is ${process.env.SOL_PRIV_KEY ? 'set' : 'not set'}`);
     console.log(`SOL_PRIV_KEY length: ${process.env.SOL_PRIV_KEY ? process.env.SOL_PRIV_KEY.length : 0}`);
     
-    const result = await createNewTokenAccount({
+    const result = await ensureTokenAccount({
       receiverPubKey,
       mintAddress,
       programId,
@@ -415,6 +417,83 @@ app.post("/get_top_contacts", async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to get top contacts",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Transaction signing endpoints */
+app.post("/sign_transaction", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Sign Transaction Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await signTransaction(data);
+    console.log("Transaction signing result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /sign_transaction endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to sign transaction",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/sign_versioned_transaction", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Sign Versioned Transaction Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await signVersionedTransaction(data);
+    console.log("Versioned transaction signing result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /sign_versioned_transaction endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to sign versioned transaction",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_error_logs", generalLimiter, async (req, res) => {
+  console.log("\n=== Get All Error Logs Request Received ===");
+
+  try {
+    const result = await getErrorLogs();
+    console.log(`Retrieved ${result.length} error logs`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_error_logs endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to fetch error logs",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_all_users", generalLimiter, async (req, res) => {
+  console.log("\n=== Get All Users Request Received ===");
+
+  try {
+    const result = await getAllUsers();
+    console.log(`Retrieved ${result.length} users`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_all_users endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to fetch users",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
