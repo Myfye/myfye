@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import QRCodeModal from "./_components/QRCodeModal";
 import { useNavigate } from "react-router-dom";
 import { checkIfMobileOrTablet } from "@/shared/utils/mobileUtils";
+import { motion, Transition } from "motion/react";
 
 const textArray = [
   "US Dollars",
@@ -21,6 +22,13 @@ const textArray = [
   "SPY",
   "Bitcoin",
 ];
+
+const phoneTransition: Transition = {
+  type: "spring",
+  delay: 0.25,
+  duration: 1,
+  bounce: 0.4,
+};
 
 const LandingPage = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -246,13 +254,17 @@ const LandingPage = () => {
                 right: 0;
               `}
             >
-              <img
+              <motion.img
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={phoneTransition}
                 src={phoneImg}
                 alt=""
                 css={css`
                   position: relative;
                   z-index: 1;
-                  width: min(30rem, 30vw);
+                  width: min(28rem, 30vw);
+                  margin-inline-end: auto;
                 `}
               />
             </div>

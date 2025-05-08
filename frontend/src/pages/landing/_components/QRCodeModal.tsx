@@ -6,20 +6,20 @@ import {
   Export,
   Scan,
 } from "@phosphor-icons/react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useTransform,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useId } from "react";
-import { Dialog, Modal, ModalOverlay } from "react-aria-components";
 import myfyeQRCode from "@/assets/qr/myfye_qr.svg";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 
 // Wrap React Aria modal components so they support framer-motion values.
-const MotionModal = motion(Modal);
-const MotionModalOverlay = motion(ModalOverlay);
+const MotionDialog = motion(Dialog);
+const MotionDialogBackdrop = motion(DialogBackdrop);
+const MotionDialogPanel = motion(DialogPanel);
 
 const staticTransition = {
   duration: 0.5,
@@ -38,40 +38,46 @@ const QRCodeModal = ({
     <>
       <AnimatePresence>
         {isOpen && (
-          <MotionModalOverlay
-            // Force the modal to be open when AnimatePresence renders it.
-            isOpen
-            onOpenChange={onOpenChange}
+          <MotionDialog
             css={css`
               position: fixed;
               inset: 0;
               margin: auto;
               isolation: isolate;
+              width: 100%;
+              height: 100dvh;
               z-index: var(--z-index-modal);
             `}
-            className="fixed inset-0 z-10"
-            initial={{ backgroundColor: "rgb(0 0 0 / 0)" }}
-            animate={{ backgroundColor: "rgb(0 0 0 / .4)" }}
-            exit={{ backgroundColor: "rgb(0 0 0 / 0)" }}
+            open
+            onClose={() => onOpenChange(false)}
           >
-            <MotionModal
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 20, opacity: 0 }}
+            <MotionDialogBackdrop
+              initial={{ backgroundColor: "rgb(0 0 0 / 0)" }}
+              animate={{ backgroundColor: "rgb(0 0 0 / .4)" }}
+              exit={{ backgroundColor: "rgb(0 0 0 / 0)" }}
               transition={staticTransition}
               css={css`
-                isolation: isolate;
-                position: absolute;
-                inset: 0;
-                margin: auto;
-                padding: var(--size-300);
-                border-radius: var(--border-radius-large);
-                width: min(25rem, 100% - 2 * var(--size-250));
-                height: fit-content;
-                background-color: var(--clr-white);
+                width: 100%;
+                height: 100%;
               `}
             >
-              <Dialog aria-labelledby={headingId}>
+              <MotionDialogPanel
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={staticTransition}
+                css={css`
+                  isolation: isolate;
+                  position: absolute;
+                  inset: 0;
+                  margin: auto;
+                  padding: var(--size-300);
+                  border-radius: var(--border-radius-large);
+                  width: min(25rem, 100% - 2 * var(--size-250));
+                  height: fit-content;
+                  background-color: var(--clr-white);
+                `}
+              >
                 <div
                   css={css`
                     padding: 0.125rem;
@@ -99,8 +105,8 @@ const QRCodeModal = ({
                     <Scan size={32} color="var(--clr-primary)" />
                   </div>
                 </div>
-                <p
-                  id={headingId}
+                <DialogTitle
+                  as="h2"
                   className="heading-x-large"
                   css={css`
                     text-align: center;
@@ -109,7 +115,7 @@ const QRCodeModal = ({
                   `}
                 >
                   Scan QR code
-                </p>
+                </DialogTitle>
                 <p
                   id={headingId}
                   className="caption"
@@ -243,9 +249,9 @@ const QRCodeModal = ({
                     Ok, got it
                   </Button>
                 </div>
-              </Dialog>
-            </MotionModal>
-          </MotionModalOverlay>
+              </MotionDialogPanel>
+            </MotionDialogBackdrop>
+          </MotionDialog>
         )}
       </AnimatePresence>
     </>

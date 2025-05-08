@@ -5,7 +5,6 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import { Dialog, Modal, ModalOverlay } from "react-aria-components";
 import { useEffect, useId, useState } from "react";
 
 import { css } from "@emotion/react";
@@ -14,10 +13,16 @@ import QrReader from "./QRReader";
 import Button from "@/shared/components/ui/button/Button";
 import { X } from "@phosphor-icons/react";
 import Header from "../../shared/components/layout/nav/header/Header";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 
-// Wrap React Aria modal components so they support motion values.
-const MotionModal = motion(Modal);
-const MotionModalOverlay = motion(ModalOverlay);
+const MotionDialog = motion(Dialog);
+const MotionDialogBackdrop = motion(DialogBackdrop);
+const MotionDialogPanel = motion(DialogPanel);
 
 const staticTransition = {
   duration: 0.5,
@@ -48,9 +53,9 @@ const QRScanner = ({
     <>
       <AnimatePresence>
         {isOpen && (
-          <MotionModalOverlay
-            isOpen
-            onOpenChange={onOpenChange}
+          <MotionDialog
+            open
+            onClose={() => onOpenChange(false)}
             css={css`
               position: fixed;
               inset: 0;
@@ -58,9 +63,15 @@ const QRScanner = ({
               max-width: 420px;
               margin-inline: auto;
             `}
-            style={{ backgroundColor: bg as any }}
           >
-            <MotionModal
+            <MotionDialogBackdrop
+              style={{ backgroundColor: bg as any }}
+              css={css`
+                width: 100%;
+                height: 100%;
+              `}
+            />
+            <MotionDialogPanel
               css={css`
                 background-color: var(--clr-black);
                 position: absolute;
@@ -82,7 +93,7 @@ const QRScanner = ({
                 paddingBottom: window.screen.height,
               }}
             >
-              <Dialog
+              <div
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
@@ -90,7 +101,6 @@ const QRScanner = ({
                   overflow-y: auto;
                   position: relative;
                 `}
-                aria-labelledby={id}
               >
                 <section
                   css={css`
@@ -130,17 +140,16 @@ const QRScanner = ({
                     `}
                   >
                     <hgroup>
-                      <p
-                        slot="title"
+                      <DialogTitle
+                        as="h1"
                         className="heading-x-large"
-                        id={id}
                         css={css`
                           color: var(--clr-text-on-primary);
                           text-align: center;
                         `}
                       >
                         Scan QR Code
-                      </p>
+                      </DialogTitle>
                       <p
                         className="caption"
                         css={css`
@@ -154,9 +163,9 @@ const QRScanner = ({
                     </hgroup>
                   </section>
                 </div>
-              </Dialog>
-            </MotionModal>
-          </MotionModalOverlay>
+              </div>
+            </MotionDialogPanel>
+          </MotionDialog>
         )}
       </AnimatePresence>
     </>

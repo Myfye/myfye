@@ -22,7 +22,10 @@ const QrReader = ({
 
   const [qrOn, setQrOn] = useState<boolean>(true);
 
+  const isInit = useRef(false);
+
   useEffect(() => {
+    if (isInit.current) return;
     async function startScanner() {
       try {
         await scanner?.current?.start();
@@ -44,6 +47,7 @@ const QrReader = ({
 
       // 🚀 Start QR Scanner
       startScanner();
+      isInit.current = true;
     }
 
     return () => {
@@ -51,12 +55,12 @@ const QrReader = ({
         scanner?.current?.stop();
       }
     };
-  }, []);
+  });
 
   useEffect(() => {
     if (!qrOn)
-      alert(
-        "Camera is blocked or not accessible. Please allow camera in your browser permissions and Reload."
+      console.error(
+        "Camera is blocked or not accessible. Please allow camera in your browser permissions and reload."
       );
   }, [qrOn]);
 

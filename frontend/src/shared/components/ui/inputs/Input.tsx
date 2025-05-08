@@ -8,9 +8,9 @@ const Input = ({
   ...restProps
 }: {
   label: string;
-  children: ReactNode;
   id: string;
   hideLabel: boolean;
+  children: ReactNode;
 }) => {
   return (
     <div className="wrapper">
@@ -38,6 +38,9 @@ const Input = ({
             border-radius: var(--border-radius-medium);
             &::placeholder {
               color: var(--clr-text-weaker);
+            }
+            &:active {
+              font-size: max(var(--fs-medium), 16px);
             }
           `}
           {...restProps}

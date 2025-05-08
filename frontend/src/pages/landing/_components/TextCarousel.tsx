@@ -19,7 +19,7 @@ const TextCarousel = ({ textArray }: { textArray: string[] }) => {
   useEffect(() => {
     const textListEl = textRef.current;
     const sequence = async () => {
-      await animate(textListEl, { y: 0 }, { duration: 0.01 });
+      await animate(textListEl, { y: 0 }, { duration: 0.001, ease: "linear" });
       for (const frame of keyframes) {
         await animate(
           textListEl,
@@ -31,6 +31,10 @@ const TextCarousel = ({ textArray }: { textArray: string[] }) => {
       }
       sequence();
     };
+    const init = async () => {
+      await animate(textListEl, { y: 0 }, { duration: 0.25 });
+    };
+    init();
     sequence();
   }, []);
 
