@@ -2,13 +2,15 @@ import { css } from "@emotion/react";
 import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { SwapTransactionStatus, toggleOverlay, unmount } from "./swapSlice";
+import { toggleOverlay, unmount } from "./swapSlice";
 import { RootState } from "@/redux/store";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import leafLoading from "@/assets/lottie/leaf-loading.json";
 import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
 import { useLottie } from "lottie-react";
+import { SwapTransactionStatus } from "./types";
+import ProgressBar from "@/shared/components/ui/progress_bar/ProgressBar";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -21,38 +23,6 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   };
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
-
-  const caption = useMemo(() => {
-    switch (transaction.status) {
-      case "success": {
-        return (
-          <span
-            css={css`
-              display: inline-block;
-              padding-block-end: calc(1em * var(--line-height-caption));
-            `}
-          >
-            Coins have been deposited into your wallet.
-          </span>
-        );
-      }
-      case "fail": {
-        return (
-          <span
-            css={css`
-              display: inline-block;
-              padding-block-end: calc(1em * var(--line-height-caption));
-            `}
-          >
-            Error processing swap. Please try again.
-          </span>
-        );
-      }
-      default: {
-        return `${transaction.buy.abstractedAssetId} will be deposited into your wallet once the transaction is complete.`;
-      }
-    }
-  }, [transaction]);
 
   const heading = useMemo(() => {
     switch (transaction.status) {
@@ -67,6 +37,18 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
       }
     }
   }, [transaction]);
+
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setValue((value) => (value += 5));
+    }, 1000);
+    if (value >= 100) return clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
+  });
 
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
@@ -117,9 +99,38 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
                   text-align: center;
                 `}
               >
-                {caption}
+                {transaction.status === "success" && (
+                  <span
+                    css={css`
+                      display: inline-block;
+                      padding-block-end: calc(1em * var(--line-height-caption));
+                    `}
+                  >
+                    Coins have been deposited into your wallet.
+                  </span>
+                )}
+                {transaction.status === "fail" && (
+                  <span
+                    css={css`
+                      display: inline-block;
+                      padding-block-end: calc(1em * var(--line-height-caption));
+                    `}
+                  >
+                    Error processing swap. Please try again.
+                  </span>
+                )}
               </p>
             </hgroup>
+            <div
+              css={css`
+                margin-block-start: var(--size-400);
+                width: 80%;
+                margin-inline: auto;
+              `}
+            >
+              {(transaction.status === "signed" ||
+                transaction.status === "idle") && <ProgressBar value={value} />}
+            </div>
           </section>
         </section>
         <section

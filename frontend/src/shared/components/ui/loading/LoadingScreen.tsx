@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import logo from "@/assets/Logo.png";
+import logo from "@/assets/logo/myfye_logo_white.svg";
 import Ring180Loader from "./spinners/180RingLoader";
 
 const LoadingScreen = () => {

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import { Modal, ModalOverlay } from "react-aria-components";
-import { useId } from "react";
+import { ReactNode, useId } from "react";
 
 import { css } from "@emotion/react";
 
@@ -28,6 +28,14 @@ const HeadlessOverlay = ({
   zIndex = 1000,
   children,
   onExitComplete,
+}: {
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+  backgroundColor?: string;
+  zIndex?: number;
+  children: ReactNode;
+  onExitComplete?: () => void;
+  onEnterComplete?: () => void;
 }) => {
   let w = window.innerWidth;
   let x = useMotionValue(w);
@@ -37,6 +45,8 @@ const HeadlessOverlay = ({
       <AnimatePresence onExitComplete={onExitComplete}>
         {isOpen && (
           <MotionDialog
+            open
+            onClose={() => onOpenChange(false)}
             css={css`
               position: fixed;
               inset: 0;
