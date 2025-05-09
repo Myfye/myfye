@@ -48,7 +48,7 @@ function ToggleButton(props) {
         ref={ref}
         data-variant={isSelected ? "primary" : "ghost"}
         data-size="xx-small"
-        data-color="accent"
+        data-color="primary"
         data-border-radius="square"
         className={`button ${props?.className}`}
         animate={{

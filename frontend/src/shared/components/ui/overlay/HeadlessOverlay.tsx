@@ -1,17 +1,20 @@
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
-import { Dialog, Modal, ModalOverlay } from "react-aria-components";
+import { Modal, ModalOverlay } from "react-aria-components";
 import { useId } from "react";
 
 import { css } from "@emotion/react";
 
-import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";
-
-import Button from "@/shared/components/ui/button/Button";
-import Header from "@/shared/components/layout/nav/header/Header";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 
 // Wrap React Aria modal components so they support motion values.
-const MotionModal = motion(Modal);
-const MotionModalOverlay = motion(ModalOverlay);
+const MotionDialog = motion(Dialog);
+const MotionDialogPanel = motion(DialogPanel);
+const MotionDialogBackdrop = motion(DialogBackdrop);
 
 const staticTransition = {
   duration: 0.5,
@@ -29,15 +32,11 @@ const HeadlessOverlay = ({
   let w = window.innerWidth;
   let x = useMotionValue(w);
 
-  const id = useId();
-
   return (
     <>
       <AnimatePresence onExitComplete={onExitComplete}>
         {isOpen && (
-          <MotionModalOverlay
-            isOpen
-            onOpenChange={onOpenChange}
+          <MotionDialog
             css={css`
               position: fixed;
               inset: 0;
@@ -47,7 +46,7 @@ const HeadlessOverlay = ({
               isolation: isolate;
             `}
           >
-            <MotionModal
+            <MotionDialogPanel
               css={css`
                 background-color: ${backgroundColor};
                 position: absolute;
@@ -68,7 +67,7 @@ const HeadlessOverlay = ({
                 paddingRight: window.screen.width,
               }}
             >
-              <Dialog
+              <div
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
@@ -76,12 +75,11 @@ const HeadlessOverlay = ({
                   max-width: var(--app-max-width);
                   width: 100vw;
                 `}
-                aria-labelledby={id}
               >
                 {children}
-              </Dialog>
-            </MotionModal>
-          </MotionModalOverlay>
+              </div>
+            </MotionDialogPanel>
+          </MotionDialog>
         )}
       </AnimatePresence>
     </>

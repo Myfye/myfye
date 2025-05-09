@@ -26,6 +26,7 @@ const Wallet = () => {
           height: 100cqh;
           overflow-y: auto;
           background-color: var(--clr-surface);
+          padding-block-end: var(--size-200);
         `}
       >
         <section>
@@ -74,7 +75,6 @@ const Wallet = () => {
         <section
           css={css`
             margin-block-start: auto;
-            margin-block-end: var(--size-250);
             margin-inline: var(--size-250);
           `}
         >

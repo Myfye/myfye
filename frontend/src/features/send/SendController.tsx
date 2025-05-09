@@ -214,7 +214,7 @@ function AmountSelector(props) {
             position: absolute;
             inset: 0;
             margin: auto;
-            outline: 2px solid var(--clr-accent);
+            outline: 2px solid var(--clr-primary);
             outline-offset: -1px;
             z-index: 1;
             user-select: none;
@@ -226,7 +226,7 @@ function AmountSelector(props) {
         animate={{
           scale: isPressed ? 0.9 : 1,
           "--_outline-opacity": isSelected ? 1 : 0,
-          "--_color": isSelected ? "var(--clr-accent)" : "var(--clr-text)",
+          "--_color": isSelected ? "var(--clr-primary)" : "var(--clr-text)",
         }}
       >
         <VisuallyHidden>
@@ -271,12 +271,19 @@ const SendController = () => {
     );
   };
   return (
-    <>
+    <div
+      className="send-controller"
+      css={css`
+        display: grid;
+        grid-template-rows: 1fr auto auto;
+        gap: var(--size-200);
+        height: 100%;
+      `}
+    >
       <section
         css={css`
           padding-inline: var(--size-250);
           width: 100%;
-          margin-block-end: var(--size-200);
         `}
       >
         <div
@@ -317,14 +324,12 @@ const SendController = () => {
       </section>
       <section
         css={css`
-          margin-block-start: var(--size-300);
           padding-inline: var(--size-250);
-          margin-block-end: var(--size-200);
         `}
       >
         <AssetSelectButton abstractedAssetId={abstractedAssetId} />
       </section>
-    </>
+    </div>
   );
 };
 

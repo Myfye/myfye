@@ -10,7 +10,7 @@ const LoadingScreen = () => {
         display: grid;
         place-items: center;
         height: 100dvh;
-        background-color: var(--clr-accent);
+        background-color: var(--clr-primary);
       `}
     >
       <section

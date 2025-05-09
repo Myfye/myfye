@@ -5,8 +5,7 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import { Dialog, Modal, ModalOverlay } from "react-aria-components";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { css } from "@emotion/react";
 
@@ -24,10 +23,16 @@ import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Header from "../../../shared/components/layout/nav/header/Header";
 import { RootState } from "@/redux/store";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 
-// Wrap React Aria modal components so they support motion values.
-const MotionModal = motion(Modal);
-const MotionModalOverlay = motion(ModalOverlay);
+const MotionDialog = motion(Dialog);
+const MotionDialogBackdrop = motion(DialogBackdrop);
+const MotionDialogPanel = motion(DialogPanel);
 
 const staticTransition = {
   duration: 0.5,
@@ -57,8 +62,6 @@ const QRCodeModal = () => {
     console.log(wallet);
   }, [wallet]);
 
-  const id = useId();
-
   const onScanSuccess = ({ data }) => {
     dispatch(setQRCodeModalOpen(false));
     dispatch(toggleSendModal({ isOpen: true }));
@@ -72,29 +75,26 @@ const QRCodeModal = () => {
     <>
       <AnimatePresence>
         {isOpen && (
-          <MotionModalOverlay
-            isOpen
-            onOpenChange={onOpenChange}
+          <MotionDialog
+            open
+            onClose={() => onOpenChange(false)}
             css={css`
               position: fixed;
               inset: 0;
+              margin: auto;
               z-index: var(--z-index-modal);
-              max-width: 420px;
               margin-inline: auto;
+              max-width: 420px;
             `}
-            style={{ backgroundColor: bg as any }}
           >
-            <MotionModal
+            <MotionDialogBackdrop
+              style={{ backgroundColor: bg as any }}
               css={css`
-                background-color: var(--clr-black);
-                position: absolute;
-                bottom: 0;
                 width: 100%;
-                box-shadow: var(--box-shadow-modal);
-                will-change: transform;
-                height: 100dvh;
-                z-index: 1;
+                height: 100%;
               `}
+            />
+            <MotionDialogPanel
               initial={{ y: h }}
               animate={{ y: 0 }}
               exit={{ y: h }}
@@ -108,16 +108,26 @@ const QRCodeModal = () => {
               onAnimationComplete={() => {
                 setQRCodeVisible(false);
               }}
+              css={css`
+                background-color: var(--clr-black);
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                box-shadow: var(--box-shadow-modal);
+                will-change: transform;
+                height: 100dvh;
+                z-index: 1;
+              `}
             >
-              <Dialog
+              <div
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: 100dvh;
                   overflow-y: auto;
                   position: relative;
+                  width: 100%;
+                  height: 100%;
                 `}
-                aria-labelledby={id}
               >
                 {!isQRCodeVisible && (
                   <section
@@ -179,20 +189,19 @@ const QRCodeModal = () => {
                     `}
                   >
                     <hgroup>
-                      <p
-                        slot="title"
+                      <DialogTitle
+                        as="h1"
                         className="heading-x-large"
-                        id={id}
                         css={css`
-                          color: var(--clr-text-on-accent);
+                          color: var(--clr-text-on-primary);
                           text-align: center;
                         `}
                       >
                         {isQRCodeVisible ? "Receive tokens" : "Send tokens"}
-                      </p>
+                      </DialogTitle>
                       <p
                         css={css`
-                          color: var(--clr-text-on-accent);
+                          color: var(--clr-text-on-primary);
                           text-align: center;
                           margin-block-start: var(--size-150);
                           font-size: var(--fs-medium);
@@ -258,9 +267,9 @@ const QRCodeModal = () => {
                     )}
                   </section>
                 </div>
-              </Dialog>
-            </MotionModal>
-          </MotionModalOverlay>
+              </div>
+            </MotionDialogPanel>
+          </MotionDialog>
         )}
       </AnimatePresence>
     </>

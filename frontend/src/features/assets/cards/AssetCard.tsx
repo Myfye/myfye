@@ -81,7 +81,7 @@ const AssetCard = ({
         &::before {
           content: "";
           display: ${isSelected ? "block" : "none"};
-          outline: 2px solid var(--clr-accent);
+          outline: 2px solid var(--clr-primary);
           outline-offset: -2px;
           position: absolute;
           inset: 0;

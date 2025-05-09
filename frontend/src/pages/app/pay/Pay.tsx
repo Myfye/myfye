@@ -112,48 +112,52 @@ const Pay = () => {
       >
         <div
           css={css`
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: 1fr auto;
+            gap: var(--size-200);
             height: 100%;
-            padding-block-end: var(--size-250);
+            padding-block-end: var(--size-200);
           `}
         >
-          <PayController />
-          <section
-            css={css`
-              margin-block-start: auto;
-              margin-block-end: var(--size-200);
-              padding-inline: var(--size-250);
-            `}
-          >
-            <NumberPad
-              onNumberPress={handleNumberPress}
-              onNumberPressEnd={handleNumberPressEnd}
-              onNumberPressStart={handleNumberPressStart}
-            ></NumberPad>
-          </section>
-          <section
-            css={css`
-              padding-inline: var(--size-250);
-            `}
-          >
-            <ButtonGroup scroll={false} direction="horizontal" size="medium">
-              <ButtonGroupItem
-                expand
-                onPress={handleRequest}
-                isDisabled={isInvalidSwapTransaction}
-              >
-                Request
-              </ButtonGroupItem>
-              <ButtonGroupItem
-                expand
-                onPress={handlePay}
-                isDisabled={isInvalidSwapTransaction}
-              >
-                Pay
-              </ButtonGroupItem>
-            </ButtonGroup>
-          </section>
+          <div>
+            <PayController />
+          </div>
+          <div>
+            <section
+              css={css`
+                padding-inline: var(--size-250);
+              `}
+            >
+              <NumberPad
+                onNumberPress={handleNumberPress}
+                onNumberPressEnd={handleNumberPressEnd}
+                onNumberPressStart={handleNumberPressStart}
+              ></NumberPad>
+            </section>
+            <section
+              css={css`
+                padding-inline: var(--size-250);
+                margin-block-start: var(--size-200);
+              `}
+            >
+              <ButtonGroup scroll={false} direction="horizontal" size="medium">
+                <ButtonGroupItem
+                  expand
+                  onPress={handleRequest}
+                  isDisabled={isInvalidSwapTransaction}
+                >
+                  Request
+                </ButtonGroupItem>
+                <ButtonGroupItem
+                  expand
+                  onPress={handlePay}
+                  isDisabled={isInvalidSwapTransaction}
+                >
+                  Pay
+                </ButtonGroupItem>
+              </ButtonGroup>
+            </section>
+          </div>
         </div>
       </div>
       <PaySelectAssetOverlay zIndex={2000} />

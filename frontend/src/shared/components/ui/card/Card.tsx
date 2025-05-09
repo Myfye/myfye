@@ -60,7 +60,7 @@ const Card = ({
               align-items: center;
               gap: var(--size-050);
               margin-block-start: var(--size-200);
-              color: var(--clr-accent);
+              color: var(--clr-primary);
             `}
           >
             Learn more <ArrowRight size={16} />

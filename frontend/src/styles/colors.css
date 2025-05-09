@@ -62,8 +62,21 @@
   --clr-green-800: #023f1a;
   --clr-green-900: #023315;
 
-  --clr-accent: var(--clr-green-500);
-  --clr-accent-active: var(--clr-green-600);
+  --clr-teal-100: #edf5f5;
+  --clr-teal-200: #c9e4e4;
+  --clr-teal-300: #89caca;
+  --clr-teal-400: #43a9a9;
+  --clr-teal-500: #19837e;
+  --clr-teal-600: #096762;
+  --clr-teal-700: #075854;
+  --clr-teal-800: #034643;
+  --clr-teal-900: #023331;
+
+  --clr-primary: var(--clr-green-500);
+  --clr-primary-active: var(--clr-green-600);
+
+  --clr-secondary: var(--clr-teal-500);
+  --clr-secondary-active: var(--clr-teal-600);
 
   --clr-pie-chart-usdt: var(--clr-green-300);
   --clr-pie-chart-eurc: var(--clr-blue-300);
@@ -72,11 +85,11 @@
   --clr-pie-chart-sol: var(--clr-purple-300);
 
   --clr-text: var(--clr-neutral-900);
-  --clr-text-link: var(--clr-green-500);
+  --clr-text-link: var(--clr-accent);
   --clr-text-weak: var(--clr-neutral-700);
   --clr-text-weaker: var(--clr-neutral-500);
   --clr-text-weakest: var(--clr-neutral-300);
-  --clr-text-on-accent: var(--clr-white);
+  --clr-text-on-primary: var(--clr-white);
   --clr-text-error: var(--clr-red-500);
   --clr-text-danger: var(--clr-red-500);
   --clr-text-success: var(--clr-green-500);

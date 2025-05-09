@@ -84,7 +84,7 @@ const WalletCard = ({
           width: 32cqw;
         `}
       >
-        {Icon && <Icon size="100%" color="var(--clr-accent)" weight="light" />}
+        {Icon && <Icon size="100%" color="var(--clr-primary)" weight="light" />}
       </div>
       <div>
         <p

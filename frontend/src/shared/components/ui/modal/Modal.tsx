@@ -6,20 +6,23 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import {
-  Dialog,
-  Modal as AriaModal,
-  ModalOverlay,
-} from "react-aria-components";
+
 import { ReactNode, useId } from "react";
 
 import { css } from "@emotion/react";
 import Button from "@/shared/components/ui/button/Button";
 import { X } from "@phosphor-icons/react";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 
 // Wrap React Aria modal components so they support framer-motion values.
-const MotionModal = motion(AriaModal);
-const MotionModalOverlay = motion(ModalOverlay);
+const MotionDialogBackdrop = motion(DialogBackdrop);
+const MotionDialog = motion(Dialog);
+const MotionDialogPanel = motion(DialogPanel);
 
 const inertiaTransition = {
   type: "inertia" as const,
@@ -55,25 +58,29 @@ const Modal = ({
   const bgOpacity = useTransform(y, [0, h], [0.4, 0]);
   const bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
 
-  const id = useId();
-
   return (
     <>
       <AnimatePresence>
         {isOpen && (
-          <MotionModalOverlay
-            // Force the modal to be open when AnimatePresence renders it.
-            isOpen
-            onOpenChange={onOpenChange}
+          <MotionDialog
+            open
+            onClose={() => onOpenChange(false)}
             css={css`
+              isolation: isolate;
               position: fixed;
               inset: 0;
               z-index: ${zIndex};
-              isolation: isolate;
             `}
-            style={{ backgroundColor: bg }}
           >
-            <MotionModal
+            <MotionDialogBackdrop
+              style={{ backgroundColor: bg }}
+              css={css`
+                position: absolute;
+                width: 100%;
+                height: 100%;
+              `}
+            />
+            <MotionDialogPanel
               css={css`
                 display: grid;
                 font-family: var(--font-family);
@@ -132,8 +139,7 @@ const Modal = ({
                     border-radius: var(--border-radius-pill);
                   `}
                 />
-                <Dialog
-                  aria-labelledby={id}
+                <div
                   css={css`
                     display: grid;
                     grid-template-rows: auto 1fr;
@@ -146,15 +152,15 @@ const Modal = ({
                       padding-inline: var(--size-200);
                     `}
                   >
-                    <p
+                    <DialogTitle
+                      as="h2"
                       className="heading-medium"
                       css={css`
                         text-align: center;
                       `}
-                      id={id}
                     >
                       {title}
-                    </p>
+                    </DialogTitle>
                     <Button
                       onPress={() => onOpenChange(false)}
                       iconOnly
@@ -176,10 +182,10 @@ const Modal = ({
                   >
                     {children}
                   </main>
-                </Dialog>
+                </div>
               </div>
-            </MotionModal>
-          </MotionModalOverlay>
+            </MotionDialogPanel>
+          </MotionDialog>
         )}
       </AnimatePresence>
     </>

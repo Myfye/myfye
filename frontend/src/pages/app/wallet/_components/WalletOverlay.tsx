@@ -6,6 +6,7 @@ import Button from "@/shared/components/ui/button/Button";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
+  ArrowsDownUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import { ReactNode } from "react";
@@ -15,6 +16,8 @@ import { AssetGroup } from "../../../../features/assets/types";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "../../../../features/receive/receiveSlice";
 import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 
 const WalletOverlay = ({
   isOpen,
@@ -70,83 +73,50 @@ const WalletOverlay = ({
             className="balance-container"
             css={css`
               margin-block-start: var(--size-100);
+              padding-inline: var(--size-250);
             `}
           >
             <BalanceCard balance={balance} />
-            <menu
-              className="no-scrollbar"
-              css={css`
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: var(--controls-gap-small);
-                overflow-x: auto;
-                padding: 0 var(--size-250);
-                margin-block-start: var(--size-200);
-                background-color: var(--clr-surface);
-              `}
-            >
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowCircleUp}
-                  onPress={() => {
-                    dispatch(toggleSendModal({ isOpen: true }));
-                  }}
-                >
-                  Send
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowCircleDown}
-                  onPress={() => {
-                    dispatch(toggleReceiveModal(true));
-                  }}
-                >
-                  Receive
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="x-small"
-                  icon={ArrowsLeftRight}
-                  onPress={() => {
-                    dispatch(
-                      toggleSwapModal({
-                        isOpen: true,
-                        abstractedAssetId: (() => {
-                          switch (groupId) {
-                            case "cash": {
-                              return "us_dollar";
-                            }
-                            case "crypto": {
-                              return "btc";
-                            }
-                            case "earn": {
-                              return "us_dollar_yield";
-                            }
-                            case "stocks": {
-                              return "APPL";
-                            }
-                            default: {
-                              throw new Error("Invalid group id");
-                            }
-                          }
-                        })(),
-                      })
-                    );
-                  }}
-                >
-                  Swap
-                </Button>
-              </li>
-            </menu>
+          </section>
+          <section
+            css={css`
+              margin-block-start: var(--size-200);
+              padding-inline: var(--size-250);
+            `}
+          >
+            <ButtonGroup size="small">
+              <ButtonGroupItem
+                size="x-small"
+                icon={ArrowCircleUp}
+                onPress={() => {
+                  dispatch(toggleSendModal({ isOpen: true }));
+                }}
+              >
+                Send
+              </ButtonGroupItem>
+
+              <ButtonGroupItem
+                size="x-small"
+                icon={ArrowCircleDown}
+                onPress={() => {
+                  dispatch(toggleReceiveModal(true));
+                }}
+              >
+                Receive
+              </ButtonGroupItem>
+              <ButtonGroupItem
+                size="x-small"
+                icon={ArrowsDownUp}
+                onPress={() => {
+                  dispatch(toggleSwapModal({ isOpen: true }));
+                }}
+              >
+                Swap
+              </ButtonGroupItem>
+            </ButtonGroup>
           </section>
           {children}
         </>
-        {/* )} */}
       </Overlay>
     </>
   );

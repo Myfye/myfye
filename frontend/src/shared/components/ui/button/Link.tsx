@@ -16,7 +16,7 @@ interface LinkProps extends AriaLinkProps {
 const Link = ({
   ref,
   variant = "primary",
-  color = "accent",
+  color = "primary",
   size = "medium",
   className = "",
   expand = false,

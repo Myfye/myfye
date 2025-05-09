@@ -1,16 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.pcss";
 import AppRouter from "./AppRouter.tsx";
-import Landing from "./pages/landing/Landing.tsx";
-import Dashboard from "./pages/Dashboard.tsx";
+import LandingPage from "./pages/landing/LandingPage.tsx";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AppRouter />} />
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/eubgiaeubca" element={<Dashboard />} />
+        <Route path="/app" element={<AppRouter />} />
+        <Route path="/" element={<LandingPage />} />
       </Routes>
     </Router>
   );

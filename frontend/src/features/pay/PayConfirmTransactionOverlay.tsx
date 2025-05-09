@@ -4,11 +4,11 @@ import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { toggleOverlay } from "./paySlice";
+import { toggleOverlay, unmount, unmountOverlays } from "./paySlice";
 import PaySummary from "./PaySummary";
 import { tokenTransfer } from "@/functions/Transaction";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
-import { KeyReturn } from "@phosphor-icons/react";
+import toast from "react-hot-toast/headless";
 
 const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -17,12 +17,12 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     (state: RootState) => state.pay.overlays.confirmTransaction.isOpen
   );
 
-  const { wallets } = useSolanaWallets();
-  const wallet = wallets[0];
-
   const handleOpen = (isOpen: boolean) => {
     dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
   };
+
+  const { wallets } = useSolanaWallets();
+  const wallet = wallets[0];
 
   const solanaPubKey = useSelector(
     (state: any) => state.userWalletData.solanaPubKey
@@ -58,6 +58,14 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   // };
 
   const handleTransactionSubmit = async () => {
+    if (!transaction.amount) return;
+    if (!transaction.user) return;
+    if (!transaction.abstractedAssetId) return;
+    // toggle overlay
+    dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
+
+    // next, go through transaction
+
     const sellAbstractedAsset =
       assets.abstractedAssets[transaction.abstractedAssetId];
     if (!sellAbstractedAsset) return;
@@ -104,8 +112,6 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     console.log("wallet:", wallet);
     console.log("totalBalance:", totalBalance); // Add this log to verify the total balance
 
-    dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
-
     const result = await tokenTransfer(
       solanaPubKey,
       transaction.user.solana_pub_key,
@@ -116,12 +122,19 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
     if (result.success) {
       console.log("Transaction successful:", result.transactionId);
+      dispatch(unmount());
+      toast.success(
+        `Sent $${transaction.formattedAmount} to ${
+          transaction.user?.first_name ?? "user"
+        }`
+      );
       // TODO save transaction to db
 
       // TODO update user balance
       // TODO update suer interface
     } else {
       console.error("Transaction failed:", result.error);
+      toast.error(`Error sending money. Please try again`);
     }
   };
 

@@ -26,6 +26,7 @@
   --border-radius-x-small: 0.02em;
   --border-radius-small: 0.25rem;
   --border-radius-medium: 0.5rem;
+  --border-radius-large: 1rem;
   --border-radius-pill: 999px;
   --border-radius-circle: 50%;
 
@@ -67,8 +68,8 @@
   --control-padding-inline-medium: var(--size-300);
   --control-size-medium: 2.75rem;
 
-  --control-gap-large: var(--size-200);
-  --control-padding-block-large: var(--size-0);
+  --control-gap-large: var(--size-100);
+  --control-padding-block-large: var(--size-300);
   --control-padding-inline-large: var(--size-400);
   --control-size-large: var(--size-600);
 

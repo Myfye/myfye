@@ -160,7 +160,7 @@ const EarnOverlay = () => {
                     margin-block-start: var(--size-025);
                     margin-block-end: var(--size-050);
                     font-size: var(--fs-x-small);
-                    color: var(--clr-accent);
+                    color: var(--clr-primary);
                     font-weight: var(--fw-default);
                   `}
                 >

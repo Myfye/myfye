@@ -1,5 +1,4 @@
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
-import { Dialog, Modal, ModalOverlay } from "react-aria-components";
 import { ReactNode, useId } from "react";
 
 import { css } from "@emotion/react";
@@ -9,9 +8,17 @@ import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
 import Header from "@/shared/components/layout/nav/header/Header";
 
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
+
 // Wrap React Aria modal components so they support motion values.
-const MotionModal = motion(Modal);
-const MotionModalOverlay = motion(ModalOverlay);
+const MotionDialog = motion(Dialog);
+const MotionDialogBackdrop = motion(DialogBackdrop);
+const MotionDialogPanel = motion(DialogPanel);
 
 const staticTransition = {
   duration: 0.5,
@@ -40,9 +47,9 @@ const Overlay = ({
     <>
       <AnimatePresence>
         {isOpen && (
-          <MotionModalOverlay
-            isOpen
-            onOpenChange={onOpenChange}
+          <MotionDialog
+            open
+            onClose={() => onOpenChange(false)}
             css={css`
               position: fixed;
               inset: 0;
@@ -52,7 +59,7 @@ const Overlay = ({
               isolation: isolate;
             `}
           >
-            <MotionModal
+            <MotionDialogPanel
               css={css`
                 background-color: var(--clr-surface);
                 position: absolute;
@@ -73,7 +80,7 @@ const Overlay = ({
                 paddingRight: window.screen.width,
               }}
             >
-              <Dialog
+              <div
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
@@ -81,7 +88,6 @@ const Overlay = ({
                   max-width: var(--app-max-width);
                   width: 100vw;
                 `}
-                aria-labelledby={id}
               >
                 <Header>
                   <Button
@@ -91,7 +97,8 @@ const Overlay = ({
                     variant="transparent"
                   ></Button>
                   {title && (
-                    <h1
+                    <DialogTitle
+                      as="h1"
                       css={css`
                         font-weight: var(--fw-active);
                         font-size: var(--fs-medium);
@@ -103,7 +110,7 @@ const Overlay = ({
                       `}
                     >
                       {title}
-                    </h1>
+                    </DialogTitle>
                   )}
                 </Header>
                 <main
@@ -114,9 +121,9 @@ const Overlay = ({
                 >
                   {children}
                 </main>
-              </Dialog>
-            </MotionModal>
-          </MotionModalOverlay>
+              </div>
+            </MotionDialogPanel>
+          </MotionDialog>
         )}
       </AnimatePresence>
     </>

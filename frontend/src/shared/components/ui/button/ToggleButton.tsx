@@ -17,7 +17,7 @@ interface ButtonProps extends AriaButtonProps {
 const ToggleButton = ({
   ref,
   variant = "primary",
-  color = "accent",
+  color = "primary",
   size = "medium",
   className = "",
   icon,

@@ -46,7 +46,7 @@ interface LinkProps {
 const _Button = ({
   ref,
   variant = "primary",
-  color = "accent",
+  color = "primary",
   size = "medium",
   className = "",
   icon,
@@ -60,7 +60,8 @@ const _Button = ({
   children,
   ...restProps
 }: ButtonProps) => {
-  const Icon = icon;
+  const IconRight = iconRight;
+  const IconLeft = iconLeft || icon;
 
   const iconSize = useMemo(() => {
     switch (size) {
@@ -103,8 +104,9 @@ const _Button = ({
         scale: isPressed ? 0.9 : 1,
       }}
     >
-      {Icon && <Icon size={iconSize} {...iconProps} />}
+      {IconLeft && <IconLeft size={iconSize} {...iconProps} />}
       {children}
+      {IconRight && <IconRight size={iconSize} {...iconProps} />}
     </motion.button>
   );
 };
@@ -112,7 +114,7 @@ const _Button = ({
 const _Link = ({
   ref,
   variant = "primary",
-  color = "accent",
+  color = "primary",
   size = "medium",
   className = "",
   borderRadius,
