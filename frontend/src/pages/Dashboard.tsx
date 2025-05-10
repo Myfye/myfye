@@ -82,6 +82,7 @@ function Dashboard() {
       }
 
       const data = await response.json();
+      console.log(data);
       setErrorLogs(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -102,28 +103,54 @@ function Dashboard() {
     });
   };
 
+  const deleteErrorLog = async (logId: string) => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/delete_error_log`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': MYFYE_BACKEND_KEY,
+        },
+        body: JSON.stringify({ error_log_id: logId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete error log');
+      }
+
+      // Remove the deleted log from the state
+      setErrorLogs(prevLogs => prevLogs.filter(log => log.id !== logId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred while deleting the log');
+    }
+  };
+
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <div className="flex justify-center items-center h-screen" style={{color: 'white'}}>Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-red-500 p-4">{error}</div>;
+    return <div className="text-red-500 p-4" style={{color: 'white'}}>{error}</div>;
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6" style={{background: '#000000', minWidth: '100vw', minHeight: '100vh', color: 'white'}}>
       <div className="flex space-x-4 mb-6">
         <button
           onClick={() => setActiveTab('errors')}
           className={`px-4 py-2 rounded ${activeTab === 'errors' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          style={{backgroundColor: activeTab === 'errors' ? '#FF9D00' : '#CCCCCC', padding: '10px', borderRadius: '5px'}}
+          style={{backgroundColor: activeTab === 'errors' ? '#ffffff' : '#000000', 
+            padding: '10px', borderRadius: '5px', 
+            color: activeTab === 'errors' ? 'black' : 'white', fontWeight: 'bold', border: '1px solid #ffffff'}}
         >
           Error Logs
         </button>
         <button
           onClick={() => setActiveTab('users')}
           className={`px-4 py-2 rounded ${activeTab === 'users' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          style={{backgroundColor: activeTab === 'users' ? '#FF9D00' : '#CCCCCC', padding: '10px', borderRadius: '5px'}}
+          style={{backgroundColor: activeTab === 'users' ? '#ffffff' : '#000000', 
+            padding: '10px', borderRadius: '5px', color: activeTab === 'users' ? 'black' : 'white', 
+            fontWeight: 'bold', border: '1px solid #ffffff'}}
         >
           Users
         </button>
@@ -131,34 +158,49 @@ function Dashboard() {
 
       {activeTab === 'errors' ? (
         <div>
-          <h1 style={{fontSize: '24px', fontWeight: 'bold', padding: '20px'}}>Error Logs Dashboard</h1>
+          <h1 style={{fontSize: '24px', fontWeight: 'bold', padding: '20px', color: 'white'}}>Error Logs Dashboard</h1>
           <div className="space-y-6">
             {errorLogs.map((log) => (
-              <div key={log.id} style={{border: '1px solid #ccc', padding: '10px', borderRadius: '5px', margin: '10px'}}>
-                <div style={{fontWeight: 'bold'}}>Error ID:{log.id}</div>
+              <div key={log.id} style={{border: '1px solid #ccc', padding: '10px', borderRadius: '5px', margin: '10px', color: 'white'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <div style={{fontWeight: 'bold'}}>Error ID:{log.id}</div>
+                  <button
+                    onClick={() => deleteErrorLog(log.id)}
+                    style={{
+                      backgroundColor: '#ff4444',
+                      color: 'black',
+                      padding: '5px 10px',
+                      borderRadius: '5px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
                 <div className="grid grid-cols-4 gap-4 mb-2">
                   <div className="col-span-1">
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">User: {log.user_email ? log.user_email : 'Anonymous'}</span>
+                      <span className="font-semibold" style={{color: 'white'}}>User: {log.user_email ? log.user_email : 'Anonymous'}</span>
                     </div>
                   </div>
                   <div className="col-span-1">
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Error Type: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Error Type: </span>
                       {log.error_type}
                     </div>
                   </div>
                   <div className="col-span-1">
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Error Message: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Error Message: </span>
                       {log.error_message}
                     </div>
                   </div>
                   <div className="col-span-1">
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Date: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Date: </span>
                       {new Date(log.creation_date).toLocaleString('en-US', {
-                        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                         year: 'numeric',
                         month: 'numeric',
                         day: 'numeric',
@@ -174,7 +216,7 @@ function Dashboard() {
                 <div className="mt-2">
                   <button
                     onClick={() => toggleStackTrace(log.id)}
-                    style={{backgroundColor: '#CCCCCC', padding: '5px', borderRadius: '5px'}}
+                    style={{backgroundColor: '#CCCCCC', padding: '5px', borderRadius: '5px', color: 'black', fontWeight: 'bold'}}
                   >
                     {expandedLogs.has(log.id) ? 'Hide Stack Trace ^' : 'Show Stack Trace v'}
 
@@ -182,7 +224,7 @@ function Dashboard() {
                   
                   {expandedLogs.has(log.id) && (
                     <div className="mt-2 bg-gray-50 rounded p-3">
-                      <pre className="text-xs whitespace-pre-wrap overflow-x-auto">
+                      <pre className="text-xs whitespace-pre-wrap overflow-x-auto" style={{color: 'white'}}>
                         {log.error_stack_trace}
                       </pre>
                     </div>
@@ -194,42 +236,41 @@ function Dashboard() {
         </div>
       ) : (
         <div>
-          <h1 style={{fontSize: '24px', fontWeight: 'bold', padding: '20px'}}>Users Dashboard</h1>
+          <h1 style={{fontSize: '24px', fontWeight: 'bold', padding: '20px', color: 'white'}}>Users Dashboard</h1>
           <div className="space-y-6">
             {users.map((user) => (
-              <div key={user.uid} style={{border: '1px solid #ccc', padding: '10px', borderRadius: '5px', margin: '10px'}}>
+              <div key={user.uid} style={{border: '1px solid #ccc', padding: '10px', borderRadius: '5px', margin: '10px', color: 'white'}}>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">User ID: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>User ID: </span>
                       {user.uid}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Email: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Email: </span>
                       {user.email}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Name: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Name: </span>
                       {user.first_name} {user.last_name}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Phone: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Phone: </span>
                       {user.phone_number || 'N/A'}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Country: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Country: </span>
                       {user.country || 'N/A'}
                     </div>
                   </div>
                   <div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">KYC Verified: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>KYC Verified: </span>
                       {user.kyc_verified ? 'Yes' : 'No'}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Created: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Created: </span>
                       {new Date(user.creation_date).toLocaleString('en-US', {
-                        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                         year: 'numeric',
                         month: 'numeric',
                         day: 'numeric',
@@ -240,15 +281,15 @@ function Dashboard() {
                       })}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Last Login: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Last Login: </span>
                       {user.last_login_date ? new Date(user.last_login_date).toLocaleString() : 'Never'}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">EVM Pub Key: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>EVM Pub Key: </span>
                       {user.evm_pub_key || 'N/A'}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold text-gray-600">Solana Pub Key: </span>
+                      <span className="font-semibold" style={{color: 'white'}}>Solana Pub Key: </span>
                       {user.solana_pub_key || 'N/A'}
                     </div>
                   </div>

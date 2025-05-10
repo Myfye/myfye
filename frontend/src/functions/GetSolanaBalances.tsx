@@ -28,6 +28,8 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
         balance: Number(tokenBalances.usdy),
       })
     );
+
+    console.log("eurc balance", tokenBalances.eurc);
     dispatch(
       updateBalance({
         assetId: "eurc_sol",

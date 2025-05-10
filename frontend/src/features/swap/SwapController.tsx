@@ -101,6 +101,8 @@ const MaxAmountButton = ({
     abstractedAssetId
       ? selectAbstractedAssetWithBalance(state, abstractedAssetId)
       : null
+
+    
   );
 
   return (
@@ -111,12 +113,38 @@ const MaxAmountButton = ({
         color="neutral"
         onPress={() => {
           if (!asset) return;
-          dispatch(
-            updateAmount({
-              input: asset.balance,
-              replace: true,
-            })
-          );
+
+          if (asset.id == "sol") {
+
+            // We have to keep 0.0015 Sol for transaction fees
+            const solFee = 0.0025;
+            if (asset.balance - solFee > 0.00001) {
+              const formattedAmount = (asset.balance - solFee).toFixed(10);
+              dispatch(
+                updateAmount({
+                  input: formattedAmount,
+                  replace: true,
+                })
+              );
+            } else {
+              dispatch(
+                updateAmount({
+                  input: 0,
+                  replace: true,
+                })
+              );
+            }
+
+          } else {
+            dispatch(
+              updateAmount({
+                input: asset.balance,
+                replace: true,
+              })
+            );
+          }
+
+          console.log('Max pressed for', asset)
         }}
       >
         MAX

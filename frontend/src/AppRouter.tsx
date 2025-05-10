@@ -33,6 +33,8 @@ import PrivyUseSolanaWallets from "@/shared/components/PrivyUseSolanaWallets.tsx
 import peopleOnMyfye from "@/assets/peopleOnMyfye.png";
 import { useNavigate } from "react-router-dom";
 import { checkIfMobileOrTablet } from "./shared/utils/mobileUtils.ts";
+import MFAOnboarding from "./pages/app/login/mfaOnboarding.tsx";
+
 function WebAppInner() {
   window.Buffer = Buffer;
 
@@ -109,6 +111,14 @@ function WebAppInner() {
 
   if (authenticated) {
     if (userDataLoaded) {
+
+      if (!user.wallet?.address || !user.wallet.address.startsWith('0x')) {
+        // normal user flow was interrupted, show onboarding
+        return (
+          <MFAOnboarding />
+        );
+      }
+
       if (mfaStatus === "enrolled") {
         return (
           <div className="app-layout">
@@ -127,52 +137,12 @@ function WebAppInner() {
       }
       if (mfaStatus === "createdPasskey") {
         return (
-          <div className="app-layout">
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <div style={{ marginTop: "80px" }}>
-                <button
-                  onClick={showMfaEnrollmentModal}
-                  style={{
-                    color: "#ffffff",
-                    fontSize: "25px",
-                    fontWeight: "bold",
-                    background: "#447E26",
-                    borderRadius: "10px",
-                    border: "3px solid #ffffff",
-                    padding: "15px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Enroll in MFA
-                </button>
-              </div>
-            </div>
-          </div>
+          <MFAOnboarding />
         );
       }
       if (mfaStatus === "" || !mfaStatus) {
         return (
-          <div className="app-layout">
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <div style={{ marginTop: "80px" }}>
-                <button
-                  onClick={linkPasskey}
-                  style={{
-                    color: "#ffffff",
-                    fontSize: "25px",
-                    fontWeight: "bold",
-                    background: "#447E26",
-                    borderRadius: "10px",
-                    border: "3px solid #ffffff",
-                    padding: "15px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Create A Passkey
-                </button>
-              </div>
-            </div>
-          </div>
+          <MFAOnboarding />
         );
       }
     } else {

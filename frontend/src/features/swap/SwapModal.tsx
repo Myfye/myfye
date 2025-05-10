@@ -5,7 +5,7 @@ import Modal from "@/shared/components/ui/modal/Modal";
 import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleModal, toggleOverlay, unmount, updateAmount } from "./swapSlice";
+import { toggleModal, toggleOverlay, unmount, updateAmount, updateUserId, updateSolanaPubKey } from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
@@ -25,6 +25,9 @@ const SwapModal = () => {
 
   const intervalDelete = useRef<NodeJS.Timeout | null>(null);
   const delayDelete = useRef<NodeJS.Timeout | null>(null);
+
+  const user_id = useSelector((state: RootState) => state.userWalletData.currentUserID);
+  const solanaPubKey = useSelector((state: RootState) => state.userWalletData.solanaPubKey);
 
   const startDelete = (input: string) => {
     intervalDelete.current = setInterval(() => {
@@ -47,6 +50,12 @@ const SwapModal = () => {
 
   const handleOpen = (e: boolean) => {
     dispatch(toggleModal({ isOpen: e }));
+    if (e) {
+      console.log("adding user_id to trx", user_id);
+      console.log("adding solanaPubKey to trx", solanaPubKey);
+      dispatch(updateUserId(user_id));
+      dispatch(updateSolanaPubKey(solanaPubKey));
+    }
   };
 
   const handleNumberPressStart = (input: string) => {

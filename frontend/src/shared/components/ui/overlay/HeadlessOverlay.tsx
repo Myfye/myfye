@@ -37,6 +37,8 @@ const HeadlessOverlay = ({
       <AnimatePresence onExitComplete={onExitComplete}>
         {isOpen && (
           <MotionDialog
+            open={isOpen}
+            onClose={() => onOpenChange(false)}
             css={css`
               position: fixed;
               inset: 0;

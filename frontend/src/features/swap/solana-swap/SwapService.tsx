@@ -1,9 +1,6 @@
 import { PublicKey, Connection, VersionedTransaction } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
 import getTokenAccountData from "../../../functions/GetSolanaTokenAccount.tsx";
-import { getFunctions, httpsCallable } from "firebase/functions";
-const SERVER_SOLANA_PUBLIC_KEY = import.meta.env
-  .VITE_REACT_APP_SERVER_SOLANA_PUBLIC_KEY;
 import prepareTransaction from "./PrepareSwap.tsx";
 import mintAddress from "./MintAddress.tsx";
 import verifyTransaction from "./VerifyTransaction.tsx";
@@ -13,9 +10,13 @@ import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
 import { Asset, AssetsState } from "@/features/assets/types.ts";
 import { logError } from "../../../functions/LogError.tsx";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
+
+const SERVER_SOLANA_PUBLIC_KEY = import.meta.env
+  .VITE_REACT_APP_SERVER_SOLANA_PUBLIC_KEY;
 
 export const swap = async ({
   wallet,
@@ -232,12 +233,14 @@ const swapTransaction = async (
 
   try {
     const fullySignedTx = await wallet.signTransaction(serverSignedTransaction);
+    
     //simulate(fullySignedTx);
 
     const transactionId = await wallet.sendTransaction!(
       fullySignedTx,
       connection
     );
+
 
     // Update the transaction object with the correct amounts from the quote
     if (quoteData && transaction) {
@@ -331,7 +334,8 @@ const swapTransaction = async (
         transactionDetails: transactionDetails
       }, null, 2)}`
     );
-    throw error;
+    
+    dispatch(updateStatus("fail"));
   }
 };
 
@@ -348,18 +352,25 @@ async function signTransactionOnBackend(transaction: any) {
   // Serialize for server signing
   const serializedTx = Buffer.from(transaction.serialize()).toString("base64");
 
-  const functions = getFunctions();
-  const signTransactionFn = httpsCallable(
-    functions,
-    "signVersionedTransaction"
-  );
+  // Send to backend for signing
+  const response = await fetch(`${MYFYE_BACKEND}/sign_versioned_transaction`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': MYFYE_BACKEND_KEY,
+    },
+    body: JSON.stringify({
+      serializedTransaction: serializedTx,
+    }),
+  });
 
-  // Send to Firebase for signing
-  const signTransactionResponse = (await signTransactionFn({
-    serializedTransaction: serializedTx,
-  })) as { data: { signedTransaction?: string; error?: string } };
+  if (!response.ok) {
+    console.error("Server signing error:", response.status, await response.text());
+    return false;
+  }
 
-  const { signedTransaction, error } = signTransactionResponse.data;
+  const responseData = await response.json();
+  const { signedTransaction, error } = responseData;
 
   if (error) {
     console.error("Server signing error:", error);
@@ -387,17 +398,17 @@ async function signTransactionOnBackend(transaction: any) {
   });
 
   if (
-    signTransactionResponse.data.error ||
-    !signTransactionResponse.data.signedTransaction
+    error ||
+    !signedTransaction
   ) {
-    console.error("Signing failed:", signTransactionResponse.data.error);
+    console.error("Signing failed:", error);
     return false;
   }
 
   // Deserialize and send the signed transaction
   const signedTx = VersionedTransaction.deserialize(
     new Uint8Array(
-      Buffer.from(signTransactionResponse.data.signedTransaction, "base64")
+      Buffer.from(signedTransaction, "base64")
     )
   );
   return signedTx;

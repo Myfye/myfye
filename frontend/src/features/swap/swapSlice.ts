@@ -52,6 +52,8 @@ const initialState: SwapState = {
     fee: null,
     status: "idle",
     id: null,
+    user_id: null,
+    solanaPubKey: null,
   },
 };
 
@@ -93,25 +95,20 @@ const swapSlice = createSlice({
         replace?: boolean;
       }>
     ) {
-      // first, change the sell amount label
       state.transaction.sell.formattedAmount = updateFormattedAmount(
         state.transaction.sell.formattedAmount,
         action.payload.input,
-        action.payload.replace
+        action.payload.replace || false
       );
 
-      // next, change the sell amount
       const parsedFormattedSellAmount = parseFormattedAmount(
         state.transaction.sell.formattedAmount
       );
 
-      isNaN(parsedFormattedSellAmount)
-        ? (state.transaction.sell.amount = null)
-        : (state.transaction.sell.amount = parsedFormattedSellAmount);
+      state.transaction.sell.amount = isNaN(parsedFormattedSellAmount)
+        ? null
+        : parsedFormattedSellAmount;
 
-      // once that's done, get the exchange rate and multiply that buy the amount
-
-      // if no exchange rate or sell amount, don't bother calculating the buy amounts and reset them
       if (!state.transaction.sell.amount || !state.transaction.exchangeRate) {
         state.transaction.buy.amount = null;
         state.transaction.buy.formattedAmount = "";
@@ -119,7 +116,7 @@ const swapSlice = createSlice({
       }
 
       state.transaction.buy.amount =
-        state.transaction.sell.amount * state.transaction.exchangeRate;
+        Math.round((state.transaction.sell.amount * state.transaction.exchangeRate) * 1000000) / 1000000;
 
       state.transaction.buy.formattedAmount = updateFormattedAmount(
         state.transaction.buy.formattedAmount,
@@ -151,16 +148,14 @@ const swapSlice = createSlice({
         sellAbstractedAssetId: action.payload.sellAbstractedAssetId,
       });
 
-      // if no exchange rate or sell amount, don't bother calculating the buy amounts and reset them
       if (!state.transaction.sell.amount || !state.transaction.exchangeRate) {
         state.transaction.buy.amount = null;
         state.transaction.buy.formattedAmount = "";
         return state;
       }
 
-      // then just update the buyAmount
       state.transaction.buy.amount =
-        state.transaction.sell.amount * state.transaction.exchangeRate;
+        Math.round((state.transaction.sell.amount * state.transaction.exchangeRate) * 1000000) / 1000000;
 
       state.transaction.buy.formattedAmount = updateFormattedAmount(
         state.transaction.buy.formattedAmount,
@@ -173,6 +168,12 @@ const swapSlice = createSlice({
     },
     updateId(state, action: PayloadAction<string>) {
       state.transaction.id = action.payload;
+    },
+    updateUserId(state, action: PayloadAction<string>) {
+      state.transaction.user_id = action.payload;
+    },
+    updateSolanaPubKey(state, action: PayloadAction<string>) {
+      state.transaction.solanaPubKey = action.payload;
     },
     updateZIndex(state, action: PayloadAction<number>) {
       state.modal.zIndex = action.payload;
@@ -200,6 +201,8 @@ export const {
   unmount,
   updateStatus,
   updateId,
+  updateUserId,
+  updateSolanaPubKey,
   switchCurrencies,
 } = swapSlice.actions;
 export default swapSlice.reducer;
