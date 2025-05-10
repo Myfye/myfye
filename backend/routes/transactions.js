@@ -21,6 +21,12 @@ async function createSwapTransaction(data) {
         throw new Error('User ID, input amount, public key, and transaction hash are required');
     }
     
+    // Create UTC timestamp
+    const now = new Date();
+    const utcTimestamp = now.toISOString();
+        
+    console.log("Creating user with UTC timestamp:", utcTimestamp);
+
     // Create new swap transaction
     const query = `
     INSERT INTO swap_transactions (
@@ -36,7 +42,7 @@ async function createSwapTransaction(data) {
         transaction_hash, 
         transaction_status,
         creation_date
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP)
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     RETURNING *
     `;
 
@@ -51,7 +57,8 @@ async function createSwapTransaction(data) {
         output_currency, 
         transaction_type, 
         transaction_hash, 
-        transaction_status
+        transaction_status,
+        now
     ];
 
     try {

@@ -4,6 +4,12 @@ async function createErrorLog(data) {
     console.log("\n=== New Error Log Creation Request Received ===");
     console.log("Error log data:", JSON.stringify(data, null, 2));
 
+    // Create UTC timestamp
+    const now = new Date();
+    const utcTimestamp = now.toISOString();
+    
+    console.log("Creating error log with UTC timestamp:", utcTimestamp);
+
     const query = `
         INSERT INTO error_logs (
             user_id,
@@ -11,7 +17,7 @@ async function createErrorLog(data) {
             error_type,
             error_stack_trace,
             creation_date
-        ) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
+        ) VALUES ($1, $2, $3, $4, $5)
         RETURNING *
     `;
 
@@ -19,7 +25,8 @@ async function createErrorLog(data) {
         data.user_id || null,
         data.error_message,
         data.error_type,
-        data.error_stack_trace || null
+        data.error_stack_trace || null,
+        now
     ];
 
     try {
@@ -28,6 +35,7 @@ async function createErrorLog(data) {
             throw new Error('Failed to create error log');
         }
         console.log("Error log creation result:", JSON.stringify(result.rows[0], null, 2));
+        console.log("Error log creation date (UTC):", utcTimestamp);
         return result.rows[0];
     } catch (error) {
         console.error('Error creating error log:', error);
@@ -59,7 +67,31 @@ async function getErrorLogs() {
     }
 }
 
+async function deleteErrorLog(errorLogId) {
+    console.log("\n=== Deleting Error Log ===");
+    console.log("Error log ID:", errorLogId);
+
+    const query = `
+        DELETE FROM error_logs
+        WHERE id = $1
+        RETURNING *
+    `;
+
+    try {
+        const result = await pool.query(query, [errorLogId]);
+        if (result.rows.length === 0) {
+            throw new Error('Error log not found');
+        }
+        console.log("Error log deletion result:", JSON.stringify(result.rows[0], null, 2));
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error deleting error log:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     createErrorLog,
-    getErrorLogs
+    getErrorLogs,
+    deleteErrorLog
 };

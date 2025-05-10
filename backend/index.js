@@ -17,7 +17,7 @@ const {
     updateSolanaPubKey, 
     getUserByPrivyId,
     getAllUsers } = require('./routes/userDb');
-const { createErrorLog, getErrorLogs } = require('./routes/errorLog');
+const { createErrorLog, getErrorLogs, deleteErrorLog } = require('./routes/errorLog');
 const { 
     createContact, 
     getContacts, 
@@ -494,6 +494,29 @@ app.post("/get_all_users", generalLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to fetch users",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/delete_error_log", generalLimiter, async (req, res) => {
+  console.log("\n=== Delete Error Log Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { error_log_id } = req.body;
+    if (!error_log_id) {
+      return res.status(400).json({ error: 'Error log ID is required' });
+    }
+    const result = await deleteErrorLog(error_log_id);
+    console.log("Error log deletion result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_error_log endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to delete error log",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });

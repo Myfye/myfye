@@ -1,6 +1,6 @@
 const web3 = require('@solana/web3.js');
 const buffer = require('buffer');
-const bs58 = require('bs58');
+const bs58 = require('bs58').default;
 const VersionedTransaction = web3.VersionedTransaction;
 const Keypair = web3.Keypair;
 const Transaction = web3.Transaction;
@@ -76,4 +76,9 @@ async function signTransaction(data) {
     console.error("Error signing transaction:", error);
     return { error: error.message };
   }
+};
+
+// Export functions for use in other modules
+module.exports = {
+  signVersionedTransaction,
 };
