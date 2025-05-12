@@ -25,5 +25,6 @@ export interface SwapTransaction {
   id: string | null;
   transactionType?: string;
   user_id: string | null;
-  solanaPubKey: string | null;
+  inputPublicKey: string | null;
+  outputPublicKey: string | null;
 }

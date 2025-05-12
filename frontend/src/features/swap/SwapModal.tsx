@@ -5,7 +5,7 @@ import Modal from "@/shared/components/ui/modal/Modal";
 import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleModal, toggleOverlay, unmount, updateAmount, updateUserId, updateSolanaPubKey } from "./swapSlice";
+import { toggleModal, toggleOverlay, unmount, updateAmount, updateUserId, updateInputPublicKey, updateOutputPublicKey } from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
@@ -28,7 +28,8 @@ const SwapModal = () => {
 
   const user_id = useSelector((state: RootState) => state.userWalletData.currentUserID);
   const solanaPubKey = useSelector((state: RootState) => state.userWalletData.solanaPubKey);
-
+  const evmPubKey = useSelector((state: RootState) => state.userWalletData.evmPubKey);
+  
   const startDelete = (input: string) => {
     intervalDelete.current = setInterval(() => {
       dispatch(updateAmount({ input }));
@@ -48,13 +49,27 @@ const SwapModal = () => {
     if (transaction.buy.formattedAmount === "") stopDelete();
   }, [transaction]);
 
+  useEffect(() => {
+    console.log("adding user_id to trx", user_id);
+    console.log("adding solanaPubKey to trx", solanaPubKey);
+    console.log("Full userWalletData state:", {
+      user_id,
+      solanaPubKey,
+      evmPubKey
+    });
+    if (solanaPubKey) {
+      dispatch(updateUserId(user_id));
+      dispatch(updateInputPublicKey(solanaPubKey));
+      dispatch(updateOutputPublicKey(solanaPubKey));
+    } else {
+      console.warn("solanaPubKey is not available in the Redux store");
+    }
+  }, [user_id, solanaPubKey]);
+
   const handleOpen = (e: boolean) => {
     dispatch(toggleModal({ isOpen: e }));
     if (e) {
-      console.log("adding user_id to trx", user_id);
-      console.log("adding solanaPubKey to trx", solanaPubKey);
-      dispatch(updateUserId(user_id));
-      dispatch(updateSolanaPubKey(solanaPubKey));
+
     }
   };
 

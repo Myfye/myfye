@@ -26,7 +26,8 @@ const {
 } = require('./routes/interUser');
 const { 
     createSwapTransaction, 
-    getSwapTransactionsByUserId 
+    getSwapTransactionsByUserId,
+    getAllSwapTransactions 
 } = require('./routes/transactions');
 
 app.set('trust proxy', true);
@@ -222,6 +223,24 @@ app.post('/get_swap_transactions', generalLimiter, async (req, res) => {
     } catch (error) {
         console.error("Error in /get_swap_transactions endpoint:", error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+app.post("/get_all_swap_transactions", generalLimiter, async (req, res) => {
+    console.log("\n=== Get All Swap Transactions Request Received ===");
+
+    try {
+        const result = await getAllSwapTransactions();
+        console.log(`Retrieved ${result.length} swap transactions`);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_all_swap_transactions endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to fetch swap transactions",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 

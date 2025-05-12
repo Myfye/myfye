@@ -53,7 +53,8 @@ const initialState: SwapState = {
     status: "idle",
     id: null,
     user_id: null,
-    solanaPubKey: null,
+    inputPublicKey: null,
+    outputPublicKey: null,
   },
 };
 
@@ -172,8 +173,11 @@ const swapSlice = createSlice({
     updateUserId(state, action: PayloadAction<string>) {
       state.transaction.user_id = action.payload;
     },
-    updateSolanaPubKey(state, action: PayloadAction<string>) {
-      state.transaction.solanaPubKey = action.payload;
+    updateInputPublicKey(state, action: PayloadAction<string>) {
+      state.transaction.inputPublicKey = action.payload;
+    },
+    updateOutputPublicKey(state, action: PayloadAction<string>) {
+      state.transaction.outputPublicKey = action.payload;
     },
     updateZIndex(state, action: PayloadAction<number>) {
       state.modal.zIndex = action.payload;
@@ -202,7 +206,8 @@ export const {
   updateStatus,
   updateId,
   updateUserId,
-  updateSolanaPubKey,
+  updateInputPublicKey,
+  updateOutputPublicKey,
   switchCurrencies,
 } = swapSlice.actions;
 export default swapSlice.reducer;

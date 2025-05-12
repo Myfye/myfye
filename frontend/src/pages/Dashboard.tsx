@@ -32,18 +32,37 @@ interface User {
   last_login_date: string;
 }
 
+interface SwapTransaction {
+  id: string;
+  user_id: string;
+  input_amount: string;
+  output_amount: string;
+  input_chain: string;
+  output_chain: string;
+  input_public_key: string;
+  output_public_key: string;
+  input_currency: string;
+  output_currency: string;
+  transaction_type: string;
+  transaction_hash: string;
+  transaction_status: string;
+  creation_date: string;
+}
+
 function Dashboard() {
   const navigate = useNavigate();
   const [errorLogs, setErrorLogs] = useState<ErrorLog[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [swapTransactions, setSwapTransactions] = useState<SwapTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedLogs, setExpandedLogs] = useState<Set<string>>(new Set());
-  const [activeTab, setActiveTab] = useState<'errors' | 'users'>('errors');
+  const [activeTab, setActiveTab] = useState<'errors' | 'users' | 'transactions'>('errors');
 
   useEffect(() => {
     fetchErrorLogs();
     fetchUsers();
+    fetchSwapTransactions();
   }, []);
 
   const fetchUsers = async () => {
@@ -88,6 +107,27 @@ function Dashboard() {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSwapTransactions = async () => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/get_all_swap_transactions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': MYFYE_BACKEND_KEY,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch swap transactions');
+      }
+
+      const data = await response.json();
+      setSwapTransactions(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -153,6 +193,15 @@ function Dashboard() {
             fontWeight: 'bold', border: '1px solid #ffffff'}}
         >
           Users
+        </button>
+        <button
+          onClick={() => setActiveTab('transactions')}
+          className={`px-4 py-2 rounded ${activeTab === 'transactions' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          style={{backgroundColor: activeTab === 'transactions' ? '#ffffff' : '#000000', 
+            padding: '10px', borderRadius: '5px', color: activeTab === 'transactions' ? 'black' : 'white', 
+            fontWeight: 'bold', border: '1px solid #ffffff'}}
+        >
+          Swap Transactions
         </button>
       </div>
 
@@ -234,7 +283,7 @@ function Dashboard() {
             ))}
           </div>
         </div>
-      ) : (
+      ) : activeTab === 'users' ? (
         <div>
           <h1 style={{fontSize: '24px', fontWeight: 'bold', padding: '20px', color: 'white'}}>Users Dashboard</h1>
           <div className="space-y-6">
@@ -291,6 +340,78 @@ function Dashboard() {
                     <div className="text-sm">
                       <span className="font-semibold" style={{color: 'white'}}>Solana Pub Key: </span>
                       {user.solana_pub_key || 'N/A'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <h1 style={{fontSize: '24px', fontWeight: 'bold', padding: '20px', color: 'white'}}>Swap Transactions Dashboard</h1>
+          <div className="space-y-6">
+            {swapTransactions.map((transaction) => (
+              <div key={transaction.id} style={{border: '1px solid #ccc', padding: '10px', borderRadius: '5px', margin: '10px', color: 'white'}}>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Transaction ID: </span>
+                      {transaction.id}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>User ID: </span>
+                      {transaction.user_id}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Input Amount: </span>
+                      {transaction.input_amount} 
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Input Mint / Contract: </span>
+                      {transaction.input_currency}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Output Amount: </span>
+                      {transaction.output_amount} 
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>OutputMint / Contract: </span>
+                      {transaction.output_currency}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Status: </span>
+                      {transaction.transaction_status}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Input Chain: </span>
+                      {transaction.input_chain}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Output Chain: </span>
+                      {transaction.output_chain}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Type: </span>
+                      {transaction.transaction_type}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Created: </span>
+                      {new Date(transaction.creation_date).toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true
+                      })}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Transaction Hash: </span>
+                      <span style={{wordBreak: 'break-all'}}>{transaction.transaction_hash}</span>
                     </div>
                   </div>
                 </div>

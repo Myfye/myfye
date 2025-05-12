@@ -10,7 +10,7 @@ function App() {
       <Routes>
         <Route path="/app" element={<AppRouter />} />
         <Route path="/" element={<LandingPage />} />
-        <Route path="/tq73g9q" element={<Dashboard />} />
+        <Route path="/tq73g9q9fa3hfw9fof0q9bf0dfvnbetw" element={<Dashboard />} />
       </Routes>
     </Router>
   );

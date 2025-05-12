@@ -48,7 +48,12 @@ async function verifyTransaction(
             "Transaction details:",
             JSON.stringify(transaction, null, 2)
           );
-          saveTransaction(transaction, transactionId, wallet);
+          saveTransaction(
+            transaction, 
+            transactionId, 
+            wallet,
+            transaction.user_id
+          );
           dispatch(updateStatus("success"));
           dispatch(updateId(transactionId));
 
@@ -94,19 +99,28 @@ async function saveTransaction(
   transactionId: string,
   wallet: ConnectedSolanaWallet,
   user_id: string,
-  solanaPubKey: string
 ) {
+  // Use the transaction's public keys or fall back to the wallet's public key
+  const inputPublicKey = transaction.inputPublicKey;
+  const outputPublicKey = transaction.outputPublicKey;
+
+  if (!inputPublicKey || !outputPublicKey) {
+    console.error("Missing public keys:", { inputPublicKey, outputPublicKey });
+    return;
+  }
+
   console.log(
     "Transaction: ",
     "user_id:", user_id,
     "input_amount:", transaction.sell.amount,
     "output_amount:", transaction.buy.amount,
     "input_chain:", "solana",
-    "output_chain:", transaction.buy.chain,
-    "public_key:", solanaPubKey,
+    "output_chain:", "solana",
+    "input_public_key:", inputPublicKey,
+    "output_public_key:", outputPublicKey,
     "input_currency:", transaction.sell.assetId,
     "output_currency:", transaction.buy.assetId,
-    "transaction_type:", transaction.transactionType,
+    "transaction_type:", "solana-jupiter",
     "transaction_hash:", transactionId,
     "transaction_status:", "success"
   );
@@ -126,10 +140,11 @@ async function saveTransaction(
       output_amount: transaction.buy.amount,
       input_chain: "solana",
       output_chain: transaction.buy.chain,
-      public_key: wallet.publicKey?.toString(),
+      input_public_key: inputPublicKey,
+      output_public_key: outputPublicKey,
       input_currency: transaction.sell.assetId,
       output_currency: transaction.buy.assetId,
-      transaction_type: transaction.transactionType,
+      transaction_type: "solana-jupiter",
       transaction_hash: transactionId,
       transaction_status: "success"
     })

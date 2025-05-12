@@ -9,7 +9,8 @@ async function createSwapTransaction(data) {
         output_amount,
         input_chain,
         output_chain,
-        public_key,
+        input_public_key,
+        output_public_key,
         input_currency,
         output_currency,
         transaction_type,
@@ -17,8 +18,11 @@ async function createSwapTransaction(data) {
         transaction_status
      } = data;
 
-    if (!user_id || !input_amount || !public_key || !transaction_hash) {
-        throw new Error('User ID, input amount, public key, and transaction hash are required');
+    if (!user_id || !input_amount || !input_public_key || !output_public_key || !transaction_hash) {
+        console.error('Missing required fields user_id:', user_id, 'input_amount:', 
+            input_amount, 'input_public_key:', input_public_key, 'output_public_key:', 
+            output_public_key, 'transaction_hash:', transaction_hash);
+        throw new Error('User ID, input amount, input public key, output public key, and transaction hash are required');
     }
     
     // Create UTC timestamp
@@ -35,14 +39,15 @@ async function createSwapTransaction(data) {
         output_amount, 
         input_chain, 
         output_chain, 
-        public_key, 
+        input_public_key,
+        output_public_key,
         input_currency, 
         output_currency, 
         transaction_type, 
         transaction_hash, 
         transaction_status,
         creation_date
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     RETURNING *
     `;
 
@@ -52,7 +57,8 @@ async function createSwapTransaction(data) {
         output_amount, 
         input_chain, 
         output_chain, 
-        public_key, 
+        input_public_key,
+        output_public_key,
         input_currency, 
         output_currency, 
         transaction_type, 
@@ -94,7 +100,26 @@ async function getSwapTransactionsByUserId(userId) {
     }
 }
 
+async function getAllSwapTransactions() {
+    console.log("\n=== Fetching All Swap Transactions ===");
+    
+    const query = `
+    SELECT * FROM swap_transactions 
+    ORDER BY creation_date DESC
+    `;
+
+    try {
+        const result = await pool.query(query);
+        console.log(`Found ${result.rows.length} swap transactions`);
+        return result.rows;
+    } catch (error) {
+        console.error('Error fetching all swap transactions:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     createSwapTransaction,
-    getSwapTransactionsByUserId
+    getSwapTransactionsByUserId,
+    getAllSwapTransactions
 };
