@@ -28,7 +28,8 @@ const {
     createSwapTransaction, 
     getSwapTransactionsByUserId,
     getAllSwapTransactions 
-} = require('./routes/transactions');
+} = require('./routes/swapTransactions');
+const { createPayTransaction } = require('./routes/payTransactions');
 
 app.set('trust proxy', true);
 
@@ -241,6 +242,18 @@ app.post("/get_all_swap_transactions", generalLimiter, async (req, res) => {
             details: error.toString(),
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
+    }
+});
+
+/* Pay transaction endpoints */
+app.post('/create_pay_transaction', generalLimiter, async (req, res) => {
+    try {
+        const payData = req.body;
+        const result = await createPayTransaction(payData);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /create_pay_transaction endpoint:", error);
+        res.status(500).json({ error: error.message });
     }
 });
 

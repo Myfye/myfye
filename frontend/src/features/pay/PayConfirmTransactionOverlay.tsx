@@ -9,6 +9,7 @@ import PaySummary from "./PaySummary";
 import { tokenTransfer } from "@/functions/Transaction";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
 import toast from "react-hot-toast/headless";
+import { savePayTransaction } from "./PaySaveTransaction";
 
 const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -23,6 +24,8 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
   const { wallets } = useSolanaWallets();
   const wallet = wallets[0];
+
+  const currentUserID = useSelector((state: RootState) => state.userWalletData.currentUserID);
 
   const solanaPubKey = useSelector(
     (state: any) => state.userWalletData.solanaPubKey
@@ -88,6 +91,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     const sendAmountMicro = sendAmount * 1000000;
 
     let assetCode = "";
+
     if (transaction.abstractedAssetId === "us_dollar_yield") {
       assetCode = "usdySol";
     } else if (transaction.abstractedAssetId === "us_dollar") {
@@ -122,6 +126,20 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
     if (result.success) {
       console.log("Transaction successful:", result.transactionId);
+      
+      // Save the transaction to the database
+      try {
+        await savePayTransaction(
+          transaction,
+          result.transactionId,
+          wallet,
+          currentUserID
+        );
+      } catch (error) {
+        console.error("Failed to save transaction:", error);
+        // Continue with the success flow even if saving fails
+      }
+
       dispatch(unmount());
       toast.success(
         `Sent $${transaction.formattedAmount} to ${
@@ -130,6 +148,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       );
       // TODO save transaction to db
 
+      
       // TODO update user balance
       // TODO update suer interface
     } else {
@@ -183,15 +202,9 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
                   justify-content: space-between;
                 `}
               >
-                <span className="heading-small">CBBTC contract</span>
-                <span
-                  css={css`
-                    font-size: var(--fs-medium);
-                    color: var(--clr-text);
-                  `}
-                >
-                  0xcbb7...3bf
-                </span>
+                
+
+
               </li>
               <li
                 css={css`
@@ -199,31 +212,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
                   justify-content: space-between;
                 `}
               >
-                <span className="heading-small">Slippage tolerance</span>{" "}
-                <span
-                  css={css`
-                    font-size: var(--fs-medium);
-                    color: var(--clr-text);
-                  `}
-                >
-                  3%
-                </span>
-              </li>
-              <li
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              >
-                <span className="heading-small">Coinbase fee</span>{" "}
-                <span
-                  css={css`
-                    font-size: var(--fs-medium);
-                    color: var(--clr-text);
-                  `}
-                >
-                  $0.02
-                </span>
+
               </li>
               <li
                 css={css`
@@ -238,7 +227,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
                     color: var(--clr-text);
                   `}
                 >
-                  $0.09 - $0.10
+                  $0
                 </span>
               </li>
             </ul>

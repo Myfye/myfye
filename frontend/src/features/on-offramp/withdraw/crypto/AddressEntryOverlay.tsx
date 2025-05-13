@@ -5,6 +5,10 @@ import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import WithdrawConfirmTransactionOverlay from "./WithdrawConfirmTransactionOverlay";
 import WithdrawProcessingTransactionOverlay from "./WithdrawProcessingTransactionOverlay";
+import { tokenTransfer } from "@/functions/Transaction";
+import toast from "react-hot-toast/headless";
+import { useSelector } from "react-redux";
+import { useSolanaWallets } from "@privy-io/react-auth/solana";
 
 interface AddressEntryOverlayProps {
   isOpen: boolean;
@@ -39,18 +43,53 @@ const AddressEntryOverlay = ({
     }
   };
 
+  const userID = useSelector((state: RootState) => state.userWalletData.currentUserID);
+  const solanaPubKey = useSelector((state: RootState) => state.userWalletData.solanaPubKey);
+  const { wallets } = useSolanaWallets();
+  const wallet = wallets[0];
+
   const handleConfirm = async () => {
+
+    console.log('userID', userID);
     setShowConfirm(false);
     setShowProcessing(true);
     setProcessingStatus("idle");
 
     try {
-      // TODO: Implement actual withdrawal logic here
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulated delay
-      setProcessingStatus("success");
+    
+      if (!amount) throw new Error("Amount is required");
+      if (!userID) throw new Error("User ID is required");
+      if (!selectedToken) throw new Error("Token is required");
+
+      let assetCode = "";
+      if (selectedToken === "USDC") {
+        assetCode = "usdcSol";
+      } else if (selectedToken === "EURC") {
+        assetCode = "eurcSol";
+      }
+
+      const sendAmount = parseFloat(amount);
+      const sendAmountMicro = sendAmount * 1000000;
+
+      const result = await tokenTransfer(
+        solanaPubKey,
+        address,
+        sendAmountMicro,
+        assetCode,
+        wallet
+      );
+
+      if (result.success) {
+        console.log("Transaction successful:", result.transactionId);
+        setProcessingStatus("success");
+        toast.success(`Sent ${amount} ${selectedToken} to ${address.slice(0, 6)}...${address.slice(-4)}`);
+      } else {
+        throw new Error(result.error || "Transaction failed");
+      }
     } catch (error) {
       console.error("Withdrawal failed:", error);
       setProcessingStatus("fail");
+      toast.error(error instanceof Error ? error.message : "Error sending money. Please try again");
     }
   };
 
@@ -58,6 +97,88 @@ const AddressEntryOverlay = ({
     setShowProcessing(false);
     if (processingStatus === "success") {
       onOpenChange(false);
+    }
+  };
+
+
+  const handleTransactionSubmit = async () => {
+    if (!amount) return;
+    if (!userID) return;
+    if (!selectedToken) return;
+    // toggle overlay
+    // TO do: toggle the withdraw processing overlay
+
+    // next, go through transaction
+
+    const sellAbstractedAsset =
+      assets.abstractedAssets[transaction.abstractedAssetId];
+    if (!sellAbstractedAsset) return;
+
+    // Get all assets associated with this abstracted asset
+    const associatedAssets = sellAbstractedAsset.assetIds.map(
+      (assetId) => assets.assets[assetId]
+    );
+
+    // Calculate the total balance in USD
+    const totalBalance = associatedAssets.reduce(
+      (total, asset) => total + asset.balance,
+      0
+    );
+
+    // Fix: Ensure sendAmount is capped at the totalBalance
+    const sendAmount =
+      transaction.amount > totalBalance ? totalBalance : transaction.amount;
+
+    const sendAmountMicro = sendAmount * 1000000;
+
+    let assetCode = "";
+    if (transaction.abstractedAssetId === "us_dollar_yield") {
+      assetCode = "usdySol";
+    } else if (transaction.abstractedAssetId === "us_dollar") {
+      assetCode = "usdcSol";
+    } else if (transaction.abstractedAssetId === "sol") {
+      assetCode = "sol";
+    } else if (transaction.abstractedAssetId === "euro") {
+      assetCode = "eurcSol";
+    } else if (transaction.abstractedAssetId === "btc") {
+      assetCode = "btcSol";
+    }
+
+    console.log("sendAmount", sendAmount);
+    console.log("transaction:", transaction);
+    console.log("solanaPubKey:", solanaPubKey);
+    console.log(
+      "transaction.user.solana_pub_key:",
+      transaction.user.solana_pub_key
+    );
+    console.log("transaction.amount:", transaction.amount);
+    console.log("assetCode", assetCode);
+    console.log("wallet:", wallet);
+    console.log("totalBalance:", totalBalance); // Add this log to verify the total balance
+
+    const result = await tokenTransfer(
+      solanaPubKey,
+      transaction.user.solana_pub_key,
+      sendAmountMicro, // Use sendAmount instead of transaction.amount
+      assetCode,
+      wallet
+    );
+
+    if (result.success) {
+      console.log("Transaction successful:", result.transactionId);
+      dispatch(unmount());
+      toast.success(
+        `Sent $${transaction.formattedAmount} to ${
+          transaction.user?.first_name ?? "user"
+        }`
+      );
+      // TODO save transaction to db
+
+      // TODO update user balance
+      // TODO update suer interface
+    } else {
+      console.error("Transaction failed:", result.error);
+      toast.error(`Error sending money. Please try again`);
     }
   };
 
@@ -106,7 +227,7 @@ const AddressEntryOverlay = ({
                   border-radius: var(--border-radius-small);
                   background-color: var(--clr-surface-raised);
                   color: var(--clr-text);
-                  font-size: 0.75rem;
+                  font-size: 11px;
                   font-family: monospace;
                   
                   &:focus {
@@ -121,7 +242,7 @@ const AddressEntryOverlay = ({
               css={css`
                 text-align: center;
                 color: var(--clr-text-secondary);
-                font-size: var(--fs-small);
+                font-size: var(--fs-large);
                 margin-block-start: var(--size-500);
               `}
             >

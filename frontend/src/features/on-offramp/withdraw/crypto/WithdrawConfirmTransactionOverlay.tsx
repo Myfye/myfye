@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleOverlay } from "../withdrawSlice";
 import { ArrowLeft } from "@phosphor-icons/react";
 
@@ -25,6 +25,8 @@ const WithdrawConfirmTransactionOverlay = ({
   onConfirm
 }: WithdrawConfirmTransactionOverlayProps) => {
   const dispatch = useDispatch();
+
+
 
   return (
     <Overlay
@@ -96,6 +98,33 @@ const WithdrawConfirmTransactionOverlay = ({
             </div>
           </div>
         </section>
+
+
+
+        <section
+            css={css`
+              margin-inline: var(--size-250);
+              margin-block-start: var(--size-500);
+            `}
+          >
+        <li
+                css={css`
+                  display: flex;
+                  justify-content: space-between;
+                `}
+              >
+                <span className="heading-small">Network fee</span>{" "}
+                <span
+                  css={css`
+                    font-size: var(--fs-medium);
+                    color: var(--clr-text);
+                  `}
+                >
+                  $0
+                </span>
+              </li>
+              </section>
+
 
         <section
           css={css`
