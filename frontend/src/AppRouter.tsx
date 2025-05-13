@@ -12,7 +12,7 @@ import {
   HandleUserLogIn,
   getUsers,
 } from "./features/authentication/LoginService.tsx";
-import appLogo from "@/assets/myfyeLogo3.png";
+import logo from "@/assets/logo/myfye_logo.svg";
 
 import { css } from "@emotion/react";
 import QRCodeModal from "./features/qr-code/_components/QRCodeModal.tsx";
@@ -158,16 +158,15 @@ function WebAppInner() {
         <LoginPage>
           <LoginHeader>
             <img
-              className="aspect-ratio-square"
               css={css`
                 width: var(--size-1600);
               `}
-              src={appLogo}
+              src={logo}
               alt="Myfye"
             />
           </LoginHeader>
           <LoginMain>
-            <section
+            <div
               className="slider-container"
               css={css`
                 margin-block-start: var(--size-200);
@@ -199,28 +198,27 @@ function WebAppInner() {
                   />
                 </div>
               </div>
-            </section>
-            <section
-              className="heading-container"
-              css={css`
-                margin-block-start: var(--size-400);
-                text-align: center;
-              `}
-            >
-              <h1 className="heading-x-large" css={css``}>
-                Welcome to Myfye
-              </h1>
-              <p
-                className="subtitle"
+              <section
                 css={css`
-                  margin-block-start: var(--size-200);
-                  color: var(--clr-text-neutral);
+                  margin-block-start: var(--size-400);
+                  text-align: center;
                 `}
               >
-                Invest in stocks, crypto, treasuries, and more, fully owned by
-                you, on your phone.
-              </p>
-            </section>
+                <h1 className="heading-x-large" css={css``}>
+                  Welcome to Myfye
+                </h1>
+                <p
+                  className="caption"
+                  css={css`
+                    margin-block-start: var(--size-100);
+                    color: var(--clr-text-neutral);
+                  `}
+                >
+                  Invest in stocks, crypto, treasuries, and more, fully owned by
+                  you, on your phone.
+                </p>
+              </section>
+            </div>
           </LoginMain>
           <LoginFooter>
             <button

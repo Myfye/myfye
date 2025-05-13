@@ -123,7 +123,7 @@ const DashboardPanel = ({}) => {
           {
             enabled: true,
             distance: -32,
-            format: "{point.percentage:.2f}%",
+            format: "{point.percentage:.1f}%",
             style: {
               fontSize: "16px",
               textOutline: "none",

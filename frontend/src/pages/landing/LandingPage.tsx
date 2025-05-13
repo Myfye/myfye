@@ -7,7 +7,7 @@ import Main from "./_components/Main";
 import phoneImg from "@/assets/test_landing.webp";
 import TextCarousel from "./_components/TextCarousel";
 
-import myfyeLogo from "@/assets/logo/temp-logo-white.svg";
+import myfyeLogo from "@/assets/logo/myfye_logo_white.svg";
 import { useEffect, useState } from "react";
 import QRCodeModal from "./_components/QRCodeModal";
 import { useNavigate } from "react-router-dom";
@@ -37,10 +37,9 @@ const LandingPage = () => {
   };
 
   const navigate = useNavigate();
-
   useEffect(() => {
     const checkScreenSize = () => {
-      const isSmallScreen = window.innerWidth <= 1200;
+      const isSmallScreen = window.innerWidth <= 1080;
       if (!isSmallScreen && !checkIfMobileOrTablet()) {
         console.log("Large screen");
         navigate("/");
@@ -113,7 +112,7 @@ const LandingPage = () => {
                 src={myfyeLogo}
                 alt=""
                 css={css`
-                  width: 5.5rem;
+                  width: 6rem;
                   height: auto;
                 `}
               />

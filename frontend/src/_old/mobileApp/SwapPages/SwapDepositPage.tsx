@@ -16,7 +16,7 @@ import {
   setusdySolValue,
   setbtcSolValue,
 } from "../../../redux/userWalletData.tsx";
-import LoadingAnimation from "../../sunset/LoadingAnimation.tsx";
+import LoadingAnimation from "../../../_old/sunset/LoadingAnimation.tsx";
 import backButton from "../../../assets/backButton3.png";
 import solIcon from "../../../assets/solIcon.png";
 import usdcSol from "../../../assets/usdcSol.png";

@@ -41,8 +41,6 @@ const Overlay = ({
   let w = window.innerWidth;
   let x = useMotionValue(w);
 
-  const id = useId();
-
   return (
     <>
       <AnimatePresence>

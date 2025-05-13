@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import LoadingAnimation from "../sunset/LoadingAnimation.tsx";
+import LoadingAnimation from "../../_old/sunset/LoadingAnimation.tsx";
 import backButton from "../../assets/backButton3.png";
 import {
   getFunctions,

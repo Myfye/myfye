@@ -258,7 +258,7 @@
       --_width: 100%;
     }
 
-    &:is([disabled], [data-disabled]) {
+    &:is([disabled], [data-disabled], [aria-disabled="true"]) {
       opacity: 0.75;
       cursor: not-allowed;
     }
