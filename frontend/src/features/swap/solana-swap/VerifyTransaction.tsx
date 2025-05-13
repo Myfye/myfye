@@ -328,7 +328,6 @@ function mapMintToAssetId(mintAddress: string): string {
     "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6": "usdySol",
     "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr": "eurcSol",
     "9n4nb2ow5xB2ywvDy8v52N2qN1xzybapC8G4wEGGkZwyTDt1v": "btcSol",
-    "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6": "usdySol", // Adding the missing mint address
     // Add more mappings as needed
   };
 

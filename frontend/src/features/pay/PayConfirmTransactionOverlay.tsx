@@ -19,7 +19,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   );
 
   const handleOpen = (isOpen: boolean) => {
-    dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
+    dispatch(toggleOverlay({ type: "processingTransaction", isOpen }));
   };
 
   const { wallets } = useSolanaWallets();
@@ -61,17 +61,31 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   // };
 
   const handleTransactionSubmit = async () => {
+    console.log('Starting transaction submission...');
     if (!transaction.amount) return;
     if (!transaction.user) return;
     if (!transaction.abstractedAssetId) return;
-    // toggle overlay
+    
+    console.log('Opening processing overlay...');
+    // First open the processing overlay
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
+    
+    // Add a small delay to ensure state updates are processed
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    console.log('Closing confirm overlay...');
+    // Then close the confirm overlay
+    dispatch(toggleOverlay({ type: "confirmTransaction", isOpen: false }));
 
     // next, go through transaction
-
     const sellAbstractedAsset =
       assets.abstractedAssets[transaction.abstractedAssetId];
-    if (!sellAbstractedAsset) return;
+      /*
+    if (!sellAbstractedAsset) {
+      // If we can't find the asset, close the processing overlay
+      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
+      return;
+    }*/
 
     // Get all assets associated with this abstracted asset
     const associatedAssets = sellAbstractedAsset.assetIds.map(
@@ -104,55 +118,49 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       assetCode = "btcSol";
     }
 
-    console.log("sendAmount", sendAmount);
-    console.log("transaction:", transaction);
-    console.log("solanaPubKey:", solanaPubKey);
-    console.log(
-      "transaction.user.solana_pub_key:",
-      transaction.user.solana_pub_key
-    );
-    console.log("transaction.amount:", transaction.amount);
-    console.log("assetCode", assetCode);
-    console.log("wallet:", wallet);
-    console.log("totalBalance:", totalBalance); // Add this log to verify the total balance
-
-    const result = await tokenTransfer(
-      solanaPubKey,
-      transaction.user.solana_pub_key,
-      sendAmountMicro, // Use sendAmount instead of transaction.amount
-      assetCode,
-      wallet
-    );
-
-    if (result.success) {
-      console.log("Transaction successful:", result.transactionId);
-      
-      // Save the transaction to the database
-      try {
-        await savePayTransaction(
-          transaction,
-          result.transactionId,
-          wallet,
-          currentUserID
-        );
-      } catch (error) {
-        console.error("Failed to save transaction:", error);
-        // Continue with the success flow even if saving fails
-      }
-
-      dispatch(unmount());
-      toast.success(
-        `Sent $${transaction.formattedAmount} to ${
-          transaction.user?.first_name ?? "user"
-        }`
+    try {
+      const result = await tokenTransfer(
+        solanaPubKey,
+        transaction.user.solana_pub_key,
+        sendAmountMicro,
+        assetCode,
+        wallet
       );
-      // TODO save transaction to db
 
-      
-      // TODO update user balance
-      // TODO update suer interface
-    } else {
-      console.error("Transaction failed:", result.error);
+      if (result.success) {
+        console.log("Transaction successful:", result.transactionId);
+        
+        // Save the transaction to the database
+        try {
+          await savePayTransaction(
+            transaction,
+            result.transactionId,
+            wallet,
+            currentUserID
+          );
+        } catch (error) {
+          console.error("Failed to save transaction:", error);
+          // Continue with the success flow even if saving fails
+        }
+
+        // Close processing overlay and show success message
+        dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
+        dispatch(unmount());
+        toast.success(
+          `Sent $${transaction.formattedAmount} to ${
+            transaction.user?.first_name ?? "user"
+          }`
+        );
+      } else {
+        console.error("Transaction failed:", result.error);
+        // Close processing overlay and show error message
+        dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
+        toast.error(`Error sending money. Please try again`);
+      }
+    } catch (error) {
+      console.error("Transaction error:", error);
+      // Close processing overlay and show error message
+      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
       toast.error(`Error sending money. Please try again`);
     }
   };

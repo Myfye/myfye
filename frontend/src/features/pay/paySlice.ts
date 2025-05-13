@@ -70,7 +70,9 @@ const paySlice = createSlice({
         isOpen: boolean;
       }>
     ) => {
+      console.log('Redux toggleOverlay action:', action.payload);
       state.overlays[action.payload.type].isOpen = action.payload.isOpen;
+      console.log('New overlays state:', state.overlays);
     },
     unmountOverlays: (state, action) => {
       state.overlays = { ...initialState.overlays };
