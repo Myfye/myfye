@@ -9,7 +9,7 @@ import {
   Transaction, 
   TransactionInstruction,
   VersionedTransaction, } from "@solana/web3.js";
-import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
+import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../env';
 
 async function ensureTokenAccount(userPublicKeyString: String, mintAddress: String) {
 

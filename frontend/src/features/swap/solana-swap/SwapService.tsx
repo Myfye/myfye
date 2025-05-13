@@ -4,7 +4,7 @@ import getTokenAccountData from "../../../functions/GetSolanaTokenAccount.tsx";
 import prepareTransaction from "./PrepareSwap.tsx";
 import mintAddress from "./MintAddress.tsx";
 import verifyTransaction from "./VerifyTransaction.tsx";
-import ensureTokenAccount from "./ensureTokenAccount.tsx";
+import ensureTokenAccount from "../../../functions/ensureTokenAccount.tsx";
 import { SwapTransaction, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
@@ -236,11 +236,12 @@ const swapTransaction = async (
     
     //simulate(fullySignedTx);
 
-    const transactionId = await wallet.sendTransaction!(
-      fullySignedTx,
-      connection
-    );
-
+    // Instead of using wallet.sendTransaction, use connection.sendRawTransaction
+    const rawTransaction = fullySignedTx.serialize();
+    const transactionId = await connection.sendRawTransaction(rawTransaction, {
+      skipPreflight: true, // Skip preflight checks including balance check
+      maxRetries: 3
+    });
 
     // Update the transaction object with the correct amounts from the quote
     if (quoteData && transaction) {

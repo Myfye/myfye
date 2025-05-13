@@ -81,4 +81,5 @@ async function signTransaction(data) {
 // Export functions for use in other modules
 module.exports = {
   signVersionedTransaction,
+  signTransaction
 };

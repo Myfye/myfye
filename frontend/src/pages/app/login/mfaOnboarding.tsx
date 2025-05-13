@@ -98,12 +98,14 @@ function mfaOnboarding() {
         <div style={{display: "flex", justifyContent: "center"}}>
           <img src={appLogo} alt="appLogo" style={{ width: "auto", height: "90px" }} />
         </div>
+
+        <div style={{marginLeft: '20px', fontSize: '20px'}}>Secure Your Account</div>
         <div style={{ display: "flex", 
             justifyContent: "center", 
             flexDirection: "column", 
             alignItems: "center",
             gap: "40px",
-            paddingTop: "50px" }}>
+            paddingTop: "30px" }}>
                 
           <div style={{display: 'flex', 
               alignItems: 'center', 
@@ -205,12 +207,13 @@ function mfaOnboarding() {
         <div style={{display: "flex", justifyContent: "center"}}>
           <img src={appLogo} alt="appLogo" style={{ width: "auto", height: "90px" }} />
         </div>
+        <div style={{marginLeft: '20px', fontSize: '20px'}}>Secure Your Account</div>
         <div style={{ display: "flex", 
             justifyContent: "center", 
             flexDirection: "column", 
             alignItems: "center",
             gap: "40px",
-            paddingTop: "50px" }}>
+            paddingTop: "30px" }}>
                 
           <div style={{display: 'flex', 
               alignItems: 'center', 
@@ -303,12 +306,13 @@ function mfaOnboarding() {
         <div style={{display: "flex", justifyContent: "center"}}>
           <img src={appLogo} alt="appLogo" style={{ width: "auto", height: "90px" }} />
         </div>
+        <div style={{marginLeft: '20px', fontSize: '20px'}}>Secure Your Account</div>
         <div style={{ display: "flex", 
             justifyContent: "center", 
             flexDirection: "column", 
             alignItems: "center",
             gap: "40px",
-            paddingTop: "50px" }}>
+            paddingTop: "30px" }}>
                 
           <div style={{display: 'flex', 
               alignItems: 'center', 

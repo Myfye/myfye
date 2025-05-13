@@ -37,6 +37,7 @@ const DepositModal = () => {
   const openWallet = () => {
     setWalletOpen(true);
     setHeight(580);
+    console.log("openWallet");
   };
 
   const selectedAddress = selectedChain === "base" ? evmPubKey : solanaPubKey;
@@ -58,7 +59,7 @@ const DepositModal = () => {
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        title="Deposit On Chain"
+        title="Deposit"
         height={height}
         onAnimationComplete={() => {
           isOpen && resetModal();

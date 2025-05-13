@@ -143,6 +143,18 @@
       }
     }
 
+    &[data-variant="token-select"] {
+      --_background-color: transparent;
+      --_border-color: #444444;
+      --_color: #444444;
+
+      &[data-selected="true"] {
+        --_background-color: #444444;
+        --_border-color: #444444;
+        --_color: #ffffff;
+      }
+    }
+
     /* Size */
     --_size: var(--control-size-x-small);
     --_gap: var(--control-gap-x-small);

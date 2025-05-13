@@ -139,7 +139,7 @@ async function saveTransaction(
       input_amount: transaction.sell.amount,
       output_amount: transaction.buy.amount,
       input_chain: "solana",
-      output_chain: transaction.buy.chain,
+      output_chain: "solana",
       input_public_key: inputPublicKey,
       output_public_key: outputPublicKey,
       input_currency: transaction.sell.assetId,
