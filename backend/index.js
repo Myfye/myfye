@@ -46,25 +46,25 @@ const allowedOrigins = [
     "https://myfye.com", // Production (myfye.com)
     "https://www.myfye.com", // Production (www.myfye.com)
     "https://api.myfye.com", // API domain
-  ];
-  
-  // Add CORS middleware with stricter configuration
-  app.use(cors({
-      origin: function (origin, callback) {
+];
+
+// Add CORS middleware with stricter configuration
+app.use(cors({
+    origin: function (origin, callback) {
         // Allow requests without origin (e.g., Postman or server-side requests)
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-          callback(null, true);
+            callback(null, true);
         } else {
-          console.log(`Blocked request from origin: ${origin}`);
-          callback(new Error("Not allowed by CORS"));
+            console.log(`Blocked request from origin: ${origin}`);
+            callback(new Error("Not allowed by CORS"));
         }
-      },
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
-      credentials: true,
-      maxAge: 86400, // Cache preflight requests for 24 hours
-      exposedHeaders: ['Access-Control-Allow-Origin']
-  }));
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
+    credentials: true,
+    maxAge: 86400, // Cache preflight requests for 24 hours
+    exposedHeaders: ['Access-Control-Allow-Origin']
+}));
 
 // Add explicit OPTIONS handling for preflight requests
 app.options('*', cors());
@@ -142,6 +142,9 @@ const blockUnauthorizedIPs = (req, res, next) => {
 app.use(generalLimiter);
 // Apply IP blocking and API key validation to all routes
 app.use(blockUnauthorizedIPs);
+
+// Add email service routes
+app.use('/api/email', emailService);
 
 /* User management endpoints */
 // Apply stricter rate limiting to sensitive endpoints
@@ -611,6 +614,7 @@ app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
     }
 });
 
+
 app.post("/send_email", async (req, res) => {
   console.log("\n=== Send Email Request Received ===");
   console.log("Request body:", JSON.stringify(req.body, null, 2));
@@ -623,13 +627,14 @@ app.post("/send_email", async (req, res) => {
   } catch (error) {
     console.error("Error in /send_email endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
-      error: error.message || "Failed to get addresses",
-      details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-  });
-}
+        res.status(500).json({ 
+            error: error.message || "Failed to get addresses",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
 });
+
 
 /*
 app.listen(PORT, () => {
