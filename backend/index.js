@@ -46,25 +46,25 @@ const allowedOrigins = [
     "https://myfye.com", // Production (myfye.com)
     "https://www.myfye.com", // Production (www.myfye.com)
     "https://api.myfye.com", // API domain
-];
-
-// Add CORS middleware with stricter configuration
-app.use(cors({
-    origin: function (origin, callback) {
+  ];
+  
+  // Add CORS middleware with stricter configuration
+  app.use(cors({
+      origin: function (origin, callback) {
         // Allow requests without origin (e.g., Postman or server-side requests)
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
+          callback(null, true);
         } else {
-            console.log(`Blocked request from origin: ${origin}`);
-            callback(new Error("Not allowed by CORS"));
+          console.log(`Blocked request from origin: ${origin}`);
+          callback(new Error("Not allowed by CORS"));
         }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
-    credentials: true,
-    maxAge: 86400, // Cache preflight requests for 24 hours
-    exposedHeaders: ['Access-Control-Allow-Origin']
-}));
+      },
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
+      credentials: true,
+      maxAge: 86400, // Cache preflight requests for 24 hours
+      exposedHeaders: ['Access-Control-Allow-Origin']
+  }));
 
 // Add explicit OPTIONS handling for preflight requests
 app.options('*', cors());
