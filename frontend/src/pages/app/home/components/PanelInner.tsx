@@ -1,8 +1,7 @@
 import { css } from "@emotion/react";
-import { AbstractedAsset } from "../../../../../features/assets/types";
+import { AbstractedAsset } from "@/features/assets/types";
 import Balance from "@/shared/components/ui/balance/Balance";
-import AssetCardList from "../../../../../features/assets/cards/AssetCardList";
-import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
+import AssetCardList from "@/features/assets/cards/AssetCardList";
 
 const AssetPanel = ({
   balance,
@@ -26,10 +25,18 @@ const AssetPanel = ({
         padding-block-start: var(--size-200);
       `}
     >
-      <BalanceCard balance={balance} />
+      <div
+        className="balance-container"
+        css={css`
+          padding: var(--size-150);
+          background-color: var(--clr-surface-raised);
+          border-radius: var(--border-radius-medium);
+        `}
+      >
+        <Balance balance={balance} />
+      </div>
     </section>
     <section
-      className="no-scrollbar"
       css={css`
         overflow-y: auto;
         padding-block-end: var(--size-250);

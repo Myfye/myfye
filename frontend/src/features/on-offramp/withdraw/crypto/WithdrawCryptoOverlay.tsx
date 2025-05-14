@@ -274,15 +274,17 @@ const handleSelectAmountChange = (presetAmount: string) => {
                   background-color: var(--clr-surface-raised);
                   border-radius: var(--border-radius-medium);
                   padding: var(--size-200);
-                  width: min(100%, 24rem);
+                  width: min(90%, 22rem);
                   margin-inline: auto;
+                  display: flex;
+                  justify-content: center;
                 `}
               >
                 <menu
                   css={css`
                     display: flex;
                     gap: var(--controls-gap-medium);
-                    width: 100%;
+                    justify-content: center;
                   `}
                 >
                   <li

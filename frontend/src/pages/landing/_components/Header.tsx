@@ -6,7 +6,7 @@ const Header = ({ children }: { children?: ReactNode }) => {
     <header
       css={css`
         align-content: center;
-        width: min(100% - 2 * var(--size-250), 87.5rem);
+        width: min(100% - 2 * var(--size-800), 87.5rem);
         margin-inline: auto;
       `}
     >

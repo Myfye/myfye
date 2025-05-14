@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { ArrowLeft } from "@phosphor-icons/react";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
@@ -9,6 +9,7 @@ import { tokenTransfer } from "@/functions/Transaction";
 import toast from "react-hot-toast/headless";
 import { useSelector } from "react-redux";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
+import { saveSolAddress, getRecentSolAddresses, RecentSolAddress } from "@/functions/RecentSolAddress";
 
 interface AddressEntryOverlayProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ const AddressEntryOverlay = ({
   const [showConfirm, setShowConfirm] = useState(false);
   const [showProcessing, setShowProcessing] = useState(false);
   const [processingStatus, setProcessingStatus] = useState<"idle" | "success" | "fail">("idle");
+  const [recentAddresses, setRecentAddresses] = useState<RecentSolAddress | null>(null);
 
   // Solana address validation regex
   const isValidSolanaAddress = (addr: string) => {
@@ -47,6 +49,22 @@ const AddressEntryOverlay = ({
   const solanaPubKey = useSelector((state: RootState) => state.userWalletData.solanaPubKey);
   const { wallets } = useSolanaWallets();
   const wallet = wallets[0];
+
+  useEffect(() => {
+    const fetchRecentAddresses = async () => {
+      if (userID) {
+        try {
+          const addresses = await getRecentSolAddresses(userID);
+          
+          setRecentAddresses(addresses);
+        } catch (error) {
+          console.error("Failed to fetch recent addresses:", error);
+        }
+      }
+    };
+
+    fetchRecentAddresses();
+  }, [userID]);
 
   const handleConfirm = async () => {
 
@@ -83,6 +101,8 @@ const AddressEntryOverlay = ({
         console.log("Transaction successful:", result.transactionId);
         setProcessingStatus("success");
         toast.success(`Sent ${amount} ${selectedToken} to ${address.slice(0, 6)}...${address.slice(-4)}`);
+
+        // Here if the address is not in the recent addresses, save the address to the database
       } else {
         throw new Error(result.error || "Transaction failed");
       }
@@ -100,85 +120,32 @@ const AddressEntryOverlay = ({
     }
   };
 
+  const handleAddressSelect = (selectedAddress: string) => {
+    setAddress(selectedAddress);
+  };
 
-  const handleTransactionSubmit = async () => {
-    if (!amount) return;
-    if (!userID) return;
-    if (!selectedToken) return;
-    // toggle overlay
-    // TO do: toggle the withdraw processing overlay
 
-    // next, go through transaction
 
-    const sellAbstractedAsset =
-      assets.abstractedAssets[transaction.abstractedAssetId];
-    if (!sellAbstractedAsset) return;
-
-    // Get all assets associated with this abstracted asset
-    const associatedAssets = sellAbstractedAsset.assetIds.map(
-      (assetId) => assets.assets[assetId]
-    );
-
-    // Calculate the total balance in USD
-    const totalBalance = associatedAssets.reduce(
-      (total, asset) => total + asset.balance,
-      0
-    );
-
-    // Fix: Ensure sendAmount is capped at the totalBalance
-    const sendAmount =
-      transaction.amount > totalBalance ? totalBalance : transaction.amount;
-
-    const sendAmountMicro = sendAmount * 1000000;
-
-    let assetCode = "";
-    if (transaction.abstractedAssetId === "us_dollar_yield") {
-      assetCode = "usdySol";
-    } else if (transaction.abstractedAssetId === "us_dollar") {
-      assetCode = "usdcSol";
-    } else if (transaction.abstractedAssetId === "sol") {
-      assetCode = "sol";
-    } else if (transaction.abstractedAssetId === "euro") {
-      assetCode = "eurcSol";
-    } else if (transaction.abstractedAssetId === "btc") {
-      assetCode = "btcSol";
-    }
-
-    console.log("sendAmount", sendAmount);
-    console.log("transaction:", transaction);
-    console.log("solanaPubKey:", solanaPubKey);
-    console.log(
-      "transaction.user.solana_pub_key:",
-      transaction.user.solana_pub_key
-    );
-    console.log("transaction.amount:", transaction.amount);
-    console.log("assetCode", assetCode);
-    console.log("wallet:", wallet);
-    console.log("totalBalance:", totalBalance); // Add this log to verify the total balance
-
-    const result = await tokenTransfer(
-      solanaPubKey,
-      transaction.user.solana_pub_key,
-      sendAmountMicro, // Use sendAmount instead of transaction.amount
-      assetCode,
-      wallet
-    );
-
-    if (result.success) {
-      console.log("Transaction successful:", result.transactionId);
-      dispatch(unmount());
-      toast.success(
-        `Sent $${transaction.formattedAmount} to ${
-          transaction.user?.first_name ?? "user"
-        }`
+  const handleSaveAddress = async () => {
+    try {
+      await saveSolAddress(
+        {
+          user: { solana_pub_key: address },
+          amount: amount,
+          abstractedAssetId: selectedToken
+        },
+        result.transactionId,
+        wallet,
+        userID
       );
-      // TODO save transaction to db
-
-      // TODO update user balance
-      // TODO update suer interface
-    } else {
-      console.error("Transaction failed:", result.error);
-      toast.error(`Error sending money. Please try again`);
+      
+      // Update local state with the new address
+      setRecentAddresses(prev => ({
+        ...prev,
+        addresses: prev?.addresses ? [...prev.addresses, address] : [address]
+      }));
+    } catch (error) {
+      console.error("Failed to save recent address:", error);
     }
   };
 
@@ -210,8 +177,7 @@ const AddressEntryOverlay = ({
             `}
           >
             <div
-              css={css`
-                border-radius: var(--border-radius-medium);
+              css={css`                border-radius: var(--border-radius-medium);
                 padding: var(--size-100);
               `}
             >
@@ -237,6 +203,63 @@ const AddressEntryOverlay = ({
                 `}
               />
             </div>
+
+            {recentAddresses?.addresses && recentAddresses.addresses.length > 0 && (
+              <div
+                css={css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size-100);
+                `}
+              >
+                <div
+                  css={css`
+                    color: var(--clr-text-secondary);
+                    font-size: var(--fs-small);
+                    font-weight: 500;
+                  `}
+                >
+                  My addresses
+                </div>
+                <div
+                  css={css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size-100);
+                  `}
+                >
+                  {recentAddresses.addresses.map((addr, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleAddressSelect(addr)}
+                      css={css`
+                        padding: var(--size-100) var(--size-200);
+                        border: 1px solid var(--clr-border);
+                        border-radius: var(--border-radius-small);
+                        background-color: var(--clr-surface-raised);
+                        color: var(--clr-text);
+                        font-size: 11px;
+                        font-family: monospace;
+                        text-align: left;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+
+                        &:hover {
+                          background-color: var(--clr-surface-hover);
+                          border-color: var(--clr-primary);
+                        }
+
+                        &:active {
+                          background-color: var(--clr-surface-active);
+                        }
+                      `}
+                    >
+                      {addr}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             
             <div
               css={css`
@@ -246,7 +269,7 @@ const AddressEntryOverlay = ({
                 margin-block-start: var(--size-500);
               `}
             >
-              Sending {amount} {selectedToken}
+              Sending <span style={{fontWeight: 'bold'}}>{amount}</span> <span style={{fontWeight: 'bold'}}>{selectedToken}</span>
             </div>
           </div>
 

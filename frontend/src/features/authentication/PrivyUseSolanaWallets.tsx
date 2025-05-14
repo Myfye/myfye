@@ -4,11 +4,11 @@ import { useSelector } from "react-redux";
 import {
   setPrivySolanaWalletReady,
   setSolanaPubKey,
-} from "../redux/userWalletData.tsx";
+} from "../../redux/userWalletData.tsx";
 import { useDispatch } from "react-redux";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
-import { updateUserSolanaPubKey } from "../features/authentication/LoginService.tsx";
-import getSolanaBalances from "../functions/GetSolanaBalances.tsx";
+import { updateUserSolanaPubKey } from "./LoginService.tsx";
+import getSolanaBalances from "../../functions/GetSolanaBalances.tsx";
 
 function PrivyUseSolanaWallets() {
   /*

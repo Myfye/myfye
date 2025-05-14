@@ -30,6 +30,10 @@ const {
     getAllSwapTransactions 
 } = require('./routes/swapTransactions');
 const { createPayTransaction } = require('./routes/payTransactions');
+const { 
+    saveRecentlyUsedAddresses, 
+    getRecentlyUsedAddresses 
+} = require('./routes/sol_transaction/recentlyUsedAddresses');
 
 app.set('trust proxy', true);
 
@@ -553,6 +557,57 @@ app.post("/delete_error_log", generalLimiter, async (req, res) => {
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
+});
+
+/* Recently Used Solana Addresses routes */
+app.post("/save_recently_used_addresses", generalLimiter, async (req, res) => {
+    console.log("\n=== Save Recently Used Addresses Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { user_id, addresses } = req.body;
+        if (!user_id || !addresses || !Array.isArray(addresses)) {
+            return res.status(400).json({ 
+                error: 'Invalid request. user_id and addresses array are required.' 
+            });
+        }
+        const result = await saveRecentlyUsedAddresses(user_id, addresses);
+        console.log("Save addresses result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /save_recently_used_addresses endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to save addresses",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
+    console.log("\n=== Get Recently Used Addresses Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { user_id } = req.body;
+        if (!user_id) {
+            return res.status(400).json({ 
+                error: 'Invalid request. user_id is required.' 
+            });
+        }
+        const result = await getRecentlyUsedAddresses(user_id);
+        console.log("Get addresses result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_recently_used_addresses endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to get addresses",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
 });
 
 /*

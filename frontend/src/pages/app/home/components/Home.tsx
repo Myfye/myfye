@@ -1,5 +1,5 @@
+import HomeTabs from "@/features/home/HomeTabs";
 import { css } from "@emotion/react";
-import HomeTabs from "./components/HomeTabs";
 
 const Home = () => {
   return (
@@ -9,7 +9,7 @@ const Home = () => {
         height: 100cqh;
       `}
     >
-      <HomeTabs></HomeTabs>
+      <HomeTabs />
     </div>
   );
 };
