@@ -10,6 +10,8 @@ import { tokenTransfer } from "@/functions/Transaction";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
 import toast from "react-hot-toast/headless";
 import { savePayTransaction } from "./PaySaveTransaction";
+import { logError } from "@/functions/logError";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../env';
 
 const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -61,7 +63,9 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   // };
 
   const handleTransactionSubmit = async () => {
+
     console.log('Starting transaction submission...');
+    
     if (!transaction.amount) return;
     if (!transaction.user) return;
     if (!transaction.abstractedAssetId) return;
@@ -77,7 +81,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     console.log('Closing confirm overlay...');
     // Then close the confirm overlay
     dispatch(toggleOverlay({ type: "confirmTransaction", isOpen: false }));
-
+   
     // next, go through transaction
     const sellAbstractedAsset =
       assets.abstractedAssets[transaction.abstractedAssetId];
@@ -87,26 +91,26 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
       return;
     }*/
-
+   
     // Get all assets associated with this abstracted asset
     const associatedAssets = sellAbstractedAsset.assetIds.map(
       (assetId) => assets.assets[assetId]
     );
-
+   
     // Calculate the total balance in USD
     const totalBalance = associatedAssets.reduce(
       (total, asset) => total + asset.balance,
       0
     );
-
+   
     // Fix: Ensure sendAmount is capped at the totalBalance
     const sendAmount =
       transaction.amount > totalBalance ? totalBalance : transaction.amount;
-
+   
     const sendAmountMicro = sendAmount * 1000000;
-
+   
     let assetCode = "";
-
+   
     if (transaction.abstractedAssetId === "us_dollar_yield") {
       assetCode = "usdySol";
     } else if (transaction.abstractedAssetId === "us_dollar") {
@@ -118,7 +122,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     } else if (transaction.abstractedAssetId === "btc") {
       assetCode = "btcSol";
     }
-
+   
     try {
       const result = await tokenTransfer(
         solanaPubKey,
@@ -127,7 +131,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
         assetCode,
         wallet
       );
-
+   
       if (result.success) {
         console.log("Transaction successful:", result.transactionId);
         
@@ -142,8 +146,18 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
         } catch (error) {
           console.error("Failed to save transaction:", error);
           // Continue with the success flow even if saving fails
+          logError("Failed to save transaction:", 'pay', error);
         }
-
+   
+   
+        // Send an email to the user
+        try {
+          await sendPayReceiptEmail();
+        } catch (error) {
+          console.error("Failed to send email:", error);
+          logError("Failed to send email:", 'pay', error);
+        }
+   
         // Close processing overlay and show success message
         dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
         dispatch(unmount());
@@ -156,15 +170,58 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
         console.error("Transaction failed:", result.error);
         // Close processing overlay and show error message
         dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
+        logError("Transaction failed:", 'pay', result.error);
         toast.error(`Error sending money. Please try again`);
       }
     } catch (error) {
       console.error("Transaction error:", error);
+      logError("Transaction error:", 'pay', error);
       // Close processing overlay and show error message
       dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
       toast.error(`Error sending money. Please try again`);
     }
   };
+
+  const sendPayReceiptEmail = async () => {
+    const name = 'Someone';
+    const templateId = 'd-01416b6dc85446b7baf63c535e2950e8';
+    const emailAddress = transaction.user.email;
+    const amount = transaction.amount;
+
+    console.log("Sending email to:", emailAddress);
+    console.log("Amount to send:", amount);
+
+
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/send_email`, {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': MYFYE_BACKEND_KEY,
+          },
+          body: JSON.stringify({
+            templateId: templateId,
+            emailAddress: emailAddress,
+            firstName: name,
+            amount: amount
+          })
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Backend error:", errorData);
+          throw new Error(`Backend error: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+        console.error("Failed to send email:", error);
+        logError("Failed to send email:", 'pay', error);
+    }
+
+  };
+
+
 
   return (
     <>

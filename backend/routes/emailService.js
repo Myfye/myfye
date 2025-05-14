@@ -5,27 +5,24 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 async function emailService(data) {
     try {
-        const {
-            emailAddress,
-            templateId,
-            amount,
-            firstName,
-            supportRequestID,
-            userID,
-            lastName,
-            email,
-            supportMessage,
-            publicKey,
-            timestamp
-        } = req.body;
+
+        const firstName = data.firstName;
+        const amount = data.amount;
+        const supportRequestID = data.supportRequestID;
+        const userID = data.userID;
+        const lastName = data.lastName;
+        const email = data.email;
+        const supportMessage = data.supportMessage;
+        const timestamp = data.timestamp;
+        const publicKey = data.publicKey;
 
         const msg = {
-            to: emailAddress,
+            to: data.emailAddress,
             from: {
                 email: "gavin@myfye.com",
                 name: "Myfye",
             },
-            templateId: templateId,
+            templateId: data.templateId,
             dynamic_template_data: {
                 firstName,
                 amount,
@@ -41,10 +38,10 @@ async function emailService(data) {
 
         await sgMail.send(msg);
         console.log("Email sent");
-        res.status(200).json({ message: "Email sent successfully" });
+        return { message: "Email sent successfully" };
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Failed to send email" });
+        return { error: "Failed to send email" };
     }
 }
 
