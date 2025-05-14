@@ -69,6 +69,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     console.log('Opening processing overlay...');
     // First open the processing overlay
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
+    console.log('Processing overlay dispatch completed');
     
     // Add a small delay to ensure state updates are processed
     await new Promise(resolve => setTimeout(resolve, 100));
