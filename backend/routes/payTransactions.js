@@ -74,6 +74,25 @@ async function createPayTransaction(data) {
     }
 }
 
+async function getAllPayTransactions() {
+    console.log("\n=== Getting All Pay Transactions ===");
+    
+    const query = `
+        SELECT * FROM pay_transactions
+        ORDER BY creation_date DESC
+    `;
+
+    try {
+        const result = await pool.query(query);
+        console.log(`Retrieved ${result.rows.length} pay transactions`);
+        return result.rows;
+    } catch (error) {
+        console.error('Error getting all pay transactions:', error);
+        throw error;
+    }
+}
+
 module.exports = {
-    createPayTransaction
+    createPayTransaction,
+    getAllPayTransactions
 }; 

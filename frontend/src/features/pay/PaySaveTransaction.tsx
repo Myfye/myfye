@@ -1,8 +1,6 @@
 import { PayTransaction } from "./types";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth/solana";
-
-const MYFYE_BACKEND = process.env.NEXT_PUBLIC_MYFYE_BACKEND;
-const MYFYE_BACKEND_KEY = process.env.NEXT_PUBLIC_MYFYE_BACKEND_KEY;
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../env';
 
 export async function savePayTransaction(
   transaction: PayTransaction,
@@ -15,12 +13,14 @@ export async function savePayTransaction(
     return;
   }
 
+  console.log("tramsaction To SAVE: ", transaction);
+
   console.log(
     "Pay Transaction: ",
     "user_id:", user_id,
     "amount:", transaction.amount,
     "chain:", "solana",
-    "sender_public_key:", wallet.publicKey.toString(),
+    "sender_public_key:", wallet.address,
     "receiver_public_key:", transaction.user.solana_pub_key,
     "currency:", transaction.abstractedAssetId,
     "transaction_hash:", transactionId,
@@ -40,7 +40,7 @@ export async function savePayTransaction(
       user_id: user_id,
       amount: transaction.amount,
       chain: "solana",
-      sender_public_key: wallet.publicKey.toString(),
+      sender_public_key: wallet.address,
       receiver_id: null,
       receiver_phone_number: null,
       receiver_email: null,

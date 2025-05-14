@@ -29,7 +29,10 @@ const {
     getSwapTransactionsByUserId,
     getAllSwapTransactions 
 } = require('./routes/swapTransactions');
-const { createPayTransaction } = require('./routes/payTransactions');
+const { 
+    createPayTransaction,
+    getAllPayTransactions 
+} = require('./routes/payTransactions');
 const { 
     saveRecentlyUsedAddresses, 
     getRecentlyUsedAddresses 
@@ -262,6 +265,24 @@ app.post('/create_pay_transaction', generalLimiter, async (req, res) => {
     } catch (error) {
         console.error("Error in /create_pay_transaction endpoint:", error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+app.post("/get_all_pay_transactions", generalLimiter, async (req, res) => {
+    console.log("\n=== Get All Pay Transactions Request Received ===");
+
+    try {
+        const result = await getAllPayTransactions();
+        console.log(`Retrieved ${result.length} pay transactions`);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_all_pay_transactions endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to fetch pay transactions",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
