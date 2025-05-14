@@ -91,8 +91,13 @@ const LandingPage = () => {
             }
             @media (width >= 1530px) {
               transform: translate(20%, 40%);
+           }
+            @media (width >= 1560px) {
+              transform: translate(30%, 40%);
             }
-          }
+            @media (width >= 1600px) {
+              transform: translate(20%, 40%);
+            }
         `}
       >
         <Header>
@@ -146,10 +151,28 @@ const LandingPage = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="">Support</a>
+                  <a
+                    href=""
+                    css={css`
+                      &:hover {
+                        color: var(--clr-white);
+                      }
+                    `}
+                  >
+                    Support
+                  </a>
                 </li>
                 <li>
-                  <a href="">Contact</a>
+                  <a
+                    href=""
+                    css={css`
+                      &:hover {
+                        color: var(--clr-white);
+                      }
+                    `}
+                  >
+                    Contact
+                  </a>
                 </li>
               </ul>
             </nav>
@@ -250,7 +273,7 @@ const LandingPage = () => {
             <div
               css={css`
                 position: absolute;
-                right: 0;
+                right: 2%;
               `}
             >
               <motion.img
@@ -262,7 +285,7 @@ const LandingPage = () => {
                 css={css`
                   position: relative;
                   z-index: 1;
-                  width: min(28rem, 30vw);
+                  width: min(26rem, 28vw);
                   margin-inline-end: auto;
                 `}
               />

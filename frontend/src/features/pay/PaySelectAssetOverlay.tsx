@@ -77,7 +77,7 @@ const PaySelectAssetOverlay = ({ zIndex = 1000 }) => {
         onAssetSelect={handleAssetSelect}
         abstractedAssetSections={assetSections}
         selectedAbstractedAssetId={selectedAbstractedAssetId}
-      ></SelectAssetOverlay>
+      />
     </>
   );
 };

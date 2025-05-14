@@ -4,7 +4,7 @@ import {
   selectAssetsBalanceUSDByDashboardId,
 } from "@/features/assets/assetsSlice";
 import { RootState } from "@/redux/store";
-import AssetPanel from "../PanelInner";
+import AssetPanel from "../../PanelInner";
 
 const CryptoPanel = ({}) => {
   const assets = useSelector((state: RootState) =>

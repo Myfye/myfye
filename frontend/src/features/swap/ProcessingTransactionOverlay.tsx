@@ -47,6 +47,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
     if (value >= 100) return clearInterval(interval);
     return () => {
       clearInterval(interval);
+      setValue(0);
     };
   });
 

@@ -129,62 +129,18 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
                   justify-content: space-between;
                 `}
               >
-                <span className="heading-small">CBBTC contract</span>
+                <span className="heading-small">Fee</span>
                 <span
                   css={css`
                     font-size: var(--fs-medium);
                     color: var(--clr-text);
                   `}
                 >
-                  0xcbb7...3bf
-                </span>
-              </li>
-              <li
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              >
-                <span className="heading-small">Slippage tolerance</span>{" "}
-                <span
-                  css={css`
-                    font-size: var(--fs-medium);
-                    color: var(--clr-text);
-                  `}
-                >
-                  3%
-                </span>
-              </li>
-              <li
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              >
-                <span className="heading-small">Coinbase fee</span>{" "}
-                <span
-                  css={css`
-                    font-size: var(--fs-medium);
-                    color: var(--clr-text);
-                  `}
-                >
-                  $0.02
-                </span>
-              </li>
-              <li
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              >
-                <span className="heading-small">Network fee</span>{" "}
-                <span
-                  css={css`
-                    font-size: var(--fs-medium);
-                    color: var(--clr-text);
-                  `}
-                >
-                  $0.09 - $0.10
+                  {transaction.fee &&
+                    new Intl.NumberFormat("en-EN", {
+                      style: "currency",
+                      currency: "usd",
+                    }).format(transaction.fee)}
                 </span>
               </li>
             </ul>

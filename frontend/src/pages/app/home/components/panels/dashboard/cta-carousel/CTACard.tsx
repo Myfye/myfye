@@ -9,7 +9,7 @@ const CTACard = ({ title, subtitle, icon }) => {
         display: grid;
         grid-template-columns: auto 1fr;
         gap: var(--size-150);
-        padding: var(--size-150);
+        padding: var(--size-200);
         width: calc(100% - var(--size-500));
         border-radius: var(--border-radius-medium);
         align-content: center;
@@ -51,7 +51,7 @@ const CTACard = ({ title, subtitle, icon }) => {
           {title}
         </p>
         <p
-          className="caption-x-small"
+          className="caption-small"
           css={css`
             color: var(--clr-text-weaker);
             margin-block-start: var(--size-050);

@@ -30,7 +30,7 @@ const LoadingScreen = () => {
         <div
           className="loader-wrapper"
           css={css`
-            margin-block-start: var(--size-100);
+            margin-block-start: var(--size-200);
           `}
         >
           <Ring180Loader width={20} height={20} fill="var(--clr-white)" />

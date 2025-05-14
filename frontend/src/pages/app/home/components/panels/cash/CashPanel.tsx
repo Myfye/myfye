@@ -4,7 +4,7 @@ import {
   selectAbstractedAssetsWithBalanceByDashboard,
   selectAssetsBalanceUSDByDashboardId,
 } from "@/features/assets/assetsSlice";
-import AssetPanel from "../PanelInner";
+import AssetPanel from "../../PanelInner";
 
 const CashPanel = ({}) => {
   const cashAssets = useSelector((state: RootState) =>

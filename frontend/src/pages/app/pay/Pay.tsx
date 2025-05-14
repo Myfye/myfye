@@ -8,7 +8,7 @@ import {
   updateAmount,
   updatePresetAmount,
   updateTransactionType,
-} from "../../../features/pay/paySlice";
+} from "@/features/pay/paySlice";
 import PayController from "@/features/pay/PayController";
 import { useEffect, useRef } from "react";
 import PaySelectUserOverlay from "@/features/pay/PaySelectUserOverlay";
@@ -122,7 +122,13 @@ const Pay = () => {
           <div>
             <PayController />
           </div>
-          <div>
+          <div
+            css={css`
+              display: grid;
+              grid-template-rows: auto auto;
+              gap: var(--size-200);
+            `}
+          >
             <section
               css={css`
                 padding-inline: var(--size-250);
@@ -132,12 +138,11 @@ const Pay = () => {
                 onNumberPress={handleNumberPress}
                 onNumberPressEnd={handleNumberPressEnd}
                 onNumberPressStart={handleNumberPressStart}
-              ></NumberPad>
+              />
             </section>
             <section
               css={css`
                 padding-inline: var(--size-250);
-                margin-block-start: var(--size-200);
               `}
             >
               <ButtonGroup scroll={false} direction="horizontal" size="medium">

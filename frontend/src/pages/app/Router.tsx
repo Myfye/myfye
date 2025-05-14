@@ -5,7 +5,7 @@ import {
   TabPanel as AriaTabPanel,
   Tab as AriaTab,
 } from "react-aria-components";
-import Home from "@/features/home/Home";
+import Home from "./home/Home";
 import {
   HouseSimple as HomeIcon,
   Wallet as WalletIcon,
@@ -15,13 +15,13 @@ import {
 } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import Footer from "./layout/nav/footer/Footer";
-import NavMenu from "./layout/nav/header/nav-menu/NavMenu";
-import Header from "./layout/nav/header/Header";
+import Footer from "../../shared/components/layout/nav/footer/Footer";
+import NavMenu from "../../shared/components/layout/nav/header/nav-menu/NavMenu";
+import Header from "../../shared/components/layout/nav/header/Header";
 import Wallet from "@/pages/app/wallet/Wallet";
 import { useDispatch } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
-import Button from "./ui/button/Button";
+import Button from "../../shared/components/ui/button/Button";
 import { motion, AnimatePresence } from "motion/react";
 import Pay from "@/pages/app/pay/Pay";
 
@@ -31,6 +31,13 @@ const tabs = [
   { id: "pay", label: "Pay" },
   { id: "activity", label: "Activity" },
 ];
+
+const MotionTabLabel = motion(AriaTabPanel);
+
+const variants = {
+  visible: { opacity: 1, transition: { duration: 0.4 } },
+  hidden: { opacity: 0, transition: { duration: 0.6 } },
+};
 
 const Router = () => {
   const dispatch = useDispatch();
@@ -120,44 +127,35 @@ const Router = () => {
           ></Button>
         </Header>
         <main>
-          {tabs.map((tab) => (
-            <AriaTabPanel
-              id={tab.id}
-              key={`tab-panel-${tab.id}`}
-              css={css`
-                container: tab / size;
-                min-height: 100%;
-                height: 100%;
-              `}
-            >
-              {tab.id === "home" && (
+          <AnimatePresence mode="wait">
+            {tabs.map((tab) => (
+              <MotionTabLabel
+                id={tab.id}
+                key={`tab-panel-${tab.id}`}
+                css={css`
+                  container: tab / size;
+                  min-height: 100%;
+                  height: 100%;
+                `}
+              >
                 <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={variants}
                   key={tab.id}
                   css={css`
                     height: 100cqh;
                   `}
                 >
-                  <Home />
+                  {tab.id === "home" && <Home />}
+                  {tab.id === "wallet" && <Wallet />}
+                  {tab.id === "pay" && <Pay />}
+                  {tab.id === "activity" && <div></div>}
                 </motion.div>
-              )}
-              {tab.id === "wallet" && (
-                <motion.div
-                  key={tab.id}
-                  css={css`
-                    height: 100cqh;
-                  `}
-                >
-                  <Wallet />
-                </motion.div>
-              )}
-              {tab.id === "pay" && (
-                <div>
-                  <Pay />
-                </div>
-              )}
-              {tab.id === "activity" && <div></div>}
-            </AriaTabPanel>
-          ))}
+              </MotionTabLabel>
+            ))}
+          </AnimatePresence>
         </main>
         <Footer>
           <AriaTabList
