@@ -34,6 +34,7 @@ const {
     saveRecentlyUsedAddresses, 
     getRecentlyUsedAddresses 
 } = require('./routes/sol_transaction/recentlyUsedAddresses');
+const { emailService } = require('./routes/emailService');
 
 app.set('trust proxy', true);
 
@@ -608,6 +609,26 @@ app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }
+});
+
+app.post("/send_email", async (req, res) => {
+  console.log("\n=== Send Email Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const emailData = req.body;
+    const result = await emailService(emailData);
+    console.log("Email result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /send_email endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get addresses",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+  });
+}
 });
 
 /*

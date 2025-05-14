@@ -513,6 +513,15 @@ const handleSelectAmountChange = (presetAmount: string) => {
             </section>
           </div>
       </Overlay>
+      {showAddressEntry && (
+        <AddressEntryOverlay
+          isOpen={showAddressEntry}
+          onOpenChange={setShowAddressEntry}
+          onBack={() => setShowAddressEntry(false)}
+          selectedToken={selectedToken}
+          amount={formattedAmount}
+        />
+      )}
     </>
   );
 };

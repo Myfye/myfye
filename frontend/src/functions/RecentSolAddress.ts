@@ -1,8 +1,6 @@
 import { PayTransaction } from "./types";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth/solana";
-
-const MYFYE_BACKEND = process.env.NEXT_PUBLIC_MYFYE_BACKEND;
-const MYFYE_BACKEND_KEY = process.env.NEXT_PUBLIC_MYFYE_BACKEND_KEY;
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../env';
 
 export interface RecentSolAddress {
   id: string;
@@ -11,20 +9,14 @@ export interface RecentSolAddress {
 }
 
 export async function saveSolAddress(
-  transaction: PayTransaction,
-  transactionId: string,
-  wallet: ConnectedSolanaWallet,
   user_id: string,
+  address: string,
 ) {
-  if (!transaction.user?.solana_pub_key) {
-    console.error("Missing recipient public key");
-    return;
-  }
 
   console.log(
     "Saving Sol Address: ",
     "user ID:", user_id,
-    "address:", transaction.user.solana_pub_key,
+    "address:", address,
   );
   
   const addressResponse = await fetch(`${MYFYE_BACKEND}/save_recently_used_addresses`, {
@@ -37,7 +29,7 @@ export async function saveSolAddress(
     },
     body: JSON.stringify({
       user_id: user_id,
-      addresses: [transaction.user.solana_pub_key]
+      addresses: [address]
     })
   });
 

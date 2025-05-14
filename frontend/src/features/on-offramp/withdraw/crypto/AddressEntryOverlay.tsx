@@ -55,7 +55,7 @@ const AddressEntryOverlay = ({
       if (userID) {
         try {
           const addresses = await getRecentSolAddresses(userID);
-          
+
           setRecentAddresses(addresses);
         } catch (error) {
           console.error("Failed to fetch recent addresses:", error);
@@ -101,8 +101,11 @@ const AddressEntryOverlay = ({
         console.log("Transaction successful:", result.transactionId);
         setProcessingStatus("success");
         toast.success(`Sent ${amount} ${selectedToken} to ${address.slice(0, 6)}...${address.slice(-4)}`);
-
+        
         // Here if the address is not in the recent addresses, save the address to the database
+        if (!recentAddresses?.addresses.includes(address)) {
+          await handleSaveAddress();
+        }
       } else {
         throw new Error(result.error || "Transaction failed");
       }
@@ -128,16 +131,7 @@ const AddressEntryOverlay = ({
 
   const handleSaveAddress = async () => {
     try {
-      await saveSolAddress(
-        {
-          user: { solana_pub_key: address },
-          amount: amount,
-          abstractedAssetId: selectedToken
-        },
-        result.transactionId,
-        wallet,
-        userID
-      );
+      await saveSolAddress(userID, address);
       
       // Update local state with the new address
       setRecentAddresses(prev => ({
@@ -153,7 +147,11 @@ const AddressEntryOverlay = ({
     <>
       <Overlay 
         isOpen={isOpen} 
-        onOpenChange={onOpenChange} 
+        onOpenChange={(newIsOpen) => {
+          if (!newIsOpen) {
+            onBack();
+          }
+        }}
         title="Enter Address"
         leftIcon={<ArrowLeft size={24} />}
         onLeftIconClick={onBack}
