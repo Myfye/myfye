@@ -24,4 +24,7 @@ export interface SwapTransaction {
   status: SwapTransactionStatus;
   id: string | null;
   transactionType?: string;
+  user_id: string | null;
+  inputPublicKey: string | null;
+  outputPublicKey: string | null;
 }

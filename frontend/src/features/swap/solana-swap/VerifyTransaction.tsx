@@ -7,6 +7,8 @@ import { AssetsState } from "@/features/assets/types.ts";
 import { updateBalance } from "@/features/assets/assetsSlice.ts";
 import { saveNewSwapTransaction } from "@/functions/SaveNewTransaction.tsx";
 import { SwapTransaction } from "../types.ts";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
+import { useSelector } from "react-redux";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -23,6 +25,8 @@ async function verifyTransaction(
   wallet: ConnectedSolanaWallet,
   assets: AssetsState
 ) {
+  
+
   if (transactionId) {
     let transactionConfirmed = false;
     for (let attempt = 1; attempt <= 3 && !transactionConfirmed; attempt++) {
@@ -44,31 +48,11 @@ async function verifyTransaction(
             "Transaction details:",
             JSON.stringify(transaction, null, 2)
           );
-          console.log(
-            "Transaction: ",
-            "user_id",
-            "input_amount",
-            transaction.sell.amount,
-            "output_amount",
-            transaction.buy.amount,
-            "input_chain",
-            "solana",
-            "output_chain",
-            transaction.buy.chain,
-            "creation_date",
-            new Date().toISOString(),
-            "public_key",
-            wallet.publicKey,
-            "input_currency",
-            transaction.sell.assetId,
-            "output_currency",
-            transaction.buy.assetId,
-            "transaction_type",
-            transaction.transactionType,
-            "transaction_hash",
-            transactionId,
-            "transaction_status",
-            "success"
+          saveTransaction(
+            transaction, 
+            transactionId, 
+            wallet,
+            transaction.user_id
           );
           dispatch(updateStatus("success"));
           dispatch(updateId(transactionId));
@@ -109,6 +93,70 @@ async function verifyTransaction(
 }
 
 export default verifyTransaction;
+
+async function saveTransaction(
+  transaction: SwapTransaction,
+  transactionId: string,
+  wallet: ConnectedSolanaWallet,
+  user_id: string,
+) {
+  // Use the transaction's public keys or fall back to the wallet's public key
+  const inputPublicKey = transaction.inputPublicKey;
+  const outputPublicKey = transaction.outputPublicKey;
+
+  if (!inputPublicKey || !outputPublicKey) {
+    console.error("Missing public keys:", { inputPublicKey, outputPublicKey });
+    return;
+  }
+
+  console.log(
+    "Transaction: ",
+    "user_id:", user_id,
+    "input_amount:", transaction.sell.amount,
+    "output_amount:", transaction.buy.amount,
+    "input_chain:", "solana",
+    "output_chain:", "solana",
+    "input_public_key:", inputPublicKey,
+    "output_public_key:", outputPublicKey,
+    "input_currency:", transaction.sell.assetId,
+    "output_currency:", transaction.buy.assetId,
+    "transaction_type:", "solana-jupiter",
+    "transaction_hash:", transactionId,
+    "transaction_status:", "success"
+  );
+
+  // Call the swap transaction endpoint
+  const response = await fetch(`${MYFYE_BACKEND}/create_swap_transaction`, {
+    method: 'POST',
+    mode: 'cors',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': MYFYE_BACKEND_KEY,
+    },
+    body: JSON.stringify({
+      user_id: user_id,
+      input_amount: transaction.sell.amount,
+      output_amount: transaction.buy.amount,
+      input_chain: "solana",
+      output_chain: "solana",
+      input_public_key: inputPublicKey,
+      output_public_key: outputPublicKey,
+      input_currency: transaction.sell.assetId,
+      output_currency: transaction.buy.assetId,
+      transaction_type: "solana-jupiter",
+      transaction_hash: transactionId,
+      transaction_status: "success"
+    })
+  });
+
+  if (!response.ok) {
+    console.error("Failed to save swap transaction:", await response.text());
+    throw new Error("Failed to save swap transaction");
+  }
+
+  return response.json();
+}
 
 function updateBalances(
   dispatch: Dispatch,
@@ -183,49 +231,58 @@ function updateBalances(
 
   const sellActions = {
     btcSol: () => {
+      const newBalance = Math.max(0, balances.btcSol - sell.amount);
       dispatch(
         updateBalance({
           assetId: "btc_sol",
-          balance: balances.btcSol - sell.amount,
+          balance: newBalance,
         })
       );
-      console.log(`subtracted ${sell.amount} from btc balance`);
     },
     usdcSol: () => {
+      const newBalance = Math.max(0, balances.usdcSol - sell.amount);
       dispatch(
         updateBalance({
           assetId: "usdc_sol",
-          balance: balances.usdcSol - sell.amount,
+          balance: newBalance,
         })
       );
-      console.log(`subtracted ${sell.amount} from usdc balance`);
     },
     usdySol: () => {
+      const newBalance = Math.max(0, balances.usdySol - sell.amount);
       dispatch(
         updateBalance({
           assetId: "usdy_sol",
-          balance: balances.usdySol - sell.amount,
+          balance: newBalance,
         })
       );
-      console.log(`subtracted ${sell.amount} from usdy balance`);
     },
     eurcSol: () => {
+      const newBalance = Math.max(0, balances.eurcSol - sell.amount);
       dispatch(
         updateBalance({
           assetId: "eurc_sol",
-          balance: balances.eurcSol - sell.amount,
+          balance: newBalance,
         })
       );
-      console.log(`subtracted ${sell.amount} from eurc balance`);
     },
     sol: () => {
+      const newBalance = Math.max(0, balances.sol - sell.amount);
       dispatch(
         updateBalance({
           assetId: "sol",
-          balance: balances.sol - sell.amount,
+          balance: newBalance,
         })
       );
-      console.log(`subtracted ${sell.amount} from sol balance`);
+    },
+    usdtSol: () => {
+      const newBalance = Math.max(0, balances.usdtSol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "usdt_sol",
+          balance: newBalance,
+        })
+      );
     },
   };
 
@@ -234,30 +291,50 @@ function updateBalances(
     return; // Return early instead of throwing an error
   }
 
-  // Map the mint addresses to our asset IDs if needed
+  // Map the mint addresses to our asset IDs
   const sellAssetId = mapMintToAssetId(sell.assetId);
   const buyAssetId = mapMintToAssetId(buy.assetId);
+  console.log("Original mint addresses:", { sellMint: sell.assetId, buyMint: buy.assetId });
+  console.log("Mapped asset IDs:", { sellAssetId, buyAssetId });
+  console.log("Available action keys:", {
+    sellActions: Object.keys(sellActions),
+    buyActions: Object.keys(buyActions)
+  });
 
   if (!sellActions[sellAssetId] || !buyActions[buyAssetId]) {
-    console.error("Invalid asset IDs:", { sellAssetId, buyAssetId });
+    console.error("Invalid asset IDs:", { 
+      sellAssetId, 
+      buyAssetId,
+      availableSellActions: Object.keys(sellActions),
+      availableBuyActions: Object.keys(buyActions)
+    });
     return; // Return early instead of throwing an error
   }
 
+  console.log("Executing sell action for:", sellAssetId);
   sellActions[sellAssetId]();
+  console.log("Executing buy action for:", buyAssetId);
   buyActions[buyAssetId]();
 }
 
+
 // Helper function to map asset IDs to mint addresses
-function mapMintToAssetId(assetId: string): string {
-  // Map of asset IDs to mint addresses
-  const assetToMintMap: Record<string, string> = {
-    "sol": "So11111111111111111111111111111111111111112",
-    "usdc_sol": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    "usdy_sol": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
-    "eurc_sol": "2wpTqWqJwYwUp3UF9L3on7bq8GpAVydo1bHh5gqZq5Y",
-    "btc_sol": "9n4nb2ow5xB2ywvDy8v52N2qN1xzybapC8G4wEGGkZwyTDt1v",
+function mapMintToAssetId(mintAddress: string): string {
+  // Map of mint addresses to asset IDs (matching the action map keys)
+  const mintToAssetMap: Record<string, string> = {
+    "So11111111111111111111111111111111111111112": "sol",
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "usdcSol",
+    "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": "usdtSol",
+    "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6": "usdySol",
+    "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr": "eurcSol",
+    "9n4nb2ow5xB2ywvDy8v52N2qN1xzybapC8G4wEGGkZwyTDt1v": "btcSol",
     // Add more mappings as needed
   };
 
-  return assetToMintMap[assetId] || assetId;
+  const mappedId = mintToAssetMap[mintAddress];
+  if (!mappedId) {
+    console.error("Unknown mint address:", mintAddress);
+    return mintAddress;
+  }
+  return mappedId;
 }

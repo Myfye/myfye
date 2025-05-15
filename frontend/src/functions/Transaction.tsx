@@ -25,6 +25,7 @@ import {useSendTransaction} from '@privy-io/react-auth';
   const PYUSD_MINT_ADDRESS = '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo';
   const EURC_MINT_ADDRESS = 'HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr';
 import { logError } from "./LogError.tsx";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../env';
 
 export const tokenTransfer = async (
     payerPubKey: string, 
@@ -103,19 +104,38 @@ export const tokenTransfer = async (
         let receiverAccountInfo: any = receiverParsedTokenAccounts.value.find(
           (accountInfo: { account: { data: { parsed: { info: { mint: string } } } } }) => accountInfo.account.data.parsed.info.mint === mintAddress
         );
+
+        const userPublicKey = new PublicKey(receiverPubKey);
         
         if (!receiverAccountInfo) {
-          const functions = getFunctions();
-          const newTokenAccount = httpsCallable(functions, 'createNewTokenAccount');
+
+          
+          const response = await fetch(`${MYFYE_BACKEND}/create_solana_token_account`, {
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': MYFYE_BACKEND_KEY,
+            },
+            body: JSON.stringify({
+                receiverPubKey: receiverPubKey,
+                mintAddress: mintAddress,
+                programId: programId
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Backend error:", errorData);
+            throw new Error(`Backend error: ${errorData.error || 'Unknown error'}`);
+        } else {
+          console.log("Token account created for receiver.", response);
+        }
+
+        const result = await response.json();
         
           try {
-            const result = newTokenAccount({
-              payerPubKey: payerPubKey,
-              receiverPubKey: receiverPubKey,
-              mintAddress: mintAddress!,
-              programId: programId,
-            });
-
             let attempts = 0;
             const maxAttempts = 10;
             
@@ -183,25 +203,36 @@ export const tokenTransfer = async (
         txPriority.lastValidBlockHeight = blockhashInfo.lastValidBlockHeight;
         txPriority.feePayer = feePayerPublicKey;
 
-        const functions = getFunctions();
-        const signTransactionFn = httpsCallable(functions, "signTransaction");
-
         // Serialize the transaction (before signing)
         const serializedTx = txPriority.serialize({ requireAllSignatures: false }).toString("base64");
 
-        // Send to Firebase for signing
-        const { data } = await signTransactionFn({ serializedTransaction: serializedTx }) as { data: { signedTransaction?: string; error?: string } };
+        // Send to backend for signing
+        const response = await fetch(`${MYFYE_BACKEND}/sign_transaction`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': MYFYE_BACKEND_KEY,
+          },
+          body: JSON.stringify({
+            serializedTransaction: serializedTx,
+          }),
+        });
 
-        if (data.error) {
-          throw new Error("Server signing failed: " + data.error);
+        if (!response.ok) {
+          throw new Error("Server signing failed: " + await response.text());
         }
 
-        if (!data.signedTransaction) {
+        const responseData = await response.json();
+        if (responseData.error) {
+          throw new Error("Server signing failed: " + responseData.error);
+        }
+
+        if (!responseData.signedTransaction) {
           throw new Error("Server signing failed: No signed transaction returned");
         }
 
         // Deserialize the signed transaction
-        const signedTx = Transaction.from(Buffer.from(data.signedTransaction, "base64"));
+        const signedTx = Transaction.from(Buffer.from(responseData.signedTransaction, "base64"));
 
         const transactionId = await wallet.sendTransaction!(signedTx, connection);
         
@@ -227,7 +258,7 @@ export const tokenTransfer = async (
         } else {
           throw new Error("Transaction Failed: No transaction ID returned");
         }
-  
+
       } catch (error) {
         console.error("Transaction Failed with error: ", error);
         logError(error.message, "tokenTransfer", error.stack);

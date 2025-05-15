@@ -13,7 +13,7 @@ import { useCallback } from "react";
 import { AbstractedAsset, Asset } from "../assets/types";
 import { selectAbstractedAssetsWithBalanceByDashboard } from "../assets/assetsSlice";
 import AssetCardListSelect from "../assets/cards/AssetCardListSelect";
-import ensureTokenAccount from "./solana-swap/ensureTokenAccount";
+import ensureTokenAccount from "../../functions/ensureTokenAccount";
 import mintAddress from "./solana-swap/MintAddress";
 
 const SelectAssetOverlay = ({ zIndex = 1000 }) => {

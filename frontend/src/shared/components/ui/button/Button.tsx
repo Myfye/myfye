@@ -98,7 +98,7 @@ const _Button = ({
       data-expand={expand}
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
-      className={`button ${className}`}
+      className={`button ${className} ${variant === 'token-select' ? 'token-select' : ''}`}
       ref={ref}
       animate={{
         scale: isPressed ? 0.9 : 1,
@@ -164,7 +164,7 @@ const _Link = ({
       data-expand={expand}
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
-      className={`button ${className}`}
+      className={`button ${className} ${variant === 'token-select' ? 'token-select' : ''}`}
       ref={ref}
       animate={{
         scale: isPressed ? 0.9 : 1,

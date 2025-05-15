@@ -4,18 +4,20 @@ const cors = require("cors");
 const geoip = require('geoip-lite');
 const rateLimit = require('express-rate-limit');
 const app = express();
-const { create_new_on_ramp_path } = require('./routes/newBlindPayReceiver');
-const { get_payin_quote } = require('./routes/getPayinQuote');
+const { create_new_on_ramp_path } = require('./routes/onOffRamp/newBlindPayReceiver');
+const { get_payin_quote } = require('./routes/onOffRamp/getPayinQuote');
 const { create_new_payin } = require('./routes/createNewPayin');
 const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
-const { createNewTokenAccount } = require('./routes/newSolanaTokenAccount');
+const { ensureTokenAccount } = require('./routes/sol_transaction/tokenAccount');
+const { signTransaction, signVersionedTransaction } = require('./routes/sol_transaction/solanaTransaction');
 const { 
     createUser, 
     getUserByEmail, 
     updateEvmPubKey, 
     updateSolanaPubKey, 
-    getUserByPrivyId } = require('./routes/userDb');
-const { createErrorLog } = require('./routes/errorLog');
+    getUserByPrivyId,
+    getAllUsers } = require('./routes/userDb');
+const { createErrorLog, getErrorLogs, deleteErrorLog } = require('./routes/errorLog');
 const { 
     createContact, 
     getContacts, 
@@ -24,8 +26,18 @@ const {
 } = require('./routes/interUser');
 const { 
     createSwapTransaction, 
-    getSwapTransactionsByUserId 
-} = require('./routes/transactions');
+    getSwapTransactionsByUserId,
+    getAllSwapTransactions 
+} = require('./routes/swapTransactions');
+const { 
+    createPayTransaction,
+    getAllPayTransactions 
+} = require('./routes/payTransactions');
+const { 
+    saveRecentlyUsedAddresses, 
+    getRecentlyUsedAddresses 
+} = require('./routes/sol_transaction/recentlyUsedAddresses');
+const { emailService } = require('./routes/emailService');
 
 app.set('trust proxy', true);
 
@@ -134,6 +146,9 @@ app.use(generalLimiter);
 // Apply IP blocking and API key validation to all routes
 app.use(blockUnauthorizedIPs);
 
+// Add email service routes
+app.use('/api/email', emailService);
+
 /* User management endpoints */
 // Apply stricter rate limiting to sensitive endpoints
 app.post('/create_user', sensitiveLimiter, async (req, res) => {
@@ -223,6 +238,54 @@ app.post('/get_swap_transactions', generalLimiter, async (req, res) => {
     }
 });
 
+app.post("/get_all_swap_transactions", generalLimiter, async (req, res) => {
+    console.log("\n=== Get All Swap Transactions Request Received ===");
+
+    try {
+        const result = await getAllSwapTransactions();
+        console.log(`Retrieved ${result.length} swap transactions`);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_all_swap_transactions endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to fetch swap transactions",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+/* Pay transaction endpoints */
+app.post('/create_pay_transaction', generalLimiter, async (req, res) => {
+    try {
+        const payData = req.body;
+        const result = await createPayTransaction(payData);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /create_pay_transaction endpoint:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post("/get_all_pay_transactions", generalLimiter, async (req, res) => {
+    console.log("\n=== Get All Pay Transactions Request Received ===");
+
+    try {
+        const result = await getAllPayTransactions();
+        console.log(`Retrieved ${result.length} pay transactions`);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_all_pay_transactions endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to fetch pay transactions",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
 /* Blind pay API */
 app.post("/new_on_ramp", async (req, res) => {
   console.log("\n=== New On-Ramp Request Received ===");
@@ -280,7 +343,7 @@ app.post("/create_solana_token_account", async (req, res) => {
     console.log(`SOL_PRIV_KEY is ${process.env.SOL_PRIV_KEY ? 'set' : 'not set'}`);
     console.log(`SOL_PRIV_KEY length: ${process.env.SOL_PRIV_KEY ? process.env.SOL_PRIV_KEY.length : 0}`);
     
-    const result = await createNewTokenAccount({
+    const result = await ensureTokenAccount({
       receiverPubKey,
       mintAddress,
       programId,
@@ -420,6 +483,179 @@ app.post("/get_top_contacts", async (req, res) => {
     });
   }
 });
+
+/* Transaction signing endpoints */
+app.post("/sign_transaction", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Sign Transaction Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await signTransaction(data);
+    console.log("Transaction signing result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /sign_transaction endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to sign transaction",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/sign_versioned_transaction", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Sign Versioned Transaction Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await signVersionedTransaction(data);
+    console.log("Versioned transaction signing result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /sign_versioned_transaction endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to sign versioned transaction",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_error_logs", generalLimiter, async (req, res) => {
+  console.log("\n=== Get All Error Logs Request Received ===");
+
+  try {
+    const result = await getErrorLogs();
+    console.log(`Retrieved ${result.length} error logs`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_error_logs endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to fetch error logs",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_all_users", generalLimiter, async (req, res) => {
+  console.log("\n=== Get All Users Request Received ===");
+
+  try {
+    const result = await getAllUsers();
+    console.log(`Retrieved ${result.length} users`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_all_users endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to fetch users",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/delete_error_log", generalLimiter, async (req, res) => {
+  console.log("\n=== Delete Error Log Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { error_log_id } = req.body;
+    if (!error_log_id) {
+      return res.status(400).json({ error: 'Error log ID is required' });
+    }
+    const result = await deleteErrorLog(error_log_id);
+    console.log("Error log deletion result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_error_log endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to delete error log",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Recently Used Solana Addresses routes */
+app.post("/save_recently_used_addresses", generalLimiter, async (req, res) => {
+    console.log("\n=== Save Recently Used Addresses Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { user_id, addresses } = req.body;
+        if (!user_id || !addresses || !Array.isArray(addresses)) {
+            return res.status(400).json({ 
+                error: 'Invalid request. user_id and addresses array are required.' 
+            });
+        }
+        const result = await saveRecentlyUsedAddresses(user_id, addresses);
+        console.log("Save addresses result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /save_recently_used_addresses endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to save addresses",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
+    console.log("\n=== Get Recently Used Addresses Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { user_id } = req.body;
+        if (!user_id) {
+            return res.status(400).json({ 
+                error: 'Invalid request. user_id is required.' 
+            });
+        }
+        const result = await getRecentlyUsedAddresses(user_id);
+        console.log("Get addresses result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_recently_used_addresses endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to get addresses",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+
+app.post("/send_email", async (req, res) => {
+  console.log("\n=== Send Email Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const emailData = req.body;
+    const result = await emailService(emailData);
+    console.log("Email result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /send_email endpoint:", error);
+    console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to get addresses",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
 
 /*
 app.listen(PORT, () => {

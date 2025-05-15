@@ -430,49 +430,5 @@ const getSOLPriceQuote = async (
   return true;
 };
 
-export async function getUsers(dispatch: Function) {
-  const functions = getFunctions();
-  const getUsersFn = httpsCallable(functions, "fetchPageOfUsers");
-
-  let cursor = null;
-  let users = [];
-
-  try {
-    const result: any = await getUsersFn({ cursor });
-
-    if (!result.data.success) {
-      console.error("Failed to fetch users:", result.data.error);
-    }
-
-    cursor = result.data.next_cursor;
-
-    // Map the API response to User[]
-    const mapToUsers = (result: any): User[] => {
-      // Access the nested users array from the response
-      const userData = result.data.users.data;
-
-      // Map each user object to our User interface
-      return userData.map(
-        (user: any): User => ({
-          created_at: user.created_at,
-          has_accepted_terms: user.has_accepted_terms,
-          id: user.id,
-          is_guest: user.is_guest,
-          linked_accounts: user.linked_accounts,
-        })
-      );
-    };
-
-    const users = mapToUsers(result);
-
-    if (users) {
-      dispatch(setUsers(users));
-    }
-  } catch (error) {
-    console.error("Error calling fetchPageOfUsers:", error);
-  }
-
-  return users;
-}
 
 export { HandleUserLogIn };

@@ -1,21 +1,22 @@
 import { PublicKey, Connection, VersionedTransaction } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
 import getTokenAccountData from "../../../functions/GetSolanaTokenAccount.tsx";
-import { getFunctions, httpsCallable } from "firebase/functions";
-const SERVER_SOLANA_PUBLIC_KEY = import.meta.env
-  .VITE_REACT_APP_SERVER_SOLANA_PUBLIC_KEY;
 import prepareTransaction from "./PrepareSwap.tsx";
 import mintAddress from "./MintAddress.tsx";
 import verifyTransaction from "./VerifyTransaction.tsx";
-import ensureTokenAccount from "./ensureTokenAccount.tsx";
+import ensureTokenAccount from "../../../functions/ensureTokenAccount.tsx";
 import { SwapTransaction, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
 import { Asset, AssetsState } from "@/features/assets/types.ts";
 import { logError } from "../../../functions/LogError.tsx";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
+
+const SERVER_SOLANA_PUBLIC_KEY = import.meta.env
+  .VITE_REACT_APP_SERVER_SOLANA_PUBLIC_KEY;
 
 export const swap = async ({
   wallet,
@@ -94,6 +95,7 @@ export const swap = async ({
         "Error calling getSwapQuote retrying becuase error: ",
         error
       );
+      logError("Error calling getSwapQuote", "swap", error);
       dispatch(updateStatus("fail"));
     });
 };
@@ -161,7 +163,7 @@ async function getSwapQuote(
     };
   } catch (error) {
     console.error("Error in getSwapQuote:", error);
-    const errorLogMessage = "Error getting the swap quote"
+    const errorLogMessage = "Error getting the swap quote" + `Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
     const errorStackTrace = `${error} Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
 
     // to do log the error
@@ -229,74 +231,112 @@ const swapTransaction = async (
     ),
   });
 
-  const fullySignedTx = await wallet.signTransaction(serverSignedTransaction);
-  //simulate(fullySignedTx);
+  try {
+    const fullySignedTx = await wallet.signTransaction(serverSignedTransaction);
+    
+    //simulate(fullySignedTx);
 
-  const transactionId = await wallet.sendTransaction!(
-    fullySignedTx,
-    connection
-  );
+    // Instead of using wallet.sendTransaction, use connection.sendRawTransaction
+    const rawTransaction = fullySignedTx.serialize();
+    const transactionId = await connection.sendRawTransaction(rawTransaction, {
+      skipPreflight: true, // Skip preflight checks including balance check
+      maxRetries: 3
+    });
 
-  // Update the transaction object with the correct amounts from the quote
-  if (quoteData && transaction) {
-    console.log("Quote data:", quoteData);
-    console.log("Original transaction:", JSON.stringify(transaction, null, 2));
-    
-    // Extract the amounts from the quote data
-    let inputAmount = null;
-    let outputAmount = null;
-    
-    if (quoteData.inputAmount && quoteData.outputAmount) {
-      inputAmount = quoteData.inputAmount / 1e9;
-      outputAmount = quoteData.outputAmount / 1e9;
-    } else if (transaction.sell.amount && transaction.buy.amount) {
-      // Fallback to using the original transaction amounts
-      console.log("Using original transaction amounts as fallback");
-      inputAmount = transaction.sell.amount;
-      outputAmount = transaction.buy.amount;
-    }
-    
-    console.log("Extracted amounts:", { inputAmount, outputAmount });
-    
-    // Create a new transaction object instead of modifying the existing one
-    const updatedTransaction = {
-      ...transaction,
-      buy: {
-        ...transaction.buy,
-        amount: outputAmount || transaction.buy.amount,
-        assetId: transaction.buy.assetId || quoteData.outputMint
-      },
-      sell: {
-        ...transaction.sell,
-        amount: inputAmount || transaction.sell.amount,
-        assetId: transaction.sell.assetId || quoteData.inputMint
+    // Update the transaction object with the correct amounts from the quote
+    if (quoteData && transaction) {
+      console.log("Quote data:", quoteData);
+      console.log("Original transaction:", JSON.stringify(transaction, null, 2));
+      
+      // Extract the amounts from the quote data
+      let inputAmount = null;
+      let outputAmount = null;
+      
+      if (quoteData.inputAmount && quoteData.outputAmount) {
+        inputAmount = quoteData.inputAmount / 1e9;
+        outputAmount = quoteData.outputAmount / 1e9;
+      } else if (transaction.sell.amount && transaction.buy.amount) {
+        // Fallback to using the original transaction amounts
+        console.log("Using original transaction amounts as fallback");
+        inputAmount = transaction.sell.amount;
+        outputAmount = transaction.buy.amount;
       }
-    };
-    
-    console.log("Updated transaction object:", JSON.stringify(updatedTransaction, null, 2));
+      
+      console.log("Extracted amounts:", { inputAmount, outputAmount });
+      
+      // Create a new transaction object instead of modifying the existing one
+      const updatedTransaction = {
+        ...transaction,
+        buy: {
+          ...transaction.buy,
+          amount: outputAmount || transaction.buy.amount,
+          assetId: transaction.buy.assetId || quoteData.outputMint
+        },
+        sell: {
+          ...transaction.sell,
+          amount: inputAmount || transaction.sell.amount,
+          assetId: transaction.sell.assetId || quoteData.inputMint
+        }
+      };
+      
+      console.log("Updated transaction object:", JSON.stringify(updatedTransaction, null, 2));
 
-    await verifyTransaction(
-      transactionId,
-      dispatch,
-      type,
-      updatedTransaction,
-      wallet,
-      assets
-    );
-  } else {
-    console.log("Missing quote data or transaction:", { 
-      hasQuoteData: !!quoteData, 
-      hasTransaction: !!transaction 
+      await verifyTransaction(
+        transactionId,
+        dispatch,
+        type,
+        updatedTransaction,
+        wallet,
+        assets
+      );
+    } else {
+      console.log("Missing quote data or transaction:", { 
+        hasQuoteData: !!quoteData, 
+        hasTransaction: !!transaction 
+      });
+      
+      await verifyTransaction(
+        transactionId,
+        dispatch,
+        type,
+        transaction,
+        wallet,
+        assets
+      );
+    }
+  } catch (error) {
+    console.error("Error in swapTransaction:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      code: error.code,
+      logs: error.logs,
+      fullError: error
     });
     
-    await verifyTransaction(
-      transactionId,
-      dispatch,
+    const transactionDetails = {
+      userPublicKey,
+      quoteData,
+      platformFeeAccount: platformFeeAccount?.toString() || null,
+      serverPublicKey: SERVER_SOLANA_PUBLIC_KEY,
       type,
-      transaction,
-      wallet,
-      assets
+      transaction
+    };
+    
+    logError(
+      `Swap transaction failed: ${error.message}`, 
+      "swap", 
+      `Error details: ${JSON.stringify({
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        code: error.code,
+        logs: error.logs,
+        transactionDetails: transactionDetails
+      }, null, 2)}`
     );
+    
+    dispatch(updateStatus("fail"));
   }
 };
 
@@ -313,18 +353,25 @@ async function signTransactionOnBackend(transaction: any) {
   // Serialize for server signing
   const serializedTx = Buffer.from(transaction.serialize()).toString("base64");
 
-  const functions = getFunctions();
-  const signTransactionFn = httpsCallable(
-    functions,
-    "signVersionedTransaction"
-  );
+  // Send to backend for signing
+  const response = await fetch(`${MYFYE_BACKEND}/sign_versioned_transaction`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': MYFYE_BACKEND_KEY,
+    },
+    body: JSON.stringify({
+      serializedTransaction: serializedTx,
+    }),
+  });
 
-  // Send to Firebase for signing
-  const signTransactionResponse = (await signTransactionFn({
-    serializedTransaction: serializedTx,
-  })) as { data: { signedTransaction?: string; error?: string } };
+  if (!response.ok) {
+    console.error("Server signing error:", response.status, await response.text());
+    return false;
+  }
 
-  const { signedTransaction, error } = signTransactionResponse.data;
+  const responseData = await response.json();
+  const { signedTransaction, error } = responseData;
 
   if (error) {
     console.error("Server signing error:", error);
@@ -352,17 +399,17 @@ async function signTransactionOnBackend(transaction: any) {
   });
 
   if (
-    signTransactionResponse.data.error ||
-    !signTransactionResponse.data.signedTransaction
+    error ||
+    !signedTransaction
   ) {
-    console.error("Signing failed:", signTransactionResponse.data.error);
+    console.error("Signing failed:", error);
     return false;
   }
 
   // Deserialize and send the signed transaction
   const signedTx = VersionedTransaction.deserialize(
     new Uint8Array(
-      Buffer.from(signTransactionResponse.data.signedTransaction, "base64")
+      Buffer.from(signedTransaction, "base64")
     )
   );
   return signedTx;

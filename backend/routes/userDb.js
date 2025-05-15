@@ -9,12 +9,18 @@ async function createUser(userData) {
 
     console.log("\n=== New User Creation Request Received ===");
 
+    // Create UTC timestamp
+    const now = new Date();
+    const utcTimestamp = now.toISOString();
+        
+    console.log("Creating user with UTC timestamp:", utcTimestamp);
+
     const query = `
         INSERT INTO users (
             email, phone_number, first_name, last_name, country,
             evm_pub_key, solana_pub_key, privy_user_id, persona_account_id,
-            blind_pay_receiver_id, blind_pay_evm_wallet_id
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            blind_pay_receiver_id, blind_pay_evm_wallet_id, creation_date
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING *
     `;
 
@@ -30,6 +36,7 @@ async function createUser(userData) {
     userData.personaAccountId,
     userData.blindPayReceiverId,
     userData.blindPayEvmWalletId,
+    now
   ];
 
     try {
@@ -148,6 +155,17 @@ async function updateSolanaPubKey(privyUserId, solanaPubKey) {
     }
 }
 
+async function getAllUsers() {
+  const query = "SELECT * FROM users ORDER BY creation_date DESC";
+  try {
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    console.error("Error getting all users:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   createUser,
   getUserByEmail,
@@ -155,4 +173,5 @@ module.exports = {
   updateEvmPubKey,
   updateSolanaPubKey,
   getUserByPrivyId,
+  getAllUsers,
 };

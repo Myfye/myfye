@@ -24,6 +24,44 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
 
+  const caption = useMemo(() => {
+    switch (transaction.status) {
+      case "success": {
+        return (
+          <span
+            css={css`
+              display: inline-block;
+              padding-block-end: calc(1em * var(--line-height-caption));
+            `}
+          >
+            Coins have been deposited into your wallet.
+          </span>
+        );
+      }
+      case "fail": {
+        // Check if the selling asset is SOL or WSOL
+        const isSellingSolana = transaction.sell.abstractedAssetId === "sol" || 
+                               transaction.sell.abstractedAssetId === "w_sol";
+        
+        return (
+          <span
+            css={css`
+              display: inline-block;
+              padding-block-end: calc(1em * var(--line-height-caption));
+            `}
+          >
+            {isSellingSolana 
+              ? "Error processing swap. Try selling less Solana to pay for the blockchain fee." 
+              : "Error processing swap. Please try again."}
+          </span>
+        );
+      }
+      default: {
+        return `${transaction.buy.abstractedAssetId} will be deposited into your wallet once the transaction is complete.`;
+      }
+    }
+  }, [transaction]);
+
   const heading = useMemo(() => {
     switch (transaction.status) {
       case "success": {

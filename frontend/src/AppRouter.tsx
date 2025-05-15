@@ -9,8 +9,7 @@ import {
   useMfaEnrollment,
 } from "@privy-io/react-auth";
 import {
-  HandleUserLogIn,
-  getUsers,
+  HandleUserLogIn
 } from "./features/authentication/LoginService.tsx";
 import logo from "@/assets/logo/myfye_logo.svg";
 
@@ -23,8 +22,8 @@ import LoginPage from "./pages/app/login/LoginPage.tsx";
 import Router from "./pages/app/Router.tsx";
 import SendModal from "@/features/send/SendModal.tsx";
 import ReceiveModal from "@/features/receive/ReceiveModal.tsx";
-import DepositModal from "@/features/on-offramp/deposit/DepositModal.tsx";
-import WithdrawModal from "@/features/on-offramp/withdraw/WithdrawModal.tsx";
+import DepositModal from "@/features/onOffRamp/deposit/DepositModal.tsx";
+import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
@@ -33,6 +32,8 @@ import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWalle
 import peopleOnMyfye from "@/assets/peopleOnMyfye.png";
 import { useNavigate } from "react-router-dom";
 import { checkIfMobileOrTablet } from "./shared/utils/mobileUtils.ts";
+import MFAOnboarding from "./pages/app/login/mfaOnboarding.tsx";
+
 function WebAppInner() {
   window.Buffer = Buffer;
 
@@ -103,12 +104,16 @@ function WebAppInner() {
     handleLogin();
   }, [authenticated, user]);
 
-  useEffect(() => {
-    getUsers(dispatch);
-  }, []);
-
   if (authenticated) {
     if (userDataLoaded) {
+
+      if (!user.wallet?.address || !user.wallet.address.startsWith('0x')) {
+        // normal user flow was interrupted, show onboarding
+        return (
+          <MFAOnboarding />
+        );
+      }
+
       if (mfaStatus === "enrolled") {
         return (
           <div className="app-layout">
@@ -127,52 +132,12 @@ function WebAppInner() {
       }
       if (mfaStatus === "createdPasskey") {
         return (
-          <div className="app-layout">
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <div style={{ marginTop: "80px" }}>
-                <button
-                  onClick={showMfaEnrollmentModal}
-                  style={{
-                    color: "#ffffff",
-                    fontSize: "25px",
-                    fontWeight: "bold",
-                    background: "#447E26",
-                    borderRadius: "10px",
-                    border: "3px solid #ffffff",
-                    padding: "15px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Enroll in MFA
-                </button>
-              </div>
-            </div>
-          </div>
+          <MFAOnboarding />
         );
       }
       if (mfaStatus === "" || !mfaStatus) {
         return (
-          <div className="app-layout">
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <div style={{ marginTop: "80px" }}>
-                <button
-                  onClick={linkPasskey}
-                  style={{
-                    color: "#ffffff",
-                    fontSize: "25px",
-                    fontWeight: "bold",
-                    background: "#447E26",
-                    borderRadius: "10px",
-                    border: "3px solid #ffffff",
-                    padding: "15px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Create A Passkey
-                </button>
-              </div>
-            </div>
-          </div>
+          <MFAOnboarding />
         );
       }
     } else {

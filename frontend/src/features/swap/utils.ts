@@ -3,9 +3,7 @@ import { AbstractedAsset, Asset, AssetsState } from "../assets/types";
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
   const parsed = parseFormattedAmount(amount);
-  return isNaN(parsed)
-    ? ""
-    : parsed.toLocaleString("en-EN", { maximumFractionDigits: 8 });
+  return isNaN(parsed) ? "" : parsed.toString();
 };
 
 export const updateFormattedAmount = (
@@ -22,16 +20,8 @@ export const updateFormattedAmount = (
 
   if (input === "delete") {
     if (formattedAmount === "0.") return "";
-    const [integer, decimal] = formattedAmount.split(".");
     const newAmount = formattedAmount.slice(0, -1);
-    if (
-      decimal &&
-      (decimal[decimal.length - 1] === "0" ||
-        decimal[decimal.length - 2] === "0")
-    )
-      return newAmount;
-    const newStr = getFormattedNumberFromString(newAmount);
-    return newStr;
+    return newAmount === "" ? "" : newAmount;
   }
 
   if (input === ".") {
@@ -41,17 +31,10 @@ export const updateFormattedAmount = (
       : formattedAmount + ".";
   }
 
-  if (input === "0" && formattedAmount === "") return "0.";
-  if (formattedAmount === "0") return input; // Replace leading zero with input
+  if (input === "0" && formattedAmount === "") return "0";
+  if (formattedAmount === "0" && input !== ".") return input; // Replace leading zero with input
 
-  const updatedAmount = getFormattedNumberFromString(formattedAmount + input);
-  if (input === "0" && formattedAmount.includes(".")) {
-    formattedAmount += "0";
-    const [_, decimal] = formattedAmount.split(".");
-    const [updatedAmountInteger, __] = updatedAmount.split(".");
-    return updatedAmountInteger + "." + decimal;
-  }
-  return updatedAmount;
+  return formattedAmount + input;
 };
 
 export const updateFormattedGhostAmount = (formattedGhostAmount: string) => {
@@ -64,7 +47,11 @@ export const updateFormattedGhostAmount = (formattedGhostAmount: string) => {
 };
 
 export const parseFormattedAmount = (formattedAmount: string) => {
-  return parseFloat(formattedAmount.replace(/,/g, ""));
+  if (!formattedAmount || formattedAmount === "") return NaN;
+  // Remove any commas but preserve the exact string representation
+  const cleanedAmount = formattedAmount.replace(/,/g, "");
+  // Use Number instead of parseFloat to maintain precision
+  return Number(cleanedAmount);
 };
 
 export const getExchangeRate = (
