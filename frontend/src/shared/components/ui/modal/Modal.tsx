@@ -52,8 +52,8 @@ const Modal = ({
   onOpenChange: (isOpen: boolean) => void;
   isOpen: boolean;
 }) => {
-  const top = window.innerHeight - height > 0 ? window.innerHeight - height : 0;
-  const h = Math.min(window.innerHeight, height);
+  const h = Math.min(window.innerHeight - 40, height);
+  const top = window.innerHeight - h;
   const y = useMotionValue(h);
   const bgOpacity = useTransform(y, [0, h], [0.4, 0]);
   const bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
@@ -106,8 +106,7 @@ const Modal = ({
               style={{
                 y: y,
                 top: top,
-                // Extra padding at the bottom to account for rubber band scrolling.
-                paddingBottom: window.screen.height,
+                paddingBottom: 0,
               }}
               drag="y"
               dragConstraints={{ top: 0 }}

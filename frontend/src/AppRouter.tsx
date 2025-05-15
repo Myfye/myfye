@@ -9,8 +9,7 @@ import {
   useMfaEnrollment,
 } from "@privy-io/react-auth";
 import {
-  HandleUserLogIn,
-  getUsers,
+  HandleUserLogIn
 } from "./features/authentication/LoginService.tsx";
 import logo from "@/assets/logo/myfye_logo.svg";
 
@@ -23,8 +22,8 @@ import LoginPage from "./pages/app/login/LoginPage.tsx";
 import Router from "./pages/app/Router.tsx";
 import SendModal from "@/features/send/SendModal.tsx";
 import ReceiveModal from "@/features/receive/ReceiveModal.tsx";
-import DepositModal from "@/features/on-offramp/deposit/DepositModal.tsx";
-import WithdrawModal from "@/features/on-offramp/withdraw/WithdrawModal.tsx";
+import DepositModal from "@/features/onOffRamp/deposit/DepositModal.tsx";
+import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
@@ -104,10 +103,6 @@ function WebAppInner() {
     };
     handleLogin();
   }, [authenticated, user]);
-
-  useEffect(() => {
-    getUsers(dispatch);
-  }, []);
 
   if (authenticated) {
     if (userDataLoaded) {

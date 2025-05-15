@@ -10,7 +10,7 @@ import {
 } from "@/redux/overlayReducers";
 import { RootState } from "@/redux/store";
 import { setWithdrawModalOpen } from "@/redux/modalReducers";
-import WithdrawCryptoOverlay from "./crypto/WithdrawCryptoOverlay";
+import WithdrawCryptoOverlay from "./onChain/WithdrawCryptoOverlay";
 
 const WithdrawModal = () => {
   const [height, setHeight] = useState(360);
