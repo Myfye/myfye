@@ -244,8 +244,8 @@ const handleSelectAmountChange = (presetAmount: string) => {
             display: grid;
             grid-template-rows: auto 1fr auto auto;
             gap: var(--size-200);
-            min-height: 85vh;
-            max-height: 85vh;
+            min-height: 80vh;
+            max-height: 80vh;
             overflow-y: auto;
           `}
         >

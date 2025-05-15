@@ -72,146 +72,141 @@ const DepositInstructionsOverlay = ({ isOpen, onOpenChange, onBack, selectedToke
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 7vh;
+          gap: 3vh;
           flex-direction: column;
-          min-height: 85vh;
-          max-height: 85vh;
+          min-height: 70vh;
+          max-height: 70vh;
           position: relative;
+          margin-top: 5vh;
         `}
       >
         <div
           css={css`
             background: white;
             border-radius: 16px;
-            padding: 24px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 16px;
             width: 80%;
           `}
         >
-          <h3
-            css={css`
-              text-align: center;
-              margin: 0;
-              font-size: 18px;
-            `}
-          >
-            Send
-          </h3>
-          <div
-            css={css`
-              border: 2.5px solid #00A958;
-              border-radius: 24px;
-              padding: 10px;
-              display: flex;
-              align-items: center;
-              position: relative;
-            `}
-          >
-            <span
+          <div>
+            <h3
               css={css`
-                font-size: 20px;
-                font-weight: 500;
                 text-align: center;
-                width: 100%;
-                position: absolute;
-                left: 0;
-                right: 0;
+                margin: 0;
+                font-size: 18px;
+                margin-bottom: 8px;
               `}
             >
-              $21
-            </span>
-            <button
-              onClick={handleAmountCopy}
+              Send
+            </h3>
+            <div
               css={css`
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 8px;
+                border: 2.5px solid #00A958;
+                border-radius: 24px;
+                padding: 10px;
                 display: flex;
                 align-items: center;
-                justify-content: center;
                 position: relative;
-                z-index: 1;
-                margin-left: auto;
-                &:hover {
-                  opacity: 0.8;
-                }
               `}
             >
-              {copiedField === 'amount' ? <Check size={20} /> : <Copy size={20} />}
-            </button>
+              <span
+                css={css`
+                  font-size: 20px;
+                  font-weight: 500;
+                  text-align: center;
+                  width: 100%;
+                  position: absolute;
+                  left: 0;
+                  right: 0;
+                `}
+              >
+                $21
+              </span>
+              <button
+                onClick={handleAmountCopy}
+                css={css`
+                  background: none;
+                  border: none;
+                  cursor: pointer;
+                  padding: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                  z-index: 1;
+                  margin-left: auto;
+                  &:hover {
+                    opacity: 0.8;
+                  }
+                `}
+              >
+                {copiedField === 'amount' ? <Check size={20} /> : <Copy size={20} />}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <h3
+              css={css`
+                text-align: center;
+                margin: 0;
+                font-size: 18px;
+                margin-bottom: 8px;
+              `}
+            >
+              To
+            </h3>
+            <div
+              css={css`
+                border: 2.5px solid #00A958;
+                border-radius: 24px;
+                padding: 10px;
+                display: flex;
+                align-items: center;
+                position: relative;
+              `}
+            >
+              <span
+                css={css`
+                  font-size: 20px;
+                  font-weight: 500;
+                  text-align: center;
+                  width: 100%;
+                  position: absolute;
+                  left: 0;
+                  right: 0;
+                `}
+              >
+                21461294612
+              </span>
+              <button
+                onClick={handleAddressCopy}
+                css={css`
+                  background: none;
+                  border: none;
+                  cursor: pointer;
+                  padding: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                  z-index: 1;
+                  margin-left: auto;
+                  &:hover {
+                    opacity: 0.8;
+                  }
+                `}
+              >
+                {copiedField === 'address' ? <Check size={20} /> : <Copy size={20} />}
+              </button>
+            </div>
           </div>
         </div>
 
-        <div
-          css={css`
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            width: 80%;
-          `}
-        >
-          <h3
-            css={css`
-              text-align: center;
-              margin: 0;
-              font-size: 18px;
-            `}
-          >
-            To
-          </h3>
-          <div
-            css={css`
-              border: 2.5px solid #00A958;
-              border-radius: 24px;
-              padding: 10px;
-              display: flex;
-              align-items: center;
-              position: relative;
-            `}
-          >
-            <span
-              css={css`
-                font-size: 20px;
-                font-weight: 500;
-                text-align: center;
-                width: 100%;
-                position: absolute;
-                left: 0;
-                right: 0;
-              `}
-            >
-              21461294612
-            </span>
-            <button
-              onClick={handleAddressCopy}
-              css={css`
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                z-index: 1;
-                margin-left: auto;
-                &:hover {
-                  opacity: 0.8;
-                }
-              `}
-            >
-              {copiedField === 'address' ? <Check size={20} /> : <Copy size={20} />}
-            </button>
-          </div>
-        </div>
-
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%'}}>
           <p style={{textAlign: 'center', width: '80%'}}>
             Please go to your bank app to complete the deposit. We are expecting amount to be sent to clabe/pix/ACH/wire number via clabe/pix/ACH/Wire
           </p>
@@ -222,6 +217,8 @@ const DepositInstructionsOverlay = ({ isOpen, onOpenChange, onBack, selectedToke
             display: flex;
             justify-content: center;
             padding: 0 24px;
+            width: 100%;
+            margin-top: auto;
           `}
         >
           <Button
