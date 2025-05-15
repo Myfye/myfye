@@ -39,9 +39,7 @@ const Input = ({
             &::placeholder {
               color: var(--clr-text-weaker);
             }
-            &:active {
-              font-size: max(var(--fs-medium), 16px);
-            }
+            font-size: 16px;
           `}
           {...restProps}
         />

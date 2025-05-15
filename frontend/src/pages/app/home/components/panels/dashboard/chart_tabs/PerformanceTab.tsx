@@ -9,10 +9,6 @@ const PerformanceTab = () => {
     chart: {
       height: 210,
       backgroundColor: "transparent",
-      spacingBottom: 0,
-      spacingLeft: 6,
-      spacingRight: 0,
-      spacingTop: 4,
       marginTop: 0,
       marginBottom: 0,
       marginLeft: 0,
@@ -25,6 +21,7 @@ const PerformanceTab = () => {
       headerShape: "rect",
       style: {
         backgroundColor: "transparent",
+        fill: "transparent",
       },
       shadow: false,
       padding: 0,

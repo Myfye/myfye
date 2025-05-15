@@ -45,7 +45,7 @@ const QRCodeModal = ({
               margin: auto;
               isolation: isolate;
               width: 100%;
-              height: 100dvh;
+              height: 100vh;
               z-index: var(--z-index-modal);
             `}
             open

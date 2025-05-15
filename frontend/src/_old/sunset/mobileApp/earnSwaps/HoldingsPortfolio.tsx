@@ -12,13 +12,13 @@ function HoldingsPortfolio() {
 
   const [currencySelected, setcurrencySelected] = useState("");
 
-  const [menuPosition, setMenuPosition] = useState("-100dvh");
+  const [menuPosition, setMenuPosition] = useState("-100vh");
 
   useEffect(() => {
     if (showMenu) {
       setMenuPosition("0"); // Bring the menu into view
     } else {
-      setMenuPosition("-100dvh"); // Move the menu off-screen
+      setMenuPosition("-100vh"); // Move the menu off-screen
 
       setcurrencySelected("");
     }

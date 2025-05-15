@@ -103,7 +103,7 @@ function ChartTabs() {
             justify-content: center;
             position: relative;
             isolation: isolate;
-            margin-block-start: var(--size-100);
+            margin-block-start: var(--size-150);
           `}
         >
           <TabList
@@ -125,9 +125,9 @@ function ChartTabs() {
                 css={css`
                   display: grid;
                   place-items: center;
-                  height: var(--control-size-x-small);
-                  padding-inline: var(--control-padding-inline-x-small);
-                  font-size: var(--fs-small);
+                  height: var(--control-size-small);
+                  padding-inline: var(--control-padding-inline-small);
+                  font-size: var(--fs-medium);
                   color: var(--clr-primary);
                   user-select: none;
                   touch-action: none;
@@ -159,7 +159,7 @@ function ChartTabs() {
               translate: 0 -50%;
               background-color: var(--clr-primary);
               border-radius: var(--border-radius-pill);
-              height: calc(var(--control-size-x-small));
+              height: var(--control-size-small);
             `}
           />
         </div>

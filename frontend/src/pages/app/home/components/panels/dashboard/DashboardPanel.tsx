@@ -30,9 +30,8 @@ const DashboardPanel = ({}) => {
       css={css`
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
-        min-height: fit-content;
         height: 100%;
         > * {
           width: 100%;
@@ -125,7 +124,6 @@ const DashboardPanel = ({}) => {
         <section
           css={css`
             margin-block-start: max(var(--size-200), 4vh);
-            margin-block-end: auto;
             padding-inline: var(--size-250);
           `}
         >
@@ -170,13 +168,17 @@ const DashboardPanel = ({}) => {
         <section
           css={css`
             margin-block-start: max(var(--size-200), 4vh);
-            margin-block-end: auto;
           `}
         >
           <ChartTabs />
         </section>
       )}
-      <section className="cta-carousel-container">
+      {/* <section
+        className="cta-carousel-container"
+        css={css`
+          margin-block-start: auto;
+        `}
+      >
         <CTACarousel
           slides={[
             {
@@ -189,7 +191,7 @@ const DashboardPanel = ({}) => {
             { title: "Test", subtitle: "test", icon: "test" },
           ]}
         />
-      </section>
+      </section> */}
     </div>
   );
 };

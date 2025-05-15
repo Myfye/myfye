@@ -115,7 +115,7 @@ const QRCodeModal = () => {
                 width: 100%;
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
-                height: 100dvh;
+                height: 100vh;
                 z-index: 1;
               `}
             >

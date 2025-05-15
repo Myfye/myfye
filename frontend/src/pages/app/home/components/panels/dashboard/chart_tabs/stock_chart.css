@@ -3,14 +3,18 @@
   flex-direction: column;
   background-color: transparent;
   .balance {
-    font-size: var(--fs-3x-large) !important;
+    font-size: 26px !important;
     font-weight: var(--fw-heading);
-    line-height: var(--line-height-heading);
+    line-height: 30px;
     color: var(--clr-text);
   }
   .date {
-    font-size: var(--fs-small) !important;
-    line-height: var(--line-height-caption);
+    font-size: 13px !important;
+    line-height: 16px;
     color: var(--clr-text-weaker);
   }
+}
+
+.highcharts-tooltip .highcharts-label-box {
+  fill: var(--clr-white) !important;
 }
