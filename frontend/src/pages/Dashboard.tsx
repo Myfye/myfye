@@ -489,7 +489,11 @@ function Dashboard() {
                     </div>
                     <div className="text-sm">
                       <span className="font-semibold" style={{color: 'white'}}>Amount: </span>
-                      {transaction.amount} {transaction.currency}
+                      {transaction.amount}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{color: 'white'}}>Currency: </span>
+                      {transaction.currency}
                     </div>
                     <div className="text-sm">
                       <span className="font-semibold" style={{color: 'white'}}>Chain: </span>

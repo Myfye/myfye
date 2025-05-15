@@ -13,20 +13,7 @@ export async function savePayTransaction(
     return;
   }
 
-  console.log("tramsaction To SAVE: ", transaction);
-
-  console.log(
-    "Pay Transaction: ",
-    "user_id:", user_id,
-    "amount:", transaction.amount,
-    "chain:", "solana",
-    "sender_public_key:", wallet.address,
-    "receiver_public_key:", transaction.user.solana_pub_key,
-    "currency:", transaction.abstractedAssetId,
-    "transaction_hash:", transactionId,
-    "transaction_status:", "success"
-  );
-
+  console.log("transaction to save: ", transaction);
   // Call the pay transaction endpoint
   const response = await fetch(`${MYFYE_BACKEND}/create_pay_transaction`, {
     method: 'POST',
@@ -41,9 +28,9 @@ export async function savePayTransaction(
       amount: transaction.amount,
       chain: "solana",
       sender_public_key: wallet.address,
-      receiver_id: null,
+      receiver_id: transaction.user.uid,
       receiver_phone_number: null,
-      receiver_email: null,
+      receiver_email: transaction.user.email,
       receiver_public_key: transaction.user.solana_pub_key,
       currency: transaction.abstractedAssetId,
       transaction_hash: transactionId,
