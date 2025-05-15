@@ -6,6 +6,8 @@ import QRCode from "../../../qr-code/QRCode";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Modal from "@/shared/components/ui/modal/Modal";
+import { setDepositModalOpen } from "@/redux/modalReducers";
+import toast from "react-hot-toast/headless";
 
 const OnChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   const dispatch = useDispatch();
@@ -20,6 +22,8 @@ const OnChainDepositOverlay = ({ isOpen, onOpenChange }) => {
     navigator.clipboard.writeText(selectedAddress);
     setShowCopiedAddress(true);
     onOpenChange(false);
+    dispatch(setDepositModalOpen(false));
+    toast.success("Address copied!");
   };
 
   const getTruncatedAddress = (address: string) => {

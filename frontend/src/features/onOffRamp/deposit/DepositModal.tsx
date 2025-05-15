@@ -89,17 +89,12 @@ const DepositModal = () => {
         />
       </Modal>
 
-      <Modal
-        isOpen={offChainDepositOpen}
-        onOpenChange={setOffChainDepositOpen}
-        title="Deposit"
-        height={630}
-      >
+      {offChainDepositOpen && (
         <OffChainDepositOverlay 
           isOpen={offChainDepositOpen}
           onOpenChange={setOffChainDepositOpen}
         />
-      </Modal>
+      )}
     </>
   );
 };
