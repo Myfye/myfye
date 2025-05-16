@@ -139,10 +139,12 @@ const DashboardPanel = ({}) => {
               justify-content: center;
             `}
           >
-            <h2 className="heading-large">Get started by depositing funds.</h2>
+            <h2 className="heading-large">Get started by depositing funds</h2>
             <Button
               expand
-              onPress={() => {}}
+              onPress={() => {
+                dispatch(setDepositModalOpen(true));
+              }}
               css={css`
                 margin-block-start: var(--size-300);
               `}
