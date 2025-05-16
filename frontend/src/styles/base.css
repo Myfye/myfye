@@ -13,11 +13,11 @@ body {
   flex-direction: column;
   gap: var(--size-050);
   .currency {
-    font-size: var(--fs-medium);
+    font-size: var(--fs-small);
     font-weight: var(--fw-active);
   }
   .balance {
-    font-size: var(--fs-small);
+    font-size: var(--fs-x-small);
     color: var(--clr-text-weaker);
   }
 }

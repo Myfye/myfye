@@ -85,25 +85,7 @@ const PortfolioTab = () => {
         depth: 45,
         allowPointSelect: true,
         cursor: "pointer",
-        dataLabels: [
-          {
-            enabled: true,
-            distance: -32,
-            format: "{point.percentage:.1f}%",
-            style: {
-              fontSize: "16px",
-              textOutline: "none",
-              opacity: 1,
-              color: "var(--clr-white)",
-              textOverflow: "none",
-            },
-            filter: {
-              operator: ">",
-              property: "percentage",
-              value: 1,
-            },
-          },
-        ],
+        dataLabels: { enabled: false },
       },
     },
     title: {
@@ -124,13 +106,13 @@ const PortfolioTab = () => {
       align: "right",
       verticalAlign: "middle",
       layout: "vertical",
-      x: 12,
+      x: 10,
       y: -60,
       width: 120,
-      itemMarginTop: 8,
-      itemMarginBottom: 8,
+      itemMarginTop: 4,
+      itemMarginBottom: 4,
       itemStyle: {
-        fontSize: "14px",
+        fontSize: "13px",
         fontFamily: "Inter",
         color: "var(--clr-text)",
       },
@@ -139,7 +121,7 @@ const PortfolioTab = () => {
         return (
           "<span class='legend'>" +
           "<span class='currency'>" +
-          this.name +
+          `<span>${this.name} ${this.percentage}%</span>` +
           "</span>" +
           "<span class='balance'>" +
           new Intl.NumberFormat("en-EN", {

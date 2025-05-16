@@ -6,7 +6,7 @@ const LoginMain = ({ children }) => {
       css={css`
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
+        justify-content: space-around;
         align-items: center;
         padding: 0 var(--size-250);
       `}
