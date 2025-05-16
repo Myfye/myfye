@@ -40,9 +40,10 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
       }
       case "fail": {
         // Check if the selling asset is SOL or WSOL
-        const isSellingSolana = transaction.sell.abstractedAssetId === "sol" || 
-                               transaction.sell.abstractedAssetId === "w_sol";
-        
+        const isSellingSolana =
+          transaction.sell.abstractedAssetId === "sol" ||
+          transaction.sell.abstractedAssetId === "w_sol";
+
         return (
           <span
             css={css`
@@ -50,8 +51,8 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
               padding-block-end: calc(1em * var(--line-height-caption));
             `}
           >
-            {isSellingSolana 
-              ? "Error processing swap. Try selling less Solana to pay for the blockchain fee." 
+            {isSellingSolana
+              ? "Error processing swap. Try selling less Solana to pay for the blockchain fee."
               : "Error processing swap. Please try again."}
           </span>
         );
@@ -97,7 +98,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
           flex-direction: column;
           justify-content: center;
           padding: var(--size-250);
-          height: 100vh;
+          height: 100dvh;
         `}
       >
         <section

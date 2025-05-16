@@ -17,7 +17,7 @@ const WithdrawProcessingTransactionOverlay = ({
   isOpen,
   onOpenChange,
   status,
-  onClose
+  onClose,
 }: WithdrawProcessingTransactionOverlayProps) => {
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -73,11 +73,7 @@ const WithdrawProcessingTransactionOverlay = ({
   );
 };
 
-const UIAnimation = ({
-  status,
-}: {
-  status: "idle" | "success" | "fail";
-}) => {
+const UIAnimation = ({ status }: { status: "idle" | "success" | "fail" }) => {
   const options = useMemo(() => {
     switch (status) {
       case "success": {
@@ -109,4 +105,4 @@ const UIAnimation = ({
   return <>{View}</>;
 };
 
-export default WithdrawProcessingTransactionOverlay; 
+export default WithdrawProcessingTransactionOverlay;

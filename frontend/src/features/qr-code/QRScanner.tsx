@@ -79,7 +79,7 @@ const QRScanner = ({
                 width: 100%;
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
-                height: 100vh;
+                height: 100dvh;
                 z-index: 1;
               `}
               initial={{ y: h }}
@@ -97,7 +97,7 @@ const QRScanner = ({
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: 100vh;
+                  height: 100dvh;
                   overflow-y: auto;
                   position: relative;
                 `}
