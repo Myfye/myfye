@@ -27,7 +27,7 @@ const WithdrawProcessingTransactionOverlay = ({
           flex-direction: column;
           justify-content: center;
           padding: var(--size-250);
-          height: 100dvh;
+          height: 100lvh;
         `}
       >
         <section css={css``}>
