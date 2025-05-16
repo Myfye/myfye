@@ -148,7 +148,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
         dispatch(unmount());
         toast.success(
           `Sent $${transaction.formattedAmount} to ${
-            transaction.user?.first_name ?? "user"
+            transaction.user?.first_name ?? transaction.user.email
           }`
         );
       } else {
