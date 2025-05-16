@@ -44,7 +44,7 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
           flex-direction: column;
           justify-content: center;
           padding: var(--size-250);
-          height: 100vh;
+          height: 100dvh;
           background: var(--clr-background);
         `}
       >
