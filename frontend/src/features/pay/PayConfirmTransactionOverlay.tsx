@@ -172,7 +172,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const sendPayReceiptEmail = async () => {
     const name = "Someone";
     const templateId = "d-01416b6dc85446b7baf63c535e2950e8";
-    const emailAddress = transaction.user.email;
+    const emailAddress = transaction.user?.email;
     const amount = transaction.amount;
 
     console.log("Sending email to:", emailAddress);
