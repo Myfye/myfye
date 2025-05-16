@@ -64,7 +64,7 @@ const Overlay = ({
                 bottom: 0;
                 width: 100%;
                 will-change: transform;
-                height: 100dvh;
+                height: 100lvh;
                 z-index: 1;
               `}
               initial={{ x: w }}
@@ -82,7 +82,7 @@ const Overlay = ({
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: 100dvh;
+                  height: 100lvh;
                   max-width: var(--app-max-width);
                   width: 100vw;
                 `}

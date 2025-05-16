@@ -243,7 +243,7 @@ function Dashboard() {
       style={{
         background: "#000000",
         minWidth: "100vw",
-        minHeight: "100dvh",
+        minHeight: "100lvh",
         color: "white",
       }}
     >
