@@ -11,7 +11,7 @@ const QRCode = ({
   color = "#f8fbfc",
   size = 256,
   className = "",
-  chain = "base",
+  chain = "solana",
 }) => {
   const logo = chain === "base" ? baseLogoBlack : solanaLogoBlack;
 
