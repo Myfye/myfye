@@ -13,6 +13,7 @@ import { savePayTransaction } from "./PaySaveTransaction";
 import { logError } from "@/functions/LogError";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env";
 import { useState } from "react";
+import { setusdcSolValue } from "@/redux/userWalletData";
 
 const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -27,6 +28,10 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
   const { wallets } = useSolanaWallets();
   const wallet = wallets[0];
+
+  const userWalletData = useSelector(
+    (state: RootState) => state.userWalletData
+  );
 
   const currentUserID = useSelector(
     (state: RootState) => state.userWalletData.currentUserID
@@ -120,6 +125,24 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
         } catch (error) {
           console.error("Failed to send email:", error);
           logError("Failed to send email:", "pay", error);
+        }
+        // update amounts
+        if (transaction.abstractedAssetId === "us_dollar_yield") {
+          setusdcSolValue(
+            userWalletData.usdySolBalance -
+              transaction.amount / userWalletData.priceOfUSDYinUSDC
+          );
+        } else if (transaction.abstractedAssetId === "us_dollar") {
+          setusdcSolValue(userWalletData.usdcSolBalance - transaction.amount);
+        } else if (transaction.abstractedAssetId === "sol") {
+          // cash only sends
+        } else if (transaction.abstractedAssetId === "euro") {
+          setusdcSolValue(
+            userWalletData.eurcSolBalance -
+              transaction.amount / userWalletData.priceOfEURCinUSDC
+          );
+        } else if (transaction.abstractedAssetId === "btc") {
+          // cash only sends
         }
 
         dispatch(unmount());
