@@ -13,6 +13,7 @@ import WalletOverlay from "../_components/WalletOverlay";
 import Button from "@/shared/components/ui/button/Button";
 import Section from "@/shared/components/ui/section/Section";
 import PieChart from "../_components/PieChart";
+import { setDepositModalOpen } from "@/redux/modalReducers";
 
 const CashOverlay = () => {
   const dispatch = useDispatch();
@@ -86,25 +87,7 @@ const CashOverlay = () => {
         depth: 45,
         allowPointSelect: true,
         cursor: "pointer",
-        dataLabels: [
-          {
-            enabled: true,
-            distance: -32,
-            format: "{point.percentage:.1f}%",
-            style: {
-              fontSize: "16px",
-              textOutline: "none",
-              opacity: 1,
-              color: "var(--clr-white)",
-              textOverflow: "none",
-            },
-            filter: {
-              operator: ">",
-              property: "percentage",
-              value: 1,
-            },
-          },
-        ],
+        dataLabels: { enabled: false },
       },
     },
     title: {
@@ -126,13 +109,13 @@ const CashOverlay = () => {
       verticalAlign: "middle",
       layout: "vertical",
       useHTML: true,
-      x: 8,
+      x: 2,
       y: -60,
       width: 120,
-      itemMarginTop: 8,
-      itemMarginBottom: 8,
+      itemMarginTop: 4,
+      itemMarginBottom: 4,
       itemStyle: {
-        fontSize: "14px",
+        fontSize: "13px",
         fontFamily: "Inter",
         color: "var(--clr-text)",
       },
@@ -140,7 +123,7 @@ const CashOverlay = () => {
         return (
           "<span class='legend'>" +
           "<span class='currency'>" +
-          this.name +
+          `<span>${this.name} ${this.percentage}%</span>` +
           "</span>" +
           "<span class='balance'>" +
           new Intl.NumberFormat("en-EN", {
@@ -231,7 +214,11 @@ const CashOverlay = () => {
                   margin-block-start: var(--size-300);
                 `}
               >
-                <Button>Deposit cash</Button>
+                <Button
+                  onPress={() => void dispatch(setDepositModalOpen(true))}
+                >
+                  Deposit cash
+                </Button>
               </div>
             </div>
           </section>

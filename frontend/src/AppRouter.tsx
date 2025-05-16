@@ -212,8 +212,8 @@ function WebAppInner() {
                   color: var(--clr-neutral-300);
                 `}
               >
-                Invest in stocks, crypto, treasuries, and more, fully owned by
-                you, on your phone.
+                Access global markets for stocks, treasuries, crypto, and more
+                with no third parties
               </p>
             </section>
           </LoginMain>

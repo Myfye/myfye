@@ -24,7 +24,7 @@ const SearchField = (props) => {
       <div
         css={css`
           display: grid;
-          font-size: var(--fs-medium);
+          font-size: 16px;
           background-color: var(--clr-surface-raised);
           grid-template-columns: 1fr auto;
           align-items: center;
@@ -42,6 +42,9 @@ const SearchField = (props) => {
           {...inputProps}
           placeholder="Search contact or address"
           ref={ref}
+          css={css`
+            font-size: 16px;
+          `}
         />
         {state.value !== "" && (
           <Button

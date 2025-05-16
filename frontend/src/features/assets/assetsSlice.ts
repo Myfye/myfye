@@ -1061,7 +1061,6 @@ export const assetsSlice = createSlice({
       state,
       action: PayloadAction<{ groupId: AssetGroup["id"]; isOpen: boolean }>
     ) => {
-      console.log(state, action);
       state.groups[action.payload.groupId].overlay.isOpen =
         action.payload.isOpen;
     },
