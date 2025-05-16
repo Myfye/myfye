@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import PieChart from "@/shared/components/ui/pie-chart/PieChart";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
@@ -13,6 +12,7 @@ import {
 import WalletOverlay from "../_components/WalletOverlay";
 import Button from "@/shared/components/ui/button/Button";
 import Section from "@/shared/components/ui/section/Section";
+import PieChart from "../_components/PieChart";
 
 const CashOverlay = () => {
   const dispatch = useDispatch();
@@ -41,28 +41,126 @@ const CashOverlay = () => {
     selectAssetsBalanceUSDByGroup(state, "cash")
   );
 
-  const pieChartData = useMemo(() => {
+  const pieChartData = (() => {
     const data = [];
     if (usdBalance > 0) {
-      const usdData = {
-        id: "US Dollar",
-        label: "USD",
-        value: usdBalance,
+      const cashData = {
+        name: "US Dollar",
+        y: usdBalance,
         color: "var(--clr-green-400)",
       };
-      data.push(usdData);
+      data.push(cashData);
     }
     if (euroBalanceUSD > 0) {
-      const euroData = {
-        id: "Euro",
-        label: "Euro",
-        value: euroBalanceUSD,
+      const earnData = {
+        name: "Euro",
+        y: euroBalanceUSD,
         color: "var(--clr-blue-400)",
       };
-      data.push(euroData);
+      data.push(earnData);
     }
     return data;
-  }, [usdBalance, euroBalanceUSD]);
+  })();
+
+  const pieChartOptions: Highcharts.Options = {
+    chart: {
+      type: "pie",
+      height: 320,
+      backgroundColor: "transparent",
+      spacingBottom: 0,
+      spacingLeft: 16,
+      spacingRight: 0,
+      spacingTop: 4,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
+    },
+    plotOptions: {
+      pie: {
+        borderWidth: 2,
+        center: ["28%", "30%"],
+        showInLegend: true,
+        innerSize: "33.33%",
+        size: "60%",
+        depth: 45,
+        allowPointSelect: true,
+        cursor: "pointer",
+        dataLabels: [
+          {
+            enabled: true,
+            distance: -32,
+            format: "{point.percentage:.1f}%",
+            style: {
+              fontSize: "16px",
+              textOutline: "none",
+              opacity: 1,
+              color: "var(--clr-white)",
+              textOverflow: "none",
+            },
+            filter: {
+              operator: ">",
+              property: "percentage",
+              value: 1,
+            },
+          },
+        ],
+      },
+    },
+    title: {
+      text: "<span class='visually-hidden'>Myfye Portfolio</span>",
+      useHTML: true,
+    },
+    tooltip: {
+      enabled: true,
+      pointFormat: "Balance: <b>${point.y:.2f}</b>",
+    },
+    credits: {
+      enabled: false,
+    },
+    legend: {
+      backgroundColor: "transparent",
+      enabled: true,
+      floating: true,
+      align: "right",
+      verticalAlign: "middle",
+      layout: "vertical",
+      useHTML: true,
+      x: 8,
+      y: -60,
+      width: 120,
+      itemMarginTop: 8,
+      itemMarginBottom: 8,
+      itemStyle: {
+        fontSize: "14px",
+        fontFamily: "Inter",
+        color: "var(--clr-text)",
+      },
+      labelFormatter: function () {
+        return (
+          "<span class='legend'>" +
+          "<span class='currency'>" +
+          this.name +
+          "</span>" +
+          "<span class='balance'>" +
+          new Intl.NumberFormat("en-EN", {
+            style: "currency",
+            currency: "usd",
+          }).format(this.y) +
+          "</span>" +
+          "<span>"
+        );
+      },
+    },
+    series: [
+      // @ts-ignore
+      {
+        name: "Portfolio Summary",
+        colorByPoint: true,
+        data: pieChartData,
+      },
+    ],
+  };
 
   return (
     <>
@@ -74,8 +172,31 @@ const CashOverlay = () => {
         groupId="cash"
       >
         {pieChartData.length > 0 && (
-          <section className="pie-chart-container">
-            <PieChart data={pieChartData}></PieChart>
+          <section
+            css={css`
+              margin-block-start: var(--size-400);
+              padding-inline: var(--size-250);
+            `}
+          >
+            <div
+              className="pie-chart-card"
+              css={css`
+                padding: var(--size-150);
+                background-color: var(--clr-surface-raised);
+                height: 16rem;
+                border-radius: var(--border-radius-medium);
+              `}
+            >
+              <h2
+                className="heading-medium"
+                css={css`
+                  padding-block-end: var(--size-100);
+                `}
+              >
+                Portfolio Summary
+              </h2>
+              <PieChart options={pieChartOptions} />
+            </div>
           </section>
         )}
         {pieChartData.length === 0 && (
@@ -92,24 +213,25 @@ const CashOverlay = () => {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                text-align: center;
               `}
             >
-              <p className="heading-medium">Lorem ipsum</p>
+              <p className="heading-large">Hold cash. Get paid.</p>
               <p
                 className="caption"
                 css={css`
                   color: var(--clr-text-weaker);
-                  margin-block-start: var(--size-050);
+                  margin-block-start: var(--size-100);
                 `}
               >
-                Lorem ispum dolor, lorum ipsum dolor
+                Get started by making a USD/Euro deposit
               </p>
               <div
                 css={css`
-                  margin-block-start: var(--size-200);
+                  margin-block-start: var(--size-300);
                 `}
               >
-                <Button>Deposit crypto</Button>
+                <Button>Deposit cash</Button>
               </div>
             </div>
           </section>
@@ -119,6 +241,7 @@ const CashOverlay = () => {
           css={css`
             margin-block-start: var(--size-400);
             padding-inline: var(--size-250);
+            margin-block-end: var(--size-200);
           `}
         >
           <AssetCardList assets={assets} showOptions={true} />

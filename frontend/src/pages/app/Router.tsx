@@ -4,6 +4,7 @@ import {
   Tabs as AriaTabs,
   TabPanel as AriaTabPanel,
   Tab as AriaTab,
+  Key,
 } from "react-aria-components";
 import Home from "./home/Home";
 import {
@@ -41,7 +42,7 @@ const variants = {
 
 const Router = () => {
   const dispatch = useDispatch();
-  let [selectedKey, setSelectedKey] = useState(tabs[0].id);
+  const [selectedKey, setSelectedKey] = useState<Key>(tabs[0].id);
 
   const getTabIcon = (id: string, isSelected: boolean) => {
     const color = isSelected ? "var(--clr-primary)" : "var(--clr-neutral-700)";
@@ -110,7 +111,7 @@ const Router = () => {
     >
       <AriaTabs
         selectedKey={selectedKey}
-        onSelectionChange={setSelectedKey}
+        onSelectionChange={(key: Key) => setSelectedKey(key)}
         css={css`
           display: grid;
           grid-template-rows: auto 1fr auto;
@@ -118,13 +119,13 @@ const Router = () => {
         `}
       >
         <Header>
-          <NavMenu></NavMenu>
+          <NavMenu />
           <Button
             iconOnly
             icon={ScanIcon}
             onPress={() => dispatch(setQRCodeModalOpen(true))}
             color="white"
-          ></Button>
+          />
         </Header>
         <main>
           <AnimatePresence mode="wait">

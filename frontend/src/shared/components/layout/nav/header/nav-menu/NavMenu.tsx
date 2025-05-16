@@ -14,13 +14,20 @@ import { useSelector } from "react-redux";
 import { css } from "@emotion/react";
 import { usePrivy } from "@privy-io/react-auth";
 import Header from "../Header";
+import { RootState } from "@/redux/store";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 
 const NavMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const currentUserEmail = useSelector(
-    (state: any) => state.userWalletData.currentUserEmail
+    (state: RootState) => state.userWalletData.currentUserEmail
   );
-  const walletData = useSelector((state: any) => state.userWalletData);
+  const walletData = useSelector((state: RootState) => state.userWalletData);
+  const name =
+    walletData.currentUserFirstName + walletData.currentUserLastName
+      ? " " + walletData.currentUserLastName
+      : "";
 
   const { ready, authenticated, logout } = usePrivy();
   // Disable logout when Privy is not ready or the user is not authenticated
@@ -59,6 +66,9 @@ const NavMenu = () => {
     return email;
   };
 
+  useEffect(() => {
+    console.log(name, walletData.currentUserFirstName);
+  }, [name, walletData]);
   return (
     <>
       <NavTrigger onPress={toggleMenu} />
@@ -107,6 +117,7 @@ const NavMenu = () => {
                 css={css`
                   display: flex;
                   flex-direction: column;
+                  gap: var(--size-200);
                   height: 100%;
                   width: 100%;
                   max-width: var(--app-max-width);
@@ -119,7 +130,7 @@ const NavMenu = () => {
                     onPress={closeMenu}
                     icon={XIcon}
                     color="transparent"
-                  ></Button>
+                  />
                 </Header>
                 {/* Menu content goes here */}
                 <main>
@@ -127,7 +138,7 @@ const NavMenu = () => {
                     css={css`
                       display: grid;
                       grid-template-columns: auto 1fr;
-                      gap: var(--size-200);
+                      gap: var(--size-150);
                       align-items: center;
                       padding-inline: var(--size-250);
                       width: 100%;
@@ -137,10 +148,10 @@ const NavMenu = () => {
                       css={css`
                         aspect-ratio: 1;
                         border-radius: var(--border-radius-circle);
-                        width: var(--size-600);
+                        width: 2.75rem;
                         background-color: var(--clr-surface-lowered);
                       `}
-                    ></div>
+                    />
                     <div
                       css={css`
                         display: flex;
@@ -148,10 +159,25 @@ const NavMenu = () => {
                         justify-content: space-between;
                       `}
                     >
-                      {currentUserEmail && (
+                      {name && (
                         <p
                           css={css`
                             font-size: var(--fs-medium);
+                            font-weight: var(--fw-active);
+                            line-height: var(--line-height-tight);
+                          `}
+                        >
+                          {name}
+                        </p>
+                      )}
+                      {currentUserEmail && (
+                        <p
+                          css={css`
+                            font-size: var(--fs-${name ? "small" : "medium"});
+                            line-height: var(--line-height-tight);
+                            font-weight: var(
+                              --fw-${name ? "default" : "active"}
+                            );
                           `}
                         >
                           {formatEmail(currentUserEmail)}
@@ -160,36 +186,6 @@ const NavMenu = () => {
                       <CaretRight size={20} color="var(--clr-text)" />
                     </div>
                   </button>
-                  <section
-                    className="flow"
-                    css={css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--size-1000);
-                      margin-block-start: var(--size-800);
-                      padding-inline: var(--size-250);
-                    `}
-                  >
-                    <section>
-                      <menu>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                      </menu>
-                    </section>
-                    <section>
-                      <p className="heading-large">Pay</p>
-                    </section>
-                    <section>
-                      <p className="heading-large">Wallet</p>
-                    </section>
-                    <section>
-                      <p className="heading-large">Earn</p>
-                    </section>
-                    <section>
-                      <p className="heading-large">Crypto</p>
-                    </section>
-                  </section>
                 </main>
                 {/* Sign Out button at the bottom */}
                 <footer
@@ -197,33 +193,27 @@ const NavMenu = () => {
                     display: flex;
                     justify-content: center;
                     margin-top: auto;
-                    padding-bottom: var(--size-250);
+                    padding-bottom: var(--size-200);
+                    padding-inline: var(--size-250);
                   `}
                 >
-                  <menu
-                    css={css`
-                      width: 100%;
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--controls-gap-medium);
-                    `}
-                  >
-                    <li>
-                      <Button variant="primary" expand icon={ShieldCheck}>
-                        Verify KYC
-                      </Button>
-                    </li>
-                    <li>
-                      <Button
-                        onPress={signOut}
-                        variant="secondary"
-                        expand
-                        isDisabled={disableLogout}
-                      >
-                        Sign Out
-                      </Button>
-                    </li>
-                  </menu>
+                  <ButtonGroup direction="vertical" expand>
+                    <ButtonGroupItem
+                      variant="primary"
+                      expand
+                      icon={ShieldCheck}
+                    >
+                      Verify KYC
+                    </ButtonGroupItem>
+                    <ButtonGroupItem
+                      onPress={signOut}
+                      variant="secondary"
+                      expand
+                      isDisabled={disableLogout}
+                    >
+                      Sign out
+                    </ButtonGroupItem>
+                  </ButtonGroup>
                 </footer>
               </div>
             </motion.div>

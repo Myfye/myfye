@@ -30,20 +30,23 @@ const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
         column-gap: var(--size-150);
         line-height: var(--line-height-tight);
         width: 100%;
-        box-shadow: var(--box-shadow-card);
-        padding: var(--size-200);
+        padding: var(--size-150);
         border-radius: var(--border-radius-medium);
+        background-color: var(--clr-surface-raised);
       `}
     >
       <div
         className="icon-wrapper"
         css={css`
-          padding: var(--size-100);
+          display: grid;
+          place-items: center;
+          width: 2.75rem;
+          aspect-ratio: 1;
           background-color: var(--clr-green-100);
           border-radius: var(--border-radius-medium);
         `}
       >
-        <Icon size={32} color="var(--clr-primary)"></Icon>
+        <Icon size={32} color="var(--clr-primary)" />
       </div>
       <div
         className="content"
@@ -58,6 +61,8 @@ const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
         <p
           className="title"
           css={css`
+            font-size: var(--fs-medium);
+            line-height: var(--line-height-tight);
             font-weight: var(--fw-active);
           `}
         >
@@ -67,6 +72,7 @@ const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
           className="description"
           css={css`
             font-size: var(--fs-small);
+            line-height: var(--line-height-tight);
             color: var(--clr-text-weaker);
             margin-block-start: var(--size-050);
           `}

@@ -101,8 +101,6 @@ const MaxAmountButton = ({
     abstractedAssetId
       ? selectAbstractedAssetWithBalance(state, abstractedAssetId)
       : null
-
-    
   );
 
   return (
@@ -115,7 +113,6 @@ const MaxAmountButton = ({
           if (!asset) return;
 
           if (asset.id == "sol") {
-
             // We have to keep 0.0015 Sol for transaction fees
             const solFee = 0.0025;
             if (asset.balance - solFee > 0.00001) {
@@ -134,7 +131,6 @@ const MaxAmountButton = ({
                 })
               );
             }
-
           } else {
             dispatch(
               updateAmount({
@@ -144,7 +140,7 @@ const MaxAmountButton = ({
             );
           }
 
-          console.log('Max pressed for', asset)
+          console.log("Max pressed for", asset);
         }}
       >
         MAX
@@ -188,7 +184,6 @@ const SwapControl = ({
         position: relative;
         padding: var(--size-200);
         background-color: var(--clr-surface-raised);
-        box-shadow: var(--box-shadow-card);
         border-radius: var(--border-radius-medium);
         container: swap-control / inline-size;
       `}
@@ -305,7 +300,7 @@ const SwapController = () => {
       css={css`
         display: flex;
         flex-direction: column;
-        gap: var(--size-050);
+        gap: var(--size-075);
         position: relative;
       `}
     >
@@ -337,7 +332,8 @@ const SwapController = () => {
           background-color: var(--clr-surface-raised);
           border-radius: var(--border-radius-medium);
           padding: var(--size-075);
-          box-shadow: var(--box-shadow-card);
+          box-shadow: var(--box-shadow);
+          border: 1px solid var(--clr-border-neutral);
         `}
       >
         <ArrowsDownUp size={20} color="var(--clr-icon)" />

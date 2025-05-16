@@ -8,10 +8,9 @@ import {
   useLoginWithPasskey,
   useMfaEnrollment,
 } from "@privy-io/react-auth";
-import {
-  HandleUserLogIn
-} from "./features/authentication/LoginService.tsx";
-import logo from "@/assets/logo/myfye_logo.svg";
+import { HandleUserLogIn } from "./features/authentication/LoginService.tsx";
+import logo from "@/assets/logo/myfye_logo_white.svg";
+import loginScreen from "@/assets/login/login_screen.webp";
 
 import { css } from "@emotion/react";
 import QRCodeModal from "./features/qr-code/_components/QRCodeModal.tsx";
@@ -106,12 +105,9 @@ function WebAppInner() {
 
   if (authenticated) {
     if (userDataLoaded) {
-
-      if (!user.wallet?.address || !user.wallet.address.startsWith('0x')) {
+      if (!user.wallet?.address || !user.wallet.address.startsWith("0x")) {
         // normal user flow was interrupted, show onboarding
-        return (
-          <MFAOnboarding />
-        );
+        return <MFAOnboarding />;
       }
 
       if (mfaStatus === "enrolled") {
@@ -131,14 +127,10 @@ function WebAppInner() {
         );
       }
       if (mfaStatus === "createdPasskey") {
-        return (
-          <MFAOnboarding />
-        );
+        return <MFAOnboarding />;
       }
       if (mfaStatus === "" || !mfaStatus) {
-        return (
-          <MFAOnboarding />
-        );
+        return <MFAOnboarding />;
       }
     } else {
       return (
@@ -154,7 +146,7 @@ function WebAppInner() {
           <LoginHeader>
             <img
               css={css`
-                width: var(--size-1600);
+                width: 7rem;
               `}
               src={logo}
               alt="Myfye"
@@ -162,69 +154,76 @@ function WebAppInner() {
           </LoginHeader>
           <LoginMain>
             <div
-              className="slider-container"
+              className="img-wrapper"
               css={css`
-                margin-block-start: var(--size-200);
-                width: 100%;
+                width: 60%;
+                height: 40vh;
+                margin-inline: auto;
+                position: relative;
+                isolation: isolate;
+                &::before {
+                  content: "";
+                  display: block;
+                  width: 100%;
+                  height: 30%;
+                  inset: 0;
+                  margin: auto;
+                  top: auto;
+                  position: absolute;
+                  z-index: 1;
+                  background-image: linear-gradient(
+                    to bottom,
+                    transparent 0%,
+                    var(--clr-teal-900) 100%
+                  );
+                }
               `}
             >
-              <div className="slider">
-                <div
-                  css={css`
-                    display: grid;
-                    place-items: center;
-                    width: 50%;
-                    border-radius: var(--border-radius-medium);
-                    aspect-ratio: 1;
-                    background-color: var(--clr-surface);
-                    margin-inline: auto;
-                  `}
-                >
-                  <img
-                    src={peopleOnMyfye}
-                    alt="People on Myfye"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      borderRadius: "var(--border-radius-medium)",
-                      maxWidth: "50vw",
-                    }}
-                  />
-                </div>
-              </div>
-              <section
+              <img
+                src={loginScreen}
+                alt=""
                 css={css`
-                  margin-block-start: var(--size-400);
-                  text-align: center;
+                  width: 100%;
+                  height: 100%;
+                  object-fit: contain;
+                  object-position: bottom;
+                `}
+              />
+            </div>
+            <section
+              css={css`
+                margin-block-start: var(--size-600);
+                text-align: center;
+              `}
+            >
+              <h1
+                className="heading-xx-large"
+                css={css`
+                  font-weight: 700;
+                  color: var(--clr-white);
                 `}
               >
-                <h1 className="heading-x-large" css={css``}>
-                  Welcome to Myfye
-                </h1>
-                <p
-                  className="caption"
-                  css={css`
-                    margin-block-start: var(--size-100);
-                    color: var(--clr-text-neutral);
-                  `}
-                >
-                  Invest in stocks, crypto, treasuries, and more, fully owned by
-                  you, on your phone.
-                </p>
-              </section>
-            </div>
+                Earn, invest, and save. <br /> No bank account needed.
+              </h1>
+              <p
+                className="caption"
+                css={css`
+                  margin-block-start: var(--size-200);
+                  color: var(--clr-neutral-300);
+                `}
+              >
+                Invest in stocks, crypto, treasuries, and more, fully owned by
+                you, on your phone.
+              </p>
+            </section>
           </LoginMain>
           <LoginFooter>
             <button
               data-variant="primary"
               data-size="large"
-              data-color="primary"
+              data-color="primary-light"
               data-expand="true"
               className="button"
-              css={css`
-                width: 100%;
-              `}
               type="button"
               disabled={disableLogin}
               onClick={() => login()}

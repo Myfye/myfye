@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 const ButtonGroup = ({
   size = "medium",
   direction = "horizontal",
+  expand = "false",
   scroll = true,
   children,
   ...restProps
@@ -11,6 +12,7 @@ const ButtonGroup = ({
   direction: "horizontal" | "vertical";
   scroll?: boolean;
   children: ReactNode;
+  expand?: boolean;
 }) => {
   return (
     <menu
@@ -18,6 +20,7 @@ const ButtonGroup = ({
       data-size={size}
       data-direction={direction}
       data-scroll={scroll}
+      data-expand={expand}
       {...restProps}
     >
       {children}

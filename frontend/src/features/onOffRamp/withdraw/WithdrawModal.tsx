@@ -13,7 +13,7 @@ import { setWithdrawModalOpen } from "@/redux/modalReducers";
 import WithdrawCryptoOverlay from "./onChain/WithdrawCryptoOverlay";
 
 const WithdrawModal = () => {
-  const [height, setHeight] = useState(360);
+  const [height, setHeight] = useState(320);
   const dispatch = useDispatch();
   const isOpen = useSelector((state: RootState) => state.withdrawModal.isOpen);
   const [isCryptoOpen, setCryptoOpen] = useState(false);
@@ -21,7 +21,7 @@ const WithdrawModal = () => {
 
   const resetModal = () => {
     setCryptoOpen(false);
-    setHeight(360);
+    setHeight(320);
     setShowCopiedAddress(false);
   };
 
@@ -29,11 +29,10 @@ const WithdrawModal = () => {
     setCryptoOpen(true);
     setHeight(680);
   };
-  
+
   const onOpenChange = (isOpen: boolean) => {
     dispatch(setWithdrawModalOpen(isOpen));
   };
-
 
   return (
     <>
@@ -61,18 +60,18 @@ const WithdrawModal = () => {
                 title="To wallet"
                 description="Send money on chain"
                 onPress={openCrypto}
-              ></ModalButton>
+              />
             </li>
             <li>
               <ModalButton
                 icon={Bank}
                 title="To bank account"
                 description="Send money to bank account"
-              ></ModalButton>
+              />
             </li>
           </menu>
         ) : (
-          <WithdrawCryptoOverlay 
+          <WithdrawCryptoOverlay
             isOpen={isCryptoOpen}
             onOpenChange={(open) => {
               setCryptoOpen(open);
