@@ -110,7 +110,6 @@ const SendSummary = () => {
         flex-direction: column;
         gap: var(--size-200);
         background-color: var(--clr-surface-raised);
-        box-shadow: var(--box-shadow-card);
         padding: var(--size-200);
         border-radius: var(--border-radius-medium);
       `}

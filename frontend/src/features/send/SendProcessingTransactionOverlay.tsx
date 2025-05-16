@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import leafLoading from "@/assets/lottie/leaf-loading.json";
 import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
@@ -11,6 +11,7 @@ import toast from "react-hot-toast/headless";
 import { SendTransactionStatus } from "./types";
 import { toggleModal, unmountOverlays } from "./sendSlice";
 import { toggleOverlay, unmount } from "./sendSlice";
+import { ProgressBar } from "react-aria-components";
 
 const SendProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const isOpen = useSelector(
@@ -26,8 +27,21 @@ const SendProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const handleSuccess = () => {
     console.log("Success");
     toast.success("$65.32 sent to Phil");
-    dispatch(unmount(undefined));
+    dispatch(unmount());
   };
+
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setValue((value) => (value += 5));
+    }, 1000);
+    if (value >= 100) return clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      setValue(0);
+    };
+  });
 
   return (
     <HeadlessOverlay
@@ -64,24 +78,20 @@ const SendProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
                 css={css`
                   color: var(--clr-text);
                   text-align: center;
-                  margin-block-end: var(--size-200);
                 `}
               >
                 Sending...
               </h1>
-              <button
-                css={css`
-                  text-align: center;
-                  width: 100%;
-                `}
-                onClick={() => {
-                  dispatch(unmountOverlays(undefined));
-                  dispatch(toggleModal({ isOpen: false }));
-                }}
-              >
-                Click to toast
-              </button>
             </hgroup>
+            <div
+              css={css`
+                margin-block-start: var(--size-400);
+                width: 80%;
+                margin-inline: auto;
+              `}
+            >
+              <ProgressBar value={value} />
+            </div>
           </section>
         </section>
       </div>
