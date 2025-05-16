@@ -2,7 +2,6 @@ import { ArrowDown } from "@phosphor-icons/react";
 import { useEffect } from "react";
 import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { formatUsdAmount, getUsdAmount } from "./utils";
 import { AbstractedAsset } from "../assets/types";
 import { selectAbstractedAsset } from "../assets/assetsSlice";
@@ -25,20 +24,16 @@ const AssetSection = ({
       : selectAbstractedAsset(state, abstractedAssetId)
   );
 
-  // To do: there is a bug with conversions. 
+  // To do: there is a bug with conversions.
   // Instead of converting we are just returning the native amount
   // const usdAmount = getUsdAmount(abstractedAssetId, assets, amount);
-
-  
 
   const transaction = useSelector((state: RootState) => state.pay.transaction);
 
   const formattedUsdAmount = formatUsdAmount(transaction.amount);
 
-
-
   useEffect(() => {
-    console.log('pay Transaction',transaction);
+    console.log("pay Transaction", transaction);
   }, [transaction]);
 
   return (
@@ -123,14 +118,16 @@ const PaySummary = () => {
         flex-direction: column;
         gap: var(--size-200);
         background-color: var(--clr-surface-raised);
-        box-shadow: var(--box-shadow-card);
         padding: var(--size-200);
         border-radius: var(--border-radius-medium);
       `}
     >
       <section>
         {transaction.type === "send" ? (
-          <AssetSection abstractedAssetId={transaction.abstractedAssetId} amount={transaction.amount} />
+          <AssetSection
+            abstractedAssetId={transaction.abstractedAssetId}
+            amount={transaction.amount}
+          />
         ) : (
           <UserSection user={transaction.user}></UserSection>
         )}

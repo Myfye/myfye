@@ -12,11 +12,11 @@ import {
 import PayController from "@/features/pay/PayController";
 import { useEffect, useRef } from "react";
 import PaySelectUserOverlay from "@/features/pay/PaySelectUserOverlay";
-import ProcessingTransactionOverlay from "@/features/swap/ProcessingTransactionOverlay";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import PaySelectAssetOverlay from "@/features/pay/PaySelectAssetOverlay";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 import PayConfirmTransactionOverlay from "@/features/pay/PayConfirmTransactionOverlay";
+import ProcessingTransactionOverlay from "@/features/pay/ProcessingTransactionOverlay";
 
 const Pay = () => {
   const dispatch = useDispatch();

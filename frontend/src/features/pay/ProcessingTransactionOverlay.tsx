@@ -3,7 +3,7 @@ import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import leafLoading from "@/assets/lottie/leaf-loading.json";
 import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
@@ -11,26 +11,30 @@ import { useLottie } from "lottie-react";
 import { unmountOverlays, toggleOverlay, unmount } from "./paySlice";
 import { PayTransactionStatus } from "./types";
 import toast from "react-hot-toast/headless";
+import { ProgressBar } from "react-aria-components";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
-  const isOpen = useSelector((state: RootState) => {
-    const isOpen = state.pay.overlays.processingTransaction.isOpen;
-    console.log("ProcessingTransactionOverlay selector, isOpen:", isOpen);
-    return isOpen;
-  });
-
-  console.log("ProcessingTransactionOverlay render, isOpen:", isOpen);
-
+  const dispatch = useDispatch();
+  const isOpen = useSelector(
+    (state: RootState) => state.pay.overlays.processingTransaction.isOpen
+  );
   const handleOpen = (isOpen: boolean) => {
-    console.log(
-      "Pay processing transaction overlay handleOpen called with:",
-      isOpen
-    );
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen }));
   };
-
-  const dispatch = useDispatch();
   const transaction = useSelector((state: RootState) => state.pay.transaction);
+
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setValue((value) => (value += 5));
+    }, 1000);
+    if (value >= 100) return clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      setValue(0);
+    };
+  });
 
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
@@ -61,23 +65,20 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
                 css={css`
                   color: var(--clr-text);
                   text-align: center;
-                  margin-block-end: var(--size-200);
                 `}
               >
                 Sending...
               </h1>
-              <button
-                css={css`
-                  text-align: center;
-                  width: 100%;
-                `}
-                onClick={() => {
-                  dispatch(unmountOverlays(undefined));
-                }}
-              >
-                Click to toast
-              </button>
             </hgroup>
+            <div
+              css={css`
+                margin-block-start: var(--size-400);
+                width: 80%;
+                margin-inline: auto;
+              `}
+            >
+              <ProgressBar value={value} />
+            </div>
           </section>
         </section>
       </div>

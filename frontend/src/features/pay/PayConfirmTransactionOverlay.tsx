@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import store, { RootState } from "@/redux/store";
 import { toggleOverlay, unmount } from "./paySlice";
 import PaySummary from "./PaySummary";
 import { tokenTransfer } from "@/functions/Transaction";
@@ -12,6 +12,7 @@ import toast from "react-hot-toast/headless";
 import { savePayTransaction } from "./PaySaveTransaction";
 import { logError } from "@/functions/LogError";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env";
+import { useState } from "react";
 
 const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   );
 
   const handleOpen = (isOpen: boolean) => {
-    dispatch(toggleOverlay({ type: "processingTransaction", isOpen }));
+    dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
   };
 
   const { wallets } = useSolanaWallets();
@@ -39,31 +40,6 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
   const assets = useSelector((state: RootState) => state.assets);
 
-  // const assets = useSelector((state: RootState) => state.assets);
-
-  // const getAssetId = (abstractedAssetId: AbstractedAsset["id"] | null) => {
-  //   switch (abstractedAssetId) {
-  //     case "us_dollar_yield": {
-  //       return "usdy_sol";
-  //     }
-  //     case "us_dollar": {
-  //       return "usdc_sol";
-  //     }
-  //     case "sol": {
-  //       return "sol";
-  //     }
-  //     case "btc": {
-  //       return "btc_sol";
-  //     }
-  //     case "euro": {
-  //       return "eurc_sol";
-  //     }
-  //     default: {
-  //       throw new Error("Could not find abstracted Asset Id");
-  //     }
-  //   }
-  // };
-
   const handleTransactionSubmit = async () => {
     console.log("Starting transaction submission...");
 
@@ -71,27 +47,15 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     if (!transaction.user) return;
     if (!transaction.abstractedAssetId) return;
 
-    console.log("Opening processing overlay...");
     // First open the processing overlay
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
-    console.log("Processing overlay dispatch completed");
 
     // Add a small delay to ensure state updates are processed
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    console.log("Closing confirm overlay...");
-    // Then close the confirm overlay
-    dispatch(toggleOverlay({ type: "confirmTransaction", isOpen: false }));
-
     // next, go through transaction
     const sellAbstractedAsset =
       assets.abstractedAssets[transaction.abstractedAssetId];
-    /*
-    if (!sellAbstractedAsset) {
-      // If we can't find the asset, close the processing overlay
-      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
-      return;
-    }*/
 
     // Get all assets associated with this abstracted asset
     const associatedAssets = sellAbstractedAsset.assetIds.map(
@@ -158,10 +122,6 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
           logError("Failed to send email:", "pay", error);
         }
 
-        // Close processing overlay and show success message
-        dispatch(
-          toggleOverlay({ type: "processingTransaction", isOpen: false })
-        );
         dispatch(unmount());
         toast.success(
           `Sent $${transaction.formattedAmount} to ${
@@ -262,18 +222,6 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
                 }
               `}
             >
-              <li
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              ></li>
-              <li
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              ></li>
               <li
                 css={css`
                   display: flex;
