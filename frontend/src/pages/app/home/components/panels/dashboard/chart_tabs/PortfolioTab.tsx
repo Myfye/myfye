@@ -25,7 +25,7 @@ const PortfolioTab = () => {
       const cashData = {
         name: "Cash",
         y: cashBalanceUSD,
-        color: "var(--clr-green-300)",
+        color: "var(--clr-green-400)",
       };
       data.push(cashData);
     }
@@ -33,7 +33,7 @@ const PortfolioTab = () => {
       const earnData = {
         name: "Earn",
         y: earnBalanceUSD,
-        color: "var(--clr-purple-300)",
+        color: "var(--clr-purple-400)",
       };
       data.push(earnData);
     }
@@ -41,7 +41,7 @@ const PortfolioTab = () => {
       const cryptoData = {
         name: "Crypto",
         y: cryptoBalanceUSD,
-        color: "var(--clr-teal-300)",
+        color: "#BD8B58",
       };
       data.push(cryptoData);
     }
@@ -77,6 +77,7 @@ const PortfolioTab = () => {
     },
     plotOptions: {
       pie: {
+        borderWidth: 2,
         center: ["28%", "30%"],
         showInLegend: true,
         innerSize: "33.33%",
@@ -126,21 +127,27 @@ const PortfolioTab = () => {
       x: 12,
       y: -60,
       width: 120,
-      itemMarginTop: 4,
-      itemMarginBottom: 4,
+      itemMarginTop: 8,
+      itemMarginBottom: 8,
       itemStyle: {
-        fontSize: "12px",
+        fontSize: "14px",
         fontFamily: "Inter",
-        color: "var(--clr-text-weak)",
+        color: "var(--clr-text)",
       },
+      useHTML: true,
       labelFormatter: function () {
         return (
+          "<span class='legend'>" +
+          "<span class='currency'>" +
           this.name +
-          " " +
+          "</span>" +
+          "<span class='balance'>" +
           new Intl.NumberFormat("en-EN", {
             style: "currency",
             currency: "usd",
-          }).format(this.y)
+          }).format(this.y) +
+          "</span>" +
+          "<span>"
         );
       },
     },

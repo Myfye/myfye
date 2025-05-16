@@ -13,18 +13,19 @@ import { PayTransactionStatus } from "./types";
 import toast from "react-hot-toast/headless";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
-  const isOpen = useSelector(
-    (state: RootState) => {
-      const isOpen = state.pay.overlays.processingTransaction.isOpen;
-      console.log('ProcessingTransactionOverlay selector, isOpen:', isOpen);
-      return isOpen;
-    }
-  );
-  
-  console.log('ProcessingTransactionOverlay render, isOpen:', isOpen);
-  
+  const isOpen = useSelector((state: RootState) => {
+    const isOpen = state.pay.overlays.processingTransaction.isOpen;
+    console.log("ProcessingTransactionOverlay selector, isOpen:", isOpen);
+    return isOpen;
+  });
+
+  console.log("ProcessingTransactionOverlay render, isOpen:", isOpen);
+
   const handleOpen = (isOpen: boolean) => {
-    console.log('Pay processing transaction overlay handleOpen called with:', isOpen);
+    console.log(
+      "Pay processing transaction overlay handleOpen called with:",
+      isOpen
+    );
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen }));
   };
 
@@ -32,18 +33,14 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const transaction = useSelector((state: RootState) => state.pay.transaction);
 
   return (
-    <HeadlessOverlay 
-      isOpen={isOpen} 
-      onOpenChange={handleOpen} 
-      zIndex={zIndex}
-    >
+    <HeadlessOverlay isOpen={isOpen} onOpenChange={handleOpen} zIndex={zIndex}>
       <div
         css={css`
           display: flex;
           flex-direction: column;
           justify-content: center;
           padding: var(--size-250);
-          height: 100dvh;
+          height: 100vh;
           background: var(--clr-background);
         `}
       >

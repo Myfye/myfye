@@ -5,7 +5,7 @@ const LoginFooter = ({ children }: { children: ReactNode }) => {
   return (
     <footer
       css={css`
-        padding: var(--size-400) var(--size-250) var(--size-250) var(--size-250);
+        padding: var(--size-600) var(--size-250) var(--size-250) var(--size-250);
       `}
     >
       {children}

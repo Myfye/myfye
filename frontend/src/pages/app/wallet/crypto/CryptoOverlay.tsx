@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 
-import PieChart from "@/shared/components/ui/pie-chart/PieChart";
 import { useMemo } from "react";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +13,7 @@ import {
 } from "../../../../features/assets/assetsSlice";
 import WalletOverlay from "../_components/WalletOverlay";
 import Section from "@/shared/components/ui/section/Section";
+import PieChart from "../_components/PieChart";
 
 const CryptoOverlay = () => {
   const dispatch = useDispatch();
@@ -41,28 +41,126 @@ const CryptoOverlay = () => {
     selectAbstractedAssetBalanceUSD(state, "sol")
   );
 
-  const pieChartData = useMemo(() => {
+  const pieChartData = (() => {
     const data = [];
     if (btcBalanceUSD > 0) {
-      const btcData = {
-        id: "Bitcoin",
-        label: "Bitcoin",
-        value: btcBalanceUSD,
-        color: "var(--clr-pie-chart-btc)",
+      const cashData = {
+        name: "Bitcoin",
+        y: btcBalanceUSD,
+        color: "#BD8B58",
       };
-      data.push(btcData);
+      data.push(cashData);
     }
     if (solBalanceUSD > 0) {
-      const solData = {
-        id: "Solana",
-        label: "Solana",
-        value: solBalanceUSD,
+      const earnData = {
+        name: "Solana",
+        y: solBalanceUSD,
         color: "var(--clr-purple-400)",
       };
-      data.push(solData);
+      data.push(earnData);
     }
     return data;
-  }, [btcBalanceUSD, solBalanceUSD]);
+  })();
+
+  const pieChartOptions: Highcharts.Options = {
+    chart: {
+      type: "pie",
+      height: 320,
+      backgroundColor: "transparent",
+      spacingBottom: 0,
+      spacingLeft: 16,
+      spacingRight: 0,
+      spacingTop: 4,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
+    },
+    plotOptions: {
+      pie: {
+        borderWidth: 2,
+        center: ["28%", "30%"],
+        showInLegend: true,
+        innerSize: "33.33%",
+        size: "60%",
+        depth: 45,
+        allowPointSelect: true,
+        cursor: "pointer",
+        dataLabels: [
+          {
+            enabled: true,
+            distance: -32,
+            format: "{point.percentage:.1f}%",
+            style: {
+              fontSize: "16px",
+              textOutline: "none",
+              opacity: 1,
+              color: "var(--clr-white)",
+              textOverflow: "none",
+            },
+            filter: {
+              operator: ">",
+              property: "percentage",
+              value: 1,
+            },
+          },
+        ],
+      },
+    },
+    title: {
+      text: "<span class='visually-hidden'>Myfye Portfolio</span>",
+      useHTML: true,
+    },
+    tooltip: {
+      enabled: true,
+      pointFormat: "Balance: <b>${point.y:.2f}</b>",
+    },
+    credits: {
+      enabled: false,
+    },
+    legend: {
+      backgroundColor: "transparent",
+      enabled: true,
+      floating: true,
+      align: "right",
+      verticalAlign: "middle",
+      layout: "vertical",
+      useHTML: true,
+      x: 8,
+      y: -60,
+      width: 120,
+      itemMarginTop: 8,
+      itemMarginBottom: 8,
+      itemStyle: {
+        fontSize: "14px",
+        fontFamily: "Inter",
+        color: "var(--clr-text)",
+      },
+      labelFormatter: function () {
+        return (
+          "<span class='legend'>" +
+          "<span class='currency'>" +
+          this.name +
+          "</span>" +
+          "<span class='balance'>" +
+          new Intl.NumberFormat("en-EN", {
+            style: "currency",
+            currency: "usd",
+          }).format(this.y) +
+          "</span>" +
+          "<span>"
+        );
+      },
+    },
+    series: [
+      // @ts-ignore
+      {
+        name: "Portfolio Summary",
+        colorByPoint: true,
+        data: pieChartData,
+      },
+    ],
+  };
 
   return (
     <>
@@ -75,12 +173,30 @@ const CryptoOverlay = () => {
       >
         {pieChartData.length > 0 && (
           <section
-            className="pie-chart-container"
             css={css`
-              margin-block-start: var(--size-300);
+              margin-block-start: var(--size-400);
+              padding-inline: var(--size-250);
             `}
           >
-            <PieChart data={pieChartData}></PieChart>
+            <div
+              className="pie-chart-card"
+              css={css`
+                padding: var(--size-150);
+                background-color: var(--clr-surface-raised);
+                height: 16rem;
+                border-radius: var(--border-radius-medium);
+              `}
+            >
+              <h2
+                className="heading-medium"
+                css={css`
+                  padding-block-end: var(--size-100);
+                `}
+              >
+                Portfolio Summary
+              </h2>
+              <PieChart options={pieChartOptions} />
+            </div>
           </section>
         )}
         {pieChartData.length === 0 && (
@@ -97,21 +213,24 @@ const CryptoOverlay = () => {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                text-align: center;
               `}
             >
-              <p className="heading-medium">Lorem ipsum</p>
+              <p className="heading-large">
+                Store crypto. <br /> No complex tools required.
+              </p>
               <p
                 className="caption"
                 css={css`
                   color: var(--clr-text-weaker);
-                  margin-block-start: var(--size-050);
+                  margin-block-start: var(--size-100);
                 `}
               >
-                Lorem ispum dolor, lorum ipsum dolor
+                Get started by depositing Bitcoin/Solana
               </p>
               <div
                 css={css`
-                  margin-block-start: var(--size-200);
+                  margin-block-start: var(--size-300);
                 `}
               >
                 <Button>Deposit crypto</Button>
@@ -124,6 +243,7 @@ const CryptoOverlay = () => {
           css={css`
             margin-block-start: var(--size-400);
             padding-inline: var(--size-250);
+            margin-block-end: var(--size-200);
           `}
         >
           <AssetCardList assets={assets} showOptions={true} />

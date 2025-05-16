@@ -25,7 +25,7 @@ const ReceiveModal = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Receive"
-        height={480}
+        height={400}
       >
         <div
           className="qr-code-container"
@@ -33,26 +33,33 @@ const ReceiveModal = () => {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             height: 100%;
+            padding-block-start: var(--size-200);
             padding-inline: var(--size-200);
             padding-block-end: var(--size-200);
           `}
         >
-          <QRCode data={key} color="#000407" />
-          <Button
-            expand
-            icon={CopyIcon}
+          <div className="qr-code-wrapper">
+            <QRCode data={key} color="var(--clr-black)" size={200} />
+          </div>
+          <div
             css={css`
-              margin-block-start: var(--size-500);
+              width: 100%;
+              margin-block-start: auto;
             `}
-            onPress={() => {
-              navigator.clipboard.writeText(key);
-              return onOpenChange(false);
-            }}
           >
-            Copy address
-          </Button>
+            <Button
+              expand
+              icon={CopyIcon}
+              onPress={() => {
+                navigator.clipboard.writeText(key);
+                return onOpenChange(false);
+              }}
+            >
+              Copy address
+            </Button>
+          </div>
         </div>
       </Modal>
     </>

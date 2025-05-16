@@ -289,6 +289,9 @@
     &[data-scroll="true"] {
       overflow-x: auto;
     }
+    &[data-expand="true"] {
+      width: 100%;
+    }
     &:has([data-expand="true"]) {
       & .item {
         flex: 1 1 0;

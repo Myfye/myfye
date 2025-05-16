@@ -438,7 +438,7 @@ function SwapWithdraw() {
           top: menuPosition,
           left: 0, // Use state variable for position
           paddingTop: "15px",
-          height: "100dvh",
+          height: "100vh",
           backgroundColor: "white",
           width: "100vw",
           transition: "top 0.5s ease", // Animate the left property

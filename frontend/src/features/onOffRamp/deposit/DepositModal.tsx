@@ -43,7 +43,7 @@ const DepositModal = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Deposit"
-        height={360}
+        height={320}
         onAnimationComplete={() => {
           isOpen && resetModal();
         }}
@@ -53,7 +53,7 @@ const DepositModal = () => {
             css={css`
               display: flex;
               flex-direction: column;
-              gap: var(--size-200);
+              gap: var(--size-150);
               padding-inline: var(--size-200);
             `}
           >
@@ -83,14 +83,14 @@ const DepositModal = () => {
         title="Deposit"
         height={580}
       >
-        <OnChainDepositOverlay 
+        <OnChainDepositOverlay
           isOpen={onChainDepositOpen}
           onOpenChange={setOnChainDepositOpen}
         />
       </Modal>
 
       {offChainDepositOpen && (
-        <OffChainDepositOverlay 
+        <OffChainDepositOverlay
           isOpen={offChainDepositOpen}
           onOpenChange={setOffChainDepositOpen}
         />

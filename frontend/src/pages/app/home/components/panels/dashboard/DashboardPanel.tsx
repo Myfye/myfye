@@ -30,9 +30,8 @@ const DashboardPanel = ({}) => {
       css={css`
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
-        min-height: fit-content;
         height: 100%;
         > * {
           width: 100%;
@@ -124,8 +123,11 @@ const DashboardPanel = ({}) => {
       {balanceUSD === 0 ? (
         <section
           css={css`
-            margin-block-start: max(var(--size-200), 4vh);
-            margin-block-end: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
             padding-inline: var(--size-250);
           `}
         >
@@ -135,29 +137,12 @@ const DashboardPanel = ({}) => {
               flex-direction: column;
               align-items: center;
               justify-content: center;
-              margin-block-start: var(--size-200);
             `}
           >
-            <div
-              css={css`
-                display: block;
-                width: 12rem;
-                aspect-ratio: 1;
-                background-color: var(--clr-surface);
-                border: 1px solid var(--clr-border-neutral);
-                border-radius: var(--border-radius-medium);
-              `}
-            />
-            <h2
-              className="heading-large"
-              css={css`
-                margin-block-start: var(--size-400);
-              `}
-            >
-              Get started by depositing funds.
-            </h2>
+            <h2 className="heading-large">Get started by depositing funds.</h2>
             <Button
               expand
+              onPress={() => {}}
               css={css`
                 margin-block-start: var(--size-300);
               `}
@@ -170,13 +155,17 @@ const DashboardPanel = ({}) => {
         <section
           css={css`
             margin-block-start: max(var(--size-200), 4vh);
-            margin-block-end: auto;
           `}
         >
           <ChartTabs />
         </section>
       )}
-      <section className="cta-carousel-container">
+      {/* <section
+        className="cta-carousel-container"
+        css={css`
+          margin-block-start: auto;
+        `}
+      >
         <CTACarousel
           slides={[
             {
@@ -189,7 +178,7 @@ const DashboardPanel = ({}) => {
             { title: "Test", subtitle: "test", icon: "test" },
           ]}
         />
-      </section>
+      </section> */}
     </div>
   );
 };

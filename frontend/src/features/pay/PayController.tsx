@@ -51,7 +51,7 @@ const AssetSelectButton = ({
           grid-template-columns: 1fr auto;
           align-items: center;
           gap: var(--size-100);
-          height: 100%;
+          height: calc(4.25rem - var(--size-150) * 2);
         `}
       >
         <div
@@ -60,6 +60,7 @@ const AssetSelectButton = ({
             grid-template-columns: ${asset ? "auto 1fr" : "1fr"};
             align-content: center;
             gap: var(--size-150);
+            height: calc(4.25rem - var(--size-150) * 2);
           `}
         >
           {asset ? (
@@ -134,12 +135,18 @@ const AssetSelectButton = ({
               </div>
             </>
           ) : (
-            <div>
+            <div
+              css={css`
+                height: calc(4.25rem - var(--size-150) * 2);
+                align-content: center;
+              `}
+            >
               <p
                 css={css`
                   font-size: var(--fs-medium);
                   font-weight: var(--fw-active);
                   color: var(--clr-text);
+                  margin-inline-start: var(--size-150);
                 `}
               >
                 Select asset
@@ -210,6 +217,7 @@ function AmountSelector(props) {
           display: inline-block;
           position: relative;
           isolation: isolate;
+          user-select: none;
           &::before {
             content: "";
             display: block;

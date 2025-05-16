@@ -1,11 +1,7 @@
-import PieChart from "@/shared/components/ui/pie-chart/PieChart";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
-  selectAbstractedAssetBalanceUSD,
-  selectAbstractedAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
-  selectAssetsByGroup,
   toggleGroupOverlay,
 } from "../../../../features/assets/assetsSlice";
 import { css } from "@emotion/react";
@@ -15,54 +11,47 @@ import { ChartLineUp } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
 import EarnBreakdownModal from "./EarnBreakdownModal";
 import { useState } from "react";
+import PieChart from "../_components/PieChart";
 
 const pieChartData = [
   {
-    id: "First Citizens - Bank Deposits",
-    label: "First Citizens - Bank Deposits",
-    value: 0.7,
+    name: "First Citizens - Bank Deposits",
+    y: 0.7,
     color: "var(--clr-green-500)",
   },
   {
-    id: "StoneX - US T-Bills",
-    label: "StoneX - US T-Bills",
-    value: 0.16,
+    name: "StoneX - US T-Bills",
+    y: 0.16,
     color: "var(--clr-blue-300)",
   },
   {
-    id: "Morgan Stanley - Bank Deposits",
-    label: "Morgan Stanley - Bank Deposits",
-    value: 0.06,
+    name: "Morgan Stanley - Bank Deposits",
+    y: 0.06,
     color: "var(--clr-blue-500)",
   },
   {
-    id: "StoneX - Cash & Equivalents",
-    label: "StoneX - Cash & Equivalents",
-    value: 0.06,
+    name: "StoneX - Cash & Equivalents",
+    y: 0.06,
     color: "var(--clr-blue-700)",
   },
   {
-    id: "Morgan Stanley - US T-Notes",
-    label: "Morgan Stanley - US T-Notes",
-    value: 0.05,
+    name: "Morgan Stanley - US T-Notes",
+    y: 0.05,
     color: "var(--clr-green-700)",
   },
   {
-    id: "StoneX - US T-Notes",
-    label: "StoneX - US T-Notes",
-    value: 0.03,
+    name: "StoneX - US T-Notes",
+    y: 0.03,
     color: "var(--clr-blue-400)",
   },
   {
-    id: "First Citizens - Cash & Cash Deposits",
-    label: "First Citizens - Cash & Cash Deposits",
-    value: 0.02,
+    name: "First Citizens - Cash & Cash Deposits",
+    y: 0.02,
     color: "var(--clr-green-400)",
   },
   {
-    id: "Morgan Stanley - Cash & Cash Deposits",
-    label: "Morgan Stanley - Cash & Cash Deposits",
-    value: 0,
+    name: "Morgan Stanley - Cash & Cash Deposits",
+    y: 0,
     color: "var(--clr-green-300)",
   },
 ];
@@ -78,10 +67,6 @@ const EarnOverlay = () => {
     dispatch(toggleGroupOverlay({ isOpen, groupId: "earn" }));
   };
 
-  const assets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByGroup(state, "earn")
-  );
-
   const balanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "earn")
   );
@@ -91,6 +76,71 @@ const EarnOverlay = () => {
   const handleBreakdownOpen = (isOpen: boolean) => {
     setBreakdownOpen(isOpen);
   };
+
+  const pieChartOptions: Highcharts.Options = {
+    chart: {
+      type: "pie",
+      height: 320,
+      width: 300,
+      backgroundColor: "transparent",
+      spacingBottom: 0,
+      spacingLeft: 16,
+      spacingRight: 0,
+      spacingTop: 4,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 0,
+      marginRight: 0,
+    },
+    plotOptions: {
+      pie: {
+        borderWidth: 2,
+        center: ["28%", "30%"],
+        showInLegend: true,
+        innerSize: "60%",
+        size: "60%",
+        depth: 45,
+        allowPointSelect: true,
+        cursor: "pointer",
+        dataLabels: [
+          {
+            enabled: false,
+          },
+        ],
+      },
+    },
+    title: {
+      text: "<span class='earn-breakdown-title-main'>Earn</br>Breakdown</span>",
+      floating: true,
+      x: -64.5,
+      y: 92,
+      style: {
+        fontSize: "17px",
+        fontWeight: "600",
+        fontFamily: "Inter",
+        color: "var(--clr-text)",
+      },
+    },
+    tooltip: {
+      enabled: true,
+      pointFormat: "Balance: <b>${point.y:.2f}</b>",
+    },
+    credits: {
+      enabled: false,
+    },
+    legend: {
+      enabled: false,
+    },
+    series: [
+      // @ts-ignore
+      {
+        name: "Earn breakdown",
+        colorByPoint: true,
+        data: pieChartData,
+      },
+    ],
+  };
+
   return (
     <>
       <WalletOverlay
@@ -101,7 +151,6 @@ const EarnOverlay = () => {
         groupId="earn"
       >
         <section
-          className="pie-chart-container"
           css={css`
             margin-inline: var(--size-250);
             margin-block-start: var(--size-300);
@@ -124,7 +173,7 @@ const EarnOverlay = () => {
                 inset: 0;
                 margin: auto;
                 left: auto;
-                right: 0;
+                right: var(--size-150);
                 z-index: 1;
               `}
             >
@@ -136,7 +185,18 @@ const EarnOverlay = () => {
                 View breakdown
               </Button>
             </div>
-            <PieChart data={pieChartData} type="earn"></PieChart>
+            <div
+              css={css`
+                padding: var(--size-150);
+                border-radius: var(--border-radius-medium);
+                background-color: var(--clr-surface-raised);
+                height: 14.75rem;
+                position: relative;
+                isolation: isolate;
+              `}
+            >
+              <PieChart options={pieChartOptions} />
+            </div>
           </div>
         </section>
         <section
