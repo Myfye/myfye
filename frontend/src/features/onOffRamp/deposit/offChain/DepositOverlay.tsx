@@ -1,8 +1,8 @@
 import { useState, createContext, useContext, useRef } from "react";
 import { css } from "@emotion/react";
-import mxn from '@/assets/flags/mx.svg';
-import brl from '@/assets/flags/br.svg';
-import usd from '@/assets/flags/us.svg';
+import mxn from "@/assets/flags/mx.svg";
+import brl from "@/assets/flags/br.svg";
+import usd from "@/assets/flags/us.svg";
 import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
@@ -46,7 +46,9 @@ const updateFormattedAmount = (
   if (input === "delete") {
     if (formattedAmount === "0") return "0";
     const newAmount = formattedAmount.replace(/,/g, "").slice(0, -1);
-    return newAmount === "" ? "0" : Math.round(parseFloat(newAmount)).toLocaleString();
+    return newAmount === ""
+      ? "0"
+      : Math.round(parseFloat(newAmount)).toLocaleString();
   }
 
   if (input === "0" && formattedAmount === "") return "0";
@@ -63,12 +65,15 @@ const parseFormattedAmount = (formattedAmount: string) => {
 const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   const dispatch = useDispatch();
   const [formattedAmount, setFormattedAmount] = useState("0");
-  const [showDepositInstructionsOverlay, setShowDepositInstructionsOverlay] = useState(false);
+  const [showDepositInstructionsOverlay, setShowDepositInstructionsOverlay] =
+    useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState("MXN"); // MXN BRL USD
   /* Public keys */
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
-  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
+  const solanaPubKey = useSelector(
+    (state: any) => state.userWalletData.solanaPubKey
+  );
   const isSendDisabled = !formattedAmount || formattedAmount === "0";
   const selectedAddress = solanaPubKey;
   const dropdownRef = useRef(null);
@@ -113,119 +118,119 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
 
   const AmountSelectContext = createContext(null);
 
-const AmountSelectorGroup = (props) => {
-  const { children, label } = props;
-  const state = useRadioGroupState(props);
-  const { radioGroupProps, labelProps } = useRadioGroup(props, state);
+  const AmountSelectorGroup = (props) => {
+    const { children, label } = props;
+    const state = useRadioGroupState(props);
+    const { radioGroupProps, labelProps } = useRadioGroup(props, state);
 
-  return (
-    <>
-      <p className="visually-hidden" {...labelProps}>
-        {label}
-      </p>
-      <menu
-        {...radioGroupProps}
-        css={css`
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          width: min(100%, 20rem);
-          gap: var(--controls-gap-small);
-          margin-inline: auto;
-        `}
-      >
-        <AmountSelectContext.Provider value={state}>
+    return (
+      <>
+        <p className="visually-hidden" {...labelProps}>
+          {label}
+        </p>
+        <menu
+          {...radioGroupProps}
+          css={css`
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            width: min(100%, 20rem);
+            gap: var(--controls-gap-small);
+            margin-inline: auto;
+          `}
+        >
+          <AmountSelectContext.Provider value={state}>
+            {children}
+          </AmountSelectContext.Provider>
+        </menu>
+      </>
+    );
+  };
+
+  function AmountSelector(props) {
+    let { children } = props;
+    let state = useContext(AmountSelectContext);
+    let ref = useRef(null);
+    let { inputProps, isSelected, isDisabled, isPressed } = useRadio(
+      props,
+      state,
+      ref
+    );
+    let { isFocusVisible, focusProps } = useFocusRing();
+
+    return (
+      <li>
+        <motion.label
+          className="button"
+          data-size="small"
+          data-color="neutral"
+          data-variant="primary"
+          data-expand="true"
+          ref={ref}
+          css={css`
+            --_outline-opacity: 0;
+            display: inline-block;
+            position: relative;
+            isolation: isolate;
+            &::before {
+              content: "";
+              display: block;
+              position: absolute;
+              inset: 0;
+              margin: auto;
+              outline: 2px solid var(--clr-primary);
+              outline-offset: -1px;
+              z-index: 1;
+              user-select: none;
+              pointer-events: none;
+              opacity: var(--_outline-opacity);
+              border-radius: var(--border-radius-pill);
+            }
+          `}
+          animate={{
+            scale: isPressed ? 0.9 : 1,
+            "--_outline-opacity": isSelected ? 1 : 0,
+            "--_color": isSelected ? "var(--clr-primary)" : "var(--clr-text)",
+          }}
+        >
+          <VisuallyHidden>
+            <input {...inputProps} {...focusProps} ref={ref} />
+          </VisuallyHidden>
           {children}
-        </AmountSelectContext.Provider>
-      </menu>
-    </>
-  );
-};
-
-function AmountSelector(props) {
-  let { children } = props;
-  let state = useContext(AmountSelectContext);
-  let ref = useRef(null);
-  let { inputProps, isSelected, isDisabled, isPressed } = useRadio(
-    props,
-    state,
-    ref
-  );
-  let { isFocusVisible, focusProps } = useFocusRing();
-
-  return (
-    <li>
-      <motion.label
-        className="button"
-        data-size="small"
-        data-color="neutral"
-        data-variant="primary"
-        data-expand="true"
-        ref={ref}
-        css={css`
-          --_outline-opacity: 0;
-          display: inline-block;
-          position: relative;
-          isolation: isolate;
-          &::before {
-            content: "";
-            display: block;
-            position: absolute;
-            inset: 0;
-            margin: auto;
-            outline: 2px solid var(--clr-primary);
-            outline-offset: -1px;
-            z-index: 1;
-            user-select: none;
-            pointer-events: none;
-            opacity: var(--_outline-opacity);
-            border-radius: var(--border-radius-pill);
-          }
-        `}
-        animate={{
-          scale: isPressed ? 0.9 : 1,
-          "--_outline-opacity": isSelected ? 1 : 0,
-          "--_color": isSelected ? "var(--clr-primary)" : "var(--clr-text)",
-        }}
-      >
-        <VisuallyHidden>
-          <input {...inputProps} {...focusProps} ref={ref} />
-        </VisuallyHidden>
-        {children}
-      </motion.label>
-    </li>
-  );
-}
-
-const handleSelectAmountChange = (presetAmount: string) => {
-  let amount: number;
-
-  switch (presetAmount) {
-    case "500":
-      amount = 500;
-      break;
-    case "1000":
-      amount = 1000;
-      break;
-    case "5000":
-      amount = 5000;
-      break;
-    case "10000":
-      amount = 10000;
-      break;
-    default:
-      amount = 0;
+        </motion.label>
+      </li>
+    );
   }
 
-  console.log('calculated amount:', amount);
-  setFormattedAmount(updateFormattedAmount(formattedAmount, amount, true));
-};
+  const handleSelectAmountChange = (presetAmount: string) => {
+    let amount: number;
+
+    switch (presetAmount) {
+      case "500":
+        amount = 500;
+        break;
+      case "1000":
+        amount = 1000;
+        break;
+      case "5000":
+        amount = 5000;
+        break;
+      case "10000":
+        amount = 10000;
+        break;
+      default:
+        amount = 0;
+    }
+
+    console.log("calculated amount:", amount);
+    setFormattedAmount(updateFormattedAmount(formattedAmount, amount, true));
+  };
 
   const handleDropdownToggle = () => {
     if (!isDropdownOpen && dropdownRef.current) {
       const rect = dropdownRef.current.getBoundingClientRect();
       setDropdownPosition({
         top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX
+        left: rect.left + window.scrollX,
       });
     }
     setIsDropdownOpen(!isDropdownOpen);
@@ -233,43 +238,31 @@ const handleSelectAmountChange = (presetAmount: string) => {
 
   return (
     <>
-      <Overlay isOpen={isOpen} onOpenChange={(open) => {
-        if (!open) {
-          setIsDropdownOpen(false);
-        }
-        onOpenChange(open);
-      }} title="Deposit">
+      <Overlay
+        isOpen={isOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsDropdownOpen(false);
+          }
+          onOpenChange(open);
+        }}
+        title="Deposit"
+      >
         <div
           css={css`
             display: grid;
-            grid-template-rows: auto 1fr auto auto;
+            grid-template-rows: 1fr auto;
             gap: var(--size-200);
-            min-height: 80vh;
-            max-height: 80vh;
-            overflow-y: auto;
+            padding-block-end: var(--size-200);
+            height: 100cqh;
           `}
         >
-          <section
-            css={css`
-              padding-inline: var(--size-100);
-              padding-top: var(--size-50);
-            `}
-          >
-
-          </section>
-
-          <section
-            css={css`
-              display: grid;
-              place-items: center;
-              padding-inline: var(--size-200);
-            `}
-          >
+          <section>
             <div
               css={css`
                 display: grid;
-                place-items: center;
                 height: 100%;
+                place-items: center;
                 isolation: isolate;
                 position: relative;
               `}
@@ -294,7 +287,7 @@ const handleSelectAmountChange = (presetAmount: string) => {
                     <span key={`value-${i}`}>{val}</span>
                   ))}
                 </p>
-                
+
                 <div
                   ref={dropdownRef}
                   css={css`
@@ -312,8 +305,8 @@ const handleSelectAmountChange = (presetAmount: string) => {
                   `}
                   onClick={handleDropdownToggle}
                 >
-                  <img 
-                    src={getCurrencyFlag(selectedToken)} 
+                  <img
+                    src={getCurrencyFlag(selectedToken)}
                     alt={selectedToken}
                     css={css`
                       width: 24px;
@@ -321,175 +314,132 @@ const handleSelectAmountChange = (presetAmount: string) => {
                     `}
                   />
                   <span>{selectedToken}</span>
-                  {isDropdownOpen ? <CaretUp size={24} /> : <CaretDown size={24} />}
+                  {isDropdownOpen ? (
+                    <CaretUp size={24} />
+                  ) : (
+                    <CaretDown size={24} />
+                  )}
                 </div>
               </div>
             </div>
           </section>
-
-          {isDropdownOpen && createPortal(
-            <div
-              css={css`
-                position: absolute;
-                top: ${dropdownPosition.top}px;
-                left: ${dropdownPosition.left}px;
-                background-color: var(--clr-surface-raised);
-                border-radius: var(--border-radius-small);
-                box-shadow: var(--shadow-elevation-2);
-                z-index: 1000000;
-              `}
-            >
-              {["MXN", "USD", "BRL"].map((currency) => (
-                <div
-                  key={currency}
-                  css={css`
-                    display: flex;
-                    align-items: center;
-                    gap: var(--size-100);
-                    padding: var(--size-100);
-                    cursor: pointer;
-                    &:hover {
-                      background-color: var(--clr-surface-hover);
-                    }
-                  `}
-                  onClick={() => handleCurrencySelect(currency)}
-                >
-                  <img 
-                    src={getCurrencyFlag(currency)} 
-                    alt={currency}
-                    css={css`
-                      width: 24px;
-                      height: 24px;
-                    `}
-                  />
-                  <span>{currency}</span>
-                </div>
-              ))}
-            </div>,
-            document.body
-          )}
-
-          <section
+          <div
             css={css`
               display: grid;
-              place-items: center;
-              padding-inline: var(--size-200);
-              width: min(100%, 24rem);
-              margin-inline: auto;
+              grid-template-rows: auto auto auto;
+              gap: var(--size-200);
             `}
           >
-
-            <AmountSelectorGroup
-              label="Select preset amount"
-              onChange={handleSelectAmountChange}
+            <section
               css={css`
-                width: 100%;
+                padding-inline: var(--size-200);
+                margin-inline: auto;
               `}
             >
-              <AmountSelector value="500">500</AmountSelector>
-              <AmountSelector value="1000">1,000</AmountSelector>
-              <AmountSelector value="5000">5,000</AmountSelector>
-              <AmountSelector value="10000">10,000</AmountSelector>
-            </AmountSelectorGroup>
-          </section>
-
-          <section
-            css={css`
-              display: grid;
-              grid-template-columns: repeat(3, 1fr);
-              width: min(100%, 20rem);
-              margin-inline: auto;
-              background-color: var(--clr-surface-raised);
-              border-radius: var(--border-radius-medium);
-              overflow: hidden;
-            `}
-          >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "", "delete"].map((num) => (
-              <button
-                key={num}
-                onClick={() => handleAmountChange(num)}
+              <AmountSelectorGroup
+                label="Select preset amount"
+                onChange={handleSelectAmountChange}
+                css={css`
+                  width: 100%;
+                `}
+              >
+                <AmountSelector value="500">500</AmountSelector>
+                <AmountSelector value="1000">1,000</AmountSelector>
+                <AmountSelector value="5000">5,000</AmountSelector>
+                <AmountSelector value="10000">10,000</AmountSelector>
+              </AmountSelectorGroup>
+            </section>
+            <section
+              css={css`
+                padding-inline: var(--size-250);
+              `}
+            >
+              <div
                 css={css`
                   display: grid;
-                  place-items: center;
-                  user-select: none;
-                  width: 100%;
-                  height: 3rem;
-                  line-height: var(--line-height-tight);
-                  font-weight: var(--fw-heading);
-                  color: var(--clr-text);
-                  font-family: var(--font-family);
-                  font-size: 20px;
+                  grid-template-columns: repeat(3, 1fr);
                   background-color: var(--clr-surface-raised);
-                  border: none;
-                  border-radius: 0;
-                  position: relative;
-
-                  &:not(:last-child)::after {
-                    content: '';
-                    position: absolute;
-                    right: 0;
-                    top: 0;
-                    bottom: 0;
-                    width: 1px;
-                    background-color: var(--clr-border);
-                  }
-
-                  &:nth-child(3n)::after {
-                    display: none;
-                  }
-
-                  &:not(:nth-last-child(-n+3))::before {
-                    content: '';
-                    position: absolute;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    height: 1px;
-                    background-color: var(--clr-border);
-                  }
+                  border-radius: var(--border-radius-medium);
+                  overflow: hidden;
                 `}
-                type="button"
               >
-                <motion.span
-                  animate={{
-                    scale: 1,
-                  }}
-                >
-                  {num === "delete" ? (
-                    <Backspace size={20} weight="bold" />
-                  ) : (
-                    <span>{num}</span>
-                  )}
-                </motion.span>
-              </button>
-            ))}
-          </section>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "", "delete"].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => handleAmountChange(num)}
+                    css={css`
+                      display: grid;
+                      place-items: center;
+                      user-select: none;
+                      width: 100%;
+                      height: 3rem;
+                      line-height: var(--line-height-tight);
+                      font-weight: var(--fw-heading);
+                      color: var(--clr-text);
+                      font-family: var(--font-family);
+                      font-size: 20px;
+                      background-color: var(--clr-surface-raised);
+                      border: none;
+                      border-radius: 0;
+                      position: relative;
 
-          <section
-            css={css`
-              padding: var(--size-100);
-              margin-top: 100;
-              width: 350px;
-              margin: auto;
-              text-align: center;
-            `}
-          >
-            <Button
-              variant="primary"
-              onPress={handleSend}
-              disabled={isSendDisabled}
+                      &:not(:last-child)::after {
+                        content: "";
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        bottom: 0;
+                        width: 1px;
+                        background-color: var(--clr-border);
+                      }
+
+                      &:nth-child(3n)::after {
+                        display: none;
+                      }
+
+                      &:not(:nth-last-child(-n + 3))::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        height: 1px;
+                        background-color: var(--clr-border);
+                      }
+                    `}
+                    type="button"
+                  >
+                    <motion.span
+                      animate={{
+                        scale: 1,
+                      }}
+                    >
+                      {num === "delete" ? (
+                        <Backspace size={20} weight="bold" />
+                      ) : (
+                        <span>{num}</span>
+                      )}
+                    </motion.span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section
               css={css`
-                width: 300px !important;
-                min-width: 250px !important;
-                max-width: 250px !important;
-                opacity: ${isSendDisabled ? 0.5 : 1};
-                transition: opacity 0.2s ease;
-                display: inline-block;
+                padding-inline: var(--size-200);
               `}
             >
-              Next
-            </Button>
-          </section>
+              <Button
+                expand
+                variant="primary"
+                onPress={handleSend}
+                disabled={isSendDisabled}
+              >
+                Next
+              </Button>
+            </section>
+          </div>
         </div>
       </Overlay>
 
@@ -508,6 +458,48 @@ const handleSelectAmountChange = (presetAmount: string) => {
           onOpenChange(false);
         }}
       />
+      {isDropdownOpen &&
+        createPortal(
+          <div
+            css={css`
+              position: absolute;
+              top: ${dropdownPosition.top}px;
+              left: ${dropdownPosition.left}px;
+              background-color: var(--clr-surface-raised);
+              border-radius: var(--border-radius-small);
+              box-shadow: var(--shadow-elevation-2);
+              z-index: 1000000;
+            `}
+          >
+            {["MXN", "USD", "BRL"].map((currency) => (
+              <div
+                key={currency}
+                css={css`
+                  display: flex;
+                  align-items: center;
+                  gap: var(--size-100);
+                  padding: var(--size-100);
+                  cursor: pointer;
+                  &:hover {
+                    background-color: var(--clr-surface-hover);
+                  }
+                `}
+                onClick={() => handleCurrencySelect(currency)}
+              >
+                <img
+                  src={getCurrencyFlag(currency)}
+                  alt={currency}
+                  css={css`
+                    width: 24px;
+                    height: 24px;
+                  `}
+                />
+                <span>{currency}</span>
+              </div>
+            ))}
+          </div>,
+          document.body
+        )}
     </>
   );
 };

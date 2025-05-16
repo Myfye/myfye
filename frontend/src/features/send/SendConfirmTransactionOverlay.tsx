@@ -191,11 +191,12 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
                     color: var(--clr-text);
                   `}
                 >
-                  {transaction.fee &&
-                    new Intl.NumberFormat("en-EN", {
-                      style: "currency",
-                      currency: "usd",
-                    }).format(transaction.fee)}
+                  {transaction.fee
+                    ? new Intl.NumberFormat("en-EN", {
+                        style: "currency",
+                        currency: "usd",
+                      }).format(transaction.fee)
+                    : "$0"}
                 </span>
               </li>
             </ul>

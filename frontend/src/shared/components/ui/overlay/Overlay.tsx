@@ -93,7 +93,7 @@ const Overlay = ({
                     icon={CaretLeftIcon}
                     onPress={() => onOpenChange(false)}
                     variant="transparent"
-                  ></Button>
+                  />
                   {title && (
                     <DialogTitle
                       as="h1"
@@ -115,6 +115,7 @@ const Overlay = ({
                   className="overlay-scroll"
                   css={css`
                     overflow-y: auto;
+                    container: overlay-main / size;
                   `}
                 >
                   {children}

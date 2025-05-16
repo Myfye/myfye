@@ -3,7 +3,7 @@ import { useButton } from "react-aria";
 import { motion } from "motion/react";
 
 import { css } from "@emotion/react";
-import { CaretDown, CaretUp, Icon } from "@phosphor-icons/react";
+import { CaretDown, CaretUp, Icon, Minus } from "@phosphor-icons/react";
 import { RefObject, useMemo } from "react";
 import { formatBalance } from "../../../../features/assets/utils";
 import { FiatCurrency } from "../../../../features/assets/types";
@@ -106,12 +106,14 @@ const WalletCard = ({
               margin-block-start: var(--size-050);
               color: ${percentChange > 0
                 ? "var(--clr-text-success)"
+                : percentChange === 0
+                ? "var(--clr-text-weaker)"
                 : "var(--clr-text-danger)"};
             `}
           >
             {percentChange > 0 ? (
               <CaretUp color="var(--clr-text-success)" weight="fill" />
-            ) : (
+            ) : percentChange === 0 ? null : (
               <CaretDown color="var(--clr-text-danger)" weight="fill" />
             )}
             {formattedPercentChange}

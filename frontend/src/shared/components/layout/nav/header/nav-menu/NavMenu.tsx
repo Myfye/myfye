@@ -59,7 +59,7 @@ const NavMenu = () => {
     const domain = email.substring(atIndex);
 
     // If username is longer than 16 characters, truncate it
-    if (username.length > 16) {
+    if (username.length > 18) {
       return `${username.substring(0, 5)}...${domain}`;
     }
 
