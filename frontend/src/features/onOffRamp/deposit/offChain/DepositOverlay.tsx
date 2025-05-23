@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useRef } from "react";
+import { useState, createContext, useContext, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
 import mxn from "@/assets/flags/mx.svg";
 import brl from "@/assets/flags/br.svg";
@@ -22,6 +22,10 @@ import Button from "@/shared/components/ui/button/Button";
 import { Backspace, CaretUp, CaretDown } from "@phosphor-icons/react";
 import DepositInstructionsOverlay from "./DepositInstructionsOverlay";
 import { createPortal } from "react-dom";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../../env';
+import toast from "react-hot-toast/headless";
+import leafLoading from "@/assets/lottie/leaf-loading.json";
+import Lottie from "lottie-react";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
@@ -64,13 +68,26 @@ const parseFormattedAmount = (formattedAmount: string) => {
 
 const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [formattedAmount, setFormattedAmount] = useState("0");
   const [showDepositInstructionsOverlay, setShowDepositInstructionsOverlay] =
     useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState("MXN"); // MXN BRL USD
+  const [selectedCurrency, setSelectedCurrency] = useState("MXN"); // MXN BRL USD
+  const [payin, setPayin] = useState(null);
   /* Public keys */
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
+  
+  const blindPayEvmWalletId = useSelector(
+    (state: any) => state.userWalletData.blindPayEvmWalletId
+  );
+  const blindPayReceiverId = useSelector(
+    (state: any) => state.userWalletData.blindPayReceiverId
+  );
+  useEffect(() => {
+    console.log("blindPayEvmWalletId", blindPayEvmWalletId);
+    console.log("blindPayReceiverId", blindPayReceiverId);
+  }, [blindPayEvmWalletId, blindPayReceiverId]);
   const solanaPubKey = useSelector(
     (state: any) => state.userWalletData.solanaPubKey
   );
@@ -90,7 +107,7 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   };
 
   const handleCurrencySelect = (currency: string) => {
-    setSelectedToken(currency);
+    setSelectedCurrency(currency);
     setIsDropdownOpen(false);
   };
 
@@ -107,12 +124,53 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
     }
   };
 
-  const handleSend = () => {
+  const handleNextButtonPress = async () => {
+    if (isLoading) return;
+    if (isSendDisabled) return;
+    setIsLoading(true);
+    console.log("handleNextButtonPress");
     const amount = parseFormattedAmount(formattedAmount);
-    console.log(`Sending ${amount} ${selectedToken}`);
+    // TODO: Call the API to get the payin quote
+    
+    const payinData = await handlePayin(amount, selectedCurrency);
+    setPayin(payinData);
+
+    console.log("payin", payinData);
     setIsDropdownOpen(false);
     setShowDepositInstructionsOverlay(true);
   };
+
+  const handlePayin = async (amount: number, currency: string) => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/new_payin`, {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': MYFYE_BACKEND_KEY,
+          },
+          body: JSON.stringify({
+            blockchain_wallet_id: blindPayEvmWalletId,
+            amount: amount,
+            currency: currency,
+          })
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to create payin', response);
+          toast.error('Failed to connect to bank service');
+          setIsLoading(false);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+        throw new Error(error);
+        toast.error('Failed to connect to bank service');
+        setIsLoading(false);
+    }
+  }
 
   const amount = parseFormattedAmount(formattedAmount);
 
@@ -248,199 +306,238 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
         }}
         title="Deposit"
       >
-        <div
+
+
+
+          {(blindPayReceiverId && blindPayEvmWalletId) ? (
+
+<div
+css={css`
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--size-200);
+  padding-block-end: var(--size-200);
+  height: 100cqh;
+`}
+>
+
+<section>
+<div
+  css={css`
+    display: grid;
+    height: 100%;
+    place-items: center;
+    isolation: isolate;
+    position: relative;
+  `}
+>
+
+{isLoading ? (
+      <Lottie animationData={leafLoading} loop={true} style={{ width: 200, height: 200 }} />
+    ) : (
+      <div
+      css={css`
+        display: flex;
+        align-items: center;
+        gap: var(--size-100);
+      `}
+    >
+  
+      <p
+        css={css`
+          color: var(--clr-text);
+          line-height: var(--line-height-tight);
+          font-size: 2.5rem;
+          font-weight: var(--fw-heading);
+        `}
+      >
+        <span>$</span>
+        {formattedAmount.split("").map((val, i) => (
+          <span key={`value-${i}`}>{val}</span>
+        ))}
+      </p>
+  
+      <div
+        ref={dropdownRef}
+        css={css`
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: var(--size-100);
+          cursor: pointer;
+          padding: var(--size-100);
+          border-radius: var(--border-radius-small);
+          background-color: var(--clr-surface-raised);
+          &:hover {
+            background-color: var(--clr-surface-hover);
+          }
+        `}
+        onClick={handleDropdownToggle}
+      >
+        <img
+          src={getCurrencyFlag(selectedCurrency)}
+          alt={selectedCurrency}
           css={css`
-            display: grid;
-            grid-template-rows: 1fr auto;
-            gap: var(--size-200);
-            padding-block-end: var(--size-200);
-            height: 100cqh;
+            width: 24px;
+            height: auto;
           `}
+        />
+        <span>{selectedCurrency}</span>
+        {isDropdownOpen ? (
+          <CaretUp size={24} />
+        ) : (
+          <CaretDown size={24} />
+        )}
+      </div>
+    </div>
+      
+    )}
+
+</div>
+</section>
+<div
+css={css`
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: var(--size-200);
+`}
+>
+<section
+  css={css`
+    padding-inline: var(--size-200);
+    margin-inline: auto;
+  `}
+>
+  <AmountSelectorGroup
+    label="Select preset amount"
+    onChange={handleSelectAmountChange}
+    css={css`
+      width: 100%;
+    `}
+  >
+    <AmountSelector value="500">500</AmountSelector>
+    <AmountSelector value="1000">1,000</AmountSelector>
+    <AmountSelector value="5000">5,000</AmountSelector>
+    <AmountSelector value="10000">10,000</AmountSelector>
+  </AmountSelectorGroup>
+</section>
+<section
+  css={css`
+    padding-inline: var(--size-250);
+  `}
+>
+  <div
+    css={css`
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background-color: var(--clr-surface-raised);
+      border-radius: var(--border-radius-medium);
+      overflow: hidden;
+    `}
+  >
+    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "", "delete"].map((num) => (
+      <button
+        key={num}
+        onClick={() => handleAmountChange(num)}
+        css={css`
+          display: grid;
+          place-items: center;
+          user-select: none;
+          width: 100%;
+          height: 3rem;
+          line-height: var(--line-height-tight);
+          font-weight: var(--fw-heading);
+          color: var(--clr-text);
+          font-family: var(--font-family);
+          font-size: 20px;
+          background-color: var(--clr-surface-raised);
+          border: none;
+          border-radius: 0;
+          position: relative;
+
+          &:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: var(--clr-border);
+          }
+
+          &:nth-child(3n)::after {
+            display: none;
+          }
+
+          &:not(:nth-last-child(-n + 3))::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 1px;
+            background-color: var(--clr-border);
+          }
+        `}
+        type="button"
+      >
+        <motion.span
+          animate={{
+            scale: 1,
+          }}
         >
-          <section>
-            <div
-              css={css`
-                display: grid;
-                height: 100%;
-                place-items: center;
-                isolation: isolate;
-                position: relative;
-              `}
-            >
-              <div
-                css={css`
-                  display: flex;
-                  align-items: center;
-                  gap: var(--size-100);
-                `}
-              >
-                <p
-                  css={css`
-                    color: var(--clr-text);
-                    line-height: var(--line-height-tight);
-                    font-size: 2.5rem;
-                    font-weight: var(--fw-heading);
-                  `}
-                >
-                  <span>$</span>
-                  {formattedAmount.split("").map((val, i) => (
-                    <span key={`value-${i}`}>{val}</span>
-                  ))}
-                </p>
+          {num === "delete" ? (
+            <Backspace size={20} weight="bold" />
+          ) : (
+            <span>{num}</span>
+          )}
+        </motion.span>
+      </button>
+    ))}
+  </div>
+</section>
 
-                <div
-                  ref={dropdownRef}
-                  css={css`
-                    position: relative;
-                    display: flex;
-                    align-items: center;
-                    gap: var(--size-100);
-                    cursor: pointer;
-                    padding: var(--size-100);
-                    border-radius: var(--border-radius-small);
-                    background-color: var(--clr-surface-raised);
-                    &:hover {
-                      background-color: var(--clr-surface-hover);
-                    }
-                  `}
-                  onClick={handleDropdownToggle}
-                >
-                  <img
-                    src={getCurrencyFlag(selectedToken)}
-                    alt={selectedToken}
-                    css={css`
-                      width: 24px;
-                      height: auto;
-                    `}
-                  />
-                  <span>{selectedToken}</span>
-                  {isDropdownOpen ? (
-                    <CaretUp size={24} />
-                  ) : (
-                    <CaretDown size={24} />
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-          <div
-            css={css`
-              display: grid;
-              grid-template-rows: auto auto auto;
-              gap: var(--size-200);
-            `}
-          >
-            <section
-              css={css`
-                padding-inline: var(--size-200);
-                margin-inline: auto;
-              `}
-            >
-              <AmountSelectorGroup
-                label="Select preset amount"
-                onChange={handleSelectAmountChange}
-                css={css`
-                  width: 100%;
-                `}
-              >
-                <AmountSelector value="500">500</AmountSelector>
-                <AmountSelector value="1000">1,000</AmountSelector>
-                <AmountSelector value="5000">5,000</AmountSelector>
-                <AmountSelector value="10000">10,000</AmountSelector>
-              </AmountSelectorGroup>
-            </section>
-            <section
-              css={css`
-                padding-inline: var(--size-250);
-              `}
-            >
-              <div
-                css={css`
-                  display: grid;
-                  grid-template-columns: repeat(3, 1fr);
-                  background-color: var(--clr-surface-raised);
-                  border-radius: var(--border-radius-medium);
-                  overflow: hidden;
-                `}
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "", "delete"].map((num) => (
-                  <button
-                    key={num}
-                    onClick={() => handleAmountChange(num)}
-                    css={css`
-                      display: grid;
-                      place-items: center;
-                      user-select: none;
-                      width: 100%;
-                      height: 3rem;
-                      line-height: var(--line-height-tight);
-                      font-weight: var(--fw-heading);
-                      color: var(--clr-text);
-                      font-family: var(--font-family);
-                      font-size: 20px;
-                      background-color: var(--clr-surface-raised);
-                      border: none;
-                      border-radius: 0;
-                      position: relative;
+<section
+  css={css`
+    padding-inline: var(--size-200);
+  `}
+>
+  <Button
+    expand
+    variant="primary"
+    onPress={handleNextButtonPress}
+    disabled={isSendDisabled || isLoading}
+    css={css`
+      opacity: ${isSendDisabled || isLoading ? 0.5 : 1};
+    `}
+  >
+    Next
+  </Button>
+</section>
+</div>
+</div>
 
-                      &:not(:last-child)::after {
-                        content: "";
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                        bottom: 0;
-                        width: 1px;
-                        background-color: var(--clr-border);
-                      }
+          ) : (
+<div
+css={css`
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--size-200);
+  padding-block-end: var(--size-200);
+  height: 100cqh;
+`}
+>
+<section>
+<div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+  <p style={{textAlign: "center"}}>Error verifying your account. Please contact support: gavin@myfye.com</p>
+</div>
+</section>
+</div>
 
-                      &:nth-child(3n)::after {
-                        display: none;
-                      }
 
-                      &:not(:nth-last-child(-n + 3))::before {
-                        content: "";
-                        position: absolute;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        height: 1px;
-                        background-color: var(--clr-border);
-                      }
-                    `}
-                    type="button"
-                  >
-                    <motion.span
-                      animate={{
-                        scale: 1,
-                      }}
-                    >
-                      {num === "delete" ? (
-                        <Backspace size={20} weight="bold" />
-                      ) : (
-                        <span>{num}</span>
-                      )}
-                    </motion.span>
-                  </button>
-                ))}
-              </div>
-            </section>
+          )}
 
-            <section
-              css={css`
-                padding-inline: var(--size-200);
-              `}
-            >
-              <Button
-                expand
-                variant="primary"
-                onPress={handleSend}
-                disabled={isSendDisabled}
-              >
-                Next
-              </Button>
-            </section>
-          </div>
-        </div>
+
       </Overlay>
 
       <DepositInstructionsOverlay
@@ -450,12 +547,17 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
             setShowDepositInstructionsOverlay(false);
           }
         }}
-        onBack={() => setShowDepositInstructionsOverlay(false)}
-        selectedToken={selectedToken}
-        amount={formattedAmount}
+        onBack={() => {
+          setShowDepositInstructionsOverlay(false);
+          setIsLoading(false);
+        }}
+        currency={selectedCurrency}
+        amount={amount}
+        payin={payin}
         onCloseAll={() => {
           setShowDepositInstructionsOverlay(false);
           onOpenChange(false);
+          setIsLoading(false);
         }}
       />
       {isDropdownOpen &&
@@ -471,7 +573,7 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
               z-index: 1000000;
             `}
           >
-            {["MXN", "USD", "BRL"].map((currency) => (
+            {["MXN", "BRL"].map((currency) => (
               <div
                 key={currency}
                 css={css`

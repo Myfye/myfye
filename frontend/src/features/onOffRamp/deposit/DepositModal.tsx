@@ -11,6 +11,7 @@ import { setDepositModalOpen } from "@/redux/modalReducers";
 // import toast from "react-hot-toast/headless";
 import OnChainDepositOverlay from "./onChain/OnChainDepositContent";
 import OffChainDepositOverlay from "./offChain/DepositOverlay";
+import KYCOverlay from "@/features/compliance/kycOverlay";
 
 const DepositModal = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,9 @@ const DepositModal = () => {
 
   const [onChainDepositOpen, setOnChainDepositOpen] = useState(false);
   const [offChainDepositOpen, setOffChainDepositOpen] = useState(false);
+  const [showKYCOverlay, setShowKYCOverlay] = useState(false);
+
+  const currentUserKYCVerified = useSelector((state: RootState) => state.userWalletData.currentUserKYCVerified);
 
   const resetModal = () => {
     setOnChainDepositOpen(false);
@@ -34,7 +38,12 @@ const DepositModal = () => {
   };
 
   const openOffChainDeposit = () => {
-    setOffChainDepositOpen(true);
+    console.log("currentUserKYCVerified", currentUserKYCVerified);
+    if (!currentUserKYCVerified) {
+      setShowKYCOverlay(true);
+    } else {
+      setOffChainDepositOpen(true);
+    }
   };
 
   return (
@@ -93,6 +102,13 @@ const DepositModal = () => {
         <OffChainDepositOverlay
           isOpen={offChainDepositOpen}
           onOpenChange={setOffChainDepositOpen}
+        />
+      )}
+
+      {showKYCOverlay && (
+        <KYCOverlay
+          isOpen={showKYCOverlay}
+          onBack={() => setShowKYCOverlay(false)}
         />
       )}
     </>

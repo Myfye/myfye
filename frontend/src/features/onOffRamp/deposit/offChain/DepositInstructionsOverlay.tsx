@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useRef } from "react";
+import { useState, createContext, useContext, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
 import usdcSol from "@/assets/usdcSol.png";
 import eurcSol from "@/assets/eurcSol.png";
@@ -25,13 +25,17 @@ const DepositInstructionsOverlay = ({
   isOpen,
   onOpenChange,
   onBack,
-  selectedToken,
+  currency,
   amount,
+  payin,
   onCloseAll,
 }) => {
   const dispatch = useDispatch();
   const [formattedAmount, setFormattedAmount] = useState("0");
-  const [showAddressEntry, setShowAddressEntry] = useState(false);
+  const [clabeAddress, setClabeAddress] = useState("");
+  const [pixAddress, setPixAddress] = useState("");
+  const [achAccountNumber, setAchAccountNumber] = useState("");
+  const [achRoutingNumber, setAchRoutingNumber] = useState("");
   const [copiedField, setCopiedField] = useState(null);
   /* Public keys */
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
@@ -53,17 +57,40 @@ const DepositInstructionsOverlay = ({
   };
 
   const handleAmountCopy = () => {
-    navigator.clipboard.writeText("$21");
+    navigator.clipboard.writeText(amount.toString());
     setCopiedField("amount");
     setTimeout(() => setCopiedField(null), 2000);
-    toast.success("Amount copied to clipboard");
   };
 
   const handleAddressCopy = () => {
-    navigator.clipboard.writeText("21461294612");
-    setCopiedField("address");
-    setTimeout(() => setCopiedField(null), 2000);
+    let addressToCopy = "";
+    if (payin?.currency === "MXN") {
+      addressToCopy = clabeAddress;
+    } else if (payin?.currency === "BRL") {
+      addressToCopy = pixAddress;
+    } else if (payin?.currency === "USD") {
+      addressToCopy = achAccountNumber;
+    }
+    
+    if (addressToCopy) {
+      navigator.clipboard.writeText(addressToCopy);
+      setCopiedField("address");
+      setTimeout(() => setCopiedField(null), 2000);
+    }
   };
+
+  useEffect(() => {
+    if (payin) {
+      if (payin.currency == "MXN") {
+        setClabeAddress(payin.clabe);
+      } else if (payin.currency == "BRL") {
+        setPixAddress(payin.pix_code);
+      } else if (payin.currency == "USD") {
+        setAchAccountNumber(payin.ach_account_number);
+        setAchRoutingNumber(payin.ach_routing_number);
+      }
+    }
+  }, [payin]);
 
   return (
     <Overlay
@@ -73,7 +100,9 @@ const DepositInstructionsOverlay = ({
           onBack();
         }
       }}
-      title="PIX Instructions"
+      title={payin?.currency === "MXN" ? "CLABE Instructions" : 
+             payin?.currency === "BRL" ? "PIX Instructions" :
+             payin?.currency === "USD" ? "ACH Instructions" : "Payment Instructions"}
     >
       <div
         css={css`
@@ -119,7 +148,7 @@ const DepositInstructionsOverlay = ({
                   line-height: var(--line-height-tight);
                 `}
               >
-                <span>$21</span>
+                <span>${amount}</span>
                 <Button
                   iconOnly
                   color="transparent"
@@ -153,12 +182,21 @@ const DepositInstructionsOverlay = ({
                   line-height: var(--line-height-tight);
                 `}
               >
-                <span>21461294612</span>
+                {payin?.currency === "MXN" && (
+                  <span>{clabeAddress || "Loading..."}</span>
+                )}
+                {payin?.currency === "BRL" && (
+                  <span>{pixAddress || "Loading..."}</span>
+                )}
+                {payin?.currency === "USD" && (
+                  <span>{achAccountNumber || "Loading..."}</span>
+                )}
+
                 <Button
                   iconOnly
                   color="transparent"
                   size="small"
-                  icon={copiedField === "amount" ? Check : Copy}
+                  icon={copiedField === "address" ? Check : Copy}
                   onClick={handleAddressCopy}
                 />
               </div>
@@ -172,9 +210,28 @@ const DepositInstructionsOverlay = ({
               text-align: center;
             `}
           >
-            Please go to your bank app to complete the deposit. <br />
-            Enter your Clabe/PIX/ACH/Wire value where necessary.
+            Please go to your bank app to complete the deposit. Send ${amount} to this{" "}
+            {currency === "MXN" ? "CLABE" : 
+             currency === "BRL" ? "PIX" :
+             currency === "USD" ? "ACH" : "payment"} number.
           </p>
+          <section
+            css={css`
+              margin-block-start: var(--size-800);
+              color: var(--clr-text);
+              text-align: center;
+            `}
+          >
+            <p className="caption">
+              {payin?.blindpay_bank_details?.beneficiary?.name}
+            </p>
+            <p className="caption">
+              {payin?.blindpay_bank_details?.beneficiary?.address_line_1}
+            </p>
+            <p className="caption">
+              {payin?.blindpay_bank_details?.beneficiary?.address_line_2}
+            </p>
+          </section>
         </section>
 
         <section

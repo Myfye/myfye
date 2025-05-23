@@ -8,13 +8,16 @@
 // Load environment variables
 require("dotenv").config();
 const axios = require("axios");
+const { 
+  updateBlindPayReceiverId,
+  updateBlindPayEvmWalletId } = require('../userDb');
 
 // Get API key from environment variables
-//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
-//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
+const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
 
-const BLIND_PAY_DEV_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
-const BLIND_PAY_DEV_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+//const BLIND_PAY_DEV_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
+//const BLIND_PAY_DEV_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
 
 async function create_new_on_ramp_path(data) {
   console.log("On-ramp called!");
@@ -23,18 +26,21 @@ async function create_new_on_ramp_path(data) {
     JSON.stringify(data, null, 2)
   );
 
+  
   try {
     console.log("About to create new receiver...");
-    const receiver = await create_new_receiver();
+    const receiver = await create_new_receiver(data);
     // to do save receiver data
+    await updateBlindPayReceiverId(data.user_id, receiver.id);
     console.log(
       "Receiver created successfully:",
       JSON.stringify(receiver, null, 2)
     );
 
     console.log("About to create blockchain wallet...");
-    const blockchain_wallet = await create_blockchain_wallet(receiver.id);
+    const blockchain_wallet = await create_blockchain_wallet(receiver.id, data.userEvmPublicKey);
     // to do: save user's blockchain wallet id
+    await updateBlindPayEvmWalletId(data.user_id, blockchain_wallet.id);
     console.log(
       "Blockchain wallet created successfully:",
       JSON.stringify(blockchain_wallet, null, 2)
@@ -59,40 +65,43 @@ async function create_new_on_ramp_path(data) {
   }
 }
 
-async function create_new_receiver() {
+async function create_new_receiver(data) {
   // to do: pass in the KYC data
   try {
+
+    // Format date_of_birth to ISO 8601 with UTC timezone
+    const formattedDateOfBirth = new Date(data.date_of_birth).toISOString();
+
     console.log("Creating new receiver...");
+    console.log(data);
     const response = await axios.post(
-      `https://api.blindpay.com/v1/instances/${BLIND_PAY_DEV_INSTANCE_ID}/receivers`,
+      `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/receivers`,
       {
         type: "individual",
         kyc_type: "standard",
-        email: "email@example.com",
-        tax_id: "12345678",
-        address_line_1: "8 The Green",
-        address_line_2: "#12345",
-        city: "Dover",
-        state_province_region: "DE",
-        country: "US",
-        postal_code: "02050",
-        ip_address: "127.0.0.1",
-        phone_number: "+1234567890",
-        proof_of_address_doc_type: "UTILITY_BILL",
-        proof_of_address_doc_file:
-          "https://pub-4fabf5dd55154f19a0384b16f2b816d9.r2.dev/v4-460px-Get-Proof-of-Address-Step-3-Version-2.jpg.jpeg",
-        first_name: "John",
-        last_name: "Doe",
-        date_of_birth: "1998-01-01T00:00:00Z",
-        id_doc_country: "US",
-        id_doc_type: "PASSPORT",
-        id_doc_front_file:
-          "https://pub-4fabf5dd55154f19a0384b16f2b816d9.r2.dev/1000_F_365165797_VwQbNaD4yjWwQ6y1ENKh1xS0TXauOQvj.jpg",
+        email: data.email,
+        tax_id: data.tax_id,
+        address_line_1: data.address_line_1, // not required
+        //address_line_2: data.address_line_2, // not required
+        city: data.city,
+        state_province_region: data.state_province_region,
+        country: data.country, // required
+        postal_code: data.postal_code,
+        //ip_address: data.ip_address, // not required
+        //phone_number: data.phone_number, // not required
+        //proof_of_address_doc_type: data.proof_of_address_doc_type, // not required
+        //proof_of_address_doc_file: data.proof_of_address_doc_file, // not required
+        first_name: data.first_name, // not required
+        last_name: data.last_name, // not required
+        date_of_birth: formattedDateOfBirth,
+        id_doc_country: data.id_doc_country,
+        id_doc_type: data.id_doc_type,
+        id_doc_front_file: data.id_doc_front_file,
       },
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${BLIND_PAY_DEV_API_KEY}`,
+          Authorization: `Bearer ${BLIND_PAY_API_KEY}`,
         },
       }
     );
@@ -102,28 +111,28 @@ async function create_new_receiver() {
   } catch (error) {
     console.error(
       "Error in create_new_receiver:",
-      error.response?.data || error.message
+      JSON.stringify(error.response?.data || error.message, null, 2)
     );
     throw error;
   }
 }
 
-async function create_blockchain_wallet(receiverId) {
+async function create_blockchain_wallet(receiverId, userEvmPublicKey) {
   // to do: pass in the user public key
   try {
     console.log("Creating blockchain wallet for receiver:", receiverId);
     const response = await axios.post(
-      `https://api.blindpay.com/v1/instances/${BLIND_PAY_DEV_INSTANCE_ID}/receivers/${receiverId}/blockchain-wallets`,
+      `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/receivers/${receiverId}/blockchain-wallets`,
       {
         name: "Wallet Display Name",
         network: "sepolia",
-        address: "0xDD6a3aD0949396e57C7738ba8FC1A46A5a1C372C",
+        address: userEvmPublicKey,
         is_account_abstraction: true,
       },
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${BLIND_PAY_DEV_API_KEY}`,
+          Authorization: `Bearer ${BLIND_PAY_API_KEY}`,
         },
       }
     );

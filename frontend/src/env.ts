@@ -4,3 +4,4 @@ export const MYFYE_BACKEND_KEY = import.meta.env.VITE_REACT_APP_MYFYE_BACKEND_KE
 export const REACT_APP_PRIVY_APP_SECRET = import.meta.env
   .VITE_REACT_APP_PRIVY_APP_SECRET;
 export const SERVER_PUBLIC_KEY = import.meta.env.VITE_REACT_APP_SERVER_SOLANA_PUBLIC_KEY;
+export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY;

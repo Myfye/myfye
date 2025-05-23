@@ -53,6 +53,8 @@ export interface UserWalletDataState {
   mfaStatus: string;
   privySolanaWalletReady: boolean;
   users: User[];
+  blindPayEvmWalletId: string;
+  blindPayReceiverId: string;
 }
 
 const initialUserWalletData: UserWalletDataState = {
@@ -69,7 +71,7 @@ const initialUserWalletData: UserWalletDataState = {
   usdcEthBalance: 0,
   usdtEthBalance: 0,
   busdEthBalance: 0,
-  currentUserKYCVerified: true, // true for Development, false for Deployment
+  currentUserKYCVerified: false, // true for Development, false for Deployment
   currentUserFirstName: "",
   currentUserLastName: "",
   currentUserEmail: "",
@@ -279,9 +281,15 @@ export const userWalletDataSlice = createSlice({
     setPrivySolanaWalletReady: (state, action: PayloadAction<boolean>) => {
       state.privySolanaWalletReady = action.payload;
     },
-    setUsers: (state, action: PayloadAction<User[]>) => {
-      state.users = action.payload;
-    },
+      setUsers: (state, action: PayloadAction<User[]>) => {
+        state.users = action.payload;
+      },
+      setBlindPayEvmWalletId: (state, action: PayloadAction<string>) => {
+        state.blindPayEvmWalletId = action.payload;
+      },
+      setBlindPayReceiverId: (state, action: PayloadAction<string>) => {
+        state.blindPayReceiverId = action.payload;
+      },
   },
 });
 
@@ -338,6 +346,8 @@ export const {
   setMFAStatus,
   setPrivySolanaWalletReady,
   setUsers,
+  setBlindPayEvmWalletId,
+  setBlindPayReceiverId,
 } = userWalletDataSlice.actions;
 
 export default userWalletDataSlice.reducer;

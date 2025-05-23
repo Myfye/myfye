@@ -102,6 +102,23 @@ CREATE TABLE IF NOT EXISTS user_contacts (
   UNIQUE(user_id, contact_id)
 );
 
+CREATE TABLE IF NOT EXISTS user_kyc (
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  user_id TEXT NOT NULL REFERENCES users(uid),
+  address_line_1 TEXT,
+  city TEXT,
+  state_province_region TEXT,
+  postal_code TEXT,
+  country TEXT,
+  date_of_birth TEXT,
+  first_name TEXT,
+  last_name TEXT,
+  tax_id TEXT,
+  id_doc_type TEXT,
+  id_doc_front_file TEXT,
+  id_doc_country TEXT
+);
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE INDEX ON users USING gin (first_name gin_trgm_ops);
 CREATE INDEX ON users USING gin (last_name gin_trgm_ops);
