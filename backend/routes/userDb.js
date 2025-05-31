@@ -166,6 +166,69 @@ async function getAllUsers() {
   }
 }
 
+async function updateBlindPayReceiverId(uid, blindPayReceiverId) {
+    console.log("\n=== Update Blind Pay Receiver ID Request Received ===");
+    const query = `
+        UPDATE users 
+        SET blind_pay_receiver_id = $2
+        WHERE uid = $1
+        RETURNING *
+    `;
+    try {
+        const result = await pool.query(query, [uid, blindPayReceiverId]);
+        console.log('Update result:', result.rows);
+        if (result.rows.length === 0) {
+            throw new Error('User not found');
+        }
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error updating Blind Pay Receiver ID:', error);
+        throw error;
+    }
+}
+
+async function updateBlindPayEvmWalletId(uid, blindPayEvmWalletId) {
+    console.log("\n=== Update Blind Pay EVM Wallet ID Request Received ===");
+    const query = `
+        UPDATE users 
+        SET blind_pay_evm_wallet_id = $2
+        WHERE uid = $1
+        RETURNING *
+    `;
+    try {
+        const result = await pool.query(query, [uid, blindPayEvmWalletId]);
+        console.log('Update result:', result.rows);
+        if (result.rows.length === 0) {
+            throw new Error('User not found');
+        }
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error updating Blind Pay EVM Wallet ID:', error);
+        throw error;
+    }
+}
+
+async function updateKycVerified(uid, kycVerified) {
+    console.log("\n=== Update KYC Verification Status Request Received ===");
+    const query = `
+        UPDATE users 
+        SET kyc_verified = $2
+        WHERE uid = $1
+        RETURNING *
+    `;
+    try {
+        const result = await pool.query(query, [uid, kycVerified]);
+        console.log('Update result:', result.rows);
+        if (result.rows.length === 0) {
+            throw new Error('User not found');
+        }
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error updating KYC verification status:', error);
+        throw error;
+    }
+}
+
 module.exports = {
   createUser,
   getUserByEmail,
@@ -174,4 +237,7 @@ module.exports = {
   updateSolanaPubKey,
   getUserByPrivyId,
   getAllUsers,
+  updateBlindPayReceiverId,
+  updateBlindPayEvmWalletId,
+  updateKycVerified,
 };

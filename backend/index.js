@@ -5,8 +5,7 @@ const geoip = require('geoip-lite');
 const rateLimit = require('express-rate-limit');
 const app = express();
 const { create_new_on_ramp_path } = require('./routes/onOffRamp/newBlindPayReceiver');
-const { get_payin_quote } = require('./routes/onOffRamp/getPayinQuote');
-const { create_new_payin } = require('./routes/createNewPayin');
+const { create_new_payin, get_payin_quote } = require('./routes/onOffRamp/payIn');
 const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
 const { ensureTokenAccount } = require('./routes/sol_transaction/tokenAccount');
 const { signTransaction, signVersionedTransaction } = require('./routes/sol_transaction/solanaTransaction');
@@ -38,6 +37,7 @@ const {
     getRecentlyUsedAddresses 
 } = require('./routes/sol_transaction/recentlyUsedAddresses');
 const { emailService } = require('./routes/emailService');
+const { createUserKYC, getAllKYCUsers } = require('./routes/user_kyc');
 
 app.set('trust proxy', true);
 
@@ -159,6 +159,26 @@ app.post('/create_user', sensitiveLimiter, async (req, res) => {
     } catch (error) {
         console.error("Error in /create_user endpoint:", error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/create_user_kyc', sensitiveLimiter, async (req, res) => {
+    console.log("\n=== Create User KYC Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const kycData = req.body;
+        const result = await createUserKYC(kycData);
+        console.log("KYC creation result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /create_user_kyc endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to create user KYC",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
@@ -656,6 +676,23 @@ app.post("/send_email", async (req, res) => {
     }
 });
 
+app.post("/get_all_kyc_users", generalLimiter, async (req, res) => {
+    console.log("\n=== Get All KYC Users Request Received ===");
+
+    try {
+        const result = await getAllKYCUsers();
+        console.log(`Retrieved ${result.length} KYC users`);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_all_kyc_users endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to fetch KYC users",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
 
 /*
 app.listen(PORT, () => {

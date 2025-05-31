@@ -32,6 +32,26 @@ interface User {
   last_login_date: string;
 }
 
+interface KYCUser {
+  user_id: string;
+  email: string;
+  phone_number: string;
+  address_line_1: string;
+  city: string;
+  state_province_region: string;
+  postal_code: string;
+  country: string;
+  date_of_birth: string;
+  first_name: string;
+  last_name: string;
+  tax_id: string;
+  id_doc_type: string;
+  id_doc_front_file: string;
+  id_doc_country: string;
+  kyc_verified: boolean;
+  creation_date: string;
+}
+
 interface SwapTransaction {
   id: string;
   user_id: string;
@@ -69,6 +89,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [errorLogs, setErrorLogs] = useState<ErrorLog[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [kycUsers, setKycUsers] = useState<KYCUser[]>([]);
   const [swapTransactions, setSwapTransactions] = useState<SwapTransaction[]>(
     []
   );
@@ -77,7 +98,7 @@ function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [expandedLogs, setExpandedLogs] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<
-    "errors" | "users" | "transactions" | "pay"
+    "errors" | "users" | "transactions" | "pay" | "kyc"
   >("errors");
 
   useEffect(() => {
@@ -85,6 +106,7 @@ function Dashboard() {
     fetchUsers();
     fetchSwapTransactions();
     fetchPayTransactions();
+    fetchKYCUsers();
   }, []);
 
   const fetchUsers = async () => {
@@ -175,6 +197,27 @@ function Dashboard() {
 
       const data = await response.json();
       setPayTransactions(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    }
+  };
+
+  const fetchKYCUsers = async () => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/get_all_kyc_users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch KYC users");
+      }
+
+      const data = await response.json();
+      setKycUsers(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     }
@@ -281,6 +324,22 @@ function Dashboard() {
           Users
         </button>
         <button
+          onClick={() => setActiveTab("kyc")}
+          className={`px-4 py-2 rounded ${
+            activeTab === "kyc" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          style={{
+            backgroundColor: activeTab === "kyc" ? "#ffffff" : "#000000",
+            padding: "10px",
+            borderRadius: "5px",
+            color: activeTab === "kyc" ? "black" : "white",
+            fontWeight: "bold",
+            border: "1px solid #ffffff",
+          }}
+        >
+          KYC Users
+        </button>
+        <button
           onClick={() => setActiveTab("transactions")}
           className={`px-4 py-2 rounded ${
             activeTab === "transactions"
@@ -317,7 +376,184 @@ function Dashboard() {
         </button>
       </div>
 
-      {activeTab === "errors" ? (
+      {activeTab === "kyc" ? (
+        <div>
+          <h1
+            style={{
+              fontSize: "24px",
+              fontWeight: "bold",
+              padding: "20px",
+              color: "white",
+            }}
+          >
+            KYC Users Dashboard
+          </h1>
+          <div className="space-y-6">
+            {kycUsers.map((user) => (
+              <div
+                key={user.user_id}
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  margin: "10px",
+                  color: "white",
+                }}
+              >
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        User ID:{" "}
+                      </span>
+                      {user.user_id}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Email:{" "}
+                      </span>
+                      {user.email}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Name:{" "}
+                      </span>
+                      {user.first_name} {user.last_name}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Phone:{" "}
+                      </span>
+                      {user.phone_number || "N/A"}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Tax ID:{" "}
+                      </span>
+                      {user.tax_id}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Date of Birth:{" "}
+                      </span>
+                      {new Date(user.date_of_birth).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Address:{" "}
+                      </span>
+                      {user.address_line_1}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        City:{" "}
+                      </span>
+                      {user.city}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        State/Province:{" "}
+                      </span>
+                      {user.state_province_region}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Postal Code:{" "}
+                      </span>
+                      {user.postal_code}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Country:{" "}
+                      </span>
+                      {user.country}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        ID Document Type:{" "}
+                      </span>
+                      {user.id_doc_type}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        ID Document Country:{" "}
+                      </span>
+                      {user.id_doc_country}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        KYC Verified:{" "}
+                      </span>
+                      {user.kyc_verified ? "Yes" : "No"}
+                    </div>
+                    <div className="text-sm">
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
+                        Created:{" "}
+                      </span>
+                      {new Date(user.creation_date).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                        hour12: true,
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : activeTab === "errors" ? (
         <div>
           <h1
             style={{

@@ -12,6 +12,8 @@ import {
   setCurrentUserID,
   setPrivyUserId,
   setUsers,
+  setBlindPayEvmWalletId,
+  setBlindPayReceiverId,
 } from "../../redux/userWalletData.tsx";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import { PublicKey, Connection } from "@solana/web3.js";
@@ -185,6 +187,8 @@ const HandleUserLogIn = async (
         dispatch(setCurrentUserID(dbUser.uid));
         console.log("dbUser.KYCverified", dbUser.kyc_verified);
         dispatch(setCurrentUserKYCVerified(dbUser.kyc_verified));
+        dispatch(setBlindPayEvmWalletId(dbUser.blind_pay_evm_wallet_id));
+        dispatch(setBlindPayReceiverId(dbUser.blind_pay_receiver_id));
       }
     } catch (error) {
       console.error("Error handling user:", error);
