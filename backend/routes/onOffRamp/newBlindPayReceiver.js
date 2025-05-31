@@ -38,6 +38,7 @@ async function create_new_on_ramp_path(data) {
     );
 
     console.log("About to create blockchain wallet...");
+    console.log(" ", "evmPublicKey", data.userEvmPublicKey, "receiver.id", receiver.id);
     const blockchain_wallet = await create_blockchain_wallet(receiver.id, data.userEvmPublicKey);
     // to do: save user's blockchain wallet id
     await updateBlindPayEvmWalletId(data.user_id, blockchain_wallet.id);
@@ -125,7 +126,7 @@ async function create_blockchain_wallet(receiverId, userEvmPublicKey) {
       `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/receivers/${receiverId}/blockchain-wallets`,
       {
         name: "Wallet Display Name",
-        network: "sepolia",
+        network: "base", // sepolia, base
         address: userEvmPublicKey,
         is_account_abstraction: true,
       },

@@ -37,7 +37,7 @@ const {
     getRecentlyUsedAddresses 
 } = require('./routes/sol_transaction/recentlyUsedAddresses');
 const { emailService } = require('./routes/emailService');
-const { createUserKYC } = require('./routes/user_kyc');
+const { createUserKYC, getAllKYCUsers } = require('./routes/user_kyc');
 
 app.set('trust proxy', true);
 
@@ -676,6 +676,23 @@ app.post("/send_email", async (req, res) => {
     }
 });
 
+app.post("/get_all_kyc_users", generalLimiter, async (req, res) => {
+    console.log("\n=== Get All KYC Users Request Received ===");
+
+    try {
+        const result = await getAllKYCUsers();
+        console.log(`Retrieved ${result.length} KYC users`);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_all_kyc_users endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to fetch KYC users",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
 
 /*
 app.listen(PORT, () => {

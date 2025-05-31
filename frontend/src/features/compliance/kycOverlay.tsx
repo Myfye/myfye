@@ -173,7 +173,7 @@ const KYCOverlay = ({
 
   const handleKYCData = async (downloadURL) => {
     try {
-      const response = await fetch(`${MYFYE_BACKEND}/get_payin_quote`, {
+      const response = await fetch(`${MYFYE_BACKEND}/create_user_kyc`, {
           method: 'POST',
           mode: 'cors',
           credentials: 'include',
@@ -417,7 +417,7 @@ const KYCOverlay = ({
             display: flex;
             justify-content: center;
             width: 100%;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             margin-top: -1rem;
           `}>
             <img src={Page3} alt="Progress" css={css`
@@ -426,7 +426,7 @@ const KYCOverlay = ({
             `} />
           </div>
           <div>
-            <h1 style={{color: "var(--clr-neutral-400"}}>ID Document Country: <span style={{ fontWeight: 'bold' }}>{address.country}</span></h1>
+            <h1 style={{color: "var(--clr-neutral-400", marginBottom: "0.5rem"}}>ID Document Country: <span style={{ fontWeight: 'bold' }}>{address.country}</span></h1>
           </div>
 
           <div
@@ -434,15 +434,15 @@ const KYCOverlay = ({
               flex: 1;
               display: flex;
               flex-direction: column;
-              gap: 1.5rem;
-              margin: 1rem 0;
+              gap: 0.75rem;
+              margin: 0.5rem 0;
             `}
           >
             {/* ID Document Type Dropdown */}
             <div css={css`
               display: flex;
               flex-direction: column;
-              gap: 0.5rem;
+              gap: 0.25rem;
             `}>
               <label css={css`
                 color: var(--clr-text);
@@ -486,7 +486,7 @@ const KYCOverlay = ({
             <div css={css`
               display: flex;
               flex-direction: column;
-              gap: 0.5rem;
+              gap: 0.25rem;
             `}>
               <label css={css`
                 font-size: 0.9rem;
@@ -568,7 +568,7 @@ const KYCOverlay = ({
 
           <div
             css={css`
-              padding: 1rem 0;
+              padding: 0.5rem 0;
               margin-top: auto;
             `}
           >
@@ -612,7 +612,7 @@ const KYCOverlay = ({
             display: flex;
             justify-content: center;
             width: 100%;
-            margin-bottom: 1rem;
+            margin-bottom: 0.2rem;
             margin-top: -1rem;
           `}>
             <img src={Page2} alt="Progress" css={css`
@@ -625,7 +625,7 @@ const KYCOverlay = ({
               flex: 1;
               display: flex;
               flex-direction: column;
-              gap: 1rem;
+              gap: 0.1rem;
               margin: 1rem 0;
             `}
           >
@@ -633,7 +633,7 @@ const KYCOverlay = ({
             <div css={css`
               display: flex;
               flex-direction: column;
-              gap: 0.5rem;
+              gap: 0.1rem;
             `}>
               <label css={css`
                 font-size: 0.9rem;
@@ -667,7 +667,7 @@ const KYCOverlay = ({
             <div css={css`
               display: flex;
               flex-direction: column;
-              gap: 0.5rem;
+              gap: 0.2rem;
             `}>
               <label css={css`
                 font-size: 0.9rem;
@@ -702,7 +702,7 @@ const KYCOverlay = ({
             <div css={css`
               display: flex;
               flex-direction: column;
-              gap: 0.5rem;
+              gap: 0.2rem;
             `}>
               <label css={css`
                 font-size: 0.9rem;
@@ -737,7 +737,7 @@ const KYCOverlay = ({
             <div css={css`
               display: flex;
               flex-direction: column;
-              gap: 0.5rem;
+              gap: 0.2rem;
             `}>
               <label css={css`
                 font-size: 0.9rem;
@@ -980,18 +980,18 @@ const KYCOverlay = ({
           display: grid;
           grid-template-rows: 1fr auto;
           height: 100cqh;
-          padding-block-end: var(--size-200);
+          padding-block-end: var(--size-100);
         `}
       >
         <section
           css={css`
-            margin-block-start: var(--size-400);
+            margin-block-start: var(--size-100);
             padding-inline: var(--size-250);
           `}
         >
           <div
             css={css`
-              padding: var(--size-150);
+              padding: var(--size-100);
               border-radius: var(--border-radius-medium);
             `}
           >
@@ -1020,9 +1020,9 @@ const KYCOverlay = ({
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 2.5rem;
-                margin-top: 2.5rem;
-                margin-bottom: 2.5rem;
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+                margin-bottom: 1.5rem;
               `}
             >
               {/* Stepper Start */}
@@ -1119,12 +1119,12 @@ const KYCOverlay = ({
                 <div>
                   <div css={css`font-weight: 700; color: var(--clr-text); font-size: 1rem;`}>Verify your identity</div>
                   <div css={css`color: var(--clr-text); font-size: 1rem;`}>Upload and verify your identity documents</div>
-                  <div css={css`color: var(--clr-primary); font-size: 1rem; font-weight: 500; margin-top: 0.2rem;`}>Approx. 5 min</div>
+                  <div css={css`color: var(--clr-primary); font-size: 1rem; font-weight: 500; margin-top: 0rem;`}>Approx. 5 min</div>
                 </div>
               </div>
               {/* Stepper End */}
               {/* Checkbox Row */}
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: 24, marginBottom: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: 12, marginBottom: 4 }}>
                 <div
                   onClick={() => setIsChecked((prev) => !prev)}
                   style={{
@@ -1166,6 +1166,7 @@ const KYCOverlay = ({
             margin-block-start: auto;
             padding-inline: var(--size-250);
             padding-block-end: var(--size-250);
+            margin-top: 0;
           `}
         >
           <Button 

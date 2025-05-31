@@ -1,6 +1,7 @@
 const pool = require('../db');
 const { create_new_on_ramp_path } = require('../routes/onOffRamp/newBlindPayReceiver');
 const { updateKycVerified } = require('./userDb');
+
 async function createUserKYC(data) {
     const {
         user_id,
@@ -74,6 +75,24 @@ async function createUserKYC(data) {
     }
 }
 
+async function getAllKYCUsers() {
+    const query = `
+        SELECT uk.*, u.email, u.phone_number, u.kyc_verified, u.creation_date
+        FROM user_kyc uk
+        JOIN users u ON uk.user_id = u.uid
+        ORDER BY u.creation_date DESC;
+    `;
+
+    try {
+        const result = await pool.query(query);
+        return result.rows;
+    } catch (error) {
+        console.error('Error getting all KYC users:', error);
+        throw error;
+    }
+}
+
 module.exports = {
-    createUserKYC
+    createUserKYC,
+    getAllKYCUsers
 };
