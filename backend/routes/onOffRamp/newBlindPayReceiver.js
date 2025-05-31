@@ -31,6 +31,7 @@ async function create_new_on_ramp_path(data) {
     console.log("About to create new receiver...");
     const receiver = await create_new_receiver(data);
     // to do save receiver data
+    console.log("Receiver result", receiver);
     await updateBlindPayReceiverId(data.user_id, receiver.id);
     console.log(
       "Receiver created successfully:",
@@ -41,6 +42,7 @@ async function create_new_on_ramp_path(data) {
     console.log(" ", "evmPublicKey", data.userEvmPublicKey, "receiver.id", receiver.id);
     const blockchain_wallet = await create_blockchain_wallet(receiver.id, data.userEvmPublicKey);
     // to do: save user's blockchain wallet id
+    console.log("Blockchain wallet result", blockchain_wallet);
     await updateBlindPayEvmWalletId(data.user_id, blockchain_wallet.id);
     console.log(
       "Blockchain wallet created successfully:",
