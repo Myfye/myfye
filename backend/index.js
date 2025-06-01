@@ -4,7 +4,7 @@ const cors = require("cors");
 const geoip = require('geoip-lite');
 const rateLimit = require('express-rate-limit');
 const app = express();
-const { create_new_on_ramp_path } = require('./routes/onOffRamp/newBlindPayReceiver');
+const { create_new_on_ramp_path, get_all_receivers, delete_blockchain_wallet, delete_receiver, delete_blockchain_wallet_and_receiver } = require('./routes/onOffRamp/receiver');
 const { create_new_payin, get_payin_quote } = require('./routes/onOffRamp/payIn');
 const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
 const { ensureTokenAccount } = require('./routes/sol_transaction/tokenAccount');
@@ -692,6 +692,100 @@ app.post("/get_all_kyc_users", generalLimiter, async (req, res) => {
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }
+});
+
+app.get("/get_all_receivers", generalLimiter, async (req, res) => {
+  console.log("\n=== Get All Receivers Request Received ===");
+
+  try {
+    const result = await get_all_receivers();
+    console.log(`Retrieved ${result.length} receivers with their blockchain wallets`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_all_receivers endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to fetch receivers",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+/*
+app.post("/delete_blockchain_wallet", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Delete Blockchain Wallet Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { receiverId, walletId } = req.body;
+    if (!receiverId || !walletId) {
+      return res.status(400).json({ 
+        error: 'Invalid request. receiverId and walletId are required.' 
+      });
+    }
+    const result = await delete_blockchain_wallet(receiverId, walletId);
+    console.log("Blockchain wallet deletion result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_blockchain_wallet endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to delete blockchain wallet",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/delete_receiver", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Delete Receiver Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { receiverId } = req.body;
+    if (!receiverId) {
+      return res.status(400).json({ 
+        error: 'Invalid request. receiverId is required.' 
+      });
+    }
+    const result = await delete_receiver(receiverId);
+    console.log("Receiver deletion result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_receiver endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to delete receiver",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+*/
+
+app.post("/delete_blockchain_wallet_and_receiver", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Delete Blockchain Wallet and Receiver Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { receiverId, walletId } = req.body;
+    if (!receiverId || !walletId) {
+      return res.status(400).json({ 
+        error: 'Invalid request. receiverId and walletId are required.' 
+      });
+    }
+    const result = await delete_blockchain_wallet_and_receiver(receiverId, walletId);
+    console.log("Deletion result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_blockchain_wallet_and_receiver endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to delete blockchain wallet and receiver",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
 });
 
 /*

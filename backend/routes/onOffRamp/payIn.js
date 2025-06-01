@@ -83,7 +83,7 @@ async function get_payin_quote(data) {
     return response.data;
   } catch (error) {
     console.error(
-      "Error in create_new_receiver:",
+      "Error in create pay in:",
       error.response?.data || error.message
     );
     throw error;

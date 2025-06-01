@@ -1,5 +1,5 @@
 const pool = require('../db');
-const { create_new_on_ramp_path } = require('../routes/onOffRamp/newBlindPayReceiver');
+const { create_new_on_ramp_path } = require('../routes/onOffRamp/receiver');
 const { updateKycVerified } = require('./userDb');
 
 async function createUserKYC(data) {

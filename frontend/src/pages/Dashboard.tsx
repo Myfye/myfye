@@ -85,20 +85,55 @@ interface PayTransaction {
   transaction_status: string;
 }
 
+interface BlockchainWallet {
+  id: string;
+  name: string;
+  network: string;
+  address: string;
+  is_account_abstraction: boolean;
+}
+
+interface KYCWarning {
+  code: string;
+  message: string;
+  resolution_status: string;
+  warning_id: string;
+}
+
+interface Receiver {
+  id: string;
+  type: string;
+  kyc_type: string;
+  kyc_status: string;
+  kyc_warnings: KYCWarning[] | null;
+  email: string;
+  tax_id: string;
+  address_line_1: string;
+  city: string;
+  state_province_region: string;
+  country: string;
+  postal_code: string;
+  first_name: string;
+  last_name: string;
+  date_of_birth: string;
+  id_doc_country: string;
+  id_doc_type: string;
+  blockchain_wallets: BlockchainWallet[];
+}
+
 function Dashboard() {
   const navigate = useNavigate();
   const [errorLogs, setErrorLogs] = useState<ErrorLog[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [kycUsers, setKycUsers] = useState<KYCUser[]>([]);
-  const [swapTransactions, setSwapTransactions] = useState<SwapTransaction[]>(
-    []
-  );
+  const [receivers, setReceivers] = useState<Receiver[]>([]);
+  const [swapTransactions, setSwapTransactions] = useState<SwapTransaction[]>([]);
   const [payTransactions, setPayTransactions] = useState<PayTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedLogs, setExpandedLogs] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<
-    "errors" | "users" | "transactions" | "pay" | "kyc"
+    "errors" | "users" | "transactions" | "pay" | "kyc" | "receivers"
   >("errors");
 
   useEffect(() => {
@@ -107,6 +142,7 @@ function Dashboard() {
     fetchSwapTransactions();
     fetchPayTransactions();
     fetchKYCUsers();
+    fetchReceivers();
   }, []);
 
   const fetchUsers = async () => {
@@ -220,6 +256,51 @@ function Dashboard() {
       setKycUsers(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
+    }
+  };
+
+  const fetchReceivers = async () => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/get_all_receivers`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch receivers");
+      }
+
+      const data = await response.json();
+      setReceivers(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    }
+  };
+
+  const deleteReceiverAndWallet = async (receiverId: string, walletId: string) => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/delete_blockchain_wallet_and_receiver`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+        body: JSON.stringify({ receiverId, walletId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete receiver and wallet");
+      }
+
+      // Remove the deleted receiver from the state
+      setReceivers((prevReceivers) => 
+        prevReceivers.filter((receiver) => receiver.id !== receiverId)
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred while deleting");
     }
   };
 
@@ -373,6 +454,20 @@ function Dashboard() {
           }}
         >
           Pay Transactions
+        </button>
+        <button
+          onClick={() => setActiveTab("receivers")}
+          className={`px-4 py-2 rounded ${activeTab === "receivers" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          style={{
+            backgroundColor: activeTab === "receivers" ? "#ffffff" : "#000000",
+            padding: "10px",
+            borderRadius: "5px",
+            color: activeTab === "receivers" ? "black" : "white",
+            fontWeight: "bold",
+            border: "1px solid #ffffff",
+          }}
+        >
+          Receivers
         </button>
       </div>
 
@@ -974,7 +1069,7 @@ function Dashboard() {
             ))}
           </div>
         </div>
-      ) : (
+      ) : activeTab === "pay" ? (
         <div>
           <h1
             style={{
@@ -1142,7 +1237,251 @@ function Dashboard() {
             ))}
           </div>
         </div>
-      )}
+      ) : activeTab === "receivers" ? (
+        <div>
+          <h1 style={{ fontSize: "24px", fontWeight: "bold", padding: "20px", color: "white" }}>
+            Receivers Dashboard
+          </h1>
+          <div className="space-y-6">
+            {receivers.map((receiver) => (
+              <div
+                key={receiver.id}
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  margin: "10px",
+                  color: "white",
+                }}
+              >
+                {/* KYC Status Banner */}
+                <div style={{
+                  padding: "10px",
+                  marginBottom: "15px",
+                  borderRadius: "5px",
+                  backgroundColor: receiver.kyc_status === 'approved' ? 'rgba(76, 175, 80, 0.2)' :
+                                 receiver.kyc_status === 'rejected' ? 'rgba(244, 67, 54, 0.2)' :
+                                 receiver.kyc_status === 'pending' ? 'rgba(255, 165, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                  border: `1px solid ${
+                    receiver.kyc_status === 'approved' ? '#4CAF50' :
+                    receiver.kyc_status === 'rejected' ? '#f44336' :
+                    receiver.kyc_status === 'pending' ? '#FFA500' : '#ffffff'
+                  }`
+                }}>
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg font-bold" style={{
+                      color: receiver.kyc_status === 'approved' ? '#4CAF50' :
+                             receiver.kyc_status === 'rejected' ? '#f44336' :
+                             receiver.kyc_status === 'pending' ? '#FFA500' : 'white'
+                    }}>
+                      KYC Status: {receiver.kyc_status.toUpperCase()}
+                    </div>
+                    {receiver.kyc_warnings && receiver.kyc_warnings.length > 0 && (
+                      <div className="text-sm" style={{ color: "#FFA500" }}>
+                        {receiver.kyc_warnings.length} Warning{receiver.kyc_warnings.length !== 1 ? 's' : ''}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Receiver ID:{" "}
+                      </span>
+                      {receiver.id}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Email:{" "}
+                      </span>
+                      {receiver.email}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Name:{" "}
+                      </span>
+                      {receiver.first_name} {receiver.last_name}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Type:{" "}
+                      </span>
+                      {receiver.type}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        KYC Type:{" "}
+                      </span>
+                      {receiver.kyc_type}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Tax ID:{" "}
+                      </span>
+                      {receiver.tax_id}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Date of Birth:{" "}
+                      </span>
+                      {new Date(receiver.date_of_birth).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Address:{" "}
+                      </span>
+                      {receiver.address_line_1}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        City:{" "}
+                      </span>
+                      {receiver.city}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        State/Province:{" "}
+                      </span>
+                      {receiver.state_province_region}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Country:{" "}
+                      </span>
+                      {receiver.country}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        Postal Code:{" "}
+                      </span>
+                      {receiver.postal_code}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        ID Document Type:{" "}
+                      </span>
+                      {receiver.id_doc_type}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        ID Document Country:{" "}
+                      </span>
+                      {receiver.id_doc_country}
+                    </div>
+                  </div>
+                </div>
+
+                {/* KYC Warnings Section */}
+                {receiver.kyc_warnings && receiver.kyc_warnings.length > 0 && (
+                  <div className="mt-4 p-3" style={{
+                    backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                    border: '1px solid #FFA500',
+                    borderRadius: '5px'
+                  }}>
+                    <h4 className="font-semibold mb-2" style={{ color: "#FFA500" }}>KYC Warnings</h4>
+                    <div className="space-y-3">
+                      {receiver.kyc_warnings.map((warning, index) => (
+                        <div key={warning.warning_id} className="p-2" style={{
+                          backgroundColor: 'rgba(255, 165, 0, 0.05)',
+                          borderRadius: '4px',
+                          border: '1px solid rgba(255, 165, 0, 0.3)'
+                        }}>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <span className="font-semibold" style={{ color: "#FFA500" }}>Code: </span>
+                              {warning.code}
+                            </div>
+                            <div>
+                              <span className="font-semibold" style={{ color: "#FFA500" }}>Status: </span>
+                              {warning.resolution_status}
+                            </div>
+                          </div>
+                          <div className="mt-1">
+                            <span className="font-semibold" style={{ color: "#FFA500" }}>Message: </span>
+                            {warning.message}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Blockchain Wallets Section */}
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold mb-2">Blockchain Wallets</h3>
+                  {receiver.blockchain_wallets.map((wallet) => (
+                    <div
+                      key={wallet.id}
+                      style={{
+                        border: "1px solid #666",
+                        padding: "10px",
+                        borderRadius: "5px",
+                        margin: "5px 0",
+                      }}
+                    >
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <div className="text-sm">
+                            <span className="font-semibold" style={{ color: "white" }}>
+                              Wallet ID:{" "}
+                            </span>
+                            {wallet.id}
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-semibold" style={{ color: "white" }}>
+                              Name:{" "}
+                            </span>
+                            {wallet.name}
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-semibold" style={{ color: "white" }}>
+                              Network:{" "}
+                            </span>
+                            {wallet.network}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-sm">
+                            <span className="font-semibold" style={{ color: "white" }}>
+                              Address:{" "}
+                            </span>
+                            <span style={{ wordBreak: "break-all" }}>{wallet.address}</span>
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-semibold" style={{ color: "white" }}>
+                              Account Abstraction:{" "}
+                            </span>
+                            {wallet.is_account_abstraction ? "Yes" : "No"}
+                          </div>
+                          <button
+                            onClick={() => deleteReceiverAndWallet(receiver.id, wallet.id)}
+                            style={{
+                              backgroundColor: "#ff4444",
+                              color: "black",
+                              padding: "5px 10px",
+                              borderRadius: "5px",
+                              border: "none",
+                              cursor: "pointer",
+                              fontWeight: "bold",
+                              marginTop: "10px",
+                            }}
+                          >
+                            Delete Receiver & Wallet
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
