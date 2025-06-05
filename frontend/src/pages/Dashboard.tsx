@@ -642,6 +642,27 @@ function Dashboard() {
                         hour12: true,
                       })}
                     </div>
+                    <div className="text-sm mt-2">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        ID Document:{" "}
+                      </span>
+                      {user.id_doc_front_file ? (
+                        <a
+                          href={user.id_doc_front_file}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: "#4CAF50",
+                            textDecoration: "underline",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {user.id_doc_front_file}
+                        </a>
+                      ) : (
+                        "No document available"
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1261,18 +1282,18 @@ function Dashboard() {
                   borderRadius: "5px",
                   backgroundColor: receiver.kyc_status === 'approved' ? 'rgba(76, 175, 80, 0.2)' :
                                  receiver.kyc_status === 'rejected' ? 'rgba(244, 67, 54, 0.2)' :
-                                 receiver.kyc_status === 'pending' ? 'rgba(255, 165, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                                 receiver.kyc_status === 'verifying' ? 'rgba(255, 165, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)',
                   border: `1px solid ${
                     receiver.kyc_status === 'approved' ? '#4CAF50' :
                     receiver.kyc_status === 'rejected' ? '#f44336' :
-                    receiver.kyc_status === 'pending' ? '#FFA500' : '#ffffff'
+                    receiver.kyc_status === 'verifying' ? '#FFA500' : '#ffffff'
                   }`
                 }}>
                   <div className="flex justify-between items-center">
                     <div className="text-lg font-bold" style={{
                       color: receiver.kyc_status === 'approved' ? '#4CAF50' :
                              receiver.kyc_status === 'rejected' ? '#f44336' :
-                             receiver.kyc_status === 'pending' ? '#FFA500' : 'white'
+                             receiver.kyc_status === 'verifying' ? '#FFA500' : 'white'
                     }}>
                       KYC Status: {receiver.kyc_status.toUpperCase()}
                     </div>

@@ -25,6 +25,7 @@ import Lottie from "lottie-react";
 import Page1 from "@/assets/Page1.png";
 import Page2 from "@/assets/Page2.png";
 import Page3 from "@/assets/Page3.png";
+import { logError } from "../../functions/LogError";
 
 const KYCOverlay = ({
   isOpen,
@@ -166,7 +167,25 @@ const KYCOverlay = ({
     } catch (error) {
       setLoading(false);
       console.error('Error uploading image:', error);
-      toast.error('Failed to upload ID document');
+      
+      // More specific error messages based on the error type
+      if (error.code === 'storage/unauthorized') {
+        toast.error('You do not have permission to upload files, please contact support');
+      } else if (error.code === 'storage/canceled') {
+        toast.error('Upload was canceled');
+      } else if (error.code === 'storage/unknown') {
+        toast.error('An unknown error occurred. Please try again');
+      } else if (error.code === 'storage/quota-exceeded') {
+        toast.error('Storage quota exceeded. Please contact support');
+      } else if (error.code === 'storage/invalid-checksum') {
+        toast.error('File is corrupted. Please try uploading again');
+      } else if (error.code === 'storage/invalid-format') {
+        toast.error('Invalid file format. Please upload a valid image');
+      } else {
+        toast.error('Failed to upload ID document. Please try again');
+      }
+      
+      logError('Failed to upload ID document', 'KYC', error);
     }
 
   }
@@ -208,6 +227,7 @@ const KYCOverlay = ({
       return result;
     } catch (error) {
         console.error("Failed to create KYC record:", error);
+        logError('Failed to create KYC record', 'KYC', error);
         throw error;
     }
   }
@@ -335,13 +355,14 @@ const KYCOverlay = ({
     const file = event.target.files[0];
     if (file) {
       // Check if file is an image
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please upload an image file');
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/heic', 'image/heif'];
+      if (!allowedTypes.includes(file.type.toLowerCase())) {
+        toast.error('Please upload a valid image file (JPEG, PNG, HEIC)');
         return;
       }
-      // Check file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('Image size should be less than 5MB');
+      // Check file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Image size should be less than 10MB');
         return;
       }
       setIdFrontImage(file);
@@ -517,7 +538,7 @@ const KYCOverlay = ({
               `}>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/jpg,image/heic,image/heif"
                   capture="environment"
                   onChange={handleImageUpload}
                   css={css`
@@ -534,8 +555,7 @@ const KYCOverlay = ({
                       src={URL.createObjectURL(idFrontImage)}
                       alt="ID Front"
                       css={css`
-                        max-width: 100%;
-                        max-height: 100%;
+                        max-height: 200px;
                         object-fit: contain;
                       `}
                     />
@@ -558,7 +578,13 @@ const KYCOverlay = ({
                       font-size: 0.9rem;
                       color: var(--clr-neutral-600);
                     `}>
-                      Max file size: 5MB
+                      Accepted formats: JPEG, PNG, HEIC
+                    </div>
+                    <div css={css`
+                      font-size: 0.9rem;
+                      color: var(--clr-neutral-600);
+                    `}>
+                      Max file size: 10MB
                     </div>
                   </>
                 )}
