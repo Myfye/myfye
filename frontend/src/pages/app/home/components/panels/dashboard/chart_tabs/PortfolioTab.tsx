@@ -121,7 +121,7 @@ const PortfolioTab = () => {
         return (
           "<span class='legend'>" +
           "<span class='currency'>" +
-          `<span>${this.name} ${this.percentage}%</span>` +
+          `<span>${this.name} ${Math.round(this.percentage)}%</span>` +
           "</span>" +
           "<span class='balance'>" +
           new Intl.NumberFormat("en-EN", {
