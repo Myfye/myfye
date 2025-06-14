@@ -176,7 +176,10 @@ const HandleUserLogIn = async (
   priceOfUSDYinUSDC: number,
   priceOfBTCinUSDC: number,
   priceOfSOLinUSDC: number,
-  priceOfEURCinUSDC: number
+  priceOfEURCinUSDC: number,
+  priceOfXRPinUSDC: number,
+  priceOfSUIinUSDC: number,
+  priceOfDOGEinUSDC: number,
 ): Promise<{ success: boolean }> => {
   dispatch(setcurrentUserEmail(user.email.address));
   dispatch(setPrivyUserId(user.id));
@@ -214,6 +217,9 @@ const HandleUserLogIn = async (
       getBTCPriceQuote(priceOfBTCinUSDC, dispatch),
       getEURCPriceQuote(priceOfEURCinUSDC, dispatch),
       getSOLPriceQuote(priceOfSOLinUSDC, dispatch),
+      getXRPPriceQuote(priceOfXRPinUSDC, dispatch),
+      getSUIPriceQuote(priceOfSUIinUSDC, dispatch),
+      getDOGEPriceQuote(priceOfDOGEinUSDC, dispatch),
       getUserData(user.wallet.address, dispatch),
       // need to update these
       updateExchangeRateUSD({ assetId: "usdc_sol", exchangeRateUSD: 1 }),
@@ -355,6 +361,105 @@ const getBTCPriceQuote = async (
   return true;
 };
 
+const getXRPPriceQuote = async (
+  price: number,
+  dispatch: Function
+): Promise<boolean> => {
+  if (price <= 0.01) {
+    const quote = await getSwapQuote();
+    const priceInUSD = quote.outAmount / 1000;
+    console.log("XRP priceInUSD", priceInUSD);
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "xrp_sol",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+  }
+
+  async function getSwapQuote() {
+    const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
+    const inputMintAddress = "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT"; // XRP
+
+    const quoteResponse = await fetch(
+      `https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMintAddress}&amount=${
+        1 * 1000000
+      }&slippageBps=50`
+    ).then((response) => response.json());
+
+    console.log("XRP quote response:", quoteResponse);
+    return quoteResponse;
+  }
+
+  return true;
+};
+
+const getSUIPriceQuote = async (
+  price: number,
+  dispatch: Function
+): Promise<boolean> => {
+  if (price <= 0.01) {
+    const quote = await getSwapQuote();
+    const priceInUSD = quote.outAmount / 1000;
+    console.log("SUI priceInUSD", priceInUSD);
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "sui_sol",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+  }
+
+  async function getSwapQuote() {
+    const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
+    const inputMintAddress = "756wWVqA9tpZpxqNxCiJYSCGWi3gD2NXfwKHh4YsYJg9";
+
+    const quoteResponse = await fetch(
+      `https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMintAddress}&amount=${
+        1 * 1000000
+      }&slippageBps=50`
+    ).then((response) => response.json());
+
+    console.log("SUI quote response:", quoteResponse);
+    return quoteResponse;
+  }
+
+  return true;
+};
+
+const getDOGEPriceQuote = async (
+  price: number,
+  dispatch: Function
+): Promise<boolean> => {
+  if (price <= 0.01) {
+    const quote = await getSwapQuote();
+    const priceInUSD = quote.outAmount / 1000;
+    console.log("DOGE priceInUSD", priceInUSD);
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "doge_sol",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+  }
+
+  async function getSwapQuote() {
+    const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
+    const inputMintAddress = "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn";
+
+    const quoteResponse = await fetch(
+      `https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMintAddress}&amount=${
+        1 * 1000000
+      }&slippageBps=50`
+    ).then((response) => response.json());
+
+    console.log("DOGE quote response:", quoteResponse);
+    return quoteResponse;
+  }
+
+  return true;
+};
+
 const getEURCPriceQuote = async (
   price: number,
   dispatch: Function
@@ -433,6 +538,5 @@ const getSOLPriceQuote = async (
 
   return true;
 };
-
 
 export { HandleUserLogIn };

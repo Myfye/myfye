@@ -46,6 +46,15 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
       case "euro": {
         return "eurc_sol";
       }
+      case "xrp": {
+        return "xrp_sol";
+      }
+      case "doge": {
+        return "doge_sol";
+      }
+      case "sui": {
+        return "sui_sol";
+      }
       default: {
         throw new Error("Could not find abstracted Asset Id");
       }

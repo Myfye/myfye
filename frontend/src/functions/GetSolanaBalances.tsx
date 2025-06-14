@@ -39,7 +39,30 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
     dispatch(
       updateBalance({ assetId: "btc_sol", balance: Number(tokenBalances.btc) })
     );
-    dispatch(updateBalance({ assetId: "sol", balance: Number(solanaBalance) }));
+    dispatch(
+      updateBalance({ 
+        assetId: "xrp_sol", 
+        balance: Number(tokenBalances.xrp) 
+      })
+    );
+    dispatch(
+      updateBalance({ 
+        assetId: "sui_sol", 
+        balance: Number(tokenBalances.sui) 
+      })
+    );
+    dispatch(
+      updateBalance({ 
+        assetId: "doge_sol", 
+        balance: Number(tokenBalances.doge) 
+      })
+    );
+    dispatch(
+      updateBalance({ 
+        assetId: "sol", 
+        balance: Number(solanaBalance) 
+      })
+    );
   } catch (e) {
     console.error("Error fetching user balances");
     return false;
@@ -56,6 +79,9 @@ export const TokenBalances = async (
   pyusd: number;
   eurc: number;
   btc: number;
+  xrp: number;
+  doge: number;
+  sui: number;
 }> => {
   let balances = {
     success: false, // default to false
@@ -65,6 +91,9 @@ export const TokenBalances = async (
     pyusd: 0,
     eurc: 0,
     btc: 0,
+    xrp: 0,
+    doge: 0,
+    sui: 0,
   };
 
   const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
@@ -77,6 +106,9 @@ export const TokenBalances = async (
   const EURC_MINT_ADDRESS = "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr";
   const BTC_MINT_ADDRESS = "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij";
   const WSOL_MINT_ADDRESS = "So11111111111111111111111111111111111111112";
+  const XRP_MINT_ADDRESS = "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT";
+  const DOGE_MINT_ADDRESS = "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn";
+  const SUI_MINT_ADDRESS = "756wWVqA9tpZpxqNxCiJYSCGWi3gD2NXfwKHh4YsYJg9";
 
   try {
     const publicKey = new PublicKey(address);
@@ -127,6 +159,21 @@ export const TokenBalances = async (
         const wsolBalance =
           account.account.data.parsed.info.tokenAmount.uiAmount;
         balances.wSol = wsolBalance;
+      }
+      if (mintAddress === XRP_MINT_ADDRESS) {
+        const xrpBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.xrp = xrpBalance;
+      }
+      if (mintAddress === DOGE_MINT_ADDRESS) {
+        const dogeBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.doge = dogeBalance;
+      }
+      if (mintAddress === SUI_MINT_ADDRESS) {
+        const suiBalance =
+          account.account.data.parsed.info.tokenAmount.uiAmount;
+        balances.sui = suiBalance;
       }
     }
 

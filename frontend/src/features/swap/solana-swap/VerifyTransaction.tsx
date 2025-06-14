@@ -165,9 +165,12 @@ function updateBalances(
 ) {
   const balances = {
     btcSol: assets.assets["btc_sol"].balance,
+    xrpSol: assets.assets["xrp_sol"].balance,
     usdcSol: assets.assets["usdc_sol"].balance,
     usdySol: assets.assets["usdy_sol"].balance,
     eurcSol: assets.assets["eurc_sol"].balance,
+    dogeSol: assets.assets["doge_sol"].balance,
+    suiSol: assets.assets["sui_sol"].balance,
     sol: assets.assets["sol"].balance,
   };
 
@@ -190,6 +193,33 @@ function updateBalances(
         })
       );
       console.log(`added ${buy.amount} to btc balance`);
+    },
+    xrpSol: () => {
+      dispatch(
+        updateBalance({
+          assetId: "xrp_sol",
+          balance: balances.xrpSol + buy.amount,
+        })
+      );
+      console.log(`added ${buy.amount} to xrp balance`);
+    },
+    dogeSol: () => {
+      dispatch(
+        updateBalance({
+          assetId: "doge_sol",
+          balance: balances.dogeSol + buy.amount,
+        })
+      );
+      console.log(`added ${buy.amount} to doge balance`);
+    },
+    suiSol: () => {
+      dispatch(
+        updateBalance({
+          assetId: "sui_sol",
+          balance: balances.suiSol + buy.amount,
+        })
+      );
+      console.log(`added ${buy.amount} to sui balance`);
     },
     usdcSol: () => {
       dispatch(
@@ -235,6 +265,33 @@ function updateBalances(
       dispatch(
         updateBalance({
           assetId: "btc_sol",
+          balance: newBalance,
+        })
+      );
+    },
+    xrpSol: () => {
+      const newBalance = Math.max(0, balances.xrpSol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "xrp_sol",
+          balance: newBalance,
+        })
+      );
+    },
+    dogeSol: () => {
+      const newBalance = Math.max(0, balances.dogeSol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "doge_sol",
+          balance: newBalance,
+        })
+      );
+    },
+    suiSol: () => {
+      const newBalance = Math.max(0, balances.suiSol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "sui_sol",
           balance: newBalance,
         })
       );
@@ -327,7 +384,10 @@ function mapMintToAssetId(mintAddress: string): string {
     "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": "usdtSol",
     "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6": "usdySol",
     "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr": "eurcSol",
-    "9n4nb2ow5xB2ywvDy8v52N2qN1xzybapC8G4wEGGkZwyTDt1v": "btcSol",
+    "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij": "btcSol", // BUG ? should be 9n4nb2ow5xB2ywvDy8v52N2qN1xzybapC8G4wEGGkZwyTDt1v
+    "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT": "xrpSol",
+    "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn": "dogeSol",
+    "756wWVqA9tpZpxqNxCiJYSCGWi3gD2NXfwKHh4YsYJg9": "suiSol"
     // Add more mappings as needed
   };
 

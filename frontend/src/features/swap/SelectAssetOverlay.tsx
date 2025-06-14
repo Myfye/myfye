@@ -27,6 +27,8 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
     selectAbstractedAssetsWithBalanceByDashboard(state, "crypto")
   );
 
+  console.log("Crypto assets to be displayed:", cryptoAssets);
+
   const stocksAssets = useSelector((state: RootState) =>
     selectAbstractedAssetsWithBalanceByDashboard(state, "stocks")
   );
@@ -125,6 +127,16 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
       }
       if (abstractedAssetId == "sol") {
         console.log("Ensuring token account for SOL");
+      }
+      if (abstractedAssetId == "xrp") {
+        console.log("Ensuring token account for XRP");
+        console.log("Crypto assets to be displayed:", cryptoAssets);
+      }
+      if (abstractedAssetId == "doge") {
+        console.log("Ensuring token account for DOGE");
+      }
+      if (abstractedAssetId == "sui") {
+        console.log("Ensuring token account for SUI");
       }
 
       ensureTokenAccount(String(solanaPubKey), output_mint);

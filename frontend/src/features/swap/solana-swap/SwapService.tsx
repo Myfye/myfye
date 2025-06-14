@@ -101,9 +101,13 @@ export const swap = async ({
 };
 
 const convertToMicro = (amount: number, currency: string) => {
-  if (currency === "btc_sol") {
+  if (currency === "btc_sol") { // 8 decimals
     return Math.round(amount * 100000000);
-  } else if (currency === "w_sol" || currency === "sol") {
+  } else if ( // 9 decimals
+    currency === "w_sol" || currency === "sol" || 
+    currency === "xrp_sol" || currency === 'xrp' || 
+    currency === "doge_sol" || currency === "doge" || 
+    currency === "sui_sol" || currency === "sui") { 
     return Math.round(amount * 1000000000);
   } else {
     return Math.round(amount * 1000000);

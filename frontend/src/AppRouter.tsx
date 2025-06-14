@@ -56,6 +56,15 @@ function WebAppInner() {
   const priceOfEURCinUSDC = useSelector(
     (state: RootState) => state.userWalletData.priceOfEURCinUSDC
   );
+  const priceOfXRPinUSDC = useSelector(
+    (state: RootState) => state.userWalletData.priceOfXRPinUSDC
+  );
+  const priceOfDOGEinUSDC = useSelector(
+    (state: RootState) => state.userWalletData.priceOfDOGEinUSDC
+  );
+  const priceOfSUIinUSDC = useSelector(
+    (state: RootState) => state.userWalletData.priceOfSUIinUSDC
+  );
   const selectedLanguageCode = useSelector(
     (state: RootState) => state.userWalletData.selectedLanguageCode
   );
@@ -92,7 +101,10 @@ function WebAppInner() {
             priceOfUSDYinUSDC,
             priceOfBTCinUSDC,
             priceOfSOLinUSDC,
-            priceOfEURCinUSDC
+            priceOfEURCinUSDC,
+            priceOfXRPinUSDC,
+            priceOfSUIinUSDC,
+            priceOfDOGEinUSDC
           );
           setUserDataLoaded(true);
         } catch (error) {

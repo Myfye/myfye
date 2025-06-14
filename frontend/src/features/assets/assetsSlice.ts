@@ -8,7 +8,9 @@ import solIcon from "@/assets/icons/assets/crypto/Solana.svg";
 import usDollarIcon from "@/assets/icons/assets/cash/US Dollar.svg";
 import euroIcon from "@/assets/icons/assets/cash/Euro.svg";
 import usDollarYieldIcon from "@/assets/icons/assets/earn/US Dollar Yield.svg";
-
+import xrpIcon from "@/assets/icons/assets/crypto/Ripple.svg";
+import dogeIcon from "@/assets/icons/assets/crypto/Dogecoin.svg";
+import suiIcon from "@/assets/icons/assets/crypto/Sui.svg";
 import APPLIcon from "@/assets/icons/assets/stocks/Apple, Inc..svg";
 import MSFTIcon from "@/assets/icons/assets/stocks/Microsoft Corporation.svg";
 import GOOGLIcon from "@/assets/icons/assets/stocks/Alphabet, Inc..svg";
@@ -44,6 +46,9 @@ const initialState: AssetsState = {
     // Crypto
     "btc_sol",
     "sol",
+    "xrp_sol",
+    "doge_sol",
+    "sui_sol",
     // Cash
     "usdt_sol",
     "usdc_sol",
@@ -72,6 +77,9 @@ const initialState: AssetsState = {
     // Crypto
     "btc",
     "sol",
+    "xrp",
+    "doge",
+    "sui",
     // Cash
     "us_dollar",
     "euro",
@@ -397,6 +405,60 @@ const initialState: AssetsState = {
       exchangeRateUSD: 0,
       icon: {
         content: solIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    xrp_sol: {
+      id: "xrp_sol",
+      label: "Ripple",
+      abstractedAssetId: "xrp",
+      symbol: "XRP",
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: xrpIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    doge_sol: {
+      id: "doge_sol",
+      label: "Dogecoin",
+      abstractedAssetId: "doge",
+      symbol: "DOGE",
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: dogeIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    sui_sol: {
+      id: "sui_sol",
+      label: "Sui",
+      abstractedAssetId: "sui",
+      symbol: "SUI",
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: suiIcon,
         type: "svg",
       },
       overlay: {
@@ -867,6 +929,57 @@ const initialState: AssetsState = {
       color: "orange",
       icon: {
         content: btcIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    xrp: {
+      id: "xrp",
+      label: "Ripple",
+      assetIds: ["xrp_sol"],
+      symbol: "XRP",
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      color: "var(--clr-surface-lowered)",
+      icon: {
+        content: xrpIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    doge: {
+      id: "doge",
+      label: "Dogecoin",
+      assetIds: ["doge_sol"],
+      symbol: "DOGE",
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      color: "var(--clr-surface-lowered)",
+      icon: {
+        content: dogeIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    sui: {
+      id: "sui",
+      label: "Sui",
+      assetIds: ["sui_sol"],
+      symbol: "SUI",
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      color: "var(--clr-surface-lowered)",
+      icon: {
+        content: suiIcon,
         type: "svg",
       },
       overlay: {
