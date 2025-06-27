@@ -61,7 +61,9 @@ async function createUserKYC(data) {
         }
         console.log("User KYC creation result:", JSON.stringify(result.rows[0], null, 2));
 
-        create_new_on_ramp_path(data);
+        //create_new_on_ramp_path(data);
+
+        
 
         updateKycVerified(user_id, true);
 

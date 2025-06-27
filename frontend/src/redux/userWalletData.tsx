@@ -43,6 +43,7 @@ export interface UserWalletDataState {
   showSwapWithdrawPage: boolean;
   showSwapDepositPage: boolean;
   priceOfUSDYinUSDC: number;
+  priceOfAAPLinUSD: number;
   priceOfBTCinUSDC: number;
   priceOfEURCinUSDC: number;
   priceOfSOLinUSDC: number;
@@ -101,6 +102,7 @@ const initialUserWalletData: UserWalletDataState = {
   showSwapWithdrawPage: false,
   showSwapDepositPage: false,
   priceOfUSDYinUSDC: 0, // Keep it at 0 because we will check it and update it once
+  priceOfAAPLinUSD: 0, // Keep it at 0 because we will check it and update it once
   priceOfBTCinUSDC: 0, // Keep it at 0 because we will check it and update it once
   priceOfEURCinUSDC: 0, // Keep it at 0 because we will check it and update it once
   priceOfSOLinUSDC: 0, // Keep it at 0 because we will check it and update it once
@@ -257,6 +259,9 @@ export const userWalletDataSlice = createSlice({
     setPriceOfUSDYinUSDC: (state, action: PayloadAction<number>) => {
       state.priceOfUSDYinUSDC = action.payload;
     },
+    setPriceOfAAPLinUSD: (state, action: PayloadAction<number>) => {
+      state.priceOfAAPLinUSD = action.payload;
+    },
     setPriceOfBTCinUSDC: (state, action: PayloadAction<number>) => {
       state.priceOfBTCinUSDC = action.payload;
     },
@@ -349,6 +354,7 @@ export const {
   setShowSwapDepositPage,
   setHotBalanceUSDY,
   setPriceOfUSDYinUSDC,
+  setPriceOfAAPLinUSD,
   setPriceOfBTCinUSDC,
   setPriceOfEURCinUSDC,
   setPriceOfSOLinUSDC,

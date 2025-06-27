@@ -24,6 +24,7 @@ import ReceiveModal from "@/features/receive/ReceiveModal.tsx";
 import DepositModal from "@/features/onOffRamp/deposit/DepositModal.tsx";
 import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
+import KYCOverlay from "@/features/compliance/kycOverlay.tsx";
 import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
@@ -43,27 +44,6 @@ function WebAppInner() {
   );
   const userPassKeyState = useSelector(
     (state: RootState) => state.userWalletData.passKeyState
-  );
-  const priceOfUSDYinUSDC = useSelector(
-    (state: RootState) => state.userWalletData.priceOfUSDYinUSDC
-  );
-  const priceOfBTCinUSDC = useSelector(
-    (state: RootState) => state.userWalletData.priceOfBTCinUSDC
-  );
-  const priceOfSOLinUSDC = useSelector(
-    (state: RootState) => state.userWalletData.priceOfSOLinUSDC
-  );
-  const priceOfEURCinUSDC = useSelector(
-    (state: RootState) => state.userWalletData.priceOfEURCinUSDC
-  );
-  const priceOfXRPinUSDC = useSelector(
-    (state: RootState) => state.userWalletData.priceOfXRPinUSDC
-  );
-  const priceOfDOGEinUSDC = useSelector(
-    (state: RootState) => state.userWalletData.priceOfDOGEinUSDC
-  );
-  const priceOfSUIinUSDC = useSelector(
-    (state: RootState) => state.userWalletData.priceOfSUIinUSDC
   );
   const selectedLanguageCode = useSelector(
     (state: RootState) => state.userWalletData.selectedLanguageCode
@@ -95,16 +75,11 @@ function WebAppInner() {
     const handleLogin = async () => {
       if (authenticated && user) {
         try {
+          console.log("calling HandleUserLogin"); 
+          // TODO: calling this twice, we should call it once
           await HandleUserLogIn(
             user,
             dispatch,
-            priceOfUSDYinUSDC,
-            priceOfBTCinUSDC,
-            priceOfSOLinUSDC,
-            priceOfEURCinUSDC,
-            priceOfXRPinUSDC,
-            priceOfSUIinUSDC,
-            priceOfDOGEinUSDC
           );
           setUserDataLoaded(true);
         } catch (error) {
@@ -133,6 +108,7 @@ function WebAppInner() {
             <WithdrawModal />
             <QRCodeModal />
             <SwapModal />
+            <KYCOverlay />
             <PrivyUseSolanaWallets />
             <Toaster />
           </div>

@@ -1,0 +1,132 @@
+{
+  "deadline": "2025-06-24T01:28:11",
+  "fees": [
+    {
+      "fee_in_eth": "0.2",
+      "fee_in_wei": "200000",
+      "type": "ORDER"
+    },
+    {
+      "fee_in_eth": "0",
+      "fee_in_wei": "0",
+      "type": "PARTNER_ORDER"
+    },
+    {
+      "fee_in_eth": "0.005",
+      "fee_in_wei": "5000",
+      "type": "TRADING"
+    },
+    {
+      "fee_in_eth": "0",
+      "fee_in_wei": "0",
+      "type": "PARTNER_TRADING"
+    },
+    {
+      "fee_in_eth": "0.003498592376066964916569990151629099273122847080230712890625",
+      "fee_in_wei": "3498",
+      "type": "SPONSORED_NETWORK"
+    }
+  ],
+  "id": "01979f83-9e1b-75d2-ae45-c9368e198880",
+  "order_typed_data": {
+    "domain": {
+      "chainId": 8453,
+      "name": "OrderProcessor",
+      "verifyingContract": "0x63FF43009f9ba3584aF2Ddfc3D5FE2cb8AE539c0",
+      "version": "1"
+    },
+    "message": {
+      "deadline": 1750728491,
+      "id": "72886844751966738068419933289650990294048389127715471872172335773257436933061"
+    },
+    "primaryType": "OrderRequest",
+    "types": {
+      "EIP712Domain": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "version",
+          "type": "string"
+        },
+        {
+          "name": "chainId",
+          "type": "uint256"
+        },
+        {
+          "name": "verifyingContract",
+          "type": "address"
+        }
+      ],
+      "OrderRequest": [
+        {
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "name": "deadline",
+          "type": "uint64"
+        }
+      ]
+    }
+  },
+  "permit_typed_data": {
+    "domain": {
+      "chainId": 8453,
+      "name": "USD Coin",
+      "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "version": "2"
+    },
+    "message": {
+      "deadline": 1750729092,
+      "nonce": 0,
+      "owner": "0x0E194f9B0179cC3ab5b47188475378972C914787",
+      "spender": "0x63FF43009f9ba3584aF2Ddfc3D5FE2cb8AE539c0",
+      "value": 1208498
+    },
+    "primaryType": "Permit",
+    "types": {
+      "EIP712Domain": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "version",
+          "type": "string"
+        },
+        {
+          "name": "chainId",
+          "type": "uint256"
+        },
+        {
+          "name": "verifyingContract",
+          "type": "address"
+        }
+      ],
+      "Permit": [
+        {
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "name": "nonce",
+          "type": "uint256"
+        },
+        {
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ]
+    }
+  }
+}

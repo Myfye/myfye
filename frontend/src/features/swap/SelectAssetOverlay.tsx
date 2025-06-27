@@ -27,8 +27,6 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
     selectAbstractedAssetsWithBalanceByDashboard(state, "crypto")
   );
 
-  console.log("Crypto assets to be displayed:", cryptoAssets);
-
   const stocksAssets = useSelector((state: RootState) =>
     selectAbstractedAssetsWithBalanceByDashboard(state, "stocks")
   );
@@ -70,6 +68,7 @@ const SelectAssetOverlay = ({ zIndex = 1000 }) => {
       // to do: ensure token account
       if (transactionType === "buy") {
         console.log("Ensuring token account for ", abstractedAssetId);
+        // TODO: if it is a stock no not ensure token account
         ensureTokenAccountForSwap(abstractedAssetId);
       }
       dispatch(

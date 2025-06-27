@@ -12,6 +12,7 @@ import { setDepositModalOpen } from "@/redux/modalReducers";
 import OnChainDepositOverlay from "./onChain/OnChainDepositContent";
 import OffChainDepositOverlay from "./offChain/DepositOverlay";
 import KYCOverlay from "@/features/compliance/kycOverlay";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 
 const DepositModal = () => {
   const dispatch = useDispatch();
@@ -34,13 +35,18 @@ const DepositModal = () => {
   };
 
   const openOnChainDeposit = () => {
-    setOnChainDepositOpen(true);
+    if (!currentUserKYCVerified) {
+      dispatch(toggleKYCModal({ isOpen: true }));
+    } else {
+      setOnChainDepositOpen(true);
+    }
   };
 
   const openOffChainDeposit = () => {
     console.log("currentUserKYCVerified", currentUserKYCVerified);
     if (!currentUserKYCVerified) {
-      setShowKYCOverlay(true);
+      //setShowKYCOverlay(true);
+      dispatch(toggleKYCModal({ isOpen: true }));
     } else {
       setOffChainDepositOpen(true);
     }

@@ -26,15 +26,16 @@ import Page1 from "@/assets/Page1.png";
 import Page2 from "@/assets/Page2.png";
 import Page3 from "@/assets/Page3.png";
 import { logError } from "../../functions/LogError";
+import { RootState } from "@/redux/store";
+import { toggleModal } from "./kycSlice";
 
 const KYCOverlay = ({
-  isOpen,
-  onOpenChange,
   onBack,
   selectedToken,
   amount,
   onCloseAll,
 }) => {
+  const isOpen = useSelector((state: RootState) => state.kyc.modal.isOpen);
   const dispatch = useDispatch();
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
@@ -80,7 +81,8 @@ const KYCOverlay = ({
   const currentUserID = useSelector((state: any) => state.userWalletData.currentUserID);
 
   const handleBack = () => {
-    onBack();
+    dispatch(toggleModal({ isOpen: false }));
+    if (onBack) onBack();
   };
 
   const handlePageOneDone = () => {
@@ -238,7 +240,6 @@ const KYCOverlay = ({
   }, [dateOfBirth, firstName, lastName, taxID]);
 
   useEffect(() => {
-    console.log("GOOGLE_MAPS_API_KEY", GOOGLE_MAPS_API_KEY);
     
     // Load Google Maps script
     const script = document.createElement('script');
@@ -996,7 +997,8 @@ const KYCOverlay = ({
         isOpen={isOpen}
       onOpenChange={(open) => {
         if (!open) {
-          onBack();
+          dispatch(toggleModal({ isOpen: false }));
+          if (onBack) onBack();
         }
       }}
       title="Account Setup"

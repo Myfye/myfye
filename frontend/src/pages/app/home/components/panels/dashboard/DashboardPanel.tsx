@@ -68,6 +68,7 @@ const DashboardPanel = ({}) => {
               size="x-small"
               icon={ArrowsDownUp}
               onPress={() => {
+                console.log("opening swap modal");
                 dispatch(toggleSwapModal({ isOpen: true }));
               }}
             >

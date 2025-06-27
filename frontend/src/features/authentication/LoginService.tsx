@@ -5,10 +5,6 @@ import {
   setSolanaPubKey,
   setEvmPubKey,
   setMFAStatus,
-  setPriceOfUSDYinUSDC,
-  setPriceOfBTCinUSDC,
-  setPriceOfEURCinUSDC,
-  setPriceOfSOLinUSDC,
   setCurrentUserID,
   setPrivyUserId,
   setUsers,
@@ -26,6 +22,23 @@ import {
 } from "firebase/functions";
 import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env.ts";
 import { updateExchangeRateUSD } from "../assets/assetsSlice.ts";
+import {
+  getAAPLPriceQuote,
+  getMSFTPriceQuote,
+  getGOOGLPriceQuote,
+  getNFLXPriceQuote,
+  getAMZNPriceQuote,
+  getSQPriceQuote,
+  getDISPriceQuote,
+  getTSLAPriceQuote,
+  getAMDPriceQuote,
+  getSPYPriceQuote,
+  getMSTRPriceQuote,
+  getIAUPriceQuote,
+  getKOPriceQuote,
+  getAMCPriceQuote,
+  getGMEPriceQuote
+} from "../../functions/StockPrices.ts";
 
 const userCreationInProgress = new Set();
 
@@ -211,15 +224,33 @@ const HandleUserLogIn = async (
 
   checkMFAState(user, dispatch);
 
+  // Get price quotes for all assets
   try {
     await Promise.all([
-      getUSDYPriceQuote(priceOfUSDYinUSDC, dispatch),
-      getBTCPriceQuote(priceOfBTCinUSDC, dispatch),
-      getEURCPriceQuote(priceOfEURCinUSDC, dispatch),
-      getSOLPriceQuote(priceOfSOLinUSDC, dispatch),
-      getXRPPriceQuote(priceOfXRPinUSDC, dispatch),
-      getSUIPriceQuote(priceOfSUIinUSDC, dispatch),
-      getDOGEPriceQuote(priceOfDOGEinUSDC, dispatch),
+      // Stock prices
+      getAAPLPriceQuote(dispatch),
+      getMSFTPriceQuote(dispatch),
+      getGOOGLPriceQuote(dispatch),
+      getNFLXPriceQuote(dispatch),
+      getAMZNPriceQuote(dispatch),
+      getSQPriceQuote(dispatch),
+      getDISPriceQuote(dispatch),
+      getTSLAPriceQuote(dispatch),
+      getAMDPriceQuote(dispatch),
+      getSPYPriceQuote(dispatch),
+      getMSTRPriceQuote(dispatch),
+      getIAUPriceQuote(dispatch),
+      getKOPriceQuote(dispatch),
+      getAMCPriceQuote(dispatch),
+      getGMEPriceQuote(dispatch),
+      // On-chain assets
+      getUSDYPriceQuote(dispatch),
+      getBTCPriceQuote(dispatch),
+      getEURCPriceQuote(dispatch),
+      getSOLPriceQuote(dispatch),
+      getXRPPriceQuote(dispatch),
+      getSUIPriceQuote(dispatch),
+      getDOGEPriceQuote(dispatch),
       getUserData(user.wallet.address, dispatch),
       // need to update these
       updateExchangeRateUSD({ assetId: "usdc_sol", exchangeRateUSD: 1 }),
@@ -285,25 +316,14 @@ const getUSDYPriceQuote = async (
   price: number,
   dispatch: Function
 ): Promise<boolean> => {
-  if (price <= 0.01) {
-    const quote = await getSwapQuote();
-    const priceInUSD = quote.outAmount / 1000000;
-    if (priceInUSD && priceInUSD > 0.01) {
-      dispatch(
-        updateExchangeRateUSD({
-          assetId: "usdy_sol",
-          exchangeRateUSD: quote.outAmount / 1000000,
-        })
-      );
-    } else {
-      dispatch(
-        updateExchangeRateUSD({
-          assetId: "usdy_sol",
-          exchangeRateUSD: 1.09,
-        })
-      );
-    }
-  }
+  const quote = await getSwapQuote();
+  const priceInUSD = quote.outAmount / 1000000;
+  dispatch(
+    updateExchangeRateUSD({
+      assetId: "usdy_sol",
+      exchangeRateUSD: quote.outAmount / 1000000,
+    })
+  );
 
   async function getSwapQuote() {
     const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
@@ -322,28 +342,16 @@ const getUSDYPriceQuote = async (
 };
 
 const getBTCPriceQuote = async (
-  price: number,
   dispatch: Function
 ): Promise<boolean> => {
-  if (price <= 0.01) {
-    const quote = await getSwapQuote();
-    const priceInUSD = quote.outAmount / 1000000;
-    if (priceInUSD && priceInUSD > 0.01) {
-      dispatch(
-        updateExchangeRateUSD({
-          assetId: "btc_sol",
-          exchangeRateUSD: quote.outAmount / 10000,
-        })
-      );
-    } else {
-      dispatch(
-        updateExchangeRateUSD({
-          assetId: "btc_sol",
-          exchangeRateUSD: 100000, // default to $100,000
-        })
-      );
-    }
-  }
+  const quote = await getSwapQuote();
+  const priceInUSD = quote.outAmount / 1000000;
+  dispatch(
+    updateExchangeRateUSD({
+      assetId: "btc_sol",
+      exchangeRateUSD: quote.outAmount / 10000,
+    })
+  );
 
   async function getSwapQuote() {
     const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
@@ -362,20 +370,17 @@ const getBTCPriceQuote = async (
 };
 
 const getXRPPriceQuote = async (
-  price: number,
   dispatch: Function
 ): Promise<boolean> => {
-  if (price <= 0.01) {
-    const quote = await getSwapQuote();
-    const priceInUSD = quote.outAmount / 1000;
-    console.log("XRP priceInUSD", priceInUSD);
-    dispatch(
-      updateExchangeRateUSD({
-        assetId: "xrp_sol",
-        exchangeRateUSD: priceInUSD,
-      })
-    );
-  }
+  const quote = await getSwapQuote();
+  const priceInUSD = quote.outAmount / 1000;
+  console.log("XRP priceInUSD", priceInUSD);
+  dispatch(
+    updateExchangeRateUSD({
+      assetId: "xrp_sol",
+      exchangeRateUSD: priceInUSD,
+    })
+  );
 
   async function getSwapQuote() {
     const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
@@ -395,20 +400,17 @@ const getXRPPriceQuote = async (
 };
 
 const getSUIPriceQuote = async (
-  price: number,
   dispatch: Function
 ): Promise<boolean> => {
-  if (price <= 0.01) {
-    const quote = await getSwapQuote();
-    const priceInUSD = quote.outAmount / 1000;
-    console.log("SUI priceInUSD", priceInUSD);
-    dispatch(
-      updateExchangeRateUSD({
-        assetId: "sui_sol",
-        exchangeRateUSD: priceInUSD,
-      })
-    );
-  }
+  const quote = await getSwapQuote();
+  const priceInUSD = quote.outAmount / 1000;
+  console.log("SUI priceInUSD", priceInUSD);
+  dispatch(
+    updateExchangeRateUSD({
+      assetId: "sui_sol",
+      exchangeRateUSD: priceInUSD,
+    })
+  );
 
   async function getSwapQuote() {
     const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
@@ -428,20 +430,17 @@ const getSUIPriceQuote = async (
 };
 
 const getDOGEPriceQuote = async (
-  price: number,
   dispatch: Function
 ): Promise<boolean> => {
-  if (price <= 0.01) {
-    const quote = await getSwapQuote();
-    const priceInUSD = quote.outAmount / 1000;
-    console.log("DOGE priceInUSD", priceInUSD);
-    dispatch(
-      updateExchangeRateUSD({
-        assetId: "doge_sol",
-        exchangeRateUSD: priceInUSD,
-      })
-    );
-  }
+  const quote = await getSwapQuote();
+  const priceInUSD = quote.outAmount / 1000;
+  console.log("DOGE priceInUSD", priceInUSD);
+  dispatch(
+    updateExchangeRateUSD({
+      assetId: "doge_sol",
+      exchangeRateUSD: priceInUSD,
+    })
+  );
 
   async function getSwapQuote() {
     const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
@@ -461,28 +460,17 @@ const getDOGEPriceQuote = async (
 };
 
 const getEURCPriceQuote = async (
-  price: number,
   dispatch: Function
 ): Promise<boolean> => {
-  if (price <= 0.01) {
-    const quote = await getSwapQuote();
-    const priceInUSD = quote.outAmount / 1000000;
-    if (priceInUSD && priceInUSD > 0.01) {
-      dispatch(
-        updateExchangeRateUSD({
-          assetId: "eurc_sol",
-          exchangeRateUSD: priceInUSD,
-        })
-      );
-    } else {
-      dispatch(
-        updateExchangeRateUSD({
-          assetId: "eurc_sol",
-          exchangeRateUSD: 1.025,
-        })
-      );
-    }
-  }
+  const quote = await getSwapQuote();
+  const priceInUSD = quote.outAmount / 1000000;
+  dispatch(
+    updateExchangeRateUSD({
+      assetId: "eurc_sol",
+      exchangeRateUSD: priceInUSD,
+    })
+  );
+
 
   async function getSwapQuote() {
     const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
@@ -501,30 +489,19 @@ const getEURCPriceQuote = async (
 };
 
 const getSOLPriceQuote = async (
-  price: number,
   dispatch: Function
 ): Promise<boolean> => {
   console.log("getting SOLANA price quote");
-  if (price <= 0.01) {
-    const quote = await getSwapQuote();
-    const priceInUSD = quote.outAmount / 1000000;
-    if (priceInUSD && priceInUSD > 0.01) {
-      console.log("SOLANA priceInUSD", priceInUSD);
-      dispatch(
-        updateExchangeRateUSD({
-          assetId: "sol",
-          exchangeRateUSD: priceInUSD,
-        })
-      );
-    } else {
-      dispatch(
-        updateExchangeRateUSD({
-          assetId: "sol",
-          exchangeRateUSD: 125,
-        })
-      );
-    }
-  }
+  const quote = await getSwapQuote();
+  const priceInUSD = quote.outAmount / 1000000;
+  console.log("SOLANA priceInUSD", priceInUSD);
+  dispatch(
+    updateExchangeRateUSD({
+      assetId: "sol",
+      exchangeRateUSD: priceInUSD,
+    })
+  );
+
 
   async function getSwapQuote() {
     const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC

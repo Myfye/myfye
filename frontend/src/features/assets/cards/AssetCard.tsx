@@ -1,13 +1,14 @@
 import { css } from "@emotion/react";
 import AssetIcon from "../AssetIcon";
-import { RefObject } from "react";
-
+import { RefObject, useState } from "react";
+import KYCOverlay from "@/features/compliance/kycOverlay";
 // import Button from "@/shared/components/ui/button/Button";
 // import Menu from "@/shared/components/ui/menu/Menu";
 
 import AssetCardController from "./AssetCardController";
 import { formatBalance } from "../utils";
 import { AbstractedAsset, Asset } from "../types";
+import { useSelector } from "react-redux";
 
 import {
   MenuTrigger,
@@ -27,6 +28,7 @@ import { useDispatch } from "react-redux";
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 
 const AssetCard = ({
   id,
@@ -58,9 +60,36 @@ const AssetCard = ({
   radio?: boolean;
   isSelected?: boolean;
 }) => {
+  const [showKYCOverlay, setShowKYCOverlay] = useState(false);
   const formattedBalance = formatBalance(balance, fiatCurrency);
 
   const dispatch = useDispatch();
+  const currentUserKYCVerified = useSelector((state: RootState) => state.userWalletData.currentUserKYCVerified);
+
+  const handleSwapClick = () => {
+    if (!currentUserKYCVerified) {
+      console.log("opening KYC modal");
+      dispatch(toggleKYCModal({ isOpen: true }));
+    } else {
+      console.log("opening swap modal");
+      dispatch(
+        toggleSwapModal({
+          isOpen: true,
+          abstractedAssetId: id,
+        })
+      );
+    }
+  };
+
+  const handleReceiveClick = () => {
+    if (!currentUserKYCVerified) {
+      console.log("opening KYC modal");
+      dispatch(toggleKYCModal({ isOpen: true }));
+    } else {
+      console.log("opening receive modal");
+      dispatch(toggleReceiveModal(true));
+    }
+  };
 
   return (
     <div
@@ -225,7 +254,7 @@ const AssetCard = ({
                       background-color: var(--clr-surface-raised);
                     }
                   `}
-                  onAction={() => dispatch(toggleReceiveModal(true))}
+                  onAction={handleReceiveClick}
                 >
                   <ArrowCircleDown
                     size={16}
@@ -247,14 +276,7 @@ const AssetCard = ({
                     background-color: var(--clr-surface-raised);
                   }
                 `}
-                onAction={() => {
-                  dispatch(
-                    toggleSwapModal({
-                      isOpen: true,
-                      abstractedAssetId: id,
-                    })
-                  );
-                }}
+                onAction={handleSwapClick}
               >
                 <ArrowLineDown
                   size={16}

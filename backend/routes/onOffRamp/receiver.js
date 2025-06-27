@@ -11,6 +11,7 @@ const axios = require("axios");
 const { 
   updateBlindPayReceiverId,
   updateBlindPayEvmWalletId } = require('../userDb');
+const { createErrorLog } = require('../errorLog');
 
 // Get API key from environment variables
 const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
@@ -60,6 +61,15 @@ async function create_new_on_ramp_path(data) {
       stack: error.stack,
       response: error.response?.data,
     });
+
+    // Create error log
+    await createErrorLog({
+      user_id: data.user_id,
+      error_message: error.message,
+      error_type: 'BlindPay Creation Error',
+      error_stack_trace: error.stack
+    });
+
     return {
       success: false,
       error: error.message,

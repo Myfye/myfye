@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 //import currentUserDataReducer from './ephemeralUserData';
 import userWalletDataReducer from "./userWalletData.tsx";
 import swapReducer from "@/features/swap/swapSlice.ts";
+import kycReducer from "@/features/compliance/kycSlice.ts";
 import {
   QRCodeModalReducer,
   addContactModalReducer,
@@ -61,6 +62,9 @@ const store = configureStore({
 
     // Swap
     swap: swapReducer,
+
+    // KYC
+    kyc: kycReducer,
 
     // Assets
     assets: assetsReducer,
