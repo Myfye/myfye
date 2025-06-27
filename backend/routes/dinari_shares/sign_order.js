@@ -3,9 +3,9 @@ const { resolveViemChain, signTransferPermitAndOrderForViem } = require('@dinari
 const { createWalletClient, custom, http } = require('viem');
 const { privateKeyToAccount } = require('viem/accounts');
 
-const EVM_PRIV_KEY = '0x6d38c2885b902d2719d69c438f2eec52790c676202527006e53c18ac9f04c572';
-const DINARI_API_KEY = '01977031-17cd-76a0-a647-952d5fd47d7f';
-const DINARI_API_SECRET = '4FTeMkk1gAADucBk1EYpgQlLELxnXrFsmMw9MdMoRoM';
+const EVM_PRIV_KEY = process.env.EVM_PRIV_KEY;
+const DINARI_API_KEY = process.env.DINARI_API_KEY;
+const DINARI_API_SECRET = process.env.DINARI_API_SECRET;
 
 const client = new Dinari({
   apiKeyID: DINARI_API_KEY, // This is the default and can be omitted

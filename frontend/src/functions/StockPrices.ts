@@ -1,4 +1,5 @@
 import { updateExchangeRateUSD } from "../features/assets/assetsSlice.ts";
+import { DINARI_API_KEY, MYFYE_BACKEND_KEY } from '../env';
 
 const getAAPLPriceQuote = async (
     dispatch: Function
