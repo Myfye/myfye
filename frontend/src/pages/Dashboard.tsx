@@ -47,6 +47,7 @@ interface KYCUser {
   tax_id: string;
   id_doc_type: string;
   id_doc_front_file: string;
+  id_doc_back_file: string;
   id_doc_country: string;
   kyc_verified: boolean;
   creation_date: string;
@@ -304,6 +305,30 @@ function Dashboard() {
     }
   };
 
+  const deleteKYCUser = async (userId: string) => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/delete_kyc_user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete KYC user");
+      }
+
+      // Remove the deleted KYC user from the state
+      setKycUsers((prevKycUsers) => 
+        prevKycUsers.filter((kycUser) => kycUser.user_id !== userId)
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred while deleting KYC user");
+    }
+  };
+
   const toggleStackTrace = (logId: string) => {
     setExpandedLogs((prev) => {
       const newSet = new Set(prev);
@@ -495,6 +520,30 @@ function Dashboard() {
                   color: "white",
                 }}
               >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div style={{ fontWeight: "bold" }}>KYC User ID: {user.user_id}</div>
+                  <button
+                    onClick={() => deleteKYCUser(user.user_id)}
+                    style={{
+                      backgroundColor: "#ff4444",
+                      color: "black",
+                      padding: "5px 10px",
+                      borderRadius: "5px",
+                      border: "none",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Delete KYC
+                  </button>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-sm">
@@ -644,7 +693,7 @@ function Dashboard() {
                     </div>
                     <div className="text-sm mt-2">
                       <span className="font-semibold" style={{ color: "white" }}>
-                        ID Document:{" "}
+                        ID Document Front:{" "}
                       </span>
                       {user.id_doc_front_file ? (
                         <a
@@ -658,6 +707,27 @@ function Dashboard() {
                           }}
                         >
                           {user.id_doc_front_file}
+                        </a>
+                      ) : (
+                        "No document available"
+                      )}
+                    </div>
+                    <div className="text-sm mt-2">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        ID Document Back:{" "}
+                      </span>
+                      {user.id_doc_back_file ? (
+                        <a
+                          href={user.id_doc_back_file}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: "#4CAF50",
+                            textDecoration: "underline",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {user.id_doc_back_file}
                         </a>
                       ) : (
                         "No document available"

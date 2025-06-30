@@ -1,5 +1,5 @@
 import { updateExchangeRateUSD } from "../features/assets/assetsSlice.ts";
-import { DINARI_API_KEY, MYFYE_BACKEND_KEY } from '../env';
+import { DINARI_API_KEY, DINARI_API_SECRET, MYFYE_BACKEND_KEY } from '../env';
 
 const getAAPLPriceQuote = async (
     dispatch: Function
@@ -273,10 +273,10 @@ const getGMEPriceQuote = async (
   };
 
 const getQuote = async (stock_id: string) => {
-    const response = await fetch(`https://api-enterprise.sbt.dinari.com/api/v2/market_data/stocks/${stock_id}/quote`, {
+    const response = await fetch(`https://api-enterprise.sbt.dinari.com/api/v2/market_data/stocks/${stock_id}/current_price`, {
         headers: {
-            'X-API-Key-Id': '01977031-17cd-76a0-a647-952d5fd47d7f',
-            'X-API-Secret-Key': '4FTeMkk1gAADucBk1EYpgQlLELxnXrFsmMw9MdMoRoM',
+            'X-API-Key-Id': DINARI_API_KEY,
+            'X-API-Secret-Key': DINARI_API_SECRET,
             'accept': 'application/json'
         }
     });

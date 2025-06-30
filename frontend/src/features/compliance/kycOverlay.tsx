@@ -68,6 +68,7 @@ const KYCOverlay = ({
 
   const [id_doc_type, setIdDocType] = useState('');
   const [idFrontImage, setIdFrontImage] = useState(null);
+  const [idBackImage, setIdBackImage] = useState(null);
   const [isUploadValid, setIsUploadValid] = useState(false);
 
   const id_doc_types = [
@@ -124,14 +125,20 @@ const KYCOverlay = ({
       // Initialize Firebase Storage
       const storage = getStorage(app);
       
-      // Create a unique filename for the image
+      // Create unique filenames for both images
       const timestamp = new Date().getTime();
-      const filename = `${evmPubKey}_${id_doc_type}_${timestamp}.jpg`;
-      const storageRef = ref(storage, `id_documents/${filename}`);
+      const frontFilename = `${evmPubKey}_${id_doc_type}_front_${timestamp}.jpg`;
+      const backFilename = `${evmPubKey}_${id_doc_type}_back_${timestamp}.jpg`;
+      
+      const frontStorageRef = ref(storage, `id_documents/${frontFilename}`);
+      const backStorageRef = ref(storage, `id_documents/${backFilename}`);
 
-      // Upload the image
-      const snapshot = await uploadBytes(storageRef, idFrontImage);
-      const downloadURL = await getDownloadURL(snapshot.ref);
+      // Upload both images
+      const frontSnapshot = await uploadBytes(frontStorageRef, idFrontImage);
+      const backSnapshot = await uploadBytes(backStorageRef, idBackImage);
+      
+      const frontDownloadURL = await getDownloadURL(frontSnapshot.ref);
+      const backDownloadURL = await getDownloadURL(backSnapshot.ref);
 
       console.log('Address Details:', {
         address_line_1: address.address_line_1,
@@ -151,11 +158,13 @@ const KYCOverlay = ({
       console.log('ID Upload Details:', {
         id_doc_type,
         idFrontImage: idFrontImage?.name,
-        imageUrl: downloadURL
+        idBackImage: idBackImage?.name,
+        frontImageUrl: frontDownloadURL,
+        backImageUrl: backDownloadURL
       });
 
-      // if successfully uploaded the image, create the user kyc record
-      await handleKYCData(downloadURL);
+      // if successfully uploaded both images, create the user kyc record
+      await handleKYCData(frontDownloadURL, backDownloadURL);
 
       toast.success('KYC Verification Completed');
       //onBack();
@@ -168,7 +177,7 @@ const KYCOverlay = ({
 
     } catch (error) {
       setLoading(false);
-      console.error('Error uploading image:', error);
+      console.error('Error uploading images:', error);
       
       // More specific error messages based on the error type
       if (error.code === 'storage/unauthorized') {
@@ -184,15 +193,15 @@ const KYCOverlay = ({
       } else if (error.code === 'storage/invalid-format') {
         toast.error('Invalid file format. Please upload a valid image');
       } else {
-        toast.error('Failed to upload ID document. Please try again');
+        toast.error('Failed to upload ID documents. Please try again');
       }
       
-      logError('Failed to upload ID document', 'KYC', error);
+      logError('Failed to upload ID documents', 'KYC', error);
     }
 
   }
 
-  const handleKYCData = async (downloadURL) => {
+  const handleKYCData = async (frontDownloadURL, backDownloadURL) => {
     try {
       const response = await fetch(`${MYFYE_BACKEND}/create_user_kyc`, {
           method: 'POST',
@@ -216,7 +225,8 @@ const KYCOverlay = ({
               last_name: lastName,
               tax_id: taxID,
               id_doc_type: id_doc_type,
-              id_doc_front_file: downloadURL,
+              id_doc_front_file: frontDownloadURL,
+              id_doc_back_file: backDownloadURL,
               id_doc_country: address.country
           })
       });
@@ -348,9 +358,9 @@ const KYCOverlay = ({
 
   // Validate upload form
   useEffect(() => {
-    const isValid = id_doc_type && idFrontImage;
+    const isValid = id_doc_type && idFrontImage && idBackImage;
     setIsUploadValid(isValid);
-  }, [id_doc_type, idFrontImage]);
+  }, [id_doc_type, idFrontImage, idBackImage]);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -370,6 +380,23 @@ const KYCOverlay = ({
     }
   };
 
+  const handleBackImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Check if file is an image
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/heic', 'image/heif'];
+      if (!allowedTypes.includes(file.type.toLowerCase())) {
+        toast.error('Please upload a valid image file (JPEG, PNG, HEIC)');
+        return;
+      }
+      // Check file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Image size should be less than 10MB');
+        return;
+      }
+      setIdBackImage(file);
+    }
+  };
 
   if (loading) {
     return (
@@ -510,86 +537,176 @@ const KYCOverlay = ({
               flex-direction: column;
               gap: 0.25rem;
             `}>
-              <label css={css`
-                font-size: 0.9rem;
-                color: var(--clr-text);
-                font-weight: 500;
-              `}>
-                Upload ID Front
-              </label>
-              <div css={css`
-                position: relative;
-                width: 100%;
-                aspect-ratio: 16/9;
-                border: 2px dashed var(--clr-neutral-300);
-                border-radius: var(--border-radius-medium);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 0.5rem;
-                background: var(--clr-neutral-50);
-                cursor: pointer;
-                transition: all 0.2s ease;
 
-                &:hover {
-                  border-color: var(--clr-primary);
-                  background: var(--clr-neutral-100);
-                }
-              `}>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/jpg,image/heic,image/heif"
-                  capture="environment"
-                  onChange={handleImageUpload}
-                  css={css`
-                    position: absolute;
-                    width: 100%;
-                    height: 100%;
-                    opacity: 0;
-                    cursor: pointer;
-                  `}
-                />
-                {idFrontImage ? (
-                  <>
-                    <img
-                      src={URL.createObjectURL(idFrontImage)}
-                      alt="ID Front"
-                      css={css`
-                        max-height: 200px;
-                        object-fit: contain;
-                      `}
-                    />
-                    <div css={css`
-                      font-size: 0.9rem;
-                      color: var(--clr-success);
-                    `}>
-                      Image loaded successfully
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div css={css`
-                      font-size: 1.2rem;
-                      color: var(--clr-text);
-                    `}>
-                      Tap to take photo or upload
-                    </div>
-                    <div css={css`
-                      font-size: 0.9rem;
-                      color: var(--clr-neutral-600);
-                    `}>
-                      Accepted formats: JPEG, PNG, HEIC
-                    </div>
-                    <div css={css`
-                      font-size: 0.9rem;
-                      color: var(--clr-neutral-600);
-                    `}>
-                      Max file size: 10MB
-                    </div>
-                  </>
-                )}
-              </div>
+              <div style={{display: "flex", flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
+                <div>
+                <label css={css`
+                  font-size: 0.9rem;
+                  color: var(--clr-text);
+                  font-weight: 500;
+                `}>
+                  Upload ID Front
+                </label>
+                <div css={css`
+                  position: relative;
+                  width: 80%;
+                  aspect-ratio: 4/3;
+                  border: 2px dashed var(--clr-neutral-300);
+                  border-radius: var(--border-radius-medium);
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 0.5rem;
+                  background: var(--clr-neutral-50);
+                  cursor: pointer;
+                  transition: all 0.2s ease;
+
+                  &:hover {
+                    border-color: var(--clr-primary);
+                    background: var(--clr-neutral-100);
+                  }
+                `}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/jpg,image/heic,image/heif"
+                    capture="environment"
+                    onChange={handleImageUpload}
+                    css={css`
+                      position: absolute;
+                      width: 100%;
+                      height: 100%;
+                      opacity: 0;
+                      cursor: pointer;
+                    `}
+                  />
+                  {idFrontImage ? (
+                    <>
+                      <img
+                        src={URL.createObjectURL(idFrontImage)}
+                        alt="ID Front"
+                        css={css`
+                          max-height: 200px;
+                          object-fit: contain;
+                        `}
+                      />
+                      <div css={css`
+                        font-size: 0.9rem;
+                        color: var(--clr-success);
+                      `}>
+                        Image loaded successfully
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div css={css`
+                        font-size: 0.8rem;
+                        color: var(--clr-text);
+                        text-align: center;
+                        line-height: 1.2;
+                      `}>
+                        Tap to take photo or upload
+                      </div>
+                    </>
+                  )}
+                </div>
+                </div>
+
+                <div>
+                <label css={css`
+                  font-size: 0.9rem;
+                  color: var(--clr-text);
+                  font-weight: 500;
+                `}>
+                  Upload ID Rear
+                </label>
+                <div css={css`
+                  position: relative;
+                  width: 80%;
+                  aspect-ratio: 4/3;
+                  border: 2px dashed var(--clr-neutral-300);
+                  border-radius: var(--border-radius-medium);
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 0.5rem;
+                  background: var(--clr-neutral-50);
+                  cursor: pointer;
+                  transition: all 0.2s ease;
+
+                  &:hover {
+                    border-color: var(--clr-primary);
+                    background: var(--clr-neutral-100);
+                  }
+                `}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/jpg,image/heic,image/heif"
+                    capture="environment"
+                    onChange={handleBackImageUpload}
+                    css={css`
+                      position: absolute;
+                      width: 100%;
+                      height: 100%;
+                      opacity: 0;
+                      cursor: pointer;
+                    `}
+                  />
+                  {idBackImage ? (
+                    <>
+                      <img
+                        src={URL.createObjectURL(idBackImage)}
+                        alt="ID Back"
+                        css={css`
+                          max-height: 200px;
+                          object-fit: contain;
+                        `}
+                      />
+                      <div css={css`
+                        font-size: 0.9rem;
+                        color: var(--clr-success);
+                      `}>
+                        Image loaded successfully
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div css={css`
+                        font-size: 0.8rem;
+                        color: var(--clr-text);
+                        text-align: center;
+                        line-height: 1.2;
+                      `}>
+                        Tap to take photo or upload
+                      </div>
+                    </>
+                  )}
+                </div>
+                </div>
+                </div>
+
+                <div css={css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: 0.25rem;
+                  margin-top: 0.5rem;
+                  text-align: center;
+                `}>
+                  <div css={css`
+                    font-size: 0.9rem;
+                    color: var(--clr-neutral-600);
+                  `}>
+                    Accepted formats: JPEG, PNG, HEIC
+                  </div>
+                  <div css={css`
+                    font-size: 0.9rem;
+                    color: var(--clr-neutral-600);
+                  `}>
+                    Max file size: 10MB
+                  </div>
+                </div>
+
             </div>
           </div>
 

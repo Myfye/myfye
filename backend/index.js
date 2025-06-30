@@ -37,7 +37,7 @@ const {
     getRecentlyUsedAddresses 
 } = require('./routes/sol_transaction/recentlyUsedAddresses');
 const { emailService } = require('./routes/emailService');
-const { createUserKYC, getAllKYCUsers } = require('./routes/user_kyc');
+const { createUserKYC, getAllKYCUsers, deleteKYCUser } = require('./routes/user_kyc');
 const { create_new_dinari_user } = require('./routes/dinari_shares/entity');
 const { create_new_wallet } = require('./routes/dinari_shares/wallet');
 const { generate_nonce } = require('./routes/dinari_shares/generate_nonce');
@@ -46,6 +46,7 @@ const { add_kyc_doc_to_entity } = require('./routes/dinari_shares/kyc_doc');
 const { create_new_dinari_account } = require('./routes/dinari_shares/account');
 const { sign_nonce } = require('./routes/dinari_shares/sign_nonce');
 const { sign_order } = require('./routes/dinari_shares/sign_order.js');
+const { getWalletIdByAddress } = require('./routes/privy/getWallets');
 
 app.set('trust proxy', true);
 
@@ -355,8 +356,14 @@ app.post("/new_payin", async (req, res) => {
     console.log("Pay-in result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {
-    console.error("Error in /get_payin endpoint:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Error in /new_payin endpoint:", error);
+    
+    // Check if the error has a response with data containing a message
+    if (error.response && error.response.data && error.response.data.message) {
+      res.status(400).json({ error: error.response.data.message });
+    } else {
+      res.status(500).json({ error: error.message || "Failed to create payin" });
+    }
   }
 });
 
@@ -663,6 +670,31 @@ app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
     }
 });
 
+app.post("/get_wallet_id_by_address", generalLimiter, async (req, res) => {
+    console.log("\n=== Get Wallet ID by Address Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { address } = req.body;
+        if (!address) {
+            return res.status(400).json({ 
+                error: 'Invalid request. address is required.' 
+            });
+        }
+
+        const result = await getWalletIdByAddress(address);
+        console.log("Get wallet ID result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_wallet_id_by_address endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to get wallet ID",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
 
 app.post("/send_email", async (req, res) => {
   console.log("\n=== Send Email Request Received ===");
@@ -696,6 +728,31 @@ app.post("/get_all_kyc_users", generalLimiter, async (req, res) => {
         console.error("Error stack:", error.stack);
         res.status(500).json({ 
             error: error.message || "Failed to fetch KYC users",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+app.post("/delete_kyc_user", sensitiveLimiter, async (req, res) => {
+    console.log("\n=== Delete KYC User Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { user_id } = req.body;
+        if (!user_id) {
+            return res.status(400).json({ 
+                error: 'Invalid request. user_id is required.' 
+            });
+        }
+        const result = await deleteKYCUser(user_id);
+        console.log("KYC user deletion result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /delete_kyc_user endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to delete KYC user",
             details: error.toString(),
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });

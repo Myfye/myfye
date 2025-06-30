@@ -79,6 +79,18 @@ const DepositInstructionsOverlay = ({
     }
   };
 
+  const handleBankNameCopy = () => {
+    let addressToCopy = "";
+    if (payin?.currency === "MXN") {
+      addressToCopy = "Nvio";
+    } 
+    if (addressToCopy) {
+      navigator.clipboard.writeText(addressToCopy);
+      setCopiedField("bankName");
+      setTimeout(() => setCopiedField(null), 2000);
+    }
+  };
+
   useEffect(() => {
     if (payin) {
       if (payin.currency == "MXN") {
@@ -138,7 +150,7 @@ const DepositInstructionsOverlay = ({
                   color: var(--clr-text);
                 `}
               >
-                Send
+                Amount
               </h2>
               <div
                 css={css`
@@ -158,6 +170,18 @@ const DepositInstructionsOverlay = ({
                 />
               </div>
             </div>
+
+
+
+
+
+
+
+
+
+
+
+            {currency === "MXN" && (
             <div
               css={css`
                 display: flex;
@@ -172,7 +196,54 @@ const DepositInstructionsOverlay = ({
                   color: var(--clr-text);
                 `}
               >
-                To
+              Bank Name
+              </h2>
+              <div
+                css={css`
+                  display: inline-flex;
+                  align-items: center;
+                  font-size: var(--fs-medium);
+                  line-height: var(--line-height-tight);
+                `}
+              >
+                Nvio
+                <Button
+                  iconOnly
+                  color="transparent"
+                  size="small"
+                  icon={copiedField === "bankName" ? Check : Copy}
+                  onClick={handleBankNameCopy}
+                />
+              </div>
+            </div>
+            )}
+
+
+
+
+
+
+
+
+            
+            <div
+              css={css`
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-block-start: var(--size-200);
+              `}
+            >
+              <h2
+                className="heading-medium"
+                css={css`
+                  color: var(--clr-text);
+                `}
+              >
+            {currency === "MXN" ? "CLABE" : 
+             currency === "BRL" ? "PIX" :
+             currency === "USD" ? "ACH" : ""}
+
               </h2>
               <div
                 css={css`
@@ -222,6 +293,7 @@ const DepositInstructionsOverlay = ({
               text-align: center;
             `}
           >
+            <p>Beneficiary Name:</p> <br/>
             <p className="caption">
               {payin?.blindpay_bank_details?.beneficiary?.name}
             </p>

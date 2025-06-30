@@ -39,6 +39,8 @@ import {
   getAMCPriceQuote,
   getGMEPriceQuote
 } from "../../functions/StockPrices.ts";
+import { getUSDCBalanceOnBase } from '../../functions/checkForEVMDeposit.ts'
+import { bridgeFromBaseToSolana } from '../../functions/bridge.ts'
 
 const userCreationInProgress = new Set();
 
@@ -186,14 +188,11 @@ export const updateUserSolanaPubKey = async (
 const HandleUserLogIn = async (
   user: any,
   dispatch: Function,
-  priceOfUSDYinUSDC: number,
-  priceOfBTCinUSDC: number,
-  priceOfSOLinUSDC: number,
-  priceOfEURCinUSDC: number,
-  priceOfXRPinUSDC: number,
-  priceOfSUIinUSDC: number,
-  priceOfDOGEinUSDC: number,
+  wallets: any,
 ): Promise<{ success: boolean }> => {
+
+  
+
   dispatch(setcurrentUserEmail(user.email.address));
   dispatch(setPrivyUserId(user.id));
   if (user) {
@@ -205,7 +204,16 @@ const HandleUserLogIn = async (
         dispatch(setCurrentUserKYCVerified(dbUser.kyc_verified));
         dispatch(setBlindPayEvmWalletId(dbUser.blind_pay_evm_wallet_id));
         dispatch(setBlindPayReceiverId(dbUser.blind_pay_receiver_id));
+
+        //getUSDCBalanceOnBase(dbUser.evm_pub_key, dbUser.solana_pub_key);
+        console.log('BRIDGING USDC BASE AMOUNT to SOLANA AMOUNT evm and solana keys', dbUser.evm_pub_key, dbUser.solana_pub_key)
+        console.log('BRIDGING running bridgeFromBaseToSolana', wallets)
+
+        if (user.wallet && dbUser.solana_pub_key) {
+          bridgeFromBaseToSolana(0.01, dbUser.evm_pub_key, dbUser.solana_pub_key);
+        }
       }
+      
     } catch (error) {
       console.error("Error handling user:", error);
     }
@@ -313,7 +321,6 @@ export const getUserData = async (
 };
 
 const getUSDYPriceQuote = async (
-  price: number,
   dispatch: Function
 ): Promise<boolean> => {
   const quote = await getSwapQuote();

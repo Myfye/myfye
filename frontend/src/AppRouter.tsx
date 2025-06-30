@@ -7,6 +7,8 @@ import {
   usePrivy,
   useLoginWithPasskey,
   useMfaEnrollment,
+  usePrivy,
+  useWallets
 } from "@privy-io/react-auth";
 import { HandleUserLogIn } from "./features/authentication/LoginService.tsx";
 import logo from "@/assets/logo/myfye_logo_white.svg";
@@ -38,7 +40,7 @@ function WebAppInner() {
   window.Buffer = Buffer;
 
   const { showMfaEnrollmentModal } = useMfaEnrollment();
-
+  const { wallets } = useWallets();
   const firstNameUI = useSelector(
     (state: RootState) => state.userWalletData.currentUserFirstName
   );
@@ -74,12 +76,16 @@ function WebAppInner() {
   useEffect(() => {
     const handleLogin = async () => {
       if (authenticated && user) {
+
+        console.log('BRIDGING in AppRouter wallets:', wallets)
+
         try {
           console.log("calling HandleUserLogin"); 
           // TODO: calling this twice, we should call it once
           await HandleUserLogIn(
             user,
             dispatch,
+            wallets
           );
           setUserDataLoaded(true);
         } catch (error) {

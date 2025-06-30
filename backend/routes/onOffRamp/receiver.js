@@ -13,12 +13,14 @@ const {
   updateBlindPayEvmWalletId } = require('../userDb');
 const { createErrorLog } = require('../errorLog');
 
-// Get API key from environment variables
+
 const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
 const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+const NETWORK = 'base'
 
-//const BLIND_PAY_DEV_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
-//const BLIND_PAY_DEV_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
+//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+//const NETWORK = 'sepolia'
 
 async function create_new_on_ramp_path(data) {
   console.log("On-ramp called!");
@@ -110,6 +112,7 @@ async function create_new_receiver(data) {
         id_doc_country: data.id_doc_country,
         id_doc_type: data.id_doc_type,
         id_doc_front_file: data.id_doc_front_file,
+        id_doc_back_file: data.id_doc_back_file
       },
       {
         headers: {
@@ -138,7 +141,7 @@ async function create_blockchain_wallet(receiverId, userEvmPublicKey) {
       `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/receivers/${receiverId}/blockchain-wallets`,
       {
         name: "Wallet Display Name",
-        network: "base", // sepolia, base
+        network: NETWORK, // sepolia, base
         address: userEvmPublicKey,
         is_account_abstraction: true,
       },

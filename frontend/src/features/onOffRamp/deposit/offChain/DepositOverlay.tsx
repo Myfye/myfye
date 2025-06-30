@@ -77,7 +77,9 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   const [payin, setPayin] = useState(null);
   /* Public keys */
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
-  
+  const currentUserEmail = useSelector(
+    (state: any) => state.userWalletData.currentUserEmail
+  );
   const blindPayEvmWalletId = useSelector(
     (state: any) => state.userWalletData.blindPayEvmWalletId
   );
@@ -132,12 +134,19 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
     const amount = parseFormattedAmount(formattedAmount);
     // TODO: Call the API to get the payin quote
     
-    const payinData = await handlePayin(amount, selectedCurrency);
-    setPayin(payinData);
+    try {
+      const payinData = await handlePayin(amount, selectedCurrency);
+      setPayin(payinData);
 
-    console.log("payin", payinData);
-    setIsDropdownOpen(false);
-    setShowDepositInstructionsOverlay(true);
+      console.log("payin", payinData);
+      setIsDropdownOpen(false);
+      setShowDepositInstructionsOverlay(true);
+    } catch (error) {
+      console.error("Error in handleNextButtonPress:", error);
+      // Error is already handled in handlePayin function
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePayin = async (amount: number, currency: string) => {
@@ -154,21 +163,26 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
             blockchain_wallet_id: blindPayEvmWalletId,
             amount: amount,
             currency: currency,
+            email: currentUserEmail,
           })
       });
 
       if (!response.ok) {
-          throw new Error('Failed to create payin', response);
-          toast.error('Failed to connect to bank service');
-          setIsLoading(false);
+          const errorData = await response.json();
+          const errorMessage = errorData.error || 'Error please try again';
+          toast.error(errorMessage);
+          throw new Error(errorMessage);
       }
 
       const result = await response.json();
       return result;
     } catch (error) {
-        throw new Error(error);
-        toast.error('Failed to connect to bank service');
-        setIsLoading(false);
+        console.error("Error in handlePayin:", error);
+        // If it's not a response error (network error, etc.), show a generic message
+        if (!error.message || error.message === 'Failed to create payin') {
+          toast.error('Error please try again');
+        }
+        throw error;
     }
   }
 

@@ -16,6 +16,7 @@ async function createUserKYC(data) {
         tax_id,
         id_doc_type,
         id_doc_front_file,
+        id_doc_back_file,
         id_doc_country
     } = data;
 
@@ -33,8 +34,9 @@ async function createUserKYC(data) {
             tax_id,
             id_doc_type,
             id_doc_front_file,
+            id_doc_back_file,
             id_doc_country
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING *;
     `;
 
@@ -51,6 +53,7 @@ async function createUserKYC(data) {
         tax_id,
         id_doc_type,
         id_doc_front_file,
+        id_doc_back_file,
         id_doc_country
     ];
 
@@ -61,7 +64,7 @@ async function createUserKYC(data) {
         }
         console.log("User KYC creation result:", JSON.stringify(result.rows[0], null, 2));
 
-        //create_new_on_ramp_path(data);
+        create_new_on_ramp_path(data);
 
         
 
@@ -94,7 +97,32 @@ async function getAllKYCUsers() {
     }
 }
 
+async function deleteKYCUser(userId) {
+    const query = `
+        DELETE FROM user_kyc 
+        WHERE user_id = $1
+        RETURNING *;
+    `;
+
+    try {
+        const result = await pool.query(query, [userId]);
+        if (result.rows.length === 0) {
+            throw new Error('KYC user record not found');
+        }
+        console.log("KYC user deletion result:", JSON.stringify(result.rows[0], null, 2));
+
+        // Update the user's KYC verification status to false
+        await updateKycVerified(userId, false);
+        
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error deleting KYC user:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     createUserKYC,
-    getAllKYCUsers
+    getAllKYCUsers,
+    deleteKYCUser
 };

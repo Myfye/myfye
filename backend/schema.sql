@@ -116,6 +116,7 @@ CREATE TABLE IF NOT EXISTS user_kyc (
   tax_id TEXT,
   id_doc_type TEXT,
   id_doc_front_file TEXT,
+  id_doc_back_file TEXT,
   id_doc_country TEXT
 );
 

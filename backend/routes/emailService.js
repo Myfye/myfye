@@ -15,14 +15,21 @@ async function emailService(data) {
         const supportMessage = data.supportMessage;
         const timestamp = data.timestamp;
         const publicKey = data.publicKey;
+        const templateId = data.templateId;
+        const instructionFirstLine = data.instructionFirstLine;
+        const instructionSecondLine = data.instructionSecondLine;
+        const instructionThirdLine = data.instructionThirdLine;
+        const instructionFourthLine = data.instructionFourthLine;
+        const emailAddress = data.emailAddress;
+        const subject = data.subject;
 
         const msg = {
-            to: data.emailAddress,
+            to: emailAddress,
             from: {
                 email: "gavin@myfye.com",
                 name: "Myfye",
             },
-            templateId: data.templateId,
+            templateId: templateId,
             dynamic_template_data: {
                 firstName,
                 amount,
@@ -32,7 +39,12 @@ async function emailService(data) {
                 email,
                 supportMessage,
                 timestamp,
-                publicKey
+                publicKey,
+                instructionFirstLine,
+                instructionSecondLine,
+                instructionThirdLine,
+                instructionFourthLine,
+                subject
             },
         };
 
