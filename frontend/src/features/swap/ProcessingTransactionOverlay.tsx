@@ -10,7 +10,6 @@ import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
 import { useLottie } from "lottie-react";
 import { SwapTransactionStatus } from "./types";
-import ProgressBar from "@/shared/components/ui/progress_bar/ProgressBar";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -161,16 +160,6 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
                 )}
               </p>
             </hgroup>
-            <div
-              css={css`
-                margin-block-start: var(--size-400);
-                width: 80%;
-                margin-inline: auto;
-              `}
-            >
-              {(transaction.status === "signed" ||
-                transaction.status === "idle") && <ProgressBar value={value} />}
-            </div>
           </section>
         </section>
         <section

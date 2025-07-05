@@ -14,7 +14,7 @@ import { AbstractedAsset, Asset } from "../assets/types";
 import { selectAbstractedAssetsWithBalanceByDashboard } from "../assets/assetsSlice";
 import AssetCardListSelect from "../assets/cards/AssetCardListSelect";
 import ensureTokenAccount from "../../functions/ensureTokenAccount";
-import mintAddress from "./solana-swap/MintAddress";
+import mintAddress from "../../functions/MintAddress";
 
 const SelectAssetOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();

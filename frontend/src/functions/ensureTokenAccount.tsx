@@ -10,21 +10,153 @@ import {
   TransactionInstruction,
   VersionedTransaction, } from "@solana/web3.js";
 import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../env';
+import {
+    USDC_MINT_ADDRESS,
+    USDT_MINT_ADDRESS,
+    USDY_MINT_ADDRESS,
+    PYUSD_MINT_ADDRESS,
+    EURC_MINT_ADDRESS,
+    BTC_MINT_ADDRESS,
+    WSOL_MINT_ADDRESS,
+    XRP_MINT_ADDRESS,
+    DOGE_MINT_ADDRESS,
+    SUI_MINT_ADDRESS,
+    AAPL_MINT_ADDRESS,
+    ABT_MINT_ADDRESS,
+    ABBV_MINT_ADDRESS,
+    ACN_MINT_ADDRESS,
+    GOOGL_MINT_ADDRESS,
+    AMZN_MINT_ADDRESS,
+    AMBR_MINT_ADDRESS,
+    APP_MINT_ADDRESS,
+    AZN_MINT_ADDRESS,
+    BAC_MINT_ADDRESS,
+    BRK_MINT_ADDRESS,
+    AVGO_MINT_ADDRESS,
+    CVX_MINT_ADDRESS,
+    CRCL_MINT_ADDRESS,
+    CSCO_MINT_ADDRESS,
+    KO_MINT_ADDRESS,
+    COIN_MINT_ADDRESS,
+    CMCSA_MINT_ADDRESS,
+    CRWD_MINT_ADDRESS,
+    DHR_MINT_ADDRESS,
+    DFDV_MINT_ADDRESS,
+    LLY_MINT_ADDRESS,
+    XOM_MINT_ADDRESS,
+    GME_MINT_ADDRESS,
+    GLD_MINT_ADDRESS,
+    GS_MINT_ADDRESS,
+    HD_MINT_ADDRESS,
+    HON_MINT_ADDRESS,
+    INTC_MINT_ADDRESS,
+    IBM_MINT_ADDRESS,
+    JNJ_MINT_ADDRESS,
+    JPM_MINT_ADDRESS,
+    LIN_MINT_ADDRESS,
+    MRVL_MINT_ADDRESS,
+    META_MINT_ADDRESS,
+    MCD_MINT_ADDRESS,
+    MDT_MINT_ADDRESS,
+    MRK_MINT_ADDRESS,
+    MSFT_MINT_ADDRESS,
+    MSTR_MINT_ADDRESS,
+    QQQ_MINT_ADDRESS,
+    NFLX_MINT_ADDRESS,
+    NVO_MINT_ADDRESS,
+    NVDA_MINT_ADDRESS,
+    ORCL_MINT_ADDRESS,
+    PLTR_MINT_ADDRESS,
+    PEP_MINT_ADDRESS,
+    PFE_MINT_ADDRESS,
+    PM_MINT_ADDRESS,
+    PG_MINT_ADDRESS,
+    HOOD_MINT_ADDRESS,
+    CRM_MINT_ADDRESS,
+    SPY_MINT_ADDRESS,
+    TSLA_MINT_ADDRESS,
+    TMO_MINT_ADDRESS,
+    TQQQ_MINT_ADDRESS,
+    UNH_MINT_ADDRESS,
+    VTI_MINT_ADDRESS,
+    V_MINT_ADDRESS,
+    WMT_MINT_ADDRESS,
+    MA_MINT_ADDRESS,
+  } from "./MintAddress";
 
 async function ensureTokenAccount(userPublicKeyString: String, mintAddress: String) {
 
-    const USDC_MINT_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
-    const USDT_MINT_ADDRESS = 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB';
-    const USDY_MINT_ADDRESS = 'A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6';
-    const PYUSD_MINT_ADDRESS = '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo';
-    const EURC_MINT_ADDRESS = 'HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr';
-
     let programId: string = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 
-    if (mintAddress === PYUSD_MINT_ADDRESS) { // special case
-      mintAddress = PYUSD_MINT_ADDRESS;
-      programId = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
-    } 
+    // Check for stock mint addresses that need the different program ID
+    switch (mintAddress) {
+        case AAPL_MINT_ADDRESS:
+        case ABT_MINT_ADDRESS:
+        case ABBV_MINT_ADDRESS:
+        case ACN_MINT_ADDRESS:
+        case GOOGL_MINT_ADDRESS:
+        case AMZN_MINT_ADDRESS:
+        case AMBR_MINT_ADDRESS:
+        case APP_MINT_ADDRESS:
+        case AZN_MINT_ADDRESS:
+        case BAC_MINT_ADDRESS:
+        case BRK_MINT_ADDRESS:
+        case AVGO_MINT_ADDRESS:
+        case CVX_MINT_ADDRESS:
+        case CRCL_MINT_ADDRESS:
+        case CSCO_MINT_ADDRESS:
+        case KO_MINT_ADDRESS:
+        case COIN_MINT_ADDRESS:
+        case CMCSA_MINT_ADDRESS:
+        case CRWD_MINT_ADDRESS:
+        case DHR_MINT_ADDRESS:
+        case DFDV_MINT_ADDRESS:
+        case LLY_MINT_ADDRESS:
+        case XOM_MINT_ADDRESS:
+        case GME_MINT_ADDRESS:
+        case GLD_MINT_ADDRESS:
+        case GS_MINT_ADDRESS:
+        case HD_MINT_ADDRESS:
+        case HON_MINT_ADDRESS:
+        case INTC_MINT_ADDRESS:
+        case IBM_MINT_ADDRESS:
+        case JNJ_MINT_ADDRESS:
+        case JPM_MINT_ADDRESS:
+        case LIN_MINT_ADDRESS:
+        case MRVL_MINT_ADDRESS:
+        case META_MINT_ADDRESS:
+        case MCD_MINT_ADDRESS:
+        case MDT_MINT_ADDRESS:
+        case MRK_MINT_ADDRESS:
+        case MSFT_MINT_ADDRESS:
+        case MSTR_MINT_ADDRESS:
+        case QQQ_MINT_ADDRESS:
+        case NFLX_MINT_ADDRESS:
+        case NVO_MINT_ADDRESS:
+        case NVDA_MINT_ADDRESS:
+        case ORCL_MINT_ADDRESS:
+        case PLTR_MINT_ADDRESS:
+        case PEP_MINT_ADDRESS:
+        case PFE_MINT_ADDRESS:
+        case PM_MINT_ADDRESS:
+        case PG_MINT_ADDRESS:
+        case HOOD_MINT_ADDRESS:
+        case CRM_MINT_ADDRESS:
+        case SPY_MINT_ADDRESS:
+        case TSLA_MINT_ADDRESS:
+        case TMO_MINT_ADDRESS:
+        case TQQQ_MINT_ADDRESS:
+        case UNH_MINT_ADDRESS:
+        case VTI_MINT_ADDRESS:
+        case V_MINT_ADDRESS:
+        case WMT_MINT_ADDRESS:
+        case MA_MINT_ADDRESS:
+            programId = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
+            break;
+        default:
+            // Use default program ID for crypto tokens (USDC, USDT, etc.)
+            break;
+    }
 
     const userPublicKey = new PublicKey(userPublicKeyString);
 

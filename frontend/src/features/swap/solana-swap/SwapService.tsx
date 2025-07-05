@@ -2,7 +2,7 @@ import { PublicKey, Connection, VersionedTransaction } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
 import getTokenAccountData from "../../../functions/GetSolanaTokenAccount.tsx";
 import prepareTransaction from "./PrepareSwap.tsx";
-import mintAddress from "./MintAddress.tsx";
+import mintAddress from "../../../functions/MintAddress.tsx";
 import verifyTransaction from "./VerifyTransaction.tsx";
 import ensureTokenAccount from "../../../functions/ensureTokenAccount.tsx";
 import { SwapTransaction, updateStatus } from "../swapSlice.ts";
