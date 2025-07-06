@@ -160,7 +160,7 @@ const DepositInstructionsOverlay = ({
                   line-height: var(--line-height-tight);
                 `}
               >
-                <span>${amount}</span>
+                <span>${payin?.sender_amount/100}</span>
                 <Button
                   iconOnly
                   color="transparent"
@@ -281,10 +281,10 @@ const DepositInstructionsOverlay = ({
               text-align: center;
             `}
           >
-            Please go to your bank app to complete the deposit. Send ${amount} to this{" "}
+            Valid for 1 hour, Please go to your bank app to complete the deposit. Send ${payin?.sender_amount/100} to this{" "}
             {currency === "MXN" ? "CLABE" : 
              currency === "BRL" ? "PIX" :
-             currency === "USD" ? "ACH" : "payment"} number.
+             currency === "USD" ? "ACH" : "payment"} number. We will send you an email with these instructions too.
           </p>
           <section
             css={css`
