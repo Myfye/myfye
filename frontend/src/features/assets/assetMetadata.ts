@@ -14,56 +14,73 @@ export const assetMetadata: Record<string, { description: string }> = {
   SUI: {
     description: "Sui (SUI) is a Layer 1 blockchain optimized for instant settlement and high throughput, built by Mysten Labs using the Move programming language.",
   },
-
-  AAPL: {
-    description: "Apple Inc. (AAPL) is a multinational technology company known for its consumer electronics, including the iPhone, iPad, and Mac computers.",
-  },
-  MSFT: {
-    description: "Microsoft Corporation (MSFT) is a leading technology company providing software, cloud services, and hardware devices worldwide.",
-  },
-  GOOGL: {
-    description: "Alphabet Inc. (GOOGL) is the parent company of Google, providing internet-related services, software, and advertising technologies.",
-  },
-  NFLX: {
-    description: "Netflix Inc. (NFLX) is a global streaming entertainment service offering a vast library of movies, series, and original content.",
-  },
-  AMZN: {
-    description: "Amazon.com Inc. (AMZN) is a multinational technology company specializing in e-commerce, cloud computing, and digital streaming.",
-  },
-  SQ: {
-    description: "Block Inc. (SQ), formerly Square, provides financial services and mobile payment solutions for individuals and businesses.",
-  },
-  DIS: {
-    description: "The Walt Disney Company (DIS) is a global entertainment conglomerate known for its media networks, theme parks, and movie studios.",
-  },
-  TSLA: {
-    description: "Tesla Inc. (TSLA) designs and manufactures electric vehicles, energy storage systems, and solar energy products.",
-  },
-  AMD: {
-    description: "Advanced Micro Devices Inc. (AMD) is a semiconductor company that develops computer processors and graphics technologies.",
-  },
-  SPY: {
-    description: "SPDR S&P 500 ETF Trust (SPY) is an exchange-traded fund that tracks the performance of the S&P 500 Index.",
-  },
-  MSTR: {
-    description: "MicroStrategy Inc. (MSTR) is a business intelligence company also known for its substantial investments in Bitcoin.",
-  },
-  IAU: {
-    description: "iShares Gold Trust (IAU) is an exchange-traded fund designed to track the price of gold and provide exposure to the precious metal.",
-  },
-  KO: {
-    description: "The Coca-Cola Company (KO) is a multinational beverage corporation best known for its flagship product, Coca-Cola.",
-  },
-  AMC: {
-    description: "AMC Entertainment Holdings Inc. (AMC) is a movie theater chain and entertainment company with global operations.",
-  },
-  GME: {
-    description: "GameStop Corp. (GME) is a video game, consumer electronics, and gaming merchandise retailer known for its retail locations and e-commerce platform."
-  },
   USD: {
     description: "United States Dollar (USD) is the official currency of the United States and is widely used as a reserve currency globally.",
   },
   EUR: {
     description: "Euro (EUR) is the official currency of the European Union and is used by 19 countries in the Eurozone.",
-  }
+  },
+
+  // xStocks
+  ABTx: { description: "Abbott (ABTx) is a tokenized stock representing Abbott Laboratories, a global healthcare company known for diagnostics, medical devices, and nutrition products." },
+  ABBVx: { description: "AbbVie (ABBVx) is a tokenized stock representing AbbVie Inc., a biopharmaceutical company focused on innovative therapies including immunology and oncology." },
+  ACNx: { description: "Accenture (ACNx) is a tokenized stock representing Accenture plc, a global professional services firm specializing in IT services and consulting." },
+  GOOGLx: { description: "Alphabet (GOOGLx) is a tokenized stock representing Alphabet Inc., the parent company of Google, involved in internet services, advertising, and technology innovation." },
+  AMZNx: { description: "Amazon (AMZNx) is a tokenized stock representing Amazon.com Inc., a global e-commerce and cloud computing leader." },
+  AMBRx: { description: "Amber (AMBRx) is a tokenized stock representing Amber Group, a digital asset company providing liquidity and trading solutions in crypto finance." },
+  AAPLx: { description: "Apple (AAPLx) is a tokenized stock representing Apple Inc., known for its consumer electronics, software, and services." },
+  APPx: { description: "AppLovin (APPx) is a tokenized stock representing AppLovin Corporation, a mobile technology company offering marketing and monetization services." },
+  AZNx: { description: "AstraZeneca (AZNx) is a tokenized stock representing AstraZeneca plc, a global pharmaceutical company focused on innovative medicines." },
+  BACx: { description: "Bank of America (BACx) is a tokenized stock representing Bank of America Corporation, a multinational investment bank and financial services company." },
+  "BRK.Bx": { description: "Berkshire Hathaway (BRK.Bx) is a tokenized stock representing Class B shares of Berkshire Hathaway Inc., a diversified holding company led by Warren Buffett." },
+  AVGOx: { description: "Broadcom (AVGOx) is a tokenized stock representing Broadcom Inc., a global technology company developing semiconductors and infrastructure software." },
+  CVXx: { description: "Chevron (CVXx) is a tokenized stock representing Chevron Corporation, a major integrated energy company engaged in oil, gas, and geothermal energy." },
+  CRCLx: { description: "Circle (CRCLx) is a tokenized stock representing Circle, a fintech firm known for USDC, a widely used stablecoin for payments and blockchain finance." },
+  CSCOx: { description: "Cisco (CSCOx) is a tokenized stock representing Cisco Systems Inc., a leader in networking hardware, software, and telecommunications equipment." },
+  KOx: { description: "Coca-Cola (KOx) is a tokenized stock representing The Coca-Cola Company, a multinational beverage corporation known for its flagship soda brand." },
+  COINx: { description: "Coinbase (COINx) is a tokenized stock representing Coinbase Global Inc., a leading cryptocurrency exchange platform." },
+  CMCSAx: { description: "Comcast (CMCSAx) is a tokenized stock representing Comcast Corporation, a telecommunications conglomerate providing cable, internet, and media services." },
+  CRWDx: { description: "CrowdStrike (CRWDx) is a tokenized stock representing CrowdStrike Holdings Inc., a cybersecurity company providing endpoint and cloud workload protection." },
+  DHRx: { description: "Danaher (DHRx) is a tokenized stock representing Danaher Corporation, a global science and technology innovator in diagnostics and life sciences." },
+  DFDVx: { description: "DFDV (DFDVx) is a tokenized stock, likely representing a diversified financial vehicle or ETF focused on financial value." },
+  LLYx: { description: "Eli Lilly (LLYx) is a tokenized stock representing Eli Lilly and Company, a global pharmaceutical firm known for its work in diabetes and oncology." },
+  XOMx: { description: "Exxon Mobil (XOMx) is a tokenized stock representing Exxon Mobil Corporation, one of the world’s largest publicly traded oil and gas companies." },
+  GMEx: { description: "GameStop (GMEx) is a tokenized stock representing GameStop Corp., a retail company focused on video game products and electronics." },
+  GLDx: { description: "Gold (GLDx) is a tokenized asset representing exposure to the value of gold, a traditional store of value and investment asset." },
+  GSx: { description: "Goldman Sachs (GSx) is a tokenized stock representing The Goldman Sachs Group Inc., a leading global investment banking and financial services firm." },
+  HDx: { description: "Home Depot (HDx) is a tokenized stock representing The Home Depot Inc., a home improvement retail giant in the United States." },
+  HONx: { description: "Honeywell (HONx) is a tokenized stock representing Honeywell International Inc., a multinational conglomerate in aerospace, building technologies, and materials." },
+  INTCx: { description: "Intel (INTCx) is a tokenized stock representing Intel Corporation, a leading semiconductor and microprocessor manufacturer." },
+  IBMx: { description: "IBM (IBMx) is a tokenized stock representing International Business Machines Corporation, a global IT services and cloud computing firm." },
+  JNJx: { description: "Johnson & Johnson (JNJx) is a tokenized stock representing Johnson & Johnson, a multinational healthcare and pharmaceutical company." },
+  JPMx: { description: "JPMorgan Chase (JPMx) is a tokenized stock representing JPMorgan Chase & Co., a major global financial institution offering banking and investment services." },
+  LINx: { description: "Linde (LINx) is a tokenized stock representing Linde plc, a leading industrial gases and engineering company." },
+  MRVLx: { description: "Marvell (MRVLx) is a tokenized stock representing Marvell Technology Inc., a semiconductor company specializing in data infrastructure solutions." },
+  MAx: { description: "Mastercard (MAx) is a tokenized stock representing Mastercard Incorporated, a global payments technology company." },
+  MCDx: { description: "McDonald's (MCDx) is a tokenized stock representing McDonald's Corporation, a global fast food restaurant chain." },
+  MDTx: { description: "Medtronic (MDTx) is a tokenized stock representing Medtronic plc, a global leader in medical devices and health technology." },
+  MRKx: { description: "Merck (MRKx) is a tokenized stock representing Merck & Co., Inc., a pharmaceutical company known for vaccines and oncology products." },
+  METAx: { description: "Meta (METAx) is a tokenized stock representing Meta Platforms Inc., formerly Facebook, a leader in social media and virtual reality." },
+  MSFTx: { description: "Microsoft (MSFTx) is a tokenized stock representing Microsoft Corporation, a global technology company known for software, cloud services, and AI." },
+  MSTRx: { description: "MicroStrategy (MSTRx) is a tokenized stock representing MicroStrategy Incorporated, a business intelligence firm known for its Bitcoin holdings." },
+  QQQx: { description: "Nasdaq-100 (QQQx) is a tokenized stock representing the Invesco QQQ ETF, which tracks 100 of the largest Nasdaq-listed non-financial companies." },
+  NFLXx: { description: "Netflix (NFLXx) is a tokenized stock representing Netflix Inc., a global leader in streaming entertainment." },
+  NVOx: { description: "Novo Nordisk (NVOx) is a tokenized stock representing Novo Nordisk A/S, a global healthcare company focused on diabetes care and hormone therapy." },
+  NVDAx: { description: "NVIDIA (NVDAx) is a tokenized stock representing NVIDIA Corporation, a leader in graphics processing units (GPUs) and AI computing." },
+  ORCLx: { description: "Oracle (ORCLx) is a tokenized stock representing Oracle Corporation, an enterprise software and cloud computing company." },
+  PLTRx: { description: "Palantir (PLTRx) is a tokenized stock representing Palantir Technologies Inc., a software company specializing in big data analytics." },
+  PEPx: { description: "PepsiCo (PEPx) is a tokenized stock representing PepsiCo Inc., a global food and beverage company." },
+  PFEx: { description: "Pfizer (PFEx) is a tokenized stock representing Pfizer Inc., a pharmaceutical giant known for vaccines and treatments." },
+  PMx: { description: "Philip Morris (PMx) is a tokenized stock representing Philip Morris International Inc., a tobacco company with a focus on reduced-risk products." },
+  PGx: { description: "Procter & Gamble (PGx) is a tokenized stock representing The Procter & Gamble Company, a multinational consumer goods corporation." },
+  HOODx: { description: "Robinhood (HOODx) is a tokenized stock representing Robinhood Markets Inc., a fintech company offering commission-free trading." },
+  CRMx: { description: "Salesforce (CRMx) is a tokenized stock representing Salesforce Inc., a cloud-based software company known for customer relationship management (CRM) tools." },
+  SPYx: { description: "S&P 500 (SPYx) is a tokenized stock representing the SPDR S&P 500 ETF, tracking the performance of the S&P 500 index." },
+  TSLAx: { description: "Tesla (TSLAx) is a tokenized stock representing Tesla Inc., an electric vehicle and clean energy company led by Elon Musk." },
+  TMOx: { description: "Thermo Fisher (TMOx) is a tokenized stock representing Thermo Fisher Scientific Inc., a leader in laboratory equipment and life sciences." },
+  TQQQx: { description: "TQQQ (TQQQx) is a tokenized stock representing the ProShares UltraPro QQQ ETF, providing leveraged exposure to the Nasdaq-100 index." },
+  UNHx: { description: "UnitedHealth (UNHx) is a tokenized stock representing UnitedHealth Group Incorporated, a diversified health and well-being company." },
+  VTIx: { description: "Vanguard Total Stock Market (VTIx) is a tokenized stock representing the Vanguard Total Stock Market ETF, offering broad exposure to U.S. equities." },
+  Vx: { description: "Visa (Vx) is a tokenized stock representing Visa Inc., a global leader in digital payments and financial services." },
+  WMTx: { description: "Walmart (WMTx) is a tokenized stock representing Walmart Inc., the world’s largest retailer by revenue." },
 };
