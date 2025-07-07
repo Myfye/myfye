@@ -1,0 +1,53 @@
+AAPL Apple  
+MSFT Microsoft  
+AMZN Amazon  
+GOOGL Alphabet (Google)  
+NVDA Nvidia  
+LLY Eli Lilly  
+AVGO Broadcom  
+JNJ Johnson & Johnson  
+JPM JPMorgan Chase  
+V Visa  
+WMT Walmart  
+UNH UnitedHealth Group  
+XOM ExxonMobil  
+MA Mastercard  
+PG Procter & Gamble  
+HD Home Depot  
+CVX Chevron  
+KO Coca-Cola  
+MRK Merck  
+PFE Pfizer  
+NFLX Netflix  
+TSLA Tesla  
+ABT Abbott  
+ABBV AbbVie  
+ACN Accenture  
+AZN AstraZeneca  
+BAC Bank of America  
+BRK.B Berkshire Hathaway  
+CSCO Cisco  
+COIN Coinbase  
+CMCSA Comcast  
+CRWD CrowdStrike  
+DHR Danaher  
+GS Goldman Sachs  
+HON Honeywell  
+IBM IBM  
+INTC Intel  
+LIN Linde  
+MRVL Marvell  
+MCD McDonald's  
+MDT Medtronic  
+NDAQ Nasdaq  
+NVO Novo Nordisk  
+ORCL Oracle  
+PLTR Palantir  
+PM Philip Morris  
+HOOD Robinhood  
+CRM Salesforce  
+TMO Thermo Fisher  
+WFC Wells Fargo  
+XRX Xerox  
+MSTR MicroStrategy  
+GME GameStop  

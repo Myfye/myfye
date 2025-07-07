@@ -38,7 +38,7 @@ async function create_new_payin(data) {
     const clabe = response.data.clabe
     const pix = response.data.pix_code
 
-    send_deposit_email(data, clabe, pix);
+    send_deposit_email(data, clabe, pix, response.data);
 
     return response.data;
   } catch (error) {
@@ -108,7 +108,7 @@ async function get_payin_quote(data) {
 }
 
 
-async function send_deposit_email(data, clabe, pix) {
+async function send_deposit_email(data, clabe, pix, payin) {
   
     const emailTemplateID = 'd-2c4af21695eb4196926447ed87b37236'
 
@@ -123,11 +123,11 @@ async function send_deposit_email(data, clabe, pix) {
 
     let instructionFirstLine = ``
     if (data.currency === "MXN") {
-      instructionFirstLine = `Cantidad: ${data.amount}`
+      instructionFirstLine = `Cantidad: ${payin.sender_amount/100}`
     } else if (data.currency === "BRL") {
-      instructionFirstLine = `Quantia: ${data.amount}`
+      instructionFirstLine = `Quantia: ${payin.sender_amount/100}`
     } else if (data.currency === "USD") {
-      instructionFirstLine = `Amount: ${data.amount}`
+      instructionFirstLine = `Amount: ${payin.sender_amount/100}`
     }
 
     let instructionSecondLine = ``
@@ -146,11 +146,20 @@ async function send_deposit_email(data, clabe, pix) {
 
     let instructionFourthLine = ``
     if (data.currency === "MXN") {
-      instructionFourthLine = `Accede a la app de tu banco y sigue estas instrucciones. Este depósito será válido durante los próximos 60 minutos.`
+      instructionFourthLine = `Beneficiario: BlindPay, Inc.`
     } else if (data.currency === "BRL") {
-      instructionFourthLine = `Acesse o aplicativo do seu banco e siga estas instruções. Este depósito será válido pelos próximos 60 minutos.`
+      instructionFourthLine = `Beneficiário: BlindPay, Inc.`
     } else if (data.currency === "USD") {
-      instructionFourthLine = `Please go to your bank app and follow these instructions. This deposit will be valid for the next 60 minutes.`
+      instructionFourthLine = `Beneficiary: BlindPay, Inc.`
+    }
+
+    let instructionFifthLine = ``
+    if (data.currency === "MXN") {
+      instructionFifthLine = `Accede a la app de tu banco y sigue estas instrucciones. Este depósito será válido durante los próximos 60 minutos.`
+    } else if (data.currency === "BRL") {
+      instructionFifthLine = `Acesse o aplicativo do seu banco e siga estas instruções. Este depósito será válido pelos próximos 60 minutos.`
+    } else if (data.currency === "USD") {
+      instructionFifthLine = `Please go to your bank app and follow these instructions. This deposit will be valid for the next 60 minutes.`
     }
 
     // send email
@@ -162,7 +171,8 @@ async function send_deposit_email(data, clabe, pix) {
             instructionFirstLine,
             instructionSecondLine,
             instructionThirdLine,
-            instructionFourthLine
+            instructionFourthLine,
+            instructionFifthLine
         });
         console.log("Deposit email sent successfully");
     } catch (error) {

@@ -9,6 +9,7 @@ import { saveNewSwapTransaction } from "@/functions/SaveNewTransaction.tsx";
 import { SwapTransaction } from "../types.ts";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
 import { useSelector } from "react-redux";
+import { assetId } from "@/functions/MintAddress.tsx";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -163,6 +164,25 @@ function updateBalances(
   transaction: SwapTransaction,
   assets: AssetsState
 ) {
+  // Add debugging to see what assets are available
+  console.log("Available assets:", Object.keys(assets.assets));
+  console.log("COIN_sol asset:", assets.assets["COIN_sol"]);
+  
+  // Check which assets are missing
+      const requiredAssets = [
+      "btc_sol", "xrp_sol", "usdc_sol", "usdy_sol", "eurc_sol", "doge_sol", "sui_sol", "sol",
+      "AAPL", "MSFT", "AMZN", "GOOGL", "NVDA", "TSLA", "NFLX", "KO",
+      "WMT", "JPM", "SPY", "LLY", "AVGO", "JNJ", "V", "UNH",
+      "XOM", "MA", "PG", "HD", "CVX", "MRK", "PFE", "ABT",
+      "ABBV", "ACN", "AZN", "BAC", "BRK.B", "CSCO", "COIN", "CMCSA",
+      "CRWD", "DHR", "GS", "HON", "IBM", "INTC", "LIN", "MRVL",
+      "MCD", "MDT", "NDAQ", "NVO", "ORCL", "PLTR", "PM", "HOOD",
+      "CRM", "TMO", "MSTR", "GME"
+    ];
+  
+  const missingAssets = requiredAssets.filter(asset => !assets.assets[asset]);
+  console.log("Missing assets:", missingAssets);
+  
   const balances = {
     btcSol: assets.assets["btc_sol"].balance,
     xrpSol: assets.assets["xrp_sol"].balance,
@@ -172,6 +192,59 @@ function updateBalances(
     dogeSol: assets.assets["doge_sol"].balance,
     suiSol: assets.assets["sui_sol"].balance,
     sol: assets.assets["sol"].balance,
+    // Stock balances
+    aaplSol: assets.assets["AAPL_sol"].balance,
+    //msftSol: assets.assets["MSFT_sol"].balance,
+    //amznSol: assets.assets["AMZN_sol"].balance,
+    //googlSol: assets.assets["GOOGL_sol"].balance,
+    nvdaSol: assets.assets["NVDA_sol"].balance,
+    tslaSol: assets.assets["TSLA_sol"].balance,
+    //nflxSol: assets.assets["NFLX_sol"].balance,
+    //koSol: assets.assets["KO_sol"].balance,
+    //wmtSol: assets.assets["WMT_sol"].balance,
+    //jpmSol: assets.assets["JPM_sol"].balance,
+    spySol: assets.assets["SPY_sol"].balance,
+    //llySol: assets.assets["LLY_sol"].balance,
+    //avgoSol: assets.assets["AVGO_sol"].balance,
+    //jnjSol: assets.assets["JNJ_sol"].balance,
+    //vSol: assets.assets["V_sol"].balance,
+    //unhSol: assets.assets["UNH_sol"].balance,
+    //xomSol: assets.assets["XOM_sol"].balance,
+    //maSol: assets.assets["MA_sol"].balance,
+    //pgSol: assets.assets["PG_sol"].balance,
+    //hdSol: assets.assets["HD_sol"].balance,
+    //cvxSol: assets.assets["CVX_sol"].balance,
+    //mrkSol: assets.assets["MRK_sol"].balance,
+    //pfeSol: assets.assets["PFE_sol"].balance,
+    //abtSol: assets.assets["ABT_sol"].balance,
+    //abbvSol: assets.assets["ABBV_sol"].balance,
+    //acnSol: assets.assets["ACN_sol"].balance,
+    //aznSol: assets.assets["AZN_sol"].balance,
+    //bacSol: assets.assets["BAC_sol"].balance,
+    //brkBSol: assets.assets["BRK.B_sol"].balance,
+    //cscoSol: assets.assets["CSCO_sol"].balance,
+    coinSol: assets.assets["COIN_sol"].balance,
+    //cmcsaSol: assets.assets["CMCSA_sol"].balance,
+    //crwdSol: assets.assets["CRWD_sol"].balance,
+    //dhrSol: assets.assets["DHR_sol"].balance,
+    //gsSol: assets.assets["GS_sol"].balance,
+    //honSol: assets.assets["HON_sol"].balance,
+    //ibmSol: assets.assets["IBM_sol"].balance,
+    //intcSol: assets.assets["INTC_sol"].balance,
+    //linSol: assets.assets["LIN_sol"].balance,
+    //mrvlSol: assets.assets["MRVL_sol"].balance,
+    //mcdSol: assets.assets["MCD_sol"].balance,
+    //mdtSol: assets.assets["MDT_sol"].balance,
+    //ndaqSol: assets.assets["NDAQ_sol"].balance,
+    //nvoSol: assets.assets["NVO_sol"].balance,
+    //orclSol: assets.assets["ORCL_sol"].balance,
+    //pltrSol: assets.assets["PLTR_sol"].balance,
+    //pmSol: assets.assets["PM_sol"].balance,
+    //hoodSol: assets.assets["HOOD_sol"].balance,
+    //crmSol: assets.assets["CRM_sol"].balance,
+    //tmoSol: assets.assets["TMO_sol"].balance,
+    //mstrSol: assets.assets["MSTR_sol"].balance,
+    //gmeSol: assets.assets["GME_sol"].balance,
   };
 
   const { sell, buy } = transaction;
@@ -257,6 +330,53 @@ function updateBalances(
       );
       console.log(`added ${buy.amount} to sol balance`);
     },
+    // Stock buy actions
+    AAPL: () => {
+      dispatch(
+        updateBalance({
+          assetId: "AAPL_sol",
+          balance: balances.aaplSol + buy.amount,
+        })
+      );
+      console.log(`added ${buy.amount} to aapl balance`);
+    },
+    NVDA: () => {
+      dispatch(
+        updateBalance({
+          assetId: "NVDA_sol",
+          balance: balances.nvdaSol + buy.amount,
+        })
+      );
+      console.log(`added ${buy.amount} to nvda balance`);
+    },
+    TSLA: () => {
+      dispatch(
+        updateBalance({
+          assetId: "TSLA_sol",
+          balance: balances.tslaSol + buy.amount,
+        })
+      );
+      console.log(`added ${buy.amount} to tsla balance`);
+    },
+    SPY: () => {
+      dispatch(
+        updateBalance({
+          assetId: "SPY_sol",
+          balance: balances.spySol + buy.amount,
+        })
+      );
+      console.log(`added ${buy.amount} to spy balance`);
+    },
+    COIN: () => {
+      console.log("adding coin balance", balances.coinSol, buy.amount)
+      dispatch(
+        updateBalance({
+          assetId: "COIN_sol",
+          balance: balances.coinSol + buy.amount,
+        })
+      );
+      console.log(`added ${buy.amount} to coin balance`);
+    },
   };
 
   const sellActions = {
@@ -341,6 +461,52 @@ function updateBalances(
         })
       );
     },
+    // Stock sell actions
+    AAPL: () => {
+      const newBalance = Math.max(0, balances.aaplSol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "AAPL_sol",
+          balance: newBalance,
+        })
+      );
+    },
+    NVDA: () => {
+      const newBalance = Math.max(0, balances.nvdaSol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "NVDA_sol",
+          balance: newBalance,
+        })
+      );
+    },
+    TSLA: () => {
+      const newBalance = Math.max(0, balances.tslaSol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "TSLA_sol",
+          balance: newBalance,
+        })
+      );
+    },
+    SPY: () => {
+      const newBalance = Math.max(0, balances.spySol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "SPY_sol",
+          balance: newBalance,
+        })
+      );
+    },
+    COIN: () => {
+      const newBalance = Math.max(0, balances.coinSol - sell.amount);
+      dispatch(
+        updateBalance({
+          assetId: "COIN_sol",
+          balance: newBalance,
+        })
+      );
+    },
   };
 
   if (!sell.assetId || !buy.assetId) {
@@ -349,8 +515,8 @@ function updateBalances(
   }
 
   // Map the mint addresses to our asset IDs
-  const sellAssetId = mapMintToAssetId(sell.assetId);
-  const buyAssetId = mapMintToAssetId(buy.assetId);
+  const sellAssetId = assetId(sell.assetId);
+  const buyAssetId = assetId(buy.assetId);
   console.log("Original mint addresses:", { sellMint: sell.assetId, buyMint: buy.assetId });
   console.log("Mapped asset IDs:", { sellAssetId, buyAssetId });
   console.log("Available action keys:", {
@@ -375,26 +541,4 @@ function updateBalances(
 }
 
 
-// Helper function to map asset IDs to mint addresses
-function mapMintToAssetId(mintAddress: string): string {
-  // Map of mint addresses to asset IDs (matching the action map keys)
-  const mintToAssetMap: Record<string, string> = {
-    "So11111111111111111111111111111111111111112": "sol",
-    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "usdcSol",
-    "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": "usdtSol",
-    "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6": "usdySol",
-    "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr": "eurcSol",
-    "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij": "btcSol", // BUG ? should be 9n4nb2ow5xB2ywvDy8v52N2qN1xzybapC8G4wEGGkZwyTDt1v
-    "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT": "xrpSol",
-    "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn": "dogeSol",
-    "756wWVqA9tpZpxqNxCiJYSCGWi3gD2NXfwKHh4YsYJg9": "suiSol"
-    // Add more mappings as needed
-  };
 
-  const mappedId = mintToAssetMap[mintAddress];
-  if (!mappedId) {
-    console.error("Unknown mint address:", mintAddress);
-    return mintAddress;
-  }
-  return mappedId;
-}

@@ -67,6 +67,7 @@ const AssetCard = ({
   const currentUserKYCVerified = useSelector((state: RootState) => state.userWalletData.currentUserKYCVerified);
 
   const handleSwapClick = () => {
+    /*
     if (!currentUserKYCVerified) {
       console.log("opening KYC modal");
       dispatch(toggleKYCModal({ isOpen: true }));
@@ -79,6 +80,16 @@ const AssetCard = ({
         })
       );
     }
+      */
+
+    console.log("opening swap modal");
+    dispatch(
+      toggleSwapModal({
+        isOpen: true,
+        abstractedAssetId: id,
+      })
+    );
+    
   };
 
   const handleReceiveClick = () => {

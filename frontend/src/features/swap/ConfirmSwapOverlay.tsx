@@ -55,7 +55,164 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
       case "sui": {
         return "sui_sol";
       }
+      case "AAPL": {
+        return "AAPL";
+      }
+      case "MSFT": {
+        return "MSFT";
+      }
+      case "AMZN": {
+        return "AMZN";
+      }
+      case "GOOGL": {
+        return "GOOGL";
+      }
+      case "NVDA": {
+        return "NVDA";
+      }
+      case "TSLA": {
+        return "TSLA";
+      }
+      case "NFLX": {
+        return "NFLX";
+      }
+      case "KO": {
+        return "KO";
+      }
+      case "WMT": {
+        return "WMT";
+      }
+      case "JPM": {
+        return "JPM";
+      }
+      case "SPY": {
+        return "SPY";
+      }
+      case "LLY": {
+        return "LLY";
+      }
+      case "AVGO": {
+        return "AVGO";
+      }
+      case "JNJ": {
+        return "JNJ";
+      }
+      case "V": {
+        return "V";
+      }
+      case "UNH": {
+        return "UNH";
+      }
+      case "XOM": {
+        return "XOM";
+      }
+      case "MA": {
+        return "MA";
+      }
+      case "PG": {
+        return "PG";
+      }
+      case "HD": {
+        return "HD";
+      }
+      case "CVX": {
+        return "CVX";
+      }
+      case "MRK": {
+        return "MRK";
+      }
+      case "PFE": {
+        return "PFE";
+      }
+      case "ABT": {
+        return "ABT";
+      }
+      case "ABBV": {
+        return "ABBV";
+      }
+      case "ACN": {
+        return "ACN";
+      }
+      case "AZN": {
+        return "AZN";
+      }
+      case "BAC": {
+        return "BAC";
+      }
+      case "BRK.B": {
+        return "BRK.B";
+      }
+      case "CSCO": {
+        return "CSCO";
+      }
+      case "COIN": {
+        return "COIN";
+      }
+      case "CMCSA": {
+        return "CMCSA";
+      }
+      case "CRWD": {
+        return "CRWD";
+      }
+      case "DHR": {
+        return "DHR";
+      }
+      case "GS": {
+        return "GS";
+      }
+      case "HON": {
+        return "HON";
+      }
+      case "IBM": {
+        return "IBM";
+      }
+      case "INTC": {
+        return "INTC";
+      }
+      case "LIN": {
+        return "LIN";
+      }
+      case "MRVL": {
+        return "MRVL";
+      }
+      case "MCD": {
+        return "MCD";
+      }
+      case "MDT": {
+        return "MDT";
+      }
+      case "NDAQ": {
+        return "NDAQ";
+      }
+      case "NVO": {
+        return "NVO";
+      }
+      case "ORCL": {
+        return "ORCL";
+      }
+      case "PLTR": {
+        return "PLTR";
+      }
+      case "PM": {
+        return "PM";
+      }
+      case "HOOD": {
+        return "HOOD";
+      }
+      case "CRM": {
+        return "CRM";
+      }
+      case "TMO": {
+        return "TMO";
+      }
+      case "MSTR": {
+        return "MSTR";
+      }
+      case "GME": {
+        return "GME";
+      }
       default: {
+        console.log("abstractedAssetId", abstractedAssetId);
         throw new Error("Could not find abstracted Asset Id");
       }
     }

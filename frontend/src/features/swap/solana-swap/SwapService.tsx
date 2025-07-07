@@ -2,7 +2,7 @@ import { PublicKey, Connection, VersionedTransaction } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
 import getTokenAccountData from "../../../functions/GetSolanaTokenAccount.tsx";
 import prepareTransaction from "./PrepareSwap.tsx";
-import mintAddress from "./MintAddress.tsx";
+import mintAddress from "../../../functions/MintAddress.tsx";
 import verifyTransaction from "./VerifyTransaction.tsx";
 import ensureTokenAccount from "../../../functions/ensureTokenAccount.tsx";
 import { SwapTransaction, updateStatus } from "../swapSlice.ts";
@@ -101,7 +101,18 @@ export const swap = async ({
 };
 
 const convertToMicro = (amount: number, currency: string) => {
-  if (currency === "btc_sol") { // 8 decimals
+  console.log("convertToMicro currency: ", currency);
+  if (currency === "btc_sol" || 
+    currency === "AAPL" ||
+    currency === "SPY" ||
+    currency === "NVDA" ||
+    currency === "TSLA" ||
+    currency === "NFLX" ||
+    currency === "KO" ||
+    currency === "WMT" ||
+    currency === "JPM" ||
+    currency === "SPY" ||
+    currency === "COIN" ) { // 8 decimals
     return Math.round(amount * 100000000);
   } else if ( // 9 decimals
     currency === "w_sol" || currency === "sol" || 

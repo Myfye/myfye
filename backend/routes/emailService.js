@@ -20,6 +20,7 @@ async function emailService(data) {
         const instructionSecondLine = data.instructionSecondLine;
         const instructionThirdLine = data.instructionThirdLine;
         const instructionFourthLine = data.instructionFourthLine;
+        const instructionFifthLine = data.instructionFifthLine;
         const emailAddress = data.emailAddress;
         const subject = data.subject;
 
@@ -44,6 +45,7 @@ async function emailService(data) {
                 instructionSecondLine,
                 instructionThirdLine,
                 instructionFourthLine,
+                instructionFifthLine,
                 subject
             },
         };
