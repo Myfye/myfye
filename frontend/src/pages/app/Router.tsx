@@ -20,6 +20,7 @@ import Footer from "../../shared/components/layout/nav/footer/Footer";
 import NavMenu from "../../shared/components/layout/nav/header/nav-menu/NavMenu";
 import Header from "../../shared/components/layout/nav/header/Header";
 import Wallet from "@/pages/app/wallet/Wallet";
+import Activity from "@/pages/app/activity/Activity";
 import { useDispatch } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../../shared/components/ui/button/Button";
@@ -152,7 +153,7 @@ const Router = () => {
                   {tab.id === "home" && <Home />}
                   {tab.id === "wallet" && <Wallet />}
                   {tab.id === "pay" && <Pay />}
-                  {tab.id === "activity" && <div></div>}
+                  {tab.id === "activity" && <Activity />}
                 </motion.div>
               </MotionTabLabel>
             ))}

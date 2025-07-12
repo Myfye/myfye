@@ -1,4 +1,4 @@
-const pool = require("../db");
+const pool = require("../../db");
 
 async function createPayTransaction(data) {
     console.log("\n=== New Pay Transaction Request Received ===");

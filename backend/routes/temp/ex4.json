@@ -1,0 +1,386 @@
+{
+    "success": true,
+    "user_id": "test_user_123",
+    "evm_public_key": "0xf740Ca900d1B618769EABad6C7fdF31F28568fE1",
+    "sol_public_key": "4B23YAyYbXiFFixkjaSSLkALRQ4eogVa9BMWvpKoNDDH",
+    "cleanedTransactions": [
+        {
+            "signature": "sux5VsevF4MWbcbVH9XpK6WL41yVnToLBgRKt3otFXKdYLrj3tVVsu87KqHHexKfLkuA4tP4bFDYjLaknFZMabK",
+            "timestamp": 1752267029,
+            "input_amount": 0.00032115,
+            "output_amount": 0.2,
+            "input_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "3owJ5XqXMJ1eqWbz3fjW14VjijrYvL8dZ2XGGKmJYh2SykZE3egF7uHhLBoXKwy5wwvsao5jBWQFKT4JFbEud3Z3",
+            "timestamp": 1751921990,
+            "input_amount": 1.006897,
+            "output_amount": 0.00162398,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "type": "swap"
+        },
+        {
+            "signature": "2PDDNwcupM4ibR71WXdXHHpDZg3Gn3ovreGjNvDqtZGZYdBPisTWYaMjsX41mAikx5hh8wUPjVEamjmjapjyhjym",
+            "timestamp": 1751921860,
+            "input_amount": 0.01017,
+            "output_amount": 0.0000164,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "type": "swap"
+        },
+        {
+            "signature": "5qTmfrAhiMVPXq7dMCoCFnVzS2gzQHzPEqmdfRZjhtoyqBYHsGBP81tP69U8fFYi4qimHmLn3qPmM88GTFm7UgNj",
+            "timestamp": 1751921732,
+            "input_amount": 0.010276,
+            "output_amount": 0.00001657,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "type": "swap"
+        },
+        {
+            "signature": "49CxTw4869D9hiLg4KxwAL3Xfb3UD53UGpurFpXD9hZpzyC9RHdHhBg5KHxL2nXzkD6vGgS7MfLpYEL1yNtL7AGe",
+            "timestamp": 1751921492,
+            "input_amount": 0.010381,
+            "output_amount": 0.00001674,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "type": "swap"
+        },
+        {
+            "signature": "3L1gFHV4HKB2QmQoKXnu7xkujPc2KHzZFJk9jKiz3jhdBNC8QRibnECpH5TKUUjoVGkLpBSBCKUE7JAtFqys9Bvz",
+            "timestamp": 1751910164,
+            "input_amount": 0.00160989,
+            "output_amount": 1,
+            "input_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "2VyMyswxA9bnNWqatogbZrzTzf5qWLEeGhtDhzVeTv1ZKtr59h5AJiRM4bk41X64wfLYkWZDz2HEoyoURP1VFmLa",
+            "timestamp": 1751758898,
+            "input_amount": 0.00006402,
+            "output_amount": 0.02,
+            "input_mint": "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "2QAbte3oCTt99WfdLnHmoFdxYXUgaa3asNAq1wVM5UHdyZ8c1UT2d4EDb6aAb3jvNxhMEjnT6xExrBp3m7DSddWy",
+            "timestamp": 1751758780,
+            "input_amount": 0.0000319,
+            "output_amount": 0.02,
+            "input_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "5yeyft9cETXZqF1LdGN187agtZCTRCXHLhAvV8vf9JadYLkMePUo9PxVsRNKz387mhqoAa2vNxdGJG8JEf5gPUXG",
+            "timestamp": 1751758750,
+            "input_amount": 0.00005511,
+            "output_amount": 0.02,
+            "input_mint": "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "R9KXQE6LyLV28Yyt24grR5qTcaCa2bSbnxBhJcYYwRjYvYmuDe86brCF45jFabC8mHEDPLsMc8KUskwh8ypxDA2",
+            "timestamp": 1751758650,
+            "input_amount": 0.00005511,
+            "output_amount": 0.02,
+            "input_mint": "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "2NH7ZShdes1FySbFokhLY1Wx9La24GdnAvstid1u4aZspJhVZ4BdnfaYCpb4qWQR4GD4Brvig3QTEnetbHTwZXha",
+            "timestamp": 1751758324,
+            "input_amount": 0.00005511,
+            "output_amount": 0.02,
+            "input_mint": "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "5GdVZp72ycJmnnczecooCG87AcVWrtf1tRZ4SmvETCjNaVDnsbZ1aRBbdtE5hfLHc3o9k2DP6knKbLnHgCKbxsk9",
+            "timestamp": 1751758191,
+            "input_amount": 0.00005511,
+            "output_amount": 0.02,
+            "input_mint": "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "2Sae18w4UqkuNJFNFDc7eDZpNF7GT98Eimtg4UPKs9BxE8qiT9LDmr8Noyn7ww2wy6QGi3B2V4xo2Gbi2W3QTuFC",
+            "timestamp": 1751757997,
+            "input_amount": 0.00055124,
+            "output_amount": 0.2,
+            "input_mint": "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "2QbMX3suepaaLEjocNjXGisCr76GAHfQ85SU2mW3aWv7QpbMdMJwrx1jJ7k7ft7VTZcuFxc1U9zr4PyuXpcfnujm",
+            "timestamp": 1751757769,
+            "input_amount": 0.00005513,
+            "output_amount": 0.02,
+            "input_mint": "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "3oraZi2hWfUn54LycbSxwr95gsJJLSgzdhy9Mh5xKmHsStS2ymUazuwCauGbtr9Yjgm1ZRfa5kg8KBErQpu9xbBV",
+            "timestamp": 1751757655,
+            "input_amount": 0.00005513,
+            "output_amount": 0.02,
+            "input_mint": "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "nFM3pZm9HPGWokSfEcMWP1N3ugwdYsJvBJ4XqJnqU6DM5scZ87kq5auhiusm1ZQpa2DWPpUBLeJAKzrnsmxP7bR",
+            "timestamp": 1751757348,
+            "input_amount": 0.00001595,
+            "output_amount": 0.01,
+            "input_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "2hG1v3Pi6PTM4hQEg9QNJoyVgxZH5R8K6Krw3RfSV9BSUVjBE4owix28HJuZ5Ty1J48TZ8xCckkBiCffcw5rLtFf",
+            "timestamp": 1751757285,
+            "input_amount": 0.00001595,
+            "output_amount": 0.01,
+            "input_mint": "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "3x7AVb1G3E7SyrjeL7aQRpmXQJAp7rS5gdL3C2pgMht4yT6UjNDDum2WYe7aiaa9bj3sVjdQCVLDs6Uj2zuMRGfH",
+            "timestamp": 1751749569,
+            "input_amount": 0.00006224,
+            "output_amount": 0.01,
+            "input_mint": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "3JtKD8cbgJmoMZNUrfuBwv9xNKRFwugBiYkXCKWwwCBukMs68EP8VP3L6hpp9q9tWysKUQLqKigP9ubypkkjYc7h",
+            "timestamp": 1751748869,
+            "input_amount": 0.00006224,
+            "output_amount": 0.01,
+            "input_mint": "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "qrEsvZaHqQBZi6Kra1eE2Np3e3Hjp6TJsLR7CHAmQPjCZf12NhhH66is4eUYXAsbyMWCqdRF1fkj18kEq54enfW",
+            "timestamp": 1751748186,
+            "input_amount": 0.00004656,
+            "output_amount": 0.01,
+            "input_mint": "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "5G1rzQpefkufrS8SaLWdgbMfN5bPVp4v5C7bjuc6jhVdt2DhyJYA5S33yXtBZrQPbBKhh13L2jcmiADDHCYehRup",
+            "timestamp": 1751487015,
+            "input_amount": 0.00004716,
+            "output_amount": 0.01,
+            "input_mint": "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "2CYk7AgVymgrP4jbLHP1t9FCcZ3ebygoG2cPAUtLmkLMo8C1CXD5adHA9AVGmjM7YP71NxsNGmZf4QuKBuq5SLAb",
+            "timestamp": 1751397537,
+            "input_amount": 0.00004739,
+            "output_amount": 0.01,
+            "input_mint": "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "5mo3CTVSG3X9rqxH3TErH3AzczJLP7197BBQ9bCEhkz3s1p8HXQ7245WvTtG249CWBtQpP47xijBNQeVQaowgHph",
+            "timestamp": 1749348336,
+            "input_amount": 1.080920752,
+            "output_amount": 0.2,
+            "input_mint": "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "5LCJWH2cxU3pcwyUf4wPzrfeSbLY7sSrBKpeoAy6gjmvssPF8EL6zQdgHrUHqNs1uZeVPCXbidGxtwbPt1CNBvwQ",
+            "timestamp": 1749347679,
+            "input_amount": 0.061743284,
+            "output_amount": 0.2,
+            "input_mint": "756wWVqA9tpZpxqNxCiJYSCGWi3gD2NXfwKHh4YsYJg9",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "5sg5GkP13kga7Q35pCxULgsHaPuSwnP3mPn9YeXVwcwQkJRaNuLYNzGnJRiA8xy4kaQpSJbozXcf9PY965nAYR3r",
+            "timestamp": 1749165054,
+            "input_amount": 0.047260653,
+            "output_amount": 0.1,
+            "input_mint": "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "3fTGqRbec2JWWzXKhG1NbgAaEuzW9YmCpvTZLjnF7yYBY4RgqkcX1UTD339tL8HBdbJwnXGrTfrD1Yb8K5nZ5Xqo",
+            "timestamp": 1747598171,
+            "input_amount": 0.417023,
+            "output_amount": 0.00249594,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "So11111111111111111111111111111111111111112",
+            "type": "swap"
+        },
+        {
+            "signature": "gvrWRkUgH2B5NUC2TgHSZCAWYeiokwNwyPsyFGAvFwNVQ5a2B57ybXxEdENY2QVwuSvVavvmg1k6S9oV2DZ1mYK",
+            "timestamp": 1744922298,
+            "input_amount": 1.034791,
+            "output_amount": 0.00001219,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij",
+            "type": "swap"
+        },
+        {
+            "signature": "4rTV4GfbYAYSvWTsfr4jntV6DfKyF5wxgoaJbmshjpnH2vTt36GV6JiVPTkasyRwEKmLUbWQdt9wrSUQWp24fw2p",
+            "timestamp": 1743892786,
+            "input_amount": 0.596121,
+            "output_amount": 0.005,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "So11111111111111111111111111111111111111112",
+            "type": "swap"
+        },
+        {
+            "signature": "34EAcP8uaKXFVPwqjH6PMX9JWXk6xFyCfsKsVDfxMVLyfmqfX9NAjkq7Pu1BeTVjTZr9CA8TuHtAxidGwAEWxu9e",
+            "timestamp": 1743892496,
+            "input_amount": 0.00001219,
+            "output_amount": 1.011997,
+            "input_mint": "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "4cRo6HRE1YZKd44W8DmCTr5bURJGuiGKwo2YWZJdzY5ZZxNmSViSMDQqtJZ98X6Z2W5bdJshuq3fVoLpz4FPYetB",
+            "timestamp": 1743884178,
+            "input_amount": 0.999653,
+            "output_amount": 0.923012,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+            "type": "swap"
+        },
+        {
+            "signature": "JNnsv8ZVYuVA98pbFNYYv5JZfB2gdErPAuCEoc8LxhMw6ukHFCLKWJ7j6BiHBSwtfDkYwxE9Ssj3MnFcFLgicZY",
+            "timestamp": 1743812538,
+            "input_amount": 0.012344,
+            "output_amount": 0.000100969,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "So11111111111111111111111111111111111111112",
+            "type": "swap"
+        },
+        {
+            "signature": "3SS2Fnuy9Hn6RLMcXYKTTNXMNe5X4WYvPJy2RcPvi7wsqhDknmv4sidrX8TrSkZWi4BGQ2LtvRdTcicfGpiqm6tA",
+            "timestamp": 1743812434,
+            "input_amount": 0.923012,
+            "output_amount": 0.999854,
+            "input_mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "p2iRCPJD1Fp6oLUrG8hBF3Sj8epGDPDX1vUGhktgPgdZkmAmJpFWC9g1MGRs4qh61v38KGjY2a9twkM3WpsJsot",
+            "timestamp": 1743805418,
+            "input_amount": 0.999854,
+            "output_amount": 0.923196,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+            "type": "swap"
+        },
+        {
+            "signature": "5kDFPub6P5S4Sc4gaKXceve6k9j9rN2uZRRzCT9DHmj9AA2v1Q9q3e6wRPcnmrhgBFUrVYfQhQu9YzSVJsWQSDT1",
+            "timestamp": 1743794419,
+            "input_amount": 0.923196,
+            "output_amount": 1,
+            "input_mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "49w5fG28FNGC45x1xwpoAC3mRj9okL8XpTWYyezckftiPmBREmyocZrAXfBVVsnEdDFfK57eUB6sxYEPTGUAtep8",
+            "timestamp": 1743793052,
+            "input_amount": 0.008047609,
+            "output_amount": 0.97986,
+            "input_mint": "So11111111111111111111111111111111111111112",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "4vkAwDsiX7QhhnETJVS19Jqy59o7kBhSsTuBrTU4FPn3rqtjnfF3MmfhdRfEpViUDBbH5YYQ4gtSVwADjRqiR5rA",
+            "timestamp": 1743790315,
+            "input_amount": 0.97986,
+            "output_amount": 0.00001167,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij",
+            "type": "swap"
+        },
+        {
+            "signature": "5RsWfoK5bnt9LY2B2gkUAHrQTGoEPPdEEQ4HhEAqa4JygMKm7C6E7KcH1i64fNu7PicEYkEorvwRxfrJuvMif8tw",
+            "timestamp": 1743790254,
+            "input_amount": 0.00001167,
+            "output_amount": 0.898154,
+            "input_mint": "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij",
+            "output_mint": "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr",
+            "type": "swap"
+        },
+        {
+            "signature": "4QfpirMs6J3eoZm5kUi4ZFe9MWFtkmNh41i1xg7QG1LvEANH6GpLyv6EahCrJMSKUodoLEo5aq2fPs2yUABi6N4H",
+            "timestamp": 1743733147,
+            "input_amount": 0.898154,
+            "output_amount": 0.923008,
+            "input_mint": "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr",
+            "output_mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+            "type": "swap"
+        },
+        {
+            "signature": "3TE5EHRM83iBUwNYsCT8YiH4oWePH7m99ww3ELSJE4rzob34YiUKHuTLmircZZftVJxpPKFRg2BcAUzKihVM3oTP",
+            "timestamp": 1743728104,
+            "input_amount": 0.923008,
+            "output_amount": 0.999769,
+            "input_mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "2nbKifi8d8qELuxFwWgVS1vLSgnWSBEwCiLsFabUToYZHUVRG4JiQSCi9quL9eJSjKPkhhVF6B892QLnyHFxVPwc",
+            "timestamp": 1743705716,
+            "input_amount": 0.999769,
+            "output_amount": 0.923191,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+            "type": "swap"
+        },
+        {
+            "signature": "21Yt5rESQTJRA8xcDTUUDwEQESFsU7hp5yMxsi4rhH1vTc6Mxnu6ezSw8xrDj2vp4wrVJFWXpt4QLLCK1n4Abjzp",
+            "timestamp": 1743640263,
+            "input_amount": 0.923191,
+            "output_amount": 1,
+            "input_mint": "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+            "output_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "type": "swap"
+        },
+        {
+            "signature": "3A6VRECXYzH1LffjWybtDoNQcNRwcWGGuXFVeD8nRp4CbZn8uqyxbHcJw9pdyxy98My5SeLw4psT8uF7X9EJfVE2",
+            "timestamp": 1743543399,
+            "input_amount": 1,
+            "output_amount": null,
+            "input_mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "output_mint": null,
+            "type": "deposit"
+        }
+    ]
+}

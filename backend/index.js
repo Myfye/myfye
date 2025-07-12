@@ -27,11 +27,12 @@ const {
     createSwapTransaction, 
     getSwapTransactionsByUserId,
     getAllSwapTransactions 
-} = require('./routes/swapTransactions');
+} = require('./routes/transactions/swapTransactions');
 const { 
     createPayTransaction,
     getAllPayTransactions 
-} = require('./routes/payTransactions');
+} = require('./routes/transactions/payTransactions');
+const { transactionHistory } = require('./routes/transactions/transactionHistory');
 const { 
     saveRecentlyUsedAddresses, 
     getRecentlyUsedAddresses 
@@ -309,6 +310,27 @@ app.post("/get_all_pay_transactions", generalLimiter, async (req, res) => {
         console.error("Error stack:", error.stack);
         res.status(500).json({ 
             error: error.message || "Failed to fetch pay transactions",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+/* Transaction History endpoint */
+app.post("/get_transaction_history", generalLimiter, async (req, res) => {
+    console.log("\n=== Get Transaction History Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const data = req.body;
+        const result = await transactionHistory(data);
+        console.log(`Retrieved transaction history for user: ${data.user_id}`);
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_transaction_history endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to fetch transaction history",
             details: error.toString(),
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
