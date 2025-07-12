@@ -1,4 +1,4 @@
-const pool = require("../db");
+const pool = require("../../db");
 
 async function createSwapTransaction(data) {
     console.log("\n=== New Swap Transaction Request Received ===");

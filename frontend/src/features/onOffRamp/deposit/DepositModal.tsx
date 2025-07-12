@@ -35,11 +35,14 @@ const DepositModal = () => {
   };
 
   const openOnChainDeposit = () => {
+    /*
     if (!currentUserKYCVerified) {
       dispatch(toggleKYCModal({ isOpen: true }));
     } else {
       setOnChainDepositOpen(true);
     }
+      */
+    setOnChainDepositOpen(true);
   };
 
   const openOffChainDeposit = () => {
