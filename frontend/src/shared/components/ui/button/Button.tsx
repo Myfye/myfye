@@ -5,43 +5,51 @@ import {
   ButtonContext,
   useContextProps,
 } from "react-aria-components";
-import { useButton, useLink } from "react-aria";
+import { AriaLinkOptions, useButton, useLink } from "react-aria";
 import { motion } from "motion/react";
 import { ReactNode, Ref, RefObject, useCallback, useMemo } from "react";
 import { Icon } from "@phosphor-icons/react";
 
-interface ButtonProps {
-  ref: RefObject<HTMLButtonElement>;
-  variant: string;
-  color: string;
-  size: string;
-  className: string;
-  icon: Icon;
-  iconOnly: boolean;
-  borderRadius: string;
-  iconLeft: Icon;
-  iconRight: Icon;
-  wrap: boolean;
-  expand: boolean;
-  children: ReactNode;
+type IconSize = "x-small" | "small" | "medium" | "large";
+
+interface SharedButtonAndLinkProps {
+  variant?: string;
+  color?: string;
+  size?: string;
+  icon?: Icon;
+  iconOnly?: boolean;
+  iconLeft?: Icon;
+  iconRight?: Icon;
+  wrap?: boolean;
+  expand?: boolean;
+  borderRadius?: string;
 }
 
-interface LinkProps {
-  ref: RefObject<HTMLAnchorElement>;
-  variant: string;
-  color: string;
-  size: string;
-  className: string;
-  borderRadius: string;
-  icon: Icon;
-  iconOnly: boolean;
-  iconLeft: Icon;
-  iconRight: Icon;
-  wrap: boolean;
-  expand: boolean;
-  href: string | undefined;
-  children: ReactNode;
+interface ButtonProps extends AriaButtonProps, SharedButtonAndLinkProps {
+  ref: RefObject<HTMLButtonElement>;
 }
+
+interface LinkProps extends AriaLinkOptions, SharedButtonAndLinkProps {
+  ref: RefObject<HTMLAnchorElement>;
+  href?: string;
+}
+
+const getIconSize = (size: IconSize, iconOnly?: boolean) => {
+  switch (size) {
+    case "x-small": {
+      return !iconOnly ? 16 : 16;
+    }
+    case "small": {
+      return !iconOnly ? 16 : 18;
+    }
+    case "medium": {
+      return !iconOnly ? 18 : 20;
+    }
+    case "large": {
+      return !iconOnly ? 20 : 24;
+    }
+  }
+};
 
 const _Button = ({
   ref,
@@ -63,25 +71,10 @@ const _Button = ({
   const IconRight = iconRight;
   const IconLeft = iconLeft || icon;
 
-  const iconSize = useMemo(() => {
-    switch (size) {
-      case "x-small": {
-        return !iconOnly ? 16 : 16;
-      }
-      case "small": {
-        return !iconOnly ? 16 : 18;
-      }
-      case "medium": {
-        return !iconOnly ? 18 : 20;
-      }
-      case "large": {
-        return !iconOnly ? 20 : 24;
-      }
-    }
-  }, [size]);
+  const iconSize = getIconSize(size, iconOnly);
 
   const [restPropsButton, refButton] = useContextProps(
-    restProps,
+    { ...restProps, children, className },
     ref,
     ButtonContext
   );
@@ -98,7 +91,9 @@ const _Button = ({
       data-expand={expand}
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
-      className={`button ${className} ${variant === 'token-select' ? 'token-select' : ''}`}
+      className={`button ${buttonProps.className} ${
+        variant === "token-select" ? "token-select" : ""
+      }`}
       ref={ref}
       animate={{
         scale: isPressed ? 0.9 : 1,
@@ -116,10 +111,10 @@ const _Link = ({
   variant = "primary",
   color = "primary",
   size = "medium",
-  className = "",
+  className,
   borderRadius,
   icon,
-  iconOnly,
+  iconOnly = false,
   iconLeft = icon,
   iconRight,
   wrap = false,
@@ -130,29 +125,12 @@ const _Link = ({
 }: LinkProps) => {
   const Icon = icon;
 
-  const getIconSize = useCallback(
-    (size: string, iconOnly: boolean) => {
-      switch (size) {
-        case "x-small": {
-          return !iconOnly ? 16 : 16;
-        }
-        case "small": {
-          return !iconOnly ? 16 : 18;
-        }
-        case "medium": {
-          return !iconOnly ? 18 : 20;
-        }
-        case "large": {
-          return !iconOnly ? 20 : 24;
-        }
-      }
-    },
-    [size]
-  );
-
   const iconSize = getIconSize(size, iconOnly);
 
-  const { linkProps, isPressed } = useLink(restProps, ref);
+  const { linkProps, isPressed } = useLink(
+    { ...restProps, children, className },
+    ref
+  );
 
   return (
     // @ts-ignore
@@ -164,7 +142,9 @@ const _Link = ({
       data-expand={expand}
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
-      className={`button ${className} ${variant === 'token-select' ? 'token-select' : ''}`}
+      className={`button ${linkProps.className} ${
+        variant === "token-select" ? "token-select" : ""
+      }`}
       ref={ref}
       animate={{
         scale: isPressed ? 0.9 : 1,
@@ -176,24 +156,11 @@ const _Link = ({
   );
 };
 
-const Button = ({
-  href,
-  children,
-  ...restProps
-}: {
-  href?: string;
-  children: ReactNode;
-  restProps: LinkProps | ButtonProps;
-}) => {
-  return href ? (
-    // @ts-ignore
-    <_Link href={href} {...restProps}>
-      {children}
-    </_Link>
-  ) : (
-    // @ts-ignore
-    <_Button {...restProps}>{children}</_Button>
-  );
+const Button = (props: ButtonProps | LinkProps) => {
+  if ("href" in props && props.href !== undefined) {
+    return <_Link {...props} />;
+  }
+  return <_Button {...props} />;
 };
 
 export default Button;
