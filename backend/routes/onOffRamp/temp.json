@@ -1,0 +1,13 @@
+{
+    "success": true,
+    "data": {
+        "id": "ba_ePXIbnQVRfGZ",
+        "type": "spei_bitso",
+        "name": "Bank Account Name",
+        "beneficiary_name": "Aaron Ramirez Lezama",
+        "spei_protocol": "clabe",
+        "spei_institution_code": "40002",
+        "spei_clabe": "012650015162741850"
+    },
+    "message": "Bank account created successfully"
+}
