@@ -96,6 +96,9 @@ const swapSlice = createSlice({
         replace?: boolean;
       }>
     ) {
+
+      console.log("updateAmount", action.payload);
+      
       state.transaction.sell.formattedAmount = updateFormattedAmount(
         state.transaction.sell.formattedAmount,
         action.payload.input,

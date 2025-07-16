@@ -15,7 +15,6 @@ const Activity = () => {
 
   const user_id = useSelector((state: RootState) => state.userWalletData.currentUserID);
   const solanaPubKey = useSelector((state: RootState) => state.userWalletData.solanaPubKey);
-  //const solanaPubKey = "FG92wp6gSqSbh2n3UDWF1TYifmXbi8w37fEvdGTVWGXf";
   const evmPubKey = useSelector((state: RootState) => state.userWalletData.evmPubKey);
 
   const [transactions, setTransactions] = useState([]);

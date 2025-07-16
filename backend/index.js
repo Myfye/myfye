@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const { create_new_on_ramp_path, get_all_receivers, delete_blockchain_wallet, delete_receiver, delete_blockchain_wallet_and_receiver } = require('./routes/onOffRamp/receiver');
 const { create_new_payin, get_payin_quote } = require('./routes/onOffRamp/payIn');
+const { create_new_bank_account, get_bank_accounts, delete_bank_account, get_all_bank_accounts } = require('./routes/onOffRamp/bankAccount.js');
 const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
 const { ensureTokenAccount } = require('./routes/sol_transaction/tokenAccount');
 const { signTransaction, signVersionedTransaction } = require('./routes/sol_transaction/solanaTransaction');
@@ -386,6 +387,84 @@ app.post("/new_payin", async (req, res) => {
     } else {
       res.status(500).json({ error: error.message || "Failed to create payin" });
     }
+  }
+});
+
+app.post("/add_bank_account", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Add Bank Account Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await create_new_bank_account(data);
+    console.log("Bank account creation result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /add_bank_account endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to create bank account",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_bank_accounts", generalLimiter, async (req, res) => {
+  console.log("\n=== Get Bank Accounts Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await get_bank_accounts(data);
+    console.log("Bank accounts retrieval result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_bank_accounts endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get bank accounts",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/delete_bank_account", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Delete Bank Account Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await delete_bank_account(data);
+    console.log("Bank account deletion result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_bank_account endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to delete bank account",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_all_bank_accounts", generalLimiter, async (req, res) => {
+  console.log("\n=== Get All Bank Accounts Request Received ===");
+
+  try {
+    const result = await get_all_bank_accounts();
+    console.log("All bank accounts retrieval result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_all_bank_accounts endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get all bank accounts",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
