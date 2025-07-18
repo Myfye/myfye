@@ -44,7 +44,7 @@ const SelectAssetOverlay = ({
                 className="heading-small"
                 css={css`
                   color: var(--clr-text);
-                  margin-block-end: var(--size-200);
+                  margin-block-end: var(--size-150);
                 `}
               >
                 {section.label}
