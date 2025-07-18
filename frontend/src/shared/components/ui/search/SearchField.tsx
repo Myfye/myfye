@@ -1,17 +1,21 @@
 import { X as XIcon } from "@phosphor-icons/react";
 import Button from "../button/Button";
 import { useSearchFieldState } from "react-stately";
-import { useRef } from "react";
-import { useSearchField } from "react-aria";
+import { RefObject, useRef } from "react";
+import { AriaSearchFieldProps, useSearchField } from "react-aria";
 
 import { css } from "@emotion/react";
 
-const SearchField = (props) => {
-  const { label } = props;
-  let state = useSearchFieldState(props);
-  let ref = useRef(null);
-  let { labelProps, inputProps, clearButtonProps } = useSearchField(
-    props,
+interface SearchFieldProps extends AriaSearchFieldProps {
+  ref?: RefObject<HTMLInputElement>;
+}
+
+const SearchField = ({ ref, ...restProps }: SearchFieldProps) => {
+  const { label } = restProps;
+  const state = useSearchFieldState(restProps);
+  if (!ref) ref = useRef<HTMLInputElement>(null!);
+  const { labelProps, inputProps, clearButtonProps } = useSearchField(
+    restProps,
     state,
     ref
   );
