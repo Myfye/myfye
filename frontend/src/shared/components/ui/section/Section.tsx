@@ -1,16 +1,18 @@
 import { css } from "@emotion/react";
-import { ReactNode } from "react";
+import { HTMLAttributes, ReactNode } from "react";
+
+interface SectionProps extends HTMLAttributes<HTMLElement> {
+  title?: string;
+  action?: ReactNode;
+  children: ReactNode;
+}
 
 const Section = ({
   title = "",
   action,
   children,
   ...restProps
-}: {
-  title?: string;
-  action?: ReactNode;
-  children: ReactNode;
-}) => {
+}: SectionProps) => {
   return (
     <section {...restProps}>
       <hgroup
