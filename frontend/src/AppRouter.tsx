@@ -7,8 +7,7 @@ import {
   usePrivy,
   useLoginWithPasskey,
   useMfaEnrollment,
-  usePrivy,
-  useWallets
+  useWallets,
 } from "@privy-io/react-auth";
 import { HandleUserLogIn } from "./features/authentication/LoginService.tsx";
 import logo from "@/assets/logo/myfye_logo_white.svg";
@@ -39,28 +38,12 @@ import MFAOnboarding from "./pages/app/login/mfaOnboarding.tsx";
 function WebAppInner() {
   window.Buffer = Buffer;
 
-  const { showMfaEnrollmentModal } = useMfaEnrollment();
   const { wallets } = useWallets();
-  const firstNameUI = useSelector(
-    (state: RootState) => state.userWalletData.currentUserFirstName
-  );
-  const userPassKeyState = useSelector(
-    (state: RootState) => state.userWalletData.passKeyState
-  );
-  const selectedLanguageCode = useSelector(
-    (state: RootState) => state.userWalletData.selectedLanguageCode
-  );
-  const KYCVerifired = useSelector(
-    (state: RootState) => state.userWalletData.currentUserKYCVerified
-  );
-  const users = useSelector((state: RootState) => state.userWalletData.users);
   const dispatch = useDispatch();
 
   const [userDataLoaded, setUserDataLoaded] = useState(false); // To do: get user data
-  const ANNOUNCMENT_MESSAGE = "";
 
-  const { user, ready, authenticated, login, linkPasskey } = usePrivy();
-  const { state, loginWithPasskey } = useLoginWithPasskey();
+  const { user, ready, authenticated, login } = usePrivy();
 
   const mfaStatus = useSelector(
     (state: RootState) => state.userWalletData.mfaStatus
@@ -76,17 +59,12 @@ function WebAppInner() {
   useEffect(() => {
     const handleLogin = async () => {
       if (authenticated && user) {
-
-        console.log('BRIDGING in AppRouter wallets:', wallets)
+        console.log("BRIDGING in AppRouter wallets:", wallets);
 
         try {
-          console.log("calling HandleUserLogin"); 
+          console.log("calling HandleUserLogin");
           // TODO: calling this twice, we should call it once
-          await HandleUserLogIn(
-            user,
-            dispatch,
-            wallets
-          );
+          await HandleUserLogIn(user, dispatch, wallets);
           setUserDataLoaded(true);
         } catch (error) {
           console.error("Error during login:", error);
@@ -96,44 +74,7 @@ function WebAppInner() {
     handleLogin();
   }, [authenticated, user]);
 
-  if (authenticated) {
-    if (userDataLoaded) {
-      if (!user.wallet?.address || !user.wallet.address.startsWith("0x")) {
-        // normal user flow was interrupted, show onboarding
-        return <MFAOnboarding />;
-      }
-
-      if (mfaStatus === "enrolled") {
-        return (
-          <div className="app-layout">
-            <Router />
-            {/* Modals */}
-            <SendModal />
-            <ReceiveModal />
-            <DepositModal />
-            <WithdrawModal />
-            <QRCodeModal />
-            <SwapModal />
-            <KYCOverlay />
-            <PrivyUseSolanaWallets />
-            <Toaster />
-          </div>
-        );
-      }
-      if (mfaStatus === "createdPasskey") {
-        return <MFAOnboarding />;
-      }
-      if (mfaStatus === "" || !mfaStatus) {
-        return <MFAOnboarding />;
-      }
-    } else {
-      return (
-        <div className="app-layout">
-          <LoadingScreen />
-        </div>
-      );
-    }
-  } else {
+  if (!authenticated) {
     return (
       <>
         <LoginPage>
@@ -229,6 +170,43 @@ function WebAppInner() {
       </>
     );
   }
+
+  if (!userDataLoaded) {
+    return (
+      <div className="app-layout">
+        <LoadingScreen />
+      </div>
+    );
+  }
+
+  if (
+    !user?.wallet?.address ||
+    !user?.wallet.address.startsWith("0x") ||
+    mfaStatus === "createdPasskey" ||
+    mfaStatus === "" ||
+    !mfaStatus
+  ) {
+    // normal user flow was interrupted, show onboarding
+    return <MFAOnboarding />;
+  }
+
+  if (mfaStatus === "enrolled") {
+    return (
+      <div className="app-layout">
+        <Router />
+        {/* Modals */}
+        <SendModal />
+        <ReceiveModal />
+        <DepositModal />
+        <WithdrawModal />
+        <QRCodeModal />
+        <SwapModal />
+        <KYCOverlay />
+        <PrivyUseSolanaWallets />
+        <Toaster />
+      </div>
+    );
+  }
 }
 
 const AppRouter = () => {
@@ -240,169 +218,3 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
-
-// <div style={{ overflowX: "hidden", backgroundColor: "#ffffff" }}>
-//   {userDataLoaded ? (
-//     <>
-//       {ANNOUNCMENT_MESSAGE && (
-//         <div
-//           style={{
-//             textAlign: "center",
-//             fontSize: "14px",
-//             color: "#ffffff",
-//             whiteSpace: "nowrap",
-//             width: "100vw",
-//             background: "#2E7D32",
-//             marginBottom: "-10px",
-//           }}
-//         >
-//           {ANNOUNCMENT_MESSAGE}
-//         </div>
-//       )}
-
-//       <div
-//         style={{
-//           display: "flex",
-//           flexDirection: "row",
-//           justifyContent: "space-between",
-//           marginTop: "15px",
-//           marginLeft: "10px",
-//           alignItems: "center",
-//           paddingLeft: "10px",
-//           paddingRight: "10px",
-//         }}
-//       >
-//         <div
-//           style={{
-//             fontSize: "25px",
-//             fontWeight: "bold",
-//             width: "70vw",
-//             maxWidth: "550px",
-//             color: "#222222",
-//           }}
-//         >
-//           {selectedLanguageCode === "en" && `Welcome! ${firstNameUI}`}
-//           {selectedLanguageCode === "es" && `Hola, ${firstNameUI}`}
-//         </div>
-
-//         <div style={{ display: "flex", gap: "10px" }}>
-//           <Language />
-//           <Support />
-
-//           <PrivyUseSolanaWallets />
-//         </div>
-//       </div>
-
-//       {KYCVerifired ? (
-//         <div>
-//           {userPassKeyState === "done" ? (
-//             <div>
-//               {enrolledInMFA ? (
-//                 <div>
-//                   <div
-//                     style={{
-//                       display: "flex",
-//                       alignItems: "center",
-//                       flexDirection: "column",
-//                       color: "#222222",
-//                       justifyContent: "space-around",
-//                       overflowX: "hidden",
-//                     }}
-//                   >
-//                     <WalletTile />
-//                     <EarnTile />
-//                     <CryptoTile />
-
-//                     <div
-//                       style={{
-//                         display: "flex",
-//                         justifyContent: "space-around",
-//                         width: "90vw",
-//                         marginTop: "35px",
-//                         marginBottom: "120px",
-//                       }}
-//                     >
-//                       <div
-//                         style={{
-//                           color: "#ffffff",
-//                           background: "#2E7D32", // gray '#999999',
-//                           borderRadius: "10px",
-//                           border: "2px solid #2E7D32",
-//                           fontWeight: "bold",
-//                           height: "40px",
-//                           width: "130px",
-//                           display: "flex", // Makes this div also a flex container
-//                           justifyContent: "center", // Centers the text horizontally inside the button
-//                           alignItems: "center", // Centers the text vertically inside the button
-//                           cursor: "pointer",
-//                           fontSize: "20px",
-//                         }}
-//                         onClick={handleSendPageClick}
-//                       >
-//                         {selectedLanguageCode === "en" && `Send`}
-//                         {selectedLanguageCode === "es" && `Enviar`}
-//                       </div>
-//                       <div
-//                         style={{
-//                           color: "#ffffff",
-//                           background: "#2E7D32", // gray '#999999',
-//                           borderRadius: "10px",
-//                           border: "2px solid #2E7D32",
-//                           fontWeight: "bold",
-//                           height: "40px",
-//                           width: "130px",
-//                           display: "flex", // Makes this div also a flex container
-//                           justifyContent: "center", // Centers the text horizontally inside the button
-//                           alignItems: "center", // Centers the text vertically inside the button
-//                           cursor: "pointer",
-//                           fontSize: "20px",
-//                         }}
-//                         onClick={handleRequestPageClick}
-//                       >
-//                         {selectedLanguageCode === "en" && `Request`}
-//                         {selectedLanguageCode === "es" && `Pedido`}
-//                       </div>
-
-//                     <BottomNav />
-//               ) : (
-//
-//                       <button
-//                         onClick={showMfaEnrollmentModal}
-//                         style={{
-//                           color: "#ffffff",
-//                           fontSize: "25px",
-//                           fontWeight: "bold",
-//                           background: "#447E26",
-//                           borderRadius: "10px",
-//                           border: "3px solid #ffffff",
-//                           padding: "15px",
-//                           cursor: "pointer",
-//                         }}
-//                       >
-//                         Enroll in MFA
-//                       </button>
-//
-//               )}
-//             </div>
-//           ) : (
-//
-//                   <button
-//                     onClick={linkPasskey}
-//                     style={{
-//                       color: "#ffffff",
-//                       fontSize: "25px",
-//                       fontWeight: "bold",
-//                       background: "#447E26",
-//                       borderRadius: "10px",
-//                       border: "3px solid #ffffff",
-//                       padding: "15px",
-//                       cursor: "pointer",
-//                     }}
-//                   >
-//                     Create A Passkey
-//                   </button>
-//
-//       ) : (
-//         <div>{/*<PersonaKYC/>*/}</div>
-//       )}
-//     </>
