@@ -88,7 +88,7 @@ const NavMenu = () => {
                 margin: auto;
                 z-index: var(--z-index-nav);
                 width: 100%;
-                height: 100lvh;
+                height: 100svh;
               `}
             />
 
@@ -107,7 +107,7 @@ const NavMenu = () => {
                 position: fixed;
                 inset: 0;
                 margin: auto;
-                height: 100lvh;
+                height: 100svh;
                 background-color: var(--clr-surface);
                 z-index: 9999;
                 box-shadow: var(--box-shadow-nav);

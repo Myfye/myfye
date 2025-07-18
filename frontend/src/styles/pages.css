@@ -1,18 +1,18 @@
 @layer components {
   .page {
-    min-height: 100lvh;
+    min-height: 100svh;
     margin: auto;
   }
   .site-layout {
-    min-height: 100lvh;
+    min-height: 100svh;
     background-color: var(--clr-surface);
     font-family: var(--font-family);
   }
   .app-layout {
     display: grid;
     grid-template-rows: 4rem 1fr 4.5rem;
-    height: 100lvh;
-    max-height: 100lvh;
+    height: 100svh;
+    max-height: 100svh;
     max-width: 420px;
     margin-inline: auto;
     font-family: var(--font-family);

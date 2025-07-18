@@ -1,7 +1,7 @@
-import { CashId } from "../../pages/app/wallet/cash/types";
-import { CryptoId } from "../../pages/app/wallet/crypto/types";
-import { EarnId } from "../../pages/app/wallet/earn/types";
-import { StocksId } from "../../pages/app/wallet/stocks/types";
+import { CashId } from "../../pages/app/wallet/cash/cash.types";
+import { CryptoId } from "../../pages/app/wallet/crypto/crypto.types";
+import { EarnId } from "../../pages/app/wallet/earn/earn.types";
+import { StocksId } from "../../pages/app/wallet/stocks/stocks.types";
 
 export type FiatCurrency = "usd" | "eur";
 
