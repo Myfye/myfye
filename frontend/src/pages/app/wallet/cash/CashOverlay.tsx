@@ -14,6 +14,7 @@ import Section from "@/shared/components/ui/section/Section";
 import PieChart from "../_components/PieChart";
 import { setDepositModalOpen } from "@/redux/modalReducers";
 import { Series } from "highcharts";
+import { walletPieChartLabelFormatter } from "../utils";
 
 const CashOverlay = () => {
   const dispatch = useDispatch();
@@ -119,22 +120,7 @@ const CashOverlay = () => {
         fontFamily: "Inter",
         color: "var(--clr-text)",
       },
-      labelFormatter: function () {
-        if (this instanceof Series) return "";
-        return (
-          "<span class='legend'>" +
-          "<span class='currency'>" +
-          `<span>${this.name} ${Math.round(this?.percentage ?? 0)}%</span>` +
-          "</span>" +
-          "<span class='balance'>" +
-          new Intl.NumberFormat("en-EN", {
-            style: "currency",
-            currency: "usd",
-          }).format(this?.y ?? 0) +
-          "</span>" +
-          "<span>"
-        );
-      },
+      labelFormatter: walletPieChartLabelFormatter,
     },
     series: [
       // @ts-ignore

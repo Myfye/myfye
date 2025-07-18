@@ -1,19 +1,16 @@
 import { css } from "@emotion/react";
 import { ArrowRight, Icon } from "@phosphor-icons/react";
+import { ReactNode } from "react";
 
-const Card = ({
-  title,
-  icon,
-  size = "medium",
-  action,
-  caption,
-}: {
-  title: any;
-  size: string;
-  action: Function;
+interface CardProps {
+  title: string | ReactNode;
+  size?: string;
+  action?: Function;
   icon: Icon;
   caption: string;
-}) => {
+}
+
+const Card = ({ title, icon, size = "medium", action, caption }: CardProps) => {
   const Icon = icon;
   return (
     <div
