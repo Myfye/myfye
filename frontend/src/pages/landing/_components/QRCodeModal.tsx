@@ -8,13 +8,13 @@ import {
 } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useId } from "react";
-import myfyeQRCode from "@/assets/qr/myfye_qr.svg";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import MyfyeQRCode from "./MyfyeQRCode";
 
 // Wrap React Aria modal components so they support framer-motion values.
 const MotionDialog = motion(Dialog);
@@ -133,14 +133,15 @@ const QRCodeModal = ({
                     margin-block-end: var(--size-200);
                   `}
                 >
-                  <img
-                    src={myfyeQRCode}
-                    alt="Myfye QR Code"
+                  <div
                     css={css`
                       width: 12rem;
+                      aspect-ratio: 1;
                       margin-inline: auto;
                     `}
-                  />
+                  >
+                    <MyfyeQRCode title="Myfye QR Code" />
+                  </div>
                 </div>
                 <section
                   css={css`
