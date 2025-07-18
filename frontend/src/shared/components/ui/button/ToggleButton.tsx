@@ -3,7 +3,7 @@ import { useToggleButton } from "react-aria";
 import { motion, MotionProps } from "motion/react";
 import { ButtonHTMLAttributes, useRef } from "react";
 import { useToggleState } from "react-stately";
-import { ButtonProps } from "./types";
+import { ButtonProps } from "./button.types";
 import { getIconSize } from "./utils";
 
 const ToggleButton = ({

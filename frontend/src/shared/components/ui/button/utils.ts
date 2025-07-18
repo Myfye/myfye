@@ -1,4 +1,4 @@
-import { ButtonSize } from "./types";
+import { ButtonSize } from "./button.types";
 
 export const getIconSize = (size: ButtonSize, iconOnly?: boolean) => {
   switch (size) {

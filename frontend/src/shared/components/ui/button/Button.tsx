@@ -1,7 +1,7 @@
 import { ButtonContext, useContextProps } from "react-aria-components";
 import { useButton, useLink } from "react-aria";
 import { motion, MotionProps } from "motion/react";
-import { ButtonProps, LinkProps } from "./types";
+import { ButtonProps, LinkProps } from "./button.types";
 import { getIconSize } from "./utils";
 import { AnchorHTMLAttributes, ButtonHTMLAttributes, useRef } from "react";
 

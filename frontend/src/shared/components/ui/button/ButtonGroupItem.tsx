@@ -1,5 +1,5 @@
 import Button from "./Button";
-import { ButtonProps } from "./types";
+import { ButtonProps } from "./button.types";
 
 interface ButtonGroupItemProps extends ButtonProps {}
 
