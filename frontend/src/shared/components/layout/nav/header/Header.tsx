@@ -1,13 +1,12 @@
 import { css } from "@emotion/react";
 import { ReactNode } from "react";
 
-const Header = ({
-  children,
-  color = "transparent",
-}: {
+interface HeaderProps {
   children: ReactNode;
-  color: string;
-}) => {
+  color?: string;
+}
+
+const Header = ({ children, color = "transparent" }: HeaderProps) => {
   return (
     <header
       css={css`
