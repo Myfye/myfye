@@ -1,19 +1,18 @@
-import { ReactNode } from "react";
+import { HTMLProps } from "react";
 
+interface ButtonGroupProps extends Omit<HTMLProps<HTMLMenuElement>, "size"> {
+  size?: "x-small" | "small" | "medium" | "large" | "x-large";
+  direction?: "horizontal" | "vertical";
+  expand?: boolean;
+  scroll?: boolean;
+}
 const ButtonGroup = ({
   size = "medium",
   direction = "horizontal",
-  expand = "false",
+  expand = false,
   scroll = true,
-  children,
   ...restProps
-}: {
-  size: "small" | "medium" | "large";
-  direction: "horizontal" | "vertical";
-  scroll?: boolean;
-  children: ReactNode;
-  expand?: boolean;
-}) => {
+}: ButtonGroupProps) => {
   return (
     <menu
       className="button-group no-scrollbar"
@@ -22,9 +21,7 @@ const ButtonGroup = ({
       data-scroll={scroll}
       data-expand={expand}
       {...restProps}
-    >
-      {children}
-    </menu>
+    />
   );
 };
 

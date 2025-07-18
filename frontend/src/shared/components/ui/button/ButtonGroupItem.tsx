@@ -1,9 +1,12 @@
 import Button from "./Button";
+import { ButtonProps } from "./types";
 
-const ButtonGroupItem = ({ expand = false, ...restProps }) => {
+interface ButtonGroupItemProps extends ButtonProps {}
+
+const ButtonGroupItem = ({ ...restProps }: ButtonGroupItemProps) => {
   return (
-    <li className="item">
-      <Button expand={expand} {...restProps}></Button>
+    <li className="button-group-item">
+      <Button {...restProps} />
     </li>
   );
 };
