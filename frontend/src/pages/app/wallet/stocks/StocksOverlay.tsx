@@ -222,7 +222,7 @@ const StocksOverlay = () => {
           css={css`
             margin-block-start: var(--size-400);
             padding-inline: var(--size-250);
-            margin-block-end: var(--size-200);
+            padding-block-end: var(--size-250);
           `}
           action={
             <div

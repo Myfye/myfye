@@ -203,6 +203,7 @@ const EarnOverlay = () => {
           css={css`
             margin-block-start: var(--size-400);
             padding-inline: var(--size-250);
+            padding-block-end: var(--size-250);
           `}
         >
           <Card

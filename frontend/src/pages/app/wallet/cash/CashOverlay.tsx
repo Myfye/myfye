@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
@@ -14,6 +13,7 @@ import Button from "@/shared/components/ui/button/Button";
 import Section from "@/shared/components/ui/section/Section";
 import PieChart from "../_components/PieChart";
 import { setDepositModalOpen } from "@/redux/modalReducers";
+import { Series } from "highcharts";
 
 const CashOverlay = () => {
   const dispatch = useDispatch();
@@ -120,16 +120,17 @@ const CashOverlay = () => {
         color: "var(--clr-text)",
       },
       labelFormatter: function () {
+        if (this instanceof Series) return "";
         return (
           "<span class='legend'>" +
           "<span class='currency'>" +
-          `<span>${this.name} ${Math.round(this.percentage)}%</span>` +
+          `<span>${this.name} ${Math.round(this?.percentage ?? 0)}%</span>` +
           "</span>" +
           "<span class='balance'>" +
           new Intl.NumberFormat("en-EN", {
             style: "currency",
             currency: "usd",
-          }).format(this.y) +
+          }).format(this?.y ?? 0) +
           "</span>" +
           "<span>"
         );
@@ -228,7 +229,7 @@ const CashOverlay = () => {
           css={css`
             margin-block-start: var(--size-400);
             padding-inline: var(--size-250);
-            margin-block-end: var(--size-200);
+            padding-block-end: var(--size-250);
           `}
         >
           <AssetCardList assets={assets} showOptions={true} />
