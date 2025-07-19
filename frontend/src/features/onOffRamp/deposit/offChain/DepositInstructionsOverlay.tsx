@@ -57,7 +57,7 @@ const DepositInstructionsOverlay = ({
   };
 
   const handleAmountCopy = () => {
-    navigator.clipboard.writeText(amount.toString());
+    navigator.clipboard.writeText((payin?.sender_amount/100).toString());
     setCopiedField("amount");
     setTimeout(() => setCopiedField(null), 2000);
   };
@@ -87,6 +87,15 @@ const DepositInstructionsOverlay = ({
     if (addressToCopy) {
       navigator.clipboard.writeText(addressToCopy);
       setCopiedField("bankName");
+      setTimeout(() => setCopiedField(null), 2000);
+    }
+  };
+
+  const handleBeneficiaryNameCopy = () => {
+    const beneficiaryName = payin?.blindpay_bank_details?.beneficiary?.name;
+    if (beneficiaryName) {
+      navigator.clipboard.writeText(beneficiaryName);
+      setCopiedField("beneficiaryName");
       setTimeout(() => setCopiedField(null), 2000);
     }
   };
@@ -269,6 +278,41 @@ const DepositInstructionsOverlay = ({
                   size="small"
                   icon={copiedField === "address" ? Check : Copy}
                   onClick={handleAddressCopy}
+                />
+              </div>
+            </div>
+
+            <div
+              css={css`
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-block-start: var(--size-200);
+              `}
+            >
+              <h2
+                className="heading-medium"
+                css={css`
+                  color: var(--clr-text);
+                `}
+              >
+                Beneficiary Name
+              </h2>
+              <div
+                css={css`
+                  display: inline-flex;
+                  align-items: center;
+                  font-size: var(--fs-medium);
+                  line-height: var(--line-height-tight);
+                `}
+              >
+                <span>{payin?.blindpay_bank_details?.beneficiary?.name || "Loading..."}</span>
+                <Button
+                  iconOnly
+                  color="transparent"
+                  size="small"
+                  icon={copiedField === "beneficiaryName" ? Check : Copy}
+                  onClick={handleBeneficiaryNameCopy}
                 />
               </div>
             </div>
