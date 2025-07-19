@@ -70,6 +70,7 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [formattedAmount, setFormattedAmount] = useState("0");
+  const [totalAmount, setTotalAmount] = useState(0);
   const [showDepositInstructionsOverlay, setShowDepositInstructionsOverlay] =
     useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -97,6 +98,14 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   const selectedAddress = solanaPubKey;
   const dropdownRef = useRef(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+  // Calculate total amount with 1% fee whenever formattedAmount changes
+  useEffect(() => {
+    const baseAmount = parseFormattedAmount(formattedAmount);
+    const fee = baseAmount * 0.01; // 1% fee
+    const total = baseAmount + fee;
+    setTotalAmount(total);
+  }, [formattedAmount]);
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(selectedAddress);
@@ -352,57 +361,128 @@ css={css`
       <div
       css={css`
         display: flex;
+        flex-direction: column;
         align-items: center;
         gap: var(--size-100);
       `}
     >
   
-      <p
-        css={css`
-          color: var(--clr-text);
-          line-height: var(--line-height-tight);
-          font-size: 2.5rem;
-          font-weight: var(--fw-heading);
-        `}
-      >
-        <span>$</span>
-        {formattedAmount.split("").map((val, i) => (
-          <span key={`value-${i}`}>{val}</span>
-        ))}
-      </p>
-  
       <div
-        ref={dropdownRef}
         css={css`
-          position: relative;
           display: flex;
           align-items: center;
           gap: var(--size-100);
-          cursor: pointer;
-          padding: var(--size-100);
-          border-radius: var(--border-radius-small);
-          background-color: var(--clr-surface-raised);
-          &:hover {
-            background-color: var(--clr-surface-hover);
-          }
         `}
-        onClick={handleDropdownToggle}
       >
-        <img
-          src={getCurrencyFlag(selectedCurrency)}
-          alt={selectedCurrency}
+        <p
           css={css`
-            width: 24px;
-            height: auto;
+            color: var(--clr-text);
+            line-height: var(--line-height-tight);
+            font-size: 2.5rem;
+            font-weight: var(--fw-heading);
           `}
-        />
-        <span>{selectedCurrency}</span>
-        {isDropdownOpen ? (
-          <CaretUp size={24} />
-        ) : (
-          <CaretDown size={24} />
-        )}
+        >
+          <span>$</span>
+          {formattedAmount.split("").map((val, i) => (
+            <span key={`value-${i}`}>{val}</span>
+          ))}
+        </p>
+    
+        <div
+          ref={dropdownRef}
+          css={css`
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: var(--size-100);
+            cursor: pointer;
+            padding: var(--size-100);
+            border-radius: var(--border-radius-small);
+            background-color: var(--clr-surface-raised);
+            &:hover {
+              background-color: var(--clr-surface-hover);
+            }
+          `}
+          onClick={handleDropdownToggle}
+        >
+          <img
+            src={getCurrencyFlag(selectedCurrency)}
+            alt={selectedCurrency}
+            css={css`
+              width: 24px;
+              height: auto;
+            `}
+          />
+          <span>{selectedCurrency}</span>
+          {isDropdownOpen ? (
+            <CaretUp size={24} />
+          ) : (
+            <CaretDown size={24} />
+          )}
+        </div>
       </div>
+
+      {/* Fee display with smooth transitions */}
+      <motion.div
+        css={css`
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: var(--size-50);
+          margin-top: var(--size-100);
+          min-height: 3rem;
+          justify-content: center;
+        `}
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ 
+          opacity: formattedAmount !== "0" ? 1 : 0,
+          height: formattedAmount !== "0" ? "auto" : 0
+        }}
+        transition={{ 
+          duration: 0.3,
+          ease: "easeInOut"
+        }}
+      >
+        <motion.p
+          css={css`
+            color: var(--clr-text-muted);
+            font-size: 0.875rem;
+            line-height: var(--line-height-tight);
+            margin: 0;
+          `}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ 
+            opacity: formattedAmount !== "0" ? 1 : 0,
+            y: formattedAmount !== "0" ? 0 : -10
+          }}
+          transition={{ 
+            duration: 0.2,
+            delay: 0.1
+          }}
+        >
+          + 1% fee
+        </motion.p>
+        <motion.p
+          css={css`
+            color: var(--clr-text);
+            font-size: 1.125rem;
+            font-weight: var(--fw-heading);
+            line-height: var(--line-height-tight);
+            margin: 0;
+          `}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ 
+            opacity: formattedAmount !== "0" ? 1 : 0,
+            y: formattedAmount !== "0" ? 0 : -10
+          }}
+          transition={{ 
+            duration: 0.2,
+            delay: 0.2
+          }}
+        >
+          Total: ${totalAmount.toLocaleString()}
+        </motion.p>
+      </motion.div>
     </div>
       
     )}
