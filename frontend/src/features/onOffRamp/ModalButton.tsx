@@ -1,13 +1,26 @@
 import { css } from "@emotion/react";
-import CoinIcon from "./CoinIcon";
-import { useMemo } from "react";
+import { ButtonHTMLAttributes, RefObject, useMemo, useRef } from "react";
 import { ButtonContext, useContextProps } from "react-aria-components";
-import { useButton } from "react-aria";
-import { motion } from "motion/react";
+import { AriaButtonProps, useButton } from "react-aria";
+import { motion, MotionProps } from "motion/react";
+import { Icon } from "@phosphor-icons/react";
 
-const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
+interface ModalButtonProps extends AriaButtonProps {
+  icon: Icon;
+  title?: string;
+  description?: string;
+  ref?: RefObject<HTMLButtonElement>;
+}
+const ModalButton = ({
+  icon,
+  title,
+  description,
+  ref,
+  ...restProps
+}: ModalButtonProps) => {
   const Icon = icon;
 
+  if (!ref) ref = useRef<HTMLButtonElement>(null!);
   const [restPropsButton, refButton] = useContextProps(
     restProps,
     ref,
@@ -18,7 +31,8 @@ const ModalButton = ({ icon, title, description, ref, ...restProps }) => {
 
   return (
     <motion.button
-      {...buttonProps}
+      {...(buttonProps as ButtonHTMLAttributes<HTMLButtonElement> &
+        MotionProps)}
       ref={ref}
       animate={{
         scale: isPressed ? 0.98 : 1,

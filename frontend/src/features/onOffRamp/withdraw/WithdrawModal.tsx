@@ -1,13 +1,9 @@
 import { useState } from "react";
 import { css } from "@emotion/react";
-import { Bank, Copy, Wallet, Backspace } from "@phosphor-icons/react";
+import { Bank, Wallet } from "@phosphor-icons/react";
 import ModalButton from "../ModalButton";
 import Modal from "@/shared/components/ui/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setSelectContactOverlayOpen,
-  setWithdrawCryptoOverlayOpen,
-} from "@/redux/overlayReducers";
 import { RootState } from "@/redux/store";
 import { setWithdrawModalOpen } from "@/redux/modalReducers";
 import WithdrawCryptoOverlay from "./onChain/WithdrawCryptoOverlay";
@@ -17,7 +13,7 @@ const WithdrawModal = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state: RootState) => state.withdrawModal.isOpen);
   const [isCryptoOpen, setCryptoOpen] = useState(false);
-  const [showCopiedAddress, setShowCopiedAddress] = useState(false);
+  const [_, setShowCopiedAddress] = useState(false);
 
   const resetModal = () => {
     setCryptoOpen(false);
@@ -25,20 +21,13 @@ const WithdrawModal = () => {
     setShowCopiedAddress(false);
   };
 
-  const openCrypto = () => {
-    setCryptoOpen(true);
-    setHeight(680);
-  };
-
-  const onOpenChange = (isOpen: boolean) => {
-    dispatch(setWithdrawModalOpen(isOpen));
-  };
-
   return (
     <>
       <Modal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={(isOpen) => {
+          dispatch(setWithdrawModalOpen(isOpen));
+        }}
         title="Withdraw"
         height={height}
         onAnimationComplete={() => {
@@ -59,7 +48,10 @@ const WithdrawModal = () => {
                 icon={Wallet}
                 title="To wallet"
                 description="Send money on chain"
-                onPress={openCrypto}
+                onPress={() => {
+                  setCryptoOpen(true);
+                  setHeight(680);
+                }}
               />
             </li>
             <li>
