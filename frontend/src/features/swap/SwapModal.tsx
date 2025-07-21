@@ -1,15 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { css } from "@emotion/react";
 import Modal from "@/shared/components/ui/modal/Modal";
 import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleModal, toggleOverlay, unmount, updateAmount, updateUserId, updateInputPublicKey, updateOutputPublicKey } from "./swapSlice";
+import {
+  toggleModal,
+  toggleOverlay,
+  unmount,
+  updateAmount,
+  updateUserId,
+  updateInputPublicKey,
+  updateOutputPublicKey,
+} from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
-import SelectCoinOverlay from "./SelectAssetOverlay";
+import SelectSwapAssetOverlay from "./SelectSwapAssetOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
 
 const SwapModal = () => {
@@ -26,10 +34,16 @@ const SwapModal = () => {
   const intervalDelete = useRef<NodeJS.Timeout | null>(null);
   const delayDelete = useRef<NodeJS.Timeout | null>(null);
 
-  const user_id = useSelector((state: RootState) => state.userWalletData.currentUserID);
-  const solanaPubKey = useSelector((state: RootState) => state.userWalletData.solanaPubKey);
-  const evmPubKey = useSelector((state: RootState) => state.userWalletData.evmPubKey);
-  
+  const user_id = useSelector(
+    (state: RootState) => state.userWalletData.currentUserID
+  );
+  const solanaPubKey = useSelector(
+    (state: RootState) => state.userWalletData.solanaPubKey
+  );
+  const evmPubKey = useSelector(
+    (state: RootState) => state.userWalletData.evmPubKey
+  );
+
   const startDelete = (input: string) => {
     intervalDelete.current = setInterval(() => {
       dispatch(updateAmount({ input }));
@@ -55,7 +69,7 @@ const SwapModal = () => {
     console.log("Full userWalletData state:", {
       user_id,
       solanaPubKey,
-      evmPubKey
+      evmPubKey,
     });
     if (solanaPubKey) {
       dispatch(updateUserId(user_id));
@@ -69,7 +83,6 @@ const SwapModal = () => {
   const handleOpen = (e: boolean) => {
     dispatch(toggleModal({ isOpen: e }));
     if (e) {
-
     }
   };
 
@@ -188,7 +201,7 @@ const SwapModal = () => {
         </div>
       </Modal>
       <ConfirmSwapOverlay zIndex={9999 + 1} />
-      <SelectCoinOverlay zIndex={9999 + 2} />
+      <SelectSwapAssetOverlay zIndex={9999 + 2} />
       <ProcessingTransactionOverlay zIndex={9999 + 3} />
     </>
   );
