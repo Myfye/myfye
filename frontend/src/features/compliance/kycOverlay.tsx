@@ -45,6 +45,7 @@ interface KYCOverlayProps {
   selectedToken?: unknown;
   amount?: unknown;
   onCloseAll?: unknown;
+  isOpen?: boolean;
 }
 const KYCOverlay = ({
   onBack,
