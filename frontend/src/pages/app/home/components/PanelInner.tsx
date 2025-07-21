@@ -16,13 +16,19 @@ const AssetPanel = ({
       display: grid;
       grid-template-rows: auto 1fr;
       height: 100cqh;
-      gap: var(--size-300);
       padding-inline: var(--size-250);
+      position: relative;
+      isolation: isolate;
     `}
   >
     <section
       css={css`
         padding-block-start: var(--size-200);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: var(--clr-surface);
+        padding-block-end: var(--size-300);
       `}
     >
       <div
@@ -38,8 +44,8 @@ const AssetPanel = ({
     </section>
     <section
       css={css`
-        overflow-y: auto;
         padding-block-end: var(--size-250);
+        z-index: 0;
       `}
     >
       <AssetCardList assets={assets} showOptions={true} />

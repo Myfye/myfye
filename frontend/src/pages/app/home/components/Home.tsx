@@ -1,5 +1,5 @@
-import HomeTabs from "@/features/home/HomeTabs";
 import { css } from "@emotion/react";
+import HomeTabs from "./HomeTabs";
 
 const Home = () => {
   return (
