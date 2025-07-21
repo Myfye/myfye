@@ -1,10 +1,13 @@
 import { css } from "@emotion/react";
+import { ReactNode } from "react";
 
-const Main = ({ children }) => {
+interface MainProps {
+  children?: ReactNode;
+}
+const Main = ({ children }: MainProps) => {
   return (
     <main
       css={css`
-        overflow-y: auto;
         container: main / size;
         height: 100%;
       `}
