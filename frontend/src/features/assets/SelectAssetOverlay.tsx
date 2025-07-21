@@ -15,16 +15,12 @@ interface SelectAssetOverlayProps {
   selectedAbstractedAssetId: AbstractedAsset["id"] | null;
 }
 
-const checkIfAbstractedAssetSection = (
-  asset: AbstractedAsset | AbstractedAssetSection
-): asset is AbstractedAssetSection => {
-  return "abstractedAssets" in asset;
-};
-
 const filterSections = (
   sections: AbstractedAssetSection[],
   searchValue: string
 ) => {
+  if (searchValue === "") return sections;
+
   const allAssets = sections.flatMap((section) =>
     section.abstractedAssets.map((asset) => ({
       ...asset,
@@ -71,16 +67,13 @@ const SelectAssetOverlay = ({
   zIndex = 1000,
 }: SelectAssetOverlayProps) => {
   const [searchValue, setSearchValue] = useState("");
-  const [filteredSections, setFilteredSections] = useState<
-    AbstractedAssetSection[]
-  >(abstractedAssetSections);
+  const [filteredSections, setFilteredSections] = useState(
+    abstractedAssetSections
+  );
 
   useEffect(() => {
-    setFilteredSections((sections) => {
-      if (searchValue === "") return abstractedAssetSections;
-      return filterSections(sections, searchValue);
-    });
-  }, [searchValue]);
+    setFilteredSections(filterSections(abstractedAssetSections, searchValue));
+  }, [searchValue, setFilteredSections, abstractedAssetSections]);
 
   const getResultsUI = () => {
     if (filteredSections.length === 0)
