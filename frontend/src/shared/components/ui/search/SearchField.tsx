@@ -1,4 +1,7 @@
-import { X as XIcon } from "@phosphor-icons/react";
+import {
+  MagnifyingGlass as MagnifyingGlassIcon,
+  X as XIcon,
+} from "@phosphor-icons/react";
 import Button from "../button/Button";
 import { useSearchFieldState } from "react-stately";
 import { RefObject, useRef } from "react";
@@ -30,7 +33,8 @@ const SearchField = ({ ref, ...restProps }: SearchFieldProps) => {
           display: grid;
           font-size: 16px;
           background-color: var(--clr-surface-raised);
-          grid-template-columns: 1fr auto;
+          grid-template-columns: auto 1fr auto;
+          gap: var(--control-gap-large);
           align-items: center;
           width: 100%;
           border-radius: var(--border-radius-medium);
@@ -42,9 +46,9 @@ const SearchField = ({ ref, ...restProps }: SearchFieldProps) => {
           padding-inline: var(--size-150);
         `}
       >
+        <MagnifyingGlassIcon size={20} color="var(--clr-icon)" />
         <input
           {...inputProps}
-          placeholder="Search contact or address"
           ref={ref}
           css={css`
             font-size: 16px;
