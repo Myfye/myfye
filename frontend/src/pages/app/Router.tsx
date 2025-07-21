@@ -26,6 +26,7 @@ import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../../shared/components/ui/button/Button";
 import { motion, AnimatePresence } from "motion/react";
 import Pay from "@/pages/app/pay/Pay";
+import PullToRefresh from "@/features/pull-to-refresh/PullToRefresh";
 
 const tabs = [
   { id: "home", label: "Home" },
@@ -117,6 +118,7 @@ const Router = () => {
           display: grid;
           grid-template-rows: auto 1fr auto;
           height: 100cqh;
+          position: relative;
         `}
       >
         <Header>
@@ -128,7 +130,12 @@ const Router = () => {
             color="white"
           />
         </Header>
-        <main>
+        <main
+          css={css`
+            position: relative;
+            z-index: 0;
+          `}
+        >
           <AnimatePresence mode="wait">
             {tabs.map((tab) => (
               <MotionTabLabel
@@ -150,10 +157,12 @@ const Router = () => {
                     height: 100cqh;
                   `}
                 >
-                  {tab.id === "home" && <Home />}
-                  {tab.id === "wallet" && <Wallet />}
-                  {tab.id === "pay" && <Pay />}
-                  {tab.id === "activity" && <Activity />}
+                  <PullToRefresh height="100cqh" onRefresh={() => {}}>
+                    {tab.id === "home" && <Home />}
+                    {tab.id === "wallet" && <Wallet />}
+                    {tab.id === "pay" && <Pay />}
+                    {tab.id === "activity" && <Activity />}
+                  </PullToRefresh>
                 </motion.div>
               </MotionTabLabel>
             ))}
