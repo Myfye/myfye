@@ -1,30 +1,33 @@
 import { css } from "@emotion/react";
-import { useContext, createContext, useRef, useEffect } from "react";
+import { useContext, createContext, useRef, RefObject, ReactNode } from "react";
 import {
+  AriaRadioProps,
   useFocusRing,
   useRadio,
   useRadioGroup,
   VisuallyHidden,
 } from "react-aria";
-import { useRadioGroupState } from "react-stately";
+import {
+  RadioGroupProps,
+  RadioGroupState,
+  useRadioGroupState,
+} from "react-stately";
 import { AbstractedAsset } from "../types";
 import AssetCard from "./AssetCard";
 import { motion } from "motion/react";
-import { CheckCircle } from "@phosphor-icons/react";
 
-const RadioContext = createContext(null);
+const RadioContext = createContext<RadioGroupState>(null!);
 
-const AssetCardListRadio = (props) => {
-  let { children, label, description } = props;
-  let state = useRadioGroupState(props);
-  let {
-    radioGroupProps,
-    labelProps,
-    descriptionProps,
-    errorMessageProps,
-    isInvalid,
-    validationErrors,
-  } = useRadioGroup(props, state);
+interface AssetCardListRadioProps extends RadioGroupProps {
+  children: ReactNode;
+}
+const AssetCardListRadio = ({
+  children,
+  ...restProps
+}: AssetCardListRadioProps) => {
+  const { label, description } = restProps;
+  const state = useRadioGroupState(restProps);
+  const { radioGroupProps, labelProps } = useRadioGroup(restProps, state);
 
   return (
     <div className="asset-card-list-wrapper">
@@ -48,20 +51,22 @@ const AssetCardListRadio = (props) => {
   );
 };
 
-const AssetCardRadio = (props) => {
-  let { children } = props;
-  let state = useContext(RadioContext);
-  let ref = useRef(null);
-  let { inputProps, isSelected, isDisabled, isPressed } = useRadio(
-    props,
+interface AssetCardRadioProps extends AriaRadioProps {
+  ref?: RefObject<HTMLInputElement>;
+}
+const AssetCardRadio = ({
+  ref,
+  children,
+  ...restProps
+}: AssetCardRadioProps) => {
+  const state = useContext(RadioContext);
+  if (!ref) ref = useRef<HTMLInputElement>(null!);
+  const { inputProps, isSelected, isPressed } = useRadio(
+    { children, ...restProps },
     state,
     ref
   );
-  let { isFocusVisible, focusProps } = useFocusRing();
-
-  useEffect(() => {
-    console.log(isSelected);
-  }, [isSelected]);
+  const { isFocusVisible, focusProps } = useFocusRing();
 
   return (
     <li
@@ -127,6 +132,7 @@ const AssetCardListSelect = ({
             title={asset.label}
             symbol={asset.symbol}
             fiatCurrency={asset.fiatCurrency}
+            // @ts-ignore Need to update assets to fix this
             balance={showBalanceUSD ? asset.balanceUSD : asset.balance}
             showCurrencySymbol={showCurrencySymbol}
             icon={asset.icon}
