@@ -28,13 +28,13 @@ const tabs = [
 ];
 
 const HomeTabs = () => {
-  let [selectedKey, setSelectedKey] = useState(tabs[0].id);
+  const [selectedKey, setSelectedKey] = useState(tabs[0].id);
 
-  let tabListRef = useRef(null!);
-  let tabPanelsRef = useRef(null!);
+  const tabListRef = useRef<HTMLDivElement>(null!);
+  const tabPanelsRef = useRef<HTMLDivElement>(null!);
 
   // Track the scroll position of the tab panel container.
-  let { scrollXProgress } = useScroll({
+  const { scrollXProgress } = useScroll({
     container: tabPanelsRef,
   });
 
@@ -196,7 +196,8 @@ const HomeTabs = () => {
         className="no-scrollbar"
         css={css`
           display: flex;
-          overflow: auto;
+          overflow-x: auto;
+          overflow-y: visible;
           scroll-snap-type: x mandatory;
           background-color: var(--clr-surface);
         `}
