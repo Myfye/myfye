@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactNode, useEffect, useRef, useState } from "react";
+import { HTMLAttributes, ReactNode, useRef } from "react";
 import {
   animate,
   motion,
@@ -7,7 +7,6 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import ThreeDotsBounceLoader from "@/shared/components/ui/loading/spinners/ThreeDotsBounceLoader";
 import { css } from "@emotion/react";
 import BarsRotateFadeLoader from "@/shared/components/ui/loading/spinners/BarsRotateFadeLoader";
 
@@ -77,10 +76,11 @@ const PullToRefresh = ({
           bottom: MAX_PULL_HEIGHT,
         }}
         onDragStart={(...args) => {
+          const [e, info] = args;
           onRefreshStart && onRefreshStart(...args);
         }}
         onDragEnd={async (...args) => {
-          const info = args[1];
+          const [e, info] = args;
           if (info.offset.y >= MAX_PULL_HEIGHT) {
             onRefresh && (await onRefresh(...args));
           }
