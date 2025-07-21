@@ -14,6 +14,7 @@ const Header = ({ children, color = "transparent" }: HeaderProps) => {
         background-color: ${color};
         position: relative;
         width: 100%;
+        z-index: 1;
       `}
     >
       <div
