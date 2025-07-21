@@ -80,12 +80,6 @@ const SwapModal = () => {
     }
   }, [user_id, solanaPubKey]);
 
-  const handleOpen = (e: boolean) => {
-    dispatch(toggleModal({ isOpen: e }));
-    if (e) {
-    }
-  };
-
   const handleNumberPressStart = (input: string) => {
     if (input === "delete") {
       dispatch(updateAmount({ input }));
@@ -93,19 +87,6 @@ const SwapModal = () => {
         startDelete(input);
       }, 200);
     }
-  };
-
-  const handleNumberPress = (input: string) => {
-    if (input === "delete") return;
-    dispatch(updateAmount({ input }));
-  };
-
-  const handleNumberPressEnd = () => {
-    stopDelete();
-  };
-
-  const handleSwapControllerConfirmation = () => {
-    dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
   };
 
   const checkIfInvalidSwapTransaction = () => {
@@ -146,15 +127,15 @@ const SwapModal = () => {
     <>
       <Modal
         isOpen={isOpen}
-        onOpenChange={handleOpen}
-        title="Swap"
-        height={height}
-        zIndex={zIndex}
-        onAnimationComplete={() => {
+        onOpenChange={(isOpen) => {
+          dispatch(toggleModal({ isOpen: isOpen }));
           if (!isOpen) {
             dispatch(unmount(undefined));
           }
         }}
+        title="Swap"
+        height={height}
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -179,9 +160,12 @@ const SwapModal = () => {
             `}
           >
             <NumberPad
-              onNumberPress={handleNumberPress}
+              onNumberPress={(input) => {
+                if (input === "delete") return;
+                dispatch(updateAmount({ input }));
+              }}
               onNumberPressStart={handleNumberPressStart}
-              onNumberPressEnd={handleNumberPressEnd}
+              onNumberPressEnd={() => void stopDelete()}
             />
           </section>
           <section
@@ -193,7 +177,9 @@ const SwapModal = () => {
             <Button
               isDisabled={isInvalidSwapTransaction}
               expand
-              onPress={handleSwapControllerConfirmation}
+              onPress={() => {
+                dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
+              }}
             >
               Confirm
             </Button>
