@@ -45,7 +45,7 @@ const _Button = ({
       data-expand={expand}
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
-      className={`button ${className} ${
+      className={`button ${className ? className : ""} ${
         variant === "token-select" ? "token-select" : ""
       }`}
       ref={ref}
@@ -93,7 +93,7 @@ const _Link = ({
       data-expand={expand}
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
-      className={`button ${className} ${
+      className={`button ${className ? className : ""} ${
         variant === "token-select" ? "token-select" : ""
       }`}
       ref={ref}
