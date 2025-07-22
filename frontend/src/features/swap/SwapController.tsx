@@ -9,7 +9,7 @@ import {
   formatUsdAmount,
   getUsdAmount,
 } from "./utils";
-import { switchCurrencies, toggleOverlay, updateAmount } from "./swapSlice";
+import { switchCurrencies, toggleOverlay, updateAmount, updateExchangeRate } from "./swapSlice";
 import Button from "@/shared/components/ui/button/Button";
 import TextFit from "@/shared/components/ui/TextFit";
 import { AbstractedAsset } from "../assets/types";
@@ -293,6 +293,7 @@ const SwapController = () => {
   const dispatch = useDispatch();
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
+  const assets = useSelector((state: RootState) => state.assets);
 
   return (
     <div
@@ -321,6 +322,14 @@ const SwapController = () => {
       <div
         onClick={() => {
           dispatch(switchCurrencies(null));
+          // After switching currencies, update the exchange rate with the new buy/sell pair
+          dispatch(
+            updateExchangeRate({
+              buyAbstractedAssetId: transaction.sell.abstractedAssetId, // After switch, current sell becomes buy
+              sellAbstractedAssetId: transaction.buy.abstractedAssetId, // After switch, current buy becomes sell
+              assets: assets,
+            })
+          );
         }}
         className="icon-wrapper"
         css={css`

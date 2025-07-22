@@ -120,6 +120,11 @@ CREATE TABLE IF NOT EXISTS user_kyc (
   id_doc_country TEXT
 );
 
+CREATE TABLE IF NOT EXISTS blind_pay_bank_accounts (
+  id TEXT PRIMARY KEY,
+  user_id TEXT REFERENCES users(uid)
+);
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE INDEX ON users USING gin (first_name gin_trgm_ops);
 CREATE INDEX ON users USING gin (last_name gin_trgm_ops);

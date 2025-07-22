@@ -122,21 +122,39 @@ interface Receiver {
   blockchain_wallets: BlockchainWallet[];
 }
 
+interface BankAccount {
+  bank_account_id: string;
+  user_id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  blind_pay_receiver_id: string;
+  blind_pay_details: {
+    id: string;
+    type: string;
+    name: string;
+    beneficiary_name: string;
+    spei_protocol: string;
+    spei_institution_code: string;
+    spei_clabe: string;
+  } | null;
+  error: string | null;
+}
+
 function Dashboard() {
   const navigate = useNavigate();
   const [errorLogs, setErrorLogs] = useState<ErrorLog[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [kycUsers, setKycUsers] = useState<KYCUser[]>([]);
   const [receivers, setReceivers] = useState<Receiver[]>([]);
-  const [swapTransactions, setSwapTransactions] = useState<SwapTransaction[]>(
-    []
-  );
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+  const [swapTransactions, setSwapTransactions] = useState<SwapTransaction[]>([]);
   const [payTransactions, setPayTransactions] = useState<PayTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedLogs, setExpandedLogs] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<
-    "errors" | "users" | "transactions" | "pay" | "kyc" | "receivers"
+    "errors" | "users" | "transactions" | "pay" | "kyc" | "receivers" | "bank-accounts"
   >("errors");
 
   useEffect(() => {
@@ -146,6 +164,7 @@ function Dashboard() {
     fetchPayTransactions();
     fetchKYCUsers();
     fetchReceivers();
+    fetchBankAccounts();
   }, []);
 
   const fetchUsers = async () => {
@@ -283,10 +302,32 @@ function Dashboard() {
     }
   };
 
-  const deleteReceiverAndWallet = async (
-    receiverId: string,
-    walletId: string
-  ) => {
+  const fetchBankAccounts = async () => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/get_all_bank_accounts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch bank accounts");
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        setBankAccounts(result.data);
+      } else {
+        throw new Error(result.error || "Failed to fetch bank accounts");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    }
+  };
+
+  const deleteReceiverAndWallet = async (receiverId: string, walletId: string) => {
     try {
       const response = await fetch(
         `${MYFYE_BACKEND}/delete_blockchain_wallet_and_receiver`,
@@ -340,6 +381,30 @@ function Dashboard() {
           ? err.message
           : "An error occurred while deleting KYC user"
       );
+    }
+  };
+
+  const deleteBankAccount = async (userId: string, bankAccountId: string) => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/delete_bank_account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+        body: JSON.stringify({ user_id: userId, bank_account_id: bankAccountId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete bank account");
+      }
+
+      // Remove the deleted bank account from the state
+      setBankAccounts((prevBankAccounts) => 
+        prevBankAccounts.filter((account) => account.bank_account_id !== bankAccountId)
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred while deleting bank account");
     }
   };
 
@@ -509,6 +574,20 @@ function Dashboard() {
           }}
         >
           Receivers
+        </button>
+        <button
+          onClick={() => setActiveTab("bank-accounts")}
+          className={`px-4 py-2 rounded ${activeTab === "bank-accounts" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          style={{
+            backgroundColor: activeTab === "bank-accounts" ? "#ffffff" : "#000000",
+            padding: "10px",
+            borderRadius: "5px",
+            color: activeTab === "bank-accounts" ? "black" : "white",
+            fontWeight: "bold",
+            border: "1px solid #ffffff",
+          }}
+        >
+          Bank Accounts
         </button>
       </div>
 
@@ -1709,6 +1788,141 @@ function Dashboard() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : activeTab === "bank-accounts" ? (
+        <div>
+          <h1 style={{ fontSize: "24px", fontWeight: "bold", padding: "20px", color: "white" }}>
+            Bank Accounts Dashboard
+          </h1>
+          <div className="space-y-6">
+            {bankAccounts.map((account) => (
+              <div
+                key={account.bank_account_id}
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  margin: "10px",
+                  color: "white",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div style={{ fontWeight: "bold" }}>Bank Account ID: {account.bank_account_id}</div>
+                  <button
+                    onClick={() => deleteBankAccount(account.user_id, account.bank_account_id)}
+                    style={{
+                      backgroundColor: "#ff4444",
+                      color: "black",
+                      padding: "5px 10px",
+                      borderRadius: "5px",
+                      border: "none",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Delete Bank Account
+                  </button>
+                </div>
+
+                {/* Error Banner */}
+                {account.error && (
+                  <div style={{
+                    padding: "10px",
+                    marginBottom: "15px",
+                    borderRadius: "5px",
+                    backgroundColor: 'rgba(244, 67, 54, 0.2)',
+                    border: '1px solid #f44336'
+                  }}>
+                    <div className="text-lg font-bold" style={{ color: '#f44336' }}>
+                      Error: {account.error}
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        User ID:{" "}
+                      </span>
+                      {account.user_id}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        User Email:{" "}
+                      </span>
+                      {account.email}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        User Name:{" "}
+                      </span>
+                      {account.first_name} {account.last_name}
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold" style={{ color: "white" }}>
+                        BlindPay Receiver ID:{" "}
+                      </span>
+                      {account.blind_pay_receiver_id || "N/A"}
+                    </div>
+                  </div>
+                  <div>
+                    {account.blind_pay_details ? (
+                      <>
+                        <div className="text-sm">
+                          <span className="font-semibold" style={{ color: "white" }}>
+                            Account Name:{" "}
+                          </span>
+                          {account.blind_pay_details.name}
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-semibold" style={{ color: "white" }}>
+                            Beneficiary Name:{" "}
+                          </span>
+                          {account.blind_pay_details.beneficiary_name}
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-semibold" style={{ color: "white" }}>
+                            Type:{" "}
+                          </span>
+                          {account.blind_pay_details.type}
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-semibold" style={{ color: "white" }}>
+                            SPEI Protocol:{" "}
+                          </span>
+                          {account.blind_pay_details.spei_protocol}
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-semibold" style={{ color: "white" }}>
+                            Institution Code:{" "}
+                          </span>
+                          {account.blind_pay_details.spei_institution_code}
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-semibold" style={{ color: "white" }}>
+                            CLABE:{" "}
+                          </span>
+                          {account.blind_pay_details.spei_clabe}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-sm" style={{ color: "#FFA500" }}>
+                        BlindPay details not available
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
