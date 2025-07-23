@@ -229,6 +229,27 @@ async function updateKycVerified(uid, kycVerified) {
     }
 }
 
+async function updateUserNames(uid, firstName, lastName) {
+    console.log("\n=== Update User Names Request Received ===");
+    const query = `
+        UPDATE users 
+        SET first_name = $2, last_name = $3
+        WHERE uid = $1
+        RETURNING *
+    `;
+    try {
+        const result = await pool.query(query, [uid, firstName, lastName]);
+        console.log('Update result:', result.rows);
+        if (result.rows.length === 0) {
+            throw new Error('User not found');
+        }
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error updating user names:', error);
+        throw error;
+    }
+}
+
 module.exports = {
   createUser,
   getUserByEmail,
@@ -240,4 +261,5 @@ module.exports = {
   updateBlindPayReceiverId,
   updateBlindPayEvmWalletId,
   updateKycVerified,
+  updateUserNames,
 };
