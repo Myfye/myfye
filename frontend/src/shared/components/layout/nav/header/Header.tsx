@@ -12,7 +12,8 @@ const Header = ({ children, color = "transparent" }: HeaderProps) => {
       css={css`
         height: var(--size-600);
         background-color: ${color};
-        position: relative;
+        position: sticky;
+        top: 0;
         width: 100%;
         z-index: 1;
       `}
