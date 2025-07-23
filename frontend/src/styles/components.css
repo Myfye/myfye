@@ -197,7 +197,7 @@
       &[data-border-radius="square"] {
         --_border-radius: var(--border-radius-small);
       }
-      &[data-icon-only] {
+      &[data-icon-only="true"] {
         --_padding-inline: 0;
         --_padding-block: 0;
         --_width: var(--control-size-x-small);
@@ -215,7 +215,7 @@
       &[data-border-radius="square"] {
         --_border-radius: var(--border-radius-medium);
       }
-      &[data-icon-only] {
+      &[data-icon-only="true"] {
         --_padding-inline: 0;
         --_padding-block: 0;
         --_width: var(--control-size-small);
@@ -298,6 +298,9 @@
     &:has([data-expand="true"]) {
       & .button-group-item {
         flex: 1 1 0;
+        > * {
+          width: 100%;
+        }
       }
     }
   }
