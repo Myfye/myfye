@@ -52,20 +52,21 @@ const Overlay = ({
               position: fixed;
               inset: 0;
               z-index: ${zIndex};
-              max-width: 420px;
+              max-width: var(--app-max-width);
               margin-inline: auto;
               isolation: isolate;
             `}
           >
             <MotionDialogPanel
               css={css`
-                background-color: var(--clr-surface);
                 position: absolute;
-                bottom: 0;
+                inset: 0;
+                bottom: auto;
                 width: 100%;
                 will-change: transform;
-                height: 100svh;
+                height: ${window.innerHeight}px;
                 z-index: 1;
+                background-color: var(--clr-surface);
               `}
               initial={{ x: w }}
               animate={{ x: 0 }}
@@ -86,9 +87,11 @@ const Overlay = ({
                   height: 100svh;
                   max-width: var(--app-max-width);
                   width: 100vw;
+                  position: relative;
+                  overflow-y: auto;
                 `}
               >
-                <Header>
+                <Header color="var(--clr-surface)">
                   <Button
                     iconOnly
                     icon={CaretLeftIcon}
@@ -115,7 +118,6 @@ const Overlay = ({
                 <main
                   className="overlay-scroll"
                   css={css`
-                    overflow-y: auto;
                     container: overlay-main / size;
                   `}
                 >
