@@ -49,7 +49,6 @@ const { create_new_dinari_account } = require('./routes/dinari_shares/account');
 const { sign_nonce } = require('./routes/dinari_shares/sign_nonce');
 const { sign_order } = require('./routes/dinari_shares/sign_order.js');
 const { getWalletByAddress } = require('./routes/privy/getWallets');
-const { addSessionSigner, signTransactionWithSessionSigner, removeSessionSigner } = require('./routes/privy/sessionSigner');
 const { create_new_payout, get_payout_quote } = require('./routes/onOffRamp/payOut');
 
 app.set('trust proxy', true);
@@ -1167,67 +1166,6 @@ app.post("/payout_quote", async (req, res) => {
   } catch (error) {
     console.error("Error in /payout_quote endpoint:", error);
     res.status(500).json({ error: error.message || "Failed to get payout quote" });
-  }
-});
-
-// Session Signer endpoints for Privy background signatures
-app.post("/add_session_signer", sensitiveLimiter, async (req, res) => {
-  console.log("\n=== Add Session Signer Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
-
-  try {
-    const data = req.body;
-    const result = await addSessionSigner(data);
-    console.log("Session signer creation result:", JSON.stringify(result, null, 2));
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /add_session_signer endpoint:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({ 
-      error: error.message || "Failed to add session signer",
-      details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
-app.post("/sign_with_session_signer", sensitiveLimiter, async (req, res) => {
-  console.log("\n=== Sign with Session Signer Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
-
-  try {
-    const data = req.body;
-    const result = await signTransactionWithSessionSigner(data);
-    console.log("Session signer signing result:", JSON.stringify(result, null, 2));
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /sign_with_session_signer endpoint:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({ 
-      error: error.message || "Failed to sign with session signer",
-      details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
-app.delete("/remove_session_signer", sensitiveLimiter, async (req, res) => {
-  console.log("\n=== Remove Session Signer Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
-
-  try {
-    const data = req.body;
-    const result = await removeSessionSigner(data);
-    console.log("Session signer removal result:", JSON.stringify(result, null, 2));
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /remove_session_signer endpoint:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({ 
-      error: error.message || "Failed to remove session signer",
-      details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
   }
 });
 
