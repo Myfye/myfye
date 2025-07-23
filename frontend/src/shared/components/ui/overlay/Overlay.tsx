@@ -64,7 +64,7 @@ const Overlay = ({
                 bottom: auto;
                 width: 100%;
                 will-change: transform;
-                height: ${window.innerHeight}px;
+                height: ${window.innerHeight}px; // TODO test with 100svh
                 z-index: 1;
                 background-color: var(--clr-surface);
               `}
@@ -84,7 +84,7 @@ const Overlay = ({
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: 100svh;
+                  height: ${window.innerHeight}px; // TODO test with 100svh
                   max-width: var(--app-max-width);
                   width: 100vw;
                   position: relative;
