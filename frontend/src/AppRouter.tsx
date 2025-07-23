@@ -34,6 +34,7 @@ import peopleOnMyfye from "@/assets/peopleOnMyfye.png";
 import { useNavigate } from "react-router-dom";
 import { checkIfMobileOrTablet } from "./shared/utils/mobileUtils.ts";
 import MFAOnboarding from "./pages/app/login/mfaOnboarding.tsx";
+import Button from "./shared/components/ui/button/Button.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -153,18 +154,15 @@ function WebAppInner() {
             </section>
           </LoginMain>
           <LoginFooter>
-            <button
-              data-variant="primary"
-              data-size="large"
-              data-color="primary-light"
-              data-expand="true"
-              className="button"
-              type="button"
-              disabled={disableLogin}
-              onClick={() => login()}
+            <Button
+              expand
+              size="large"
+              isDisabled={disableLogin}
+              onPress={() => login()}
+              color="primary-light"
             >
               Get started
-            </button>
+            </Button>
           </LoginFooter>
         </LoginPage>
       </>
