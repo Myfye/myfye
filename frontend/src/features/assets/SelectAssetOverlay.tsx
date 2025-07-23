@@ -113,7 +113,7 @@ const SelectAssetOverlay = ({
 
   return (
     <Overlay
-      title="Select coin"
+      title="Select asset"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       zIndex={zIndex}
@@ -129,7 +129,7 @@ const SelectAssetOverlay = ({
             padding-block-start: var(--size-200);
             padding-block-end: var(--size-200);
             position: sticky;
-            top: 0;
+            top: 3rem;
             z-index: 1;
             background-color: var(--clr-surface);
           `}
