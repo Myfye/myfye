@@ -1,0 +1,1 @@
+export type CashId = "cash";

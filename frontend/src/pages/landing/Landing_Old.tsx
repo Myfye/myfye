@@ -100,7 +100,7 @@ function Landing() {
           margin: "0 auto",
           maxWidth: "1500px",
           gap: isSmallScreen ? "20px" : "-40px",
-          height: isSmallScreen ? "auto" : "calc(100lvh - 70px)",
+          height: isSmallScreen ? "auto" : "calc(100svh - 70px)",
           whiteSpace: "nowrap",
           marginTop: isSmallScreen ? "0" : "-85px",
         }}
@@ -216,7 +216,7 @@ function Landing() {
         </div>
         {/*
     <img src = {manWithPhone3} style={{
-      height: 'calc(100lvh-200px)', 
+      height: 'calc(100svh-200px)', 
       width: 'auto',
       marginLeft: '-10vw',
       zIndex: -1
@@ -226,7 +226,7 @@ function Landing() {
 
       <div
         style={{
-          height: isSmallScreen ? "auto" : "100lvh",
+          height: isSmallScreen ? "auto" : "100svh",
           marginTop: isSmallScreen ? "40px" : "10px",
           marginBottom: "100px",
           backgroundColor: "#ffffff",

@@ -1,0 +1,1 @@
+export type CryptoId = "crypto";

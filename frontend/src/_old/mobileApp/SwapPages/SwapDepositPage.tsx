@@ -764,7 +764,7 @@ function SwapDeposit() {
           top: menuPosition,
           left: 0, // Use state variable for position
           paddingTop: "15px",
-          height: "calc(100lvh)",
+          height: "calc(100svh)",
           backgroundColor: "white",
           width: "100vw",
           transition: "top 0.5s ease", // Animate the left property

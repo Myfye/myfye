@@ -286,6 +286,9 @@
     &[data-size="medium"] {
       gap: var(--control-gap-medium);
     }
+    &[data-size="large"] {
+      gap: var(--control-gap-large);
+    }
     &[data-scroll="true"] {
       overflow-x: auto;
     }
@@ -293,7 +296,7 @@
       width: 100%;
     }
     &:has([data-expand="true"]) {
-      & .item {
+      & .button-group-item {
         flex: 1 1 0;
       }
     }

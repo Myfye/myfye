@@ -2,20 +2,17 @@ import type { ButtonProps as AriaButtonProps } from "react-aria-components";
 import { ButtonContext, useContextProps } from "react-aria-components";
 import { useButton } from "react-aria";
 import { motion } from "motion/react";
-import { ReactNode, Ref } from "react";
+import { ReactNode, Ref, useRef } from "react";
 
 import { css } from "@emotion/react";
+import { Icon } from "@phosphor-icons/react";
 
-interface ButtonProps extends AriaButtonProps {
-  ref: Ref<HTMLButtonElement | null>;
-  variant: string;
-  size: string;
-  color: string;
-  className: string;
-  children: ReactNode;
-  expand: boolean;
+interface NumberPadButtonProps extends AriaButtonProps {
+  ref?: Ref<HTMLButtonElement | null>;
+  icon: Icon | string;
 }
-const NumberPadButton = ({ ref, icon, ...restProps }: ButtonProps) => {
+const NumberPadButton = ({ ref, icon, ...restProps }: NumberPadButtonProps) => {
+  if (!ref) ref = useRef<HTMLButtonElement>(null!);
   const [restPropsButton, refButton] = useContextProps(
     restProps,
     ref,

@@ -28,13 +28,13 @@ const tabs = [
 ];
 
 const HomeTabs = () => {
-  let [selectedKey, setSelectedKey] = useState(tabs[0].id);
+  const [selectedKey, setSelectedKey] = useState(tabs[0].id);
 
-  let tabListRef = useRef(null!);
-  let tabPanelsRef = useRef(null!);
+  const tabListRef = useRef<HTMLDivElement>(null!);
+  const tabPanelsRef = useRef<HTMLDivElement>(null!);
 
   // Track the scroll position of the tab panel container.
-  let { scrollXProgress } = useScroll({
+  const { scrollXProgress } = useScroll({
     container: tabPanelsRef,
   });
 
@@ -82,24 +82,11 @@ const HomeTabs = () => {
   let x = useTransform(scrollXProgress, (x) => transform(x, "offsetLeft"));
   let width = useTransform(scrollXProgress, (x) => transform(x, "offsetWidth"));
 
-  // When the user scrolls, update the selected key
-  // so that the correct tab panel becomes interactive.
-  useMotionValueEvent(scrollXProgress, "change", (x) => {
-    if (animationRef.current || !tabElements.length) return;
-    setSelectedKey(tabs[getIndex(x)].id);
-  });
-
   // When the user clicks on a tab perform an animation of
   // the scroll position to the newly selected tab panel.
   let animationRef = useRef(null!);
   let onSelectionChange = (selectedKey) => {
     setSelectedKey(selectedKey);
-
-    // If the scroll position is already moving but we aren't animating
-    // then the key changed as a result of a user scrolling. Ignore.
-    if (scrollXProgress.getVelocity() && !animationRef.current) {
-      return;
-    }
 
     let tabPanel = tabPanelsRef.current;
     let index = tabs.findIndex((tab) => tab.id === selectedKey);
@@ -114,12 +101,7 @@ const HomeTabs = () => {
         onUpdate: (v) => {
           tabPanel.scrollLeft = v;
         },
-        onPlay: () => {
-          // Disable scroll snap while the animation is going or weird things happen.
-          tabPanel.style.scrollSnapType = "none";
-        },
         onComplete: () => {
-          tabPanel.style.scrollSnapType = "";
           animationRef.current = null;
         },
       }
@@ -196,8 +178,8 @@ const HomeTabs = () => {
         className="no-scrollbar"
         css={css`
           display: flex;
-          overflow: auto;
-          scroll-snap-type: x mandatory;
+          overflow-x: hidden;
+          overflow-y: visible;
           background-color: var(--clr-surface);
         `}
       >

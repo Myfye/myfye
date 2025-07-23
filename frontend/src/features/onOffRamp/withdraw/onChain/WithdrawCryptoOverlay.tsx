@@ -20,6 +20,7 @@ import { selectAsset } from "@/features/assets/assetsSlice";
 import Button from "@/shared/components/ui/button/Button";
 import { Backspace } from "@phosphor-icons/react";
 import AddressEntryOverlay from "./AddressEntryOverlay";
+import { RootState } from "@/redux/store";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
@@ -72,7 +73,15 @@ const parseFormattedAmount = (formattedAmount: string) => {
   return parseFloat(formattedAmount.replace(/,/g, ""));
 };
 
-const WithdrawCryptoOverlay = ({ isOpen, onOpenChange }) => {
+interface WithdrawCryptoOverlayProps {
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+}
+
+const WithdrawCryptoOverlay = ({
+  isOpen,
+  onOpenChange,
+}: WithdrawCryptoOverlayProps) => {
   const dispatch = useDispatch();
   const [formattedAmount, setFormattedAmount] = useState("0");
   const [showAddressEntry, setShowAddressEntry] = useState(false);

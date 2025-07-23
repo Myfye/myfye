@@ -68,7 +68,7 @@ const LandingPage = () => {
         css={css`
           display: grid;
           grid-template-rows: auto 1fr;
-          height: 100lvh;
+          height: 100svh;
           background-color: var(--clr-teal-900);
           isolation: isolate;
           position: relative;

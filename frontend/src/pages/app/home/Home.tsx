@@ -9,7 +9,7 @@ const Home = () => {
         height: 100cqh;
       `}
     >
-      <HomeTabs></HomeTabs>
+      <HomeTabs />
     </div>
   );
 };

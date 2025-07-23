@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { css } from "@emotion/react";
-import Button from "@/shared/components/ui/button/Button";
-import { Bank, Copy, Wallet, X } from "@phosphor-icons/react";
+import { Bank, Wallet } from "@phosphor-icons/react";
 import ModalButton from "../ModalButton";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/shared/components/ui/modal/Modal";
@@ -26,7 +25,9 @@ const DepositModal = () => {
   const [offChainDepositOpen, setOffChainDepositOpen] = useState(false);
   const [showKYCOverlay, setShowKYCOverlay] = useState(false);
 
-  const currentUserKYCVerified = useSelector((state: RootState) => state.userWalletData.currentUserKYCVerified);
+  const currentUserKYCVerified = useSelector(
+    (state: RootState) => state.userWalletData.currentUserKYCVerified
+  );
 
   const resetModal = () => {
     setOnChainDepositOpen(false);
@@ -94,7 +95,6 @@ const DepositModal = () => {
           </menu>
         )}
       </Modal>
-
       <Modal
         isOpen={onChainDepositOpen}
         onOpenChange={setOnChainDepositOpen}
@@ -106,14 +106,12 @@ const DepositModal = () => {
           onOpenChange={setOnChainDepositOpen}
         />
       </Modal>
-
       {offChainDepositOpen && (
         <OffChainDepositOverlay
           isOpen={offChainDepositOpen}
           onOpenChange={setOffChainDepositOpen}
         />
       )}
-
       {showKYCOverlay && (
         <KYCOverlay
           isOpen={showKYCOverlay}

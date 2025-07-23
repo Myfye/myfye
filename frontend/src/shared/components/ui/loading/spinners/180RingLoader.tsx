@@ -1,19 +1,18 @@
 import { Interpolation, Theme } from "@emotion/react";
-import { SVGProps } from "react";
+import { SVGAttributes, SVGProps } from "react";
+
+interface Ring180LoaderProps extends SVGAttributes<SVGSVGElement> {
+  width?: number | string;
+  height?: number | string;
+  dur?: string;
+}
 
 const Ring180Loader = ({
   width = 24,
   height = 24,
   dur = "0.75s",
   ...restProps
-}: {
-  width?: number | string;
-  height?: number | string;
-  dur?: string;
-  restProps: SVGProps<SVGSVGElement> & {
-    css?: Interpolation<Theme>;
-  };
-}) => (
+}: Ring180LoaderProps) => (
   <svg
     {...restProps}
     width={width}

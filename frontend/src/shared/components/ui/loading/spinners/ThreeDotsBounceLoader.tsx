@@ -1,22 +1,24 @@
 import { Interpolation } from "@emotion/react";
 import { Theme } from "@nivo/core";
-import { SVGProps } from "react";
+import { Ref, SVGAttributes } from "react";
+
+interface ThreeDotsBounceLoaderProps extends SVGAttributes<SVGSVGElement> {
+  width?: number | string;
+  height?: number | string;
+  dur?: string;
+  ref?: Ref<SVGSVGElement>;
+}
 
 const ThreeDotsBounceLoader = ({
   width = 24,
   height = 24,
   dur = "0.6s",
+  ref,
   ...restProps
-}: {
-  width?: number | string;
-  height?: number | string;
-  dur?: string;
-  restProps: SVGProps<SVGSVGElement> & {
-    css?: Interpolation<Theme>;
-  };
-}) => (
+}: ThreeDotsBounceLoaderProps) => (
   <svg
     {...restProps}
+    ref={ref}
     width={width}
     height={height}
     viewBox="0 0 24 24"

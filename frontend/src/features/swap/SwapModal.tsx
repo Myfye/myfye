@@ -1,15 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { css } from "@emotion/react";
 import Modal from "@/shared/components/ui/modal/Modal";
 import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleModal, toggleOverlay, unmount, updateAmount, updateUserId, updateInputPublicKey, updateOutputPublicKey } from "./swapSlice";
+import {
+  toggleModal,
+  toggleOverlay,
+  unmount,
+  updateAmount,
+  updateUserId,
+  updateInputPublicKey,
+  updateOutputPublicKey,
+} from "./swapSlice";
 import SwapController from "./SwapController";
 import { RootState } from "@/redux/store";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
-import SelectCoinOverlay from "./SelectAssetOverlay";
+import SelectSwapAssetOverlay from "./SelectSwapAssetOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
 
 const SwapModal = () => {
@@ -26,10 +34,16 @@ const SwapModal = () => {
   const intervalDelete = useRef<NodeJS.Timeout | null>(null);
   const delayDelete = useRef<NodeJS.Timeout | null>(null);
 
-  const user_id = useSelector((state: RootState) => state.userWalletData.currentUserID);
-  const solanaPubKey = useSelector((state: RootState) => state.userWalletData.solanaPubKey);
-  const evmPubKey = useSelector((state: RootState) => state.userWalletData.evmPubKey);
-  
+  const user_id = useSelector(
+    (state: RootState) => state.userWalletData.currentUserID
+  );
+  const solanaPubKey = useSelector(
+    (state: RootState) => state.userWalletData.solanaPubKey
+  );
+  const evmPubKey = useSelector(
+    (state: RootState) => state.userWalletData.evmPubKey
+  );
+
   const startDelete = (input: string) => {
     intervalDelete.current = setInterval(() => {
       dispatch(updateAmount({ input }));
@@ -55,7 +69,7 @@ const SwapModal = () => {
     console.log("Full userWalletData state:", {
       user_id,
       solanaPubKey,
-      evmPubKey
+      evmPubKey,
     });
     if (solanaPubKey) {
       dispatch(updateUserId(user_id));
@@ -66,13 +80,6 @@ const SwapModal = () => {
     }
   }, [user_id, solanaPubKey]);
 
-  const handleOpen = (e: boolean) => {
-    dispatch(toggleModal({ isOpen: e }));
-    if (e) {
-
-    }
-  };
-
   const handleNumberPressStart = (input: string) => {
     if (input === "delete") {
       dispatch(updateAmount({ input }));
@@ -80,19 +87,6 @@ const SwapModal = () => {
         startDelete(input);
       }, 200);
     }
-  };
-
-  const handleNumberPress = (input: string) => {
-    if (input === "delete") return;
-    dispatch(updateAmount({ input }));
-  };
-
-  const handleNumberPressEnd = () => {
-    stopDelete();
-  };
-
-  const handleSwapControllerConfirmation = () => {
-    dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
   };
 
   const checkIfInvalidSwapTransaction = () => {
@@ -133,15 +127,15 @@ const SwapModal = () => {
     <>
       <Modal
         isOpen={isOpen}
-        onOpenChange={handleOpen}
-        title="Swap"
-        height={height}
-        zIndex={zIndex}
-        onAnimationComplete={() => {
+        onOpenChange={(isOpen) => {
+          dispatch(toggleModal({ isOpen: isOpen }));
           if (!isOpen) {
             dispatch(unmount(undefined));
           }
         }}
+        title="Swap"
+        height={height}
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -166,9 +160,12 @@ const SwapModal = () => {
             `}
           >
             <NumberPad
-              onNumberPress={handleNumberPress}
+              onNumberPress={(input) => {
+                if (input === "delete") return;
+                dispatch(updateAmount({ input }));
+              }}
               onNumberPressStart={handleNumberPressStart}
-              onNumberPressEnd={handleNumberPressEnd}
+              onNumberPressEnd={() => void stopDelete()}
             />
           </section>
           <section
@@ -180,7 +177,9 @@ const SwapModal = () => {
             <Button
               isDisabled={isInvalidSwapTransaction}
               expand
-              onPress={handleSwapControllerConfirmation}
+              onPress={() => {
+                dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
+              }}
             >
               Confirm
             </Button>
@@ -188,7 +187,7 @@ const SwapModal = () => {
         </div>
       </Modal>
       <ConfirmSwapOverlay zIndex={9999 + 1} />
-      <SelectCoinOverlay zIndex={9999 + 2} />
+      <SelectSwapAssetOverlay zIndex={9999 + 2} />
       <ProcessingTransactionOverlay zIndex={9999 + 3} />
     </>
   );

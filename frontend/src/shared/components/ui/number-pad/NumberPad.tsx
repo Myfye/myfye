@@ -16,7 +16,16 @@ import {
 import { css } from "@emotion/react";
 import NumberPadButton from "./NumberPadButton";
 
-const NumberPad = ({ onNumberPress, onNumberPressStart, onNumberPressEnd }) => {
+interface NumberPadProps {
+  onNumberPress?: (e: string) => void;
+  onNumberPressStart?: (e: string) => void;
+  onNumberPressEnd?: (e: string) => void;
+}
+const NumberPad = ({
+  onNumberPress,
+  onNumberPressStart,
+  onNumberPressEnd,
+}: NumberPadProps) => {
   const buttons = [
     { id: "1", icon: "1", value: "1" },
     { id: "2", icon: "2", value: "2" },
@@ -60,9 +69,13 @@ const NumberPad = ({ onNumberPress, onNumberPressStart, onNumberPressEnd }) => {
           >
             <NumberPadButton
               icon={button.icon}
-              onPress={() => onNumberPress(button.value)}
-              onPressStart={() => onNumberPressStart(button.value)}
-              onPressEnd={() => onNumberPressEnd(button.value)}
+              onPress={() => onNumberPress && onNumberPress(button.value)}
+              onPressStart={() =>
+                onNumberPressStart && onNumberPressStart(button.value)
+              }
+              onPressEnd={() =>
+                onNumberPressEnd && onNumberPressEnd(button.value)
+              }
             />
           </li>
         ))}

@@ -1,19 +1,11 @@
-import type { ButtonProps as AriaButtonProps } from "react-aria-components";
 import { ButtonContext, useContextProps } from "react-aria-components";
 import { useToggleButton } from "react-aria";
-import { motion } from "motion/react";
-import { ReactNode, Ref } from "react";
+import { motion, MotionProps } from "motion/react";
+import { ButtonHTMLAttributes, useRef } from "react";
 import { useToggleState } from "react-stately";
+import { ButtonProps } from "./button.types";
+import { getIconSize } from "./utils";
 
-interface ButtonProps extends AriaButtonProps {
-  ref: Ref<HTMLButtonElement | null>;
-  variant: string;
-  size: string;
-  color: string;
-  className: string;
-  children: ReactNode;
-  expand: boolean;
-}
 const ToggleButton = ({
   ref,
   variant = "primary",
@@ -22,16 +14,22 @@ const ToggleButton = ({
   className = "",
   icon,
   iconOnly,
+  borderRadius,
   iconLeft = icon,
   iconRight,
+  wrap = false,
   expand = false,
   children,
   ...restProps
 }: ButtonProps) => {
-  const Icon = icon;
+  const IconRight = iconRight;
+  const IconLeft = iconLeft;
+  const iconSize = getIconSize(size, iconOnly);
+
+  if (!ref) ref = useRef<HTMLButtonElement>(null!);
 
   const [restPropsButton, refButton] = useContextProps(
-    restProps,
+    { ...restProps, children },
     ref,
     ButtonContext
   );
@@ -44,24 +42,27 @@ const ToggleButton = ({
     refButton
   );
 
-  console.log(restPropsButton);
-
   return (
     <motion.button
+      {...(buttonProps as ButtonHTMLAttributes<HTMLButtonElement> &
+        MotionProps)}
       data-variant={variant}
       data-size={size}
       data-color={color}
       data-expand={expand}
       data-icon-only={iconOnly}
-      className={`button ${className}`}
-      {...buttonProps}
+      data-border-radius={borderRadius}
+      className={`button ${buttonProps.className} ${
+        variant === "token-select" ? "token-select" : ""
+      }`}
       ref={ref}
       animate={{
         scale: isPressed ? 0.9 : 1,
       }}
     >
-      {Icon && <Icon size={"var(--_icon-size)"} />}
+      {IconLeft && <IconLeft size={iconSize} />}
       {children}
+      {IconRight && <IconRight size={iconSize} />}
     </motion.button>
   );
 };

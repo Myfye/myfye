@@ -9,7 +9,7 @@ const LoadingScreen = () => {
       css={css`
         display: grid;
         place-items: center;
-        height: 100lvh;
+        height: 100svh;
         background-color: var(--clr-primary);
       `}
     >

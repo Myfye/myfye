@@ -50,7 +50,23 @@ const pieChartData = [
   },
 ];
 
-const EarnBreakdownModal = ({ isOpen, onOpenChange, data, zIndex }) => {
+interface EarnBreakdownModelProps {
+  zIndex?: number;
+  data: {
+    name: string;
+    y: number;
+    color: string;
+  }[];
+  onOpenChange: (isOpen: boolean) => void;
+  isOpen: boolean;
+}
+
+const EarnBreakdownModal = ({
+  isOpen,
+  onOpenChange,
+  data,
+  zIndex = 1001,
+}: EarnBreakdownModelProps) => {
   const pieChartOptions: Highcharts.Options = {
     chart: {
       type: "pie",
@@ -115,7 +131,7 @@ const EarnBreakdownModal = ({ isOpen, onOpenChange, data, zIndex }) => {
   };
   return (
     <Modal
-      zIndex={1001}
+      zIndex={zIndex}
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       height={667}

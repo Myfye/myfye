@@ -1,17 +1,24 @@
-import { X as XIcon } from "@phosphor-icons/react";
+import {
+  MagnifyingGlass as MagnifyingGlassIcon,
+  X as XIcon,
+} from "@phosphor-icons/react";
 import Button from "../button/Button";
 import { useSearchFieldState } from "react-stately";
-import { useRef } from "react";
-import { useSearchField } from "react-aria";
+import { RefObject, useRef } from "react";
+import { AriaSearchFieldProps, useSearchField } from "react-aria";
 
 import { css } from "@emotion/react";
 
-const SearchField = (props) => {
-  const { label } = props;
-  let state = useSearchFieldState(props);
-  let ref = useRef(null);
-  let { labelProps, inputProps, clearButtonProps } = useSearchField(
-    props,
+interface SearchFieldProps extends AriaSearchFieldProps {
+  ref?: RefObject<HTMLInputElement>;
+}
+
+const SearchField = ({ ref, ...restProps }: SearchFieldProps) => {
+  const { label } = restProps;
+  const state = useSearchFieldState(restProps);
+  if (!ref) ref = useRef<HTMLInputElement>(null!);
+  const { labelProps, inputProps, clearButtonProps } = useSearchField(
+    restProps,
     state,
     ref
   );
@@ -26,7 +33,8 @@ const SearchField = (props) => {
           display: grid;
           font-size: 16px;
           background-color: var(--clr-surface-raised);
-          grid-template-columns: 1fr auto;
+          grid-template-columns: auto 1fr auto;
+          gap: var(--control-gap-large);
           align-items: center;
           width: 100%;
           border-radius: var(--border-radius-medium);
@@ -38,9 +46,9 @@ const SearchField = (props) => {
           padding-inline: var(--size-150);
         `}
       >
+        <MagnifyingGlassIcon size={20} color="var(--clr-icon)" />
         <input
           {...inputProps}
-          placeholder="Search contact or address"
           ref={ref}
           css={css`
             font-size: 16px;

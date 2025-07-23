@@ -1,13 +1,12 @@
 import {
   animate,
   AnimatePresence,
+  HTMLMotionProps,
   motion,
   useMotionTemplate,
   useMotionValue,
   useTransform,
 } from "motion/react";
-
-import { ReactNode, useId } from "react";
 
 import { css } from "@emotion/react";
 import Button from "@/shared/components/ui/button/Button";
@@ -18,6 +17,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { ReactNode } from "react";
 
 // Wrap React Aria modal components so they support framer-motion values.
 const MotionDialogBackdrop = motion(DialogBackdrop);
@@ -36,6 +36,15 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
+interface ModalProps extends HTMLMotionProps<"div"> {
+  zIndex?: number;
+  title?: string;
+  height?: number;
+  onOpenChange: (isOpen: boolean) => void;
+  isOpen: boolean;
+  children: ReactNode;
+}
+
 const Modal = ({
   isOpen,
   onOpenChange,
@@ -44,14 +53,7 @@ const Modal = ({
   zIndex = 1000,
   children,
   ...restProps
-}: {
-  children: ReactNode;
-  zIndex: number;
-  title: string;
-  height: number;
-  onOpenChange: (isOpen: boolean) => void;
-  isOpen: boolean;
-}) => {
+}: ModalProps) => {
   const top = window.innerHeight - height > 0 ? window.innerHeight - height : 0;
   const h = Math.min(window.innerHeight, height);
   const y = useMotionValue(h);

@@ -1,5 +1,10 @@
-import { AnimatePresence, motion, useMotionValue } from "motion/react";
-import { ReactNode, useId } from "react";
+import {
+  AnimatePresence,
+  HTMLMotionProps,
+  motion,
+  useMotionValue,
+} from "motion/react";
+import { ReactNode } from "react";
 
 import { css } from "@emotion/react";
 
@@ -8,16 +13,9 @@ import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
 import Header from "@/shared/components/layout/nav/header/Header";
 
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
-// Wrap React Aria modal components so they support motion values.
 const MotionDialog = motion(Dialog);
-const MotionDialogBackdrop = motion(DialogBackdrop);
 const MotionDialogPanel = motion(DialogPanel);
 
 const staticTransition = {
@@ -25,21 +23,23 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
+interface OverlayProps extends HTMLMotionProps<"div"> {
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+  title?: string;
+  zIndex?: number;
+  children?: ReactNode;
+}
 const Overlay = ({
   isOpen,
   onOpenChange,
   title,
   zIndex = 1000,
   children,
-}: {
-  isOpen: boolean;
-  onOpenChange: (e: boolean) => void;
-  title?: string;
-  zIndex?: number;
-  children?: ReactNode;
-}) => {
-  let w = window.innerWidth;
-  let x = useMotionValue(w);
+  ...restProps
+}: OverlayProps) => {
+  const w = window.innerWidth;
+  const x = useMotionValue(w);
 
   return (
     <>
@@ -64,7 +64,7 @@ const Overlay = ({
                 bottom: 0;
                 width: 100%;
                 will-change: transform;
-                height: 100lvh;
+                height: 100svh;
                 z-index: 1;
               `}
               initial={{ x: w }}
@@ -77,12 +77,13 @@ const Overlay = ({
                 // Extra padding at the right to account for rubber band scrolling.
                 paddingRight: window.screen.width,
               }}
+              {...restProps}
             >
               <div
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: 100lvh;
+                  height: 100svh;
                   max-width: var(--app-max-width);
                   width: 100vw;
                 `}

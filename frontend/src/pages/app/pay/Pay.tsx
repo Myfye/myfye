@@ -145,16 +145,19 @@ const Pay = () => {
                 padding-inline: var(--size-250);
               `}
             >
-              <ButtonGroup scroll={false} direction="horizontal" size="medium">
+              <ButtonGroup
+                scroll={false}
+                direction="horizontal"
+                size="medium"
+                expand
+              >
                 <ButtonGroupItem
-                  expand
                   onPress={handleRequest}
                   isDisabled={isInvalidSwapTransaction}
                 >
                   Request
                 </ButtonGroupItem>
                 <ButtonGroupItem
-                  expand
                   onPress={handlePay}
                   isDisabled={isInvalidSwapTransaction}
                 >

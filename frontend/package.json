@@ -22,6 +22,7 @@
     "autoprefixer": "^10.4.20",
     "bs58": "^6.0.0",
     "firebase": "^11.2.0",
+    "fuzzysort": "^3.1.0",
     "highcharts": "^12.2.0",
     "highcharts-react-official": "^3.2.2",
     "lottie-react": "^2.4.1",

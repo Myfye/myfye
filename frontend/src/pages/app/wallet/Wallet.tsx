@@ -12,6 +12,8 @@ import CryptoOverlay from "./crypto/CryptoOverlay.tsx";
 import CashOverlay from "./cash/CashOverlay.tsx";
 import StocksOverlay from "./stocks/StocksOverlay.tsx";
 import { ArrowSquareOut } from "@phosphor-icons/react";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup.tsx";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem.tsx";
 
 const Wallet = () => {
   const dispatch = useDispatch();
@@ -78,29 +80,18 @@ const Wallet = () => {
             margin-inline: var(--size-250);
           `}
         >
-          <menu
-            css={css`
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              justify-content: center;
-              gap: var(--controls-gap-small);
-            `}
-          >
-            <Button
-              size="medium"
-              expand
+          <ButtonGroup size="medium" expand>
+            <ButtonGroupItem
               onPress={() => void dispatch(setDepositModalOpen(true))}
             >
               Add money
-            </Button>
-            <Button
-              size="medium"
-              expand
-              onPress={() => void dispatch(setWithdrawModalOpen(true))}
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              onPress={() => void dispatch(setDepositModalOpen(true))}
             >
               Withdraw
-            </Button>
-          </menu>
+            </ButtonGroupItem>
+          </ButtonGroup>
         </section>
       </div>
       <EarnOverlay />

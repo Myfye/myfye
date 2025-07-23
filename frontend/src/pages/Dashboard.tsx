@@ -329,25 +329,30 @@ function Dashboard() {
 
   const deleteReceiverAndWallet = async (receiverId: string, walletId: string) => {
     try {
-      const response = await fetch(`${MYFYE_BACKEND}/delete_blockchain_wallet_and_receiver`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": MYFYE_BACKEND_KEY,
-        },
-        body: JSON.stringify({ receiverId, walletId }),
-      });
+      const response = await fetch(
+        `${MYFYE_BACKEND}/delete_blockchain_wallet_and_receiver`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": MYFYE_BACKEND_KEY,
+          },
+          body: JSON.stringify({ receiverId, walletId }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete receiver and wallet");
       }
 
       // Remove the deleted receiver from the state
-      setReceivers((prevReceivers) => 
+      setReceivers((prevReceivers) =>
         prevReceivers.filter((receiver) => receiver.id !== receiverId)
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred while deleting");
+      setError(
+        err instanceof Error ? err.message : "An error occurred while deleting"
+      );
     }
   };
 
@@ -367,11 +372,15 @@ function Dashboard() {
       }
 
       // Remove the deleted KYC user from the state
-      setKycUsers((prevKycUsers) => 
+      setKycUsers((prevKycUsers) =>
         prevKycUsers.filter((kycUser) => kycUser.user_id !== userId)
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred while deleting KYC user");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while deleting KYC user"
+      );
     }
   };
 
@@ -462,7 +471,7 @@ function Dashboard() {
       style={{
         background: "#000000",
         minWidth: "100vw",
-        minHeight: "100lvh",
+        minHeight: "100svh",
         color: "white",
       }}
     >
@@ -552,7 +561,9 @@ function Dashboard() {
         </button>
         <button
           onClick={() => setActiveTab("receivers")}
-          className={`px-4 py-2 rounded ${activeTab === "receivers" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 rounded ${
+            activeTab === "receivers" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
           style={{
             backgroundColor: activeTab === "receivers" ? "#ffffff" : "#000000",
             padding: "10px",
@@ -612,7 +623,9 @@ function Dashboard() {
                     marginBottom: "10px",
                   }}
                 >
-                  <div style={{ fontWeight: "bold" }}>KYC User ID: {user.user_id}</div>
+                  <div style={{ fontWeight: "bold" }}>
+                    KYC User ID: {user.user_id}
+                  </div>
                   <button
                     onClick={() => deleteKYCUser(user.user_id)}
                     style={{
@@ -776,7 +789,10 @@ function Dashboard() {
                       })}
                     </div>
                     <div className="text-sm mt-2">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         ID Document Front:{" "}
                       </span>
                       {user.id_doc_front_file ? (
@@ -797,7 +813,10 @@ function Dashboard() {
                       )}
                     </div>
                     <div className="text-sm mt-2">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         ID Document Back:{" "}
                       </span>
                       {user.id_doc_back_file ? (
@@ -1414,7 +1433,14 @@ function Dashboard() {
         </div>
       ) : activeTab === "receivers" ? (
         <div>
-          <h1 style={{ fontSize: "24px", fontWeight: "bold", padding: "20px", color: "white" }}>
+          <h1
+            style={{
+              fontSize: "24px",
+              fontWeight: "bold",
+              padding: "20px",
+              color: "white",
+            }}
+          >
             Receivers Dashboard
           </h1>
           <div className="space-y-6">
@@ -1430,75 +1456,117 @@ function Dashboard() {
                 }}
               >
                 {/* KYC Status Banner */}
-                <div style={{
-                  padding: "10px",
-                  marginBottom: "15px",
-                  borderRadius: "5px",
-                  backgroundColor: receiver.kyc_status === 'approved' ? 'rgba(76, 175, 80, 0.2)' :
-                                 receiver.kyc_status === 'rejected' ? 'rgba(244, 67, 54, 0.2)' :
-                                 receiver.kyc_status === 'verifying' ? 'rgba(255, 165, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                  border: `1px solid ${
-                    receiver.kyc_status === 'approved' ? '#4CAF50' :
-                    receiver.kyc_status === 'rejected' ? '#f44336' :
-                    receiver.kyc_status === 'verifying' ? '#FFA500' : '#ffffff'
-                  }`
-                }}>
+                <div
+                  style={{
+                    padding: "10px",
+                    marginBottom: "15px",
+                    borderRadius: "5px",
+                    backgroundColor:
+                      receiver.kyc_status === "approved"
+                        ? "rgba(76, 175, 80, 0.2)"
+                        : receiver.kyc_status === "rejected"
+                        ? "rgba(244, 67, 54, 0.2)"
+                        : receiver.kyc_status === "verifying"
+                        ? "rgba(255, 165, 0, 0.2)"
+                        : "rgba(255, 255, 255, 0.1)",
+                    border: `1px solid ${
+                      receiver.kyc_status === "approved"
+                        ? "#4CAF50"
+                        : receiver.kyc_status === "rejected"
+                        ? "#f44336"
+                        : receiver.kyc_status === "verifying"
+                        ? "#FFA500"
+                        : "#ffffff"
+                    }`,
+                  }}
+                >
                   <div className="flex justify-between items-center">
-                    <div className="text-lg font-bold" style={{
-                      color: receiver.kyc_status === 'approved' ? '#4CAF50' :
-                             receiver.kyc_status === 'rejected' ? '#f44336' :
-                             receiver.kyc_status === 'verifying' ? '#FFA500' : 'white'
-                    }}>
+                    <div
+                      className="text-lg font-bold"
+                      style={{
+                        color:
+                          receiver.kyc_status === "approved"
+                            ? "#4CAF50"
+                            : receiver.kyc_status === "rejected"
+                            ? "#f44336"
+                            : receiver.kyc_status === "verifying"
+                            ? "#FFA500"
+                            : "white",
+                      }}
+                    >
                       KYC Status: {receiver.kyc_status.toUpperCase()}
                     </div>
-                    {receiver.kyc_warnings && receiver.kyc_warnings.length > 0 && (
-                      <div className="text-sm" style={{ color: "#FFA500" }}>
-                        {receiver.kyc_warnings.length} Warning{receiver.kyc_warnings.length !== 1 ? 's' : ''}
-                      </div>
-                    )}
+                    {receiver.kyc_warnings &&
+                      receiver.kyc_warnings.length > 0 && (
+                        <div className="text-sm" style={{ color: "#FFA500" }}>
+                          {receiver.kyc_warnings.length} Warning
+                          {receiver.kyc_warnings.length !== 1 ? "s" : ""}
+                        </div>
+                      )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Receiver ID:{" "}
                       </span>
                       {receiver.id}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Email:{" "}
                       </span>
                       {receiver.email}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Name:{" "}
                       </span>
                       {receiver.first_name} {receiver.last_name}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Type:{" "}
                       </span>
                       {receiver.type}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         KYC Type:{" "}
                       </span>
                       {receiver.kyc_type}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Tax ID:{" "}
                       </span>
                       {receiver.tax_id}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Date of Birth:{" "}
                       </span>
                       {new Date(receiver.date_of_birth).toLocaleDateString()}
@@ -1506,43 +1574,64 @@ function Dashboard() {
                   </div>
                   <div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Address:{" "}
                       </span>
                       {receiver.address_line_1}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         City:{" "}
                       </span>
                       {receiver.city}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         State/Province:{" "}
                       </span>
                       {receiver.state_province_region}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Country:{" "}
                       </span>
                       {receiver.country}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         Postal Code:{" "}
                       </span>
                       {receiver.postal_code}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         ID Document Type:{" "}
                       </span>
                       {receiver.id_doc_type}
                     </div>
                     <div className="text-sm">
-                      <span className="font-semibold" style={{ color: "white" }}>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "white" }}
+                      >
                         ID Document Country:{" "}
                       </span>
                       {receiver.id_doc_country}
@@ -1552,31 +1641,58 @@ function Dashboard() {
 
                 {/* KYC Warnings Section */}
                 {receiver.kyc_warnings && receiver.kyc_warnings.length > 0 && (
-                  <div className="mt-4 p-3" style={{
-                    backgroundColor: 'rgba(255, 165, 0, 0.1)',
-                    border: '1px solid #FFA500',
-                    borderRadius: '5px'
-                  }}>
-                    <h4 className="font-semibold mb-2" style={{ color: "#FFA500" }}>KYC Warnings</h4>
+                  <div
+                    className="mt-4 p-3"
+                    style={{
+                      backgroundColor: "rgba(255, 165, 0, 0.1)",
+                      border: "1px solid #FFA500",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <h4
+                      className="font-semibold mb-2"
+                      style={{ color: "#FFA500" }}
+                    >
+                      KYC Warnings
+                    </h4>
                     <div className="space-y-3">
                       {receiver.kyc_warnings.map((warning, index) => (
-                        <div key={warning.warning_id} className="p-2" style={{
-                          backgroundColor: 'rgba(255, 165, 0, 0.05)',
-                          borderRadius: '4px',
-                          border: '1px solid rgba(255, 165, 0, 0.3)'
-                        }}>
+                        <div
+                          key={warning.warning_id}
+                          className="p-2"
+                          style={{
+                            backgroundColor: "rgba(255, 165, 0, 0.05)",
+                            borderRadius: "4px",
+                            border: "1px solid rgba(255, 165, 0, 0.3)",
+                          }}
+                        >
                           <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <span className="font-semibold" style={{ color: "#FFA500" }}>Code: </span>
+                              <span
+                                className="font-semibold"
+                                style={{ color: "#FFA500" }}
+                              >
+                                Code:{" "}
+                              </span>
                               {warning.code}
                             </div>
                             <div>
-                              <span className="font-semibold" style={{ color: "#FFA500" }}>Status: </span>
+                              <span
+                                className="font-semibold"
+                                style={{ color: "#FFA500" }}
+                              >
+                                Status:{" "}
+                              </span>
                               {warning.resolution_status}
                             </div>
                           </div>
                           <div className="mt-1">
-                            <span className="font-semibold" style={{ color: "#FFA500" }}>Message: </span>
+                            <span
+                              className="font-semibold"
+                              style={{ color: "#FFA500" }}
+                            >
+                              Message:{" "}
+                            </span>
                             {warning.message}
                           </div>
                         </div>
@@ -1587,7 +1703,9 @@ function Dashboard() {
 
                 {/* Blockchain Wallets Section */}
                 <div className="mt-4">
-                  <h3 className="text-lg font-semibold mb-2">Blockchain Wallets</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Blockchain Wallets
+                  </h3>
                   {receiver.blockchain_wallets.map((wallet) => (
                     <div
                       key={wallet.id}
@@ -1601,19 +1719,28 @@ function Dashboard() {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <div className="text-sm">
-                            <span className="font-semibold" style={{ color: "white" }}>
+                            <span
+                              className="font-semibold"
+                              style={{ color: "white" }}
+                            >
                               Wallet ID:{" "}
                             </span>
                             {wallet.id}
                           </div>
                           <div className="text-sm">
-                            <span className="font-semibold" style={{ color: "white" }}>
+                            <span
+                              className="font-semibold"
+                              style={{ color: "white" }}
+                            >
                               Name:{" "}
                             </span>
                             {wallet.name}
                           </div>
                           <div className="text-sm">
-                            <span className="font-semibold" style={{ color: "white" }}>
+                            <span
+                              className="font-semibold"
+                              style={{ color: "white" }}
+                            >
                               Network:{" "}
                             </span>
                             {wallet.network}
@@ -1621,19 +1748,29 @@ function Dashboard() {
                         </div>
                         <div>
                           <div className="text-sm">
-                            <span className="font-semibold" style={{ color: "white" }}>
+                            <span
+                              className="font-semibold"
+                              style={{ color: "white" }}
+                            >
                               Address:{" "}
                             </span>
-                            <span style={{ wordBreak: "break-all" }}>{wallet.address}</span>
+                            <span style={{ wordBreak: "break-all" }}>
+                              {wallet.address}
+                            </span>
                           </div>
                           <div className="text-sm">
-                            <span className="font-semibold" style={{ color: "white" }}>
+                            <span
+                              className="font-semibold"
+                              style={{ color: "white" }}
+                            >
                               Account Abstraction:{" "}
                             </span>
                             {wallet.is_account_abstraction ? "Yes" : "No"}
                           </div>
                           <button
-                            onClick={() => deleteReceiverAndWallet(receiver.id, wallet.id)}
+                            onClick={() =>
+                              deleteReceiverAndWallet(receiver.id, wallet.id)
+                            }
                             style={{
                               backgroundColor: "#ff4444",
                               color: "black",

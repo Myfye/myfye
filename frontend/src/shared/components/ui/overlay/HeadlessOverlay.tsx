@@ -63,7 +63,7 @@ const HeadlessOverlay = ({
                 bottom: 0;
                 width: 100%;
                 will-change: transform;
-                height: 100lvh;
+                height: 100svh;
                 z-index: 1;
               `}
               initial={{ x: w }}
@@ -81,7 +81,7 @@ const HeadlessOverlay = ({
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: 100lvh;
+                  height: 100svh;
                   max-width: var(--app-max-width);
                   width: 100vw;
                 `}

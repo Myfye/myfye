@@ -1,9 +1,15 @@
+import { useContext } from "react";
 import Button from "./Button";
+import { ButtonProps } from "./button.types";
+import { ButtonGroupContext } from "./ButtonGroupContext";
 
-const ButtonGroupItem = ({ expand = false, ...restProps }) => {
+interface ButtonGroupItemProps extends ButtonProps {}
+
+const ButtonGroupItem = ({ ...restProps }: ButtonGroupItemProps) => {
+  const { size, expand } = useContext(ButtonGroupContext);
   return (
-    <li className="item">
-      <Button expand={expand} {...restProps}></Button>
+    <li className="button-group-item">
+      <Button size={size} expand={expand} {...restProps} />
     </li>
   );
 };

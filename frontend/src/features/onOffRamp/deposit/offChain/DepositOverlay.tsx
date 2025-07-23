@@ -22,7 +22,7 @@ import Button from "@/shared/components/ui/button/Button";
 import { Backspace, CaretUp, CaretDown } from "@phosphor-icons/react";
 import DepositInstructionsOverlay from "./DepositInstructionsOverlay";
 import { createPortal } from "react-dom";
-import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../../env';
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../../../env";
 import toast from "react-hot-toast/headless";
 import leafLoading from "@/assets/lottie/leaf-loading.json";
 import Lottie from "lottie-react";
@@ -142,7 +142,7 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
     console.log("handleNextButtonPress");
     const amount = parseFormattedAmount(formattedAmount);
     // TODO: Call the API to get the payin quote
-    
+
     try {
       const payinData = await handlePayin(amount, selectedCurrency);
       setPayin(payinData);
@@ -161,39 +161,39 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   const handlePayin = async (amount: number, currency: string) => {
     try {
       const response = await fetch(`${MYFYE_BACKEND}/new_payin`, {
-          method: 'POST',
-          mode: 'cors',
-          credentials: 'include',
-          headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': MYFYE_BACKEND_KEY,
-          },
-          body: JSON.stringify({
-            blockchain_wallet_id: blindPayEvmWalletId,
-            amount: amount,
-            currency: currency,
-            email: currentUserEmail,
-          })
+        method: "POST",
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
+        },
+        body: JSON.stringify({
+          blockchain_wallet_id: blindPayEvmWalletId,
+          amount: amount,
+          currency: currency,
+          email: currentUserEmail,
+        }),
       });
 
       if (!response.ok) {
-          const errorData = await response.json();
-          const errorMessage = errorData.error || 'Error please try again';
-          toast.error(errorMessage);
-          throw new Error(errorMessage);
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Error please try again";
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
       return result;
     } catch (error) {
-        console.error("Error in handlePayin:", error);
-        // If it's not a response error (network error, etc.), show a generic message
-        if (!error.message || error.message === 'Failed to create payin') {
-          toast.error('Error please try again');
-        }
-        throw error;
+      console.error("Error in handlePayin:", error);
+      // If it's not a response error (network error, etc.), show a generic message
+      if (!error.message || error.message === "Failed to create payin") {
+        toast.error("Error please try again");
+      }
+      throw error;
     }
-  }
+  };
 
   const amount = parseFormattedAmount(formattedAmount);
 
@@ -329,8 +329,6 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
         }}
         title="Deposit"
       >
-
-
 
           {(blindPayReceiverId && blindPayEvmWalletId) ? (
 
@@ -630,7 +628,6 @@ css={css`
 
 
           )}
-
 
       </Overlay>
 
