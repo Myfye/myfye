@@ -1,97 +1,66 @@
 require("dotenv").config();
 const axios = require("axios");
 
-const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
-const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
+//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+//const TOKEN = 'USDC'
 
-//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
-//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
+const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+const TOKEN = 'USDB'
 
-async function create_new_payin(data) {
+async function create_new_payout(data) {
 
-  console.log("Creating new payin:", data);
-  
-  try {
+  /*
+  curl --request POST \
+  --url https://api.blindpay.com/v1/instances/(instance ID)/quotes \
+  --header 'Authorization: Bearer YOUR_SECRET_TOKEN' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "bank_account_id": "ba_000000000000",
+  "currency_type": "sender",
+  "cover_fees": false,
+  "request_amount": 1000,
+  "network": "sepolia",
+  "token": "USDC"
+}'
+*/
 
-    const payin_quote = await get_payin_quote(data);
 
-    console.log("Payin quote:", payin_quote);
-
-    const response = await axios.post(
-      `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/payins/evm`,
-      {
-        payin_quote_id: payin_quote.id,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${BLIND_PAY_API_KEY}`,
-        },
-      }
-    );
-
-    console.log("Payin creation response:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error in create_new_payin:");
-    console.error("Status:", error.response?.status);
-    console.error("Status Text:", error.response?.statusText);
-    console.error("Response Data:", error.response?.data);
-    console.error("Error Message:", error.message);
-    console.error("Stack Trace:", error.stack);
-    throw error;
-  }
-  
 }
 
-async function get_payin_quote(data) {
-
-  const currency = data.currency;
-  const formattedAmount = data.amount * 100;
-  
-  let paymentMethod = "spei";
-  if (currency === "MXN") {
-    paymentMethod = "spei";
-  } else if (currency === "BRL") {
-    paymentMethod = "pix";
-  } else if (currency === "USD") {
-    paymentMethod = "ach";
-  }
-
-  // to do: send an email to the user with the payin quote
-
+async function get_payout_quote(data) {
+  // BlindPay API endpoint for payout quotes
+  const url = `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/quotes`;
   try {
     const response = await axios.post(
-      `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/payin-quotes`,
+      url,
       {
-        blockchain_wallet_id: data.blockchain_wallet_id,
-        currency_type: "sender",
-        cover_fees: true,
-        request_amount: formattedAmount, // 100 represents 1, 2050 represents 20.50
-        payment_method: paymentMethod, // ach wire pix spei
-        token: "USDC", // USDB for dev USDC for prod
+        bank_account_id: data.bank_account_id,
+        currency_type: 'sender',
+        cover_fees: false,
+        request_amount: data.request_amount, // should be in cents
+        network: 'sepolia', // default to prod
+        token: TOKEN,
       },
       {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${BLIND_PAY_API_KEY}`,
+          'Authorization': `Bearer ${BLIND_PAY_API_KEY}`,
+          'Content-Type': 'application/json',
         },
       }
     );
-
-    console.log("Receiver creation response:", response.data);
     return response.data;
   } catch (error) {
-    console.error(
-      "Error in create pay in:",
-      error.response?.data || error.message
-    );
-    throw error;
+    if (error.response && error.response.data) {
+      return { error: error.response.data.error || error.response.data.message || 'BlindPay error' };
+    }
+    return { error: error.message || 'Unknown error from BlindPay' };
   }
 }
 
 // Export functions for use in other modules
 module.exports = {
-  create_new_payin,
-  get_payin_quote,
+  create_new_payout,
+  get_payout_quote,
 };

@@ -31,6 +31,9 @@ import hsbc from "@/assets/icons/bankIcons/hsbc.png";
 import banorte from "@/assets/icons/bankIcons/banorte.jpg";
 import bankIcon from "@/assets/icons/bankIcons/bankIcon.png";
 import BankPickerOverlay from "./BankPickerOverlay";
+import BankInputOverlay from "./BankInputOverlay";
+import AmountInputOverlay from "./AmountInputOverlay";
+import { useLottie } from "lottie-react";
   /*
   40002 Banco Nacional de México (Banamex / Citibanamex)
   40012 BBVA México
@@ -53,6 +56,9 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
   const [isLoadingBankAccounts, setIsLoadingBankAccounts] = useState(false);
   const [currentStep, setCurrentStep] = useState('amount'); // 'amount' or 'bankAccount'
   const [showBankPickerOverlay, setShowBankPickerOverlay] = useState(false);
+  const [showBankInputOverlay, setShowBankInputOverlay] = useState(false);
+  const [selectedBank, setSelectedBank] = useState(null);
+  const [showAmountInputOverlay, setShowAmountInputOverlay] = useState(false);
   
   /* Public keys */
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
@@ -147,7 +153,11 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
   };
 
   const handleNextButtonPress = async () => {
-    console.log("handleNextButtonPress");
+    if (selectedBankAccount && !showAmountInputOverlay) {
+      setShowAmountInputOverlay(true);
+    } else {
+      // Placeholder for payout logic or next step
+    }
   };
 
   const handlePayout = async (amount: number, currency: string, bankAccount: any) => {
@@ -197,11 +207,26 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
     setShowBankPickerOverlay(true);
   };
 
+  const handleBankAccountCreated = (newBankAccount) => {
+    // Refresh bank accounts list
+    fetchBankAccounts().then(() => {
+      if (newBankAccount) {
+        setSelectedBankAccount(newBankAccount);
+      }
+    });
+    setShowBankInputOverlay(false);
+    setShowBankPickerOverlay(false);
+  };
+
+  const handleBankInputBack = () => {
+    setShowBankInputOverlay(false);
+    setShowBankPickerOverlay(true);
+  };
+
   const handleBankSelect = (bankInfo) => {
     console.log("Bank selected from picker:", bankInfo);
-    // Here you would typically navigate to a form to create the bank account
-    // For now, we'll just show a toast
-    toast.info(`Selected ${bankInfo.name}. Bank account creation form coming soon.`);
+    setSelectedBank(bankInfo);
+    setShowBankInputOverlay(true);
   };
 
   const renderBankAccountCard = (bankAccount) => (
@@ -288,7 +313,7 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
           `}
         >
           {isLoading ? (
-            <Lottie animationData={leafLoading} loop={true} style={{ width: 400, height: 400 }} />
+            <Lottie animationData={leafLoading} loop={true} style={{ width: 800, height: 800 }} />
           ) : (
             <div
               css={css`
@@ -353,17 +378,16 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
         `}
       >
         {isLoadingBankAccounts ? (
-          <div
-            css={css`
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 200px;
-              margin-top: var(--size-200);
-            `}
-          >
-            <Lottie animationData={leafLoading} loop={true} style={{ width: 100, height: 100 }} />
-          </div>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "60%"}}>
+              <div
+              css={css`
+                width: 12rem;
+                height: 12rem;
+              `}
+            >
+              <LoadingAnimation />
+            </div>
+            </div>
         ) : (
           <div
             css={css`
@@ -420,17 +444,7 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
                     margin: 0;
                   `}
                 >
-                  Create New Bank Account
-                </p>
-                <p
-                  css={css`
-                    font-size: var(--text-sm);
-                    color: var(--clr-text-muted);
-                    margin: 0;
-                    margin-top: var(--size-50);
-                  `}
-                >
-                  Add a new bank account for withdrawals
+                  Add Bank Account
                 </p>
               </div>
             </div>
@@ -467,13 +481,17 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
             setIsDropdownOpen(false);
             setCurrentStep('amount');
             setSelectedBankAccount(null);
+            setSelectedBank(null);
+            setShowBankPickerOverlay(false);
+            setShowBankInputOverlay(false);
+            setShowAmountInputOverlay(false);
           }
           onOpenChange(open);
         }}
         title="Withdraw"
       >
         {(blindPayReceiverId && blindPayEvmWalletId) ? (
-          renderBankAccountStep()
+          !showAmountInputOverlay ? renderBankAccountStep() : null
         ) : (
           <div
             css={css`
@@ -492,14 +510,51 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
           </div>
         )}
       </Overlay>
-
+      {showAmountInputOverlay && (
+        <AmountInputOverlay
+          isOpen={showAmountInputOverlay}
+          onOpenChange={(open) => {
+            setShowAmountInputOverlay(open);
+            if (!open) {
+              // If closed, return to bank account step
+              setShowAmountInputOverlay(false);
+            }
+          }}
+          onBack={() => setShowAmountInputOverlay(false)}
+          selectedBankAccount={selectedBankAccount}
+          selectedCurrency={selectedCurrency}
+        />
+      )}
       <BankPickerOverlay
         isOpen={showBankPickerOverlay}
         onOpenChange={setShowBankPickerOverlay}
         onBankSelect={handleBankSelect}
+        selectedBankCode={selectedBank?.code}
       />
+
+      {selectedBank && (
+        <BankInputOverlay
+          isOpen={showBankInputOverlay}
+          onOpenChange={setShowBankInputOverlay}
+          selectedBank={selectedBank}
+          onBankAccountCreated={handleBankAccountCreated}
+          onBack={handleBankInputBack}
+        />
+      )}
     </>
   );
+};
+
+const LoadingAnimation = () => {
+    const options = {
+      loop: true,
+      animationData: leafLoading,
+      autoplay: true,
+    };
+  
+    const { View } = useLottie(options);
+  
+    return <>{View}</>;
 };
 
 export default OffChainWithdrawOverlay;

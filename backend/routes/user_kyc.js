@@ -1,6 +1,6 @@
 const pool = require('../db');
 const { create_new_on_ramp_path } = require('../routes/onOffRamp/receiver');
-const { updateKycVerified } = require('./userDb');
+const { updateKycVerified, updateUserNames } = require('./userDb');
 
 async function createUserKYC(data) {
     const {
@@ -66,7 +66,8 @@ async function createUserKYC(data) {
 
         create_new_on_ramp_path(data);
 
-        
+        // Update user's first and last name in the main users table
+        await updateUserNames(user_id, first_name, last_name);
 
         updateKycVerified(user_id, true);
 

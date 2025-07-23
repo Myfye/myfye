@@ -1,6 +1,8 @@
 import { css } from "@emotion/react";
 import { motion } from "motion/react";
+import { useState, useEffect } from "react";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
+import Button from "@/shared/components/ui/button/Button";
 import bbva from "@/assets/icons/bankIcons/bbva.png";
 import banamex from "@/assets/icons/bankIcons/banamex.png";
 import santander from "@/assets/icons/bankIcons/santander.png";
@@ -11,6 +13,7 @@ interface BankPickerOverlayProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onBankSelect: (bankInfo: BankInfo) => void;
+  selectedBankCode?: string;
 }
 
 interface BankInfo {
@@ -19,7 +22,9 @@ interface BankInfo {
   icon: string;
 }
 
-const BankPickerOverlay = ({ isOpen, onOpenChange, onBankSelect }: BankPickerOverlayProps) => {
+const BankPickerOverlay = ({ isOpen, onOpenChange, onBankSelect, selectedBankCode }: BankPickerOverlayProps) => {
+  const [selectedBank, setSelectedBank] = useState<BankInfo | null>(null);
+
   const banks: BankInfo[] = [
     {
       code: "40002",
@@ -48,11 +53,30 @@ const BankPickerOverlay = ({ isOpen, onOpenChange, onBankSelect }: BankPickerOve
     },
   ];
 
+  // Set selected bank when selectedBankCode prop changes (when returning from BankInputOverlay)
+  useEffect(() => {
+    if (selectedBankCode) {
+      const bank = banks.find(b => b.code === selectedBankCode);
+      if (bank) {
+        setSelectedBank(bank);
+      }
+    }
+  }, [selectedBankCode]);
+
+  // Reset selected bank when overlay opens (unless we have a selectedBankCode)
+  useEffect(() => {
+    if (isOpen && !selectedBankCode) {
+      setSelectedBank(null);
+    }
+  }, [isOpen, selectedBankCode]);
+
   const handleBankClick = (bank: BankInfo) => {
     console.log("Bank selected:", bank);
+    setSelectedBank(bank);
+    // Immediately call onBankSelect to open BankInputOverlay
     onBankSelect(bank);
-    onOpenChange(false);
   };
+
 
   return (
     <Overlay
@@ -89,7 +113,7 @@ const BankPickerOverlay = ({ isOpen, onOpenChange, onBankSelect }: BankPickerOve
                 background-color: white;
                 cursor: pointer;
                 transition: all 0.2s ease;
-                border: 2px solid transparent;
+                border: 2px solid ${selectedBank?.code === bank.code ? 'var(--clr-primary)' : 'transparent'};
                 &:hover {
                   background-color: white;
                   border-color: var(--clr-primary);

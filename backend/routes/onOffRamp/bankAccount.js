@@ -16,8 +16,7 @@ async function create_new_bank_account(data) {
   );
 
   try {
-    // Use receiver_id from data or fallback to default
-    const receiverId = data.receiver_id || "re_zm9nJnPlQ8Kz";
+    const receiverId = data.receiver_id;
 
     const options = {
       method: 'POST',
