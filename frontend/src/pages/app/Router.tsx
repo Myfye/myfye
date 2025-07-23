@@ -26,7 +26,6 @@ import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../../shared/components/ui/button/Button";
 import { motion, AnimatePresence } from "motion/react";
 import Pay from "@/pages/app/pay/Pay";
-import PullToRefresh from "@/features/pull-to-refresh/PullToRefresh";
 
 const tabs = [
   { id: "home", label: "Home" },
@@ -116,58 +115,63 @@ const Router = () => {
         onSelectionChange={(key: Key) => setSelectedKey(key)}
         css={css`
           display: grid;
-          grid-template-rows: auto 1fr auto;
+          grid-template-rows: 1fr auto;
           height: 100cqh;
           position: relative;
         `}
       >
-        <Header>
-          <NavMenu />
-          <Button
-            iconOnly
-            icon={ScanIcon}
-            onPress={() => dispatch(setQRCodeModalOpen(true))}
-            color="white"
-          />
-        </Header>
-        <main
+        <div
           css={css`
-            position: relative;
-            z-index: 0;
+            display: grid;
+            grid-template-rows: auto 1fr;
           `}
         >
-          <AnimatePresence mode="wait">
-            {tabs.map((tab) => (
-              <MotionTabLabel
-                id={tab.id}
-                key={`tab-panel-${tab.id}`}
-                css={css`
-                  container: tab / size;
-                  min-height: 100%;
-                  height: 100%;
-                `}
-              >
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={variants}
-                  key={tab.id}
+          <Header color="var(--clr-surface)">
+            <NavMenu />
+            <Button
+              iconOnly
+              icon={ScanIcon}
+              onPress={() => dispatch(setQRCodeModalOpen(true))}
+              color="white"
+            />
+          </Header>
+          <main
+            css={css`
+              position: relative;
+              z-index: 0;
+            `}
+          >
+            <AnimatePresence mode="wait">
+              {tabs.map((tab) => (
+                <MotionTabLabel
+                  id={tab.id}
+                  key={`tab-panel-${tab.id}`}
                   css={css`
-                    height: 100cqh;
+                    container: tab / size;
+                    min-height: 100%;
+                    height: 100%;
                   `}
                 >
-                  <PullToRefresh height="100cqh" onRefresh={() => {}}>
+                  <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                    variants={variants}
+                    key={tab.id}
+                    css={css`
+                      height: 100cqh;
+                    `}
+                  >
                     {tab.id === "home" && <Home />}
                     {tab.id === "wallet" && <Wallet />}
                     {tab.id === "pay" && <Pay />}
                     {tab.id === "activity" && <Activity />}
-                  </PullToRefresh>
-                </motion.div>
-              </MotionTabLabel>
-            ))}
-          </AnimatePresence>
-        </main>
+                  </motion.div>
+                </MotionTabLabel>
+              ))}
+            </AnimatePresence>
+          </main>
+        </div>
         <Footer>
           <AriaTabList
             css={css`
