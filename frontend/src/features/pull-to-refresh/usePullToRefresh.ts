@@ -1,4 +1,11 @@
-import { animate, MotionValue, spring, useMotionValue } from "motion/react";
+import {
+  animate,
+  MotionValue,
+  spring,
+  useMotionValue,
+  useTime,
+  useTransform,
+} from "motion/react";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 
 export type UsePullToRefreshParams = {
@@ -22,11 +29,46 @@ export const usePullToRefresh = ({
   const pullChange = useMotionValue(0);
   const [isRefreshing, setRefreshing] = useState(false);
   const [canRefresh, setRefresh] = useState(false);
+  const startClientPoint = useRef({
+    x: 0,
+    y: 0,
+  });
+
+  const time = useTime();
+
+  const baseRotationRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number | null>(null);
+
+  // Spinner animation params
+  const rotate = useTransform(pullChange, (x) => {
+    if (isRefreshing) {
+      if (startTimeRef.current === null) {
+        startTimeRef.current = time.get();
+        baseRotationRef.current = x;
+      }
+
+      const elapsed = time.get() - startTimeRef.current;
+      const rotation = (elapsed / 5) % 360;
+
+      return (baseRotationRef.current + rotation) % 360;
+    } else {
+      startTimeRef.current = null;
+      baseRotationRef.current = null;
+
+      return x;
+    }
+  });
+  const opacity = useTransform(pullChange, [0, PULL_THRESHOLD], [0, 1]);
+
+  const pullMargin = useTransform(pullChange, (x) => x / 3.118);
 
   useEffect(() => {
+    // Only can refresh if at the top of scroll
     const pullStart = (e: TouchEvent) => {
       const el = ref.current;
       if (!el) return;
+
+      if (el.classList.contains("no-scroll-y")) return;
 
       if (el.scrollTop === 0) {
         setRefresh(true);
@@ -34,49 +76,64 @@ export const usePullToRefresh = ({
         setRefresh(false);
       }
 
-      const { screenY } = e.targetTouches[0];
+      if (!canRefresh) return;
+
+      const [touch] = e.targetTouches;
+      const { screenY } = touch;
+
       setStartPoint(screenY);
+      startClientPoint.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+      };
     };
 
     const pull = (e: TouchEvent) => {
-      if (!canRefresh) return;
-      /**
-       * get the current user touch event data
-       */
-      const touch = e.targetTouches[0];
-      /**
-       * get the touch position on the screen's Y axis
-       */
+      const el = ref.current;
+      if (!canRefresh || !el || el?.classList.contains("no-scroll-y")) return;
+
+      const [touch] = e.targetTouches;
+
+      const delta = {
+        x: touch.clientX - startClientPoint.current.x,
+        y: touch.clientY - startClientPoint.current.y,
+      };
+
+      const direction = Math.abs(delta.x) > Math.abs(delta.y) ? "x" : "y";
+
+      if (direction === "x") return;
+
+      el.classList.add("no-scroll");
+
       const { screenY } = touch;
-      /**
-       * The length of the pull
-       *
-       * if the start touch position is lesser than the current touch position, calculate the difference, which gives the `pullLength`
-       *
-       * This tells us how much the user has pulled
-       */
+
       const pullLength =
         startPoint < screenY ? Math.abs(screenY - startPoint) : 0;
       pullChange.set(pullLength);
     };
 
     const endPull = async (e: TouchEvent) => {
-      if (!canRefresh) return;
+      const el = ref.current;
+      if (!canRefresh || !el || el?.classList.contains("no-scroll-y")) return;
+
       setStartPoint(0);
 
       if (pullChange.get() < pullThreshold) {
         await animate(pullChange, 0, { type: spring, bounce: 0.1 });
-        return;
+      } else {
+        // if more than or equal to pullThreshold, call the refresh function and then animate back to pullThreshold
+        if (onRefreshStart) onRefreshStart();
+        setRefreshing(true);
+        await animate(pullChange, pullThreshold, { type: spring, bounce: 0.1 });
+        if (onRefresh) await onRefresh();
+        await animate(pullChange, 0, { type: spring, bounce: 0.1 });
+        // Once the animation has completed, end refreshing state and make it so that a user can scroll again
+        setRefreshing(false);
+        if (onRefreshEnd) onRefreshEnd();
       }
 
-      // if more than or equal to pullThreshold, call the refresh function and then animate back to pullThreshold
-      if (onRefreshStart) onRefreshStart();
-      setRefreshing(true);
-      await animate(pullChange, pullThreshold, { type: spring, bounce: 0.1 });
-      if (onRefresh) await onRefresh();
-      await animate(pullChange, 0, { type: spring, bounce: 0.1 });
-      setRefreshing(false);
-      if (onRefreshEnd) onRefreshEnd();
+      // Once refresh is completed, make it so the user can scroll again
+      el.classList.remove("no-scroll");
     };
 
     window.addEventListener("touchstart", pullStart);
@@ -92,5 +149,10 @@ export const usePullToRefresh = ({
     startPoint,
     pullChange,
     isRefreshing,
+    pullMargin,
+    spinnerParams: {
+      rotate,
+      opacity,
+    },
   };
 };

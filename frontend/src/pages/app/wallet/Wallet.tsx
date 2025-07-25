@@ -1,12 +1,8 @@
-import Button from "@/shared/components/ui/button/Button";
 import WalletCardList from "./_components/WalletCardList.tsx";
 
 import { css } from "@emotion/react";
 import { useDispatch } from "react-redux";
-import {
-  setDepositModalOpen,
-  setWithdrawModalOpen,
-} from "@/redux/modalReducers.tsx";
+import { setDepositModalOpen } from "@/redux/modalReducers.tsx";
 import EarnOverlay from "./earn/EarnOverlay.tsx";
 import CryptoOverlay from "./crypto/CryptoOverlay.tsx";
 import CashOverlay from "./cash/CashOverlay.tsx";
@@ -15,15 +11,11 @@ import { ArrowSquareOut } from "@phosphor-icons/react";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup.tsx";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem.tsx";
 import { useRef } from "react";
-import {
-  PULL_THRESHOLD,
-  usePullToRefresh,
-} from "@/features/pull-to-refresh/usePullToRefresh.ts";
+import { usePullToRefresh } from "@/features/pull-to-refresh/usePullToRefresh.ts";
 import PullToRefreshIndicator from "@/features/pull-to-refresh/PullToRefreshIndicator.tsx";
 import getSolanaBalances from "@/functions/GetSolanaBalances.tsx";
 import { useSolanaWallets } from "@privy-io/react-auth";
-import { usePullToRefreshRotate } from "@/features/pull-to-refresh/usePullToRefreshRotate.ts";
-import { useTransform, motion } from "motion/react";
+import { motion } from "motion/react";
 
 const Wallet = () => {
   const ref = useRef<HTMLDivElement>(null!);
@@ -31,15 +23,12 @@ const Wallet = () => {
   const dispatch = useDispatch();
   const solanaAddress = wallets[0].address;
 
-  const { pullChange, isRefreshing } = usePullToRefresh({
+  const { spinnerParams, pullMargin } = usePullToRefresh({
     onRefresh: async () => {
       await getSolanaBalances(solanaAddress, dispatch);
     },
     ref,
   });
-  const marginTop = useTransform(pullChange, (x) => x / 3.118);
-  const opacity = useTransform(pullChange, [0, PULL_THRESHOLD], [0, 1]);
-  const rotate = usePullToRefreshRotate({ pullChange, isRefreshing });
 
   return (
     <>
@@ -53,11 +42,11 @@ const Wallet = () => {
           position: relative;
         `}
       >
-        <PullToRefreshIndicator style={{ opacity, rotate }} />
+        <PullToRefreshIndicator style={spinnerParams} />
         <motion.div
           className="no-scrollbar"
           ref={ref}
-          style={{ marginTop }}
+          style={{ marginTop: pullMargin }}
           css={css`
             z-index: 1;
             grid-row: 1 / -1;
