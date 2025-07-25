@@ -10,10 +10,8 @@ import {
   animate,
   AnimationPlaybackControlsWithThen,
   motion,
-  useMotionValue,
   useMotionValueEvent,
   useScroll,
-  useTime,
   useTransform,
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -23,15 +21,11 @@ import DashboardPanel from "./panels/dashboard/DashboardPanel";
 import CashPanel from "./panels/cash/CashPanel";
 import CryptoPanel from "./panels/crypto/CryptoPanel";
 import StocksPanel from "./panels/stocks/StocksPanel";
-import {
-  PULL_THRESHOLD,
-  usePullToRefresh,
-} from "@/features/pull-to-refresh/usePullToRefresh";
+import { usePullToRefresh } from "@/features/pull-to-refresh/usePullToRefresh";
 import PullToRefreshIndicator from "@/features/pull-to-refresh/PullToRefreshIndicator";
 import { useSolanaWallets } from "@privy-io/react-auth";
 import { useDispatch } from "react-redux";
 import getSolanaBalances from "@/functions/GetSolanaBalances";
-import { usePullToRefreshRotate } from "@/features/pull-to-refresh/usePullToRefreshRotate";
 
 const tabs = [
   { id: "dashboard", label: "Dashboard" },
@@ -49,16 +43,12 @@ const HomeTabs = () => {
   const dispatch = useDispatch();
   const solanaAddress = wallets[0].address;
 
-  const { pullChange, isRefreshing } = usePullToRefresh({
+  const { spinnerParams, pullMargin } = usePullToRefresh({
     onRefresh: async () => {
       await getSolanaBalances(solanaAddress, dispatch);
     },
     ref: tabPanelsRef,
   });
-
-  const marginTop = useTransform(pullChange, (x) => x / 3.118);
-  const opacity = useTransform(pullChange, [0, PULL_THRESHOLD], [0, 1]);
-  const rotate = usePullToRefreshRotate({ pullChange, isRefreshing });
 
   useEffect(() => {
     const el = tabPanelsRef.current;
@@ -82,14 +72,14 @@ const HomeTabs = () => {
 
       // Lock opposite axis
       if (activeAxis === "x") {
-        el.style.overflowX = "auto";
-        el.style.overflowY = "hidden";
+        el.classList.remove("no-scroll-x");
+        el.classList.add("no-scroll-y");
       } else if (activeAxis === "y") {
-        el.style.overflowX = "hidden";
-        el.style.overflowY = "auto";
+        el.classList.add("no-scroll-x");
+        el.classList.remove("no-scroll-y");
       } else {
-        el.style.overflowX = "auto";
-        el.style.overflowY = "auto";
+        el.classList.remove("no-scroll-x");
+        el.classList.remove("no-scroll-y");
       }
     };
     el.addEventListener("scroll", handleScroll);
@@ -230,11 +220,13 @@ const HomeTabs = () => {
                   font-weight: var(--fw-active);
                   height: 3rem;
                   cursor: pointer;
+                  transition: color 200ms ease-out;
                   color: var(--clr-text-neutral-strong);
                   &:hover {
                     color: var(--clr-primary);
                   }
                   &[data-selected="true"] {
+                    transition: color 200ms ease-out;
                     color: var(--clr-primary);
                   }
                 `}
@@ -252,6 +244,7 @@ const HomeTabs = () => {
           </TabList>
           {/* Selection indicator. */}
           <motion.div
+            aria-hidden="true"
             css={css`
               position: absolute;
               left: 0;
@@ -278,7 +271,7 @@ const HomeTabs = () => {
             padding-block-start: var(--size-100);
           `}
         >
-          <PullToRefreshIndicator style={{ opacity }} rotate={rotate} />
+          <PullToRefreshIndicator style={spinnerParams} />
           <motion.div
             ref={tabPanelsRef}
             className="no-scrollbar"
@@ -292,7 +285,7 @@ const HomeTabs = () => {
               z-index: 1;
               position: relative;
             `}
-            style={{ marginTop }}
+            style={{ marginTop: pullMargin }}
           >
             <Collection items={tabs}>
               {(tab) => (
