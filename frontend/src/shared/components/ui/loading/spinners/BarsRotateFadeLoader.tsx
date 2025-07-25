@@ -1,12 +1,6 @@
 import { css } from "@emotion/react";
-import {
-  motion,
-  MotionProps,
-  MotionValue,
-  useAnimationFrame,
-  useMotionValue,
-} from "motion/react";
-import { Ref, SVGAttributes } from "react";
+import { motion, MotionProps } from "motion/react";
+import { Ref } from "react";
 
 type BarsRotateFadeLoaderProps = {
   ref?: Ref<SVGSVGElement>;
@@ -28,6 +22,9 @@ const BarsRotateFadeLoader = ({
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 2400 2400"
+      css={css`
+        opacity: 0;
+      `}
     >
       <g
         stroke-width="200"
