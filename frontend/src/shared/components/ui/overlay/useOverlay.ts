@@ -3,7 +3,7 @@ import { RefObject, useEffect } from "react";
 interface UseOverlayParams {
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
-  ref?: RefObject<HTMLElement>;
+  ref?: RefObject<HTMLElement | null>;
 }
 export const useOverlay = ({ isOpen, onOpenChange, ref }: UseOverlayParams) => {
   useEffect(() => {

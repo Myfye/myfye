@@ -15,6 +15,7 @@ import Header from "@/shared/components/layout/nav/header/Header";
 
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { createPortal } from "react-dom";
+import { useOverlay } from "./useOverlay";
 
 const staticTransition = {
   duration: 0.5,
@@ -41,7 +42,9 @@ const Overlay = ({
 
   const titleId = useId();
 
-  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);\
+
+  useOverlay({ isOpen, onOpenChange, ref: overlayRef });
 
   return (
     <>

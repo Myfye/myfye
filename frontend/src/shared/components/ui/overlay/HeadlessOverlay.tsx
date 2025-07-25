@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import { Modal, ModalOverlay } from "react-aria-components";
-import { ReactNode, useId } from "react";
+import { ReactNode, useId, useRef } from "react";
 
 import { css } from "@emotion/react";
 
@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { createPortal } from "react-dom";
+import { useOverlay } from "./useOverlay";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionDialog = motion(Dialog);
@@ -22,14 +23,7 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-const HeadlessOverlay = ({
-  isOpen,
-  onOpenChange,
-  backgroundColor = "var(--clr-surface)",
-  zIndex = 1000,
-  children,
-  onExitComplete,
-}: {
+interface HeadlessOverlayProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   backgroundColor?: string;
@@ -37,9 +31,24 @@ const HeadlessOverlay = ({
   children: ReactNode;
   onExitComplete?: () => void;
   onEnterComplete?: () => void;
-}) => {
+  titleId?: string;
+}
+
+const HeadlessOverlay = ({
+  isOpen,
+  onOpenChange,
+  backgroundColor = "var(--clr-surface)",
+  zIndex = 1000,
+  children,
+  onExitComplete,
+  titleId,
+}: HeadlessOverlayProps) => {
   let w = window.innerWidth;
-  let x = useMotionValue(w);
+  const x = useMotionValue(w);
+
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+
+  useOverlay({ isOpen, onOpenChange, ref: overlayRef });
 
   return (
     <>
@@ -48,8 +57,10 @@ const HeadlessOverlay = ({
           <>
             {createPortal(
               <>
-                {" "}
                 <motion.div
+                  aria-labelledby={titleId}
+                  aria-label={!titleId ? "Page" : undefined}
+                  ref={overlayRef}
                   css={css`
                     position: fixed;
                     inset: 0;
