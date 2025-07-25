@@ -3,7 +3,7 @@ import Overlay from "@/shared/components/ui/overlay/Overlay";
 import { AbstractedAsset, AbstractedAssetSection } from "../assets/types";
 import AssetCardListSelect from "./cards/AssetCardListSelect";
 import SearchField from "@/shared/components/ui/search/SearchField";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import fuzzysort from "fuzzysort";
 
 interface SelectAssetOverlayProps {
@@ -70,6 +70,7 @@ const SelectAssetOverlay = ({
   const [filteredSections, setFilteredSections] = useState(
     abstractedAssetSections
   );
+  const searchRef = useRef<HTMLInputElement>(null!);
 
   useEffect(() => {
     setFilteredSections(filterSections(abstractedAssetSections, searchValue));
@@ -117,6 +118,7 @@ const SelectAssetOverlay = ({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       zIndex={zIndex}
+      initialFocus={searchRef}
     >
       <div
         css={css`
@@ -139,6 +141,7 @@ const SelectAssetOverlay = ({
             onClear={() => setSearchValue("")}
             onChange={(val) => setSearchValue(val)}
             value={searchValue}
+            ref={searchRef}
           />
         </div>
         <div
