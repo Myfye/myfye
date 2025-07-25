@@ -10,6 +10,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { createPortal } from "react-dom";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionDialog = motion(Dialog);
@@ -44,52 +45,58 @@ const HeadlessOverlay = ({
     <>
       <AnimatePresence onExitComplete={onExitComplete}>
         {isOpen && (
-          <MotionDialog
-            open={isOpen}
-            onClose={() => onOpenChange(false)}
-            css={css`
-              position: fixed;
-              inset: 0;
-              z-index: ${zIndex};
-              max-width: 420px;
-              margin-inline: auto;
-              isolation: isolate;
-            `}
-          >
-            <MotionDialogPanel
-              css={css`
-                background-color: ${backgroundColor};
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                will-change: transform;
-                height: 100svh;
-                z-index: 1;
-              `}
-              initial={{ x: w }}
-              animate={{ x: 0 }}
-              exit={{ x: w }}
-              transition={staticTransition}
-              style={{
-                x,
-                left: 0,
-                // Extra padding at the right to account for rubber band scrolling.
-                paddingRight: window.screen.width,
-              }}
-            >
-              <div
-                css={css`
-                  display: grid;
-                  grid-template-rows: auto 1fr;
-                  height: 100svh;
-                  max-width: var(--app-max-width);
-                  width: 100vw;
-                `}
-              >
-                {children}
-              </div>
-            </MotionDialogPanel>
-          </MotionDialog>
+          <>
+            {createPortal(
+              <>
+                {" "}
+                <motion.div
+                  css={css`
+                    position: fixed;
+                    inset: 0;
+                    z-index: ${zIndex};
+                    max-width: 420px;
+                    margin-inline: auto;
+                    isolation: isolate;
+                  `}
+                >
+                  <motion.div
+                    css={css`
+                      background-color: ${backgroundColor};
+                      position: absolute;
+                      bottom: 0;
+                      width: 100%;
+                      will-change: transform;
+                      height: ${window.innerHeight}px;
+                      z-index: 1;
+                    `}
+                    initial={{ x: w }}
+                    animate={{ x: 0 }}
+                    exit={{ x: w }}
+                    transition={staticTransition}
+                    style={{
+                      x,
+                      left: 0,
+                      // Extra padding at the right to account for rubber band scrolling.
+                      paddingRight: window.screen.width,
+                    }}
+                  >
+                    <div
+                      css={css`
+                        height: ${window.innerHeight}px;
+                        max-width: var(--app-max-width);
+                        width: 100vw;
+                      `}
+                    >
+                      {children}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              </>,
+              document.querySelector<HTMLDivElement>(
+                "#screens"
+              ) as HTMLDivElement
+            )}
+          </>
         )}
       </AnimatePresence>
     </>
