@@ -1,9 +1,9 @@
+import { assertIsNode } from "@/shared/utils/typeUtils";
 import {
   animate,
   spring,
   useMotionValue,
   useMotionValueEvent,
-  useScroll,
   useTime,
   useTransform,
 } from "motion/react";
@@ -60,10 +60,13 @@ export const usePullToRefresh = ({
         baseRotationRef.current = x;
       }
 
+      // TODO handle time between async calls
       const elapsed = time.get() - startTimeRef.current;
       const rotation = (elapsed / 5) % 360;
 
-      return (baseRotationRef.current + rotation) % 360;
+      return baseRotationRef.current
+        ? (baseRotationRef.current + rotation) % 360
+        : x;
     } else {
       startTimeRef.current = null;
       baseRotationRef.current = null;
@@ -71,6 +74,9 @@ export const usePullToRefresh = ({
       return x;
     }
   });
+
+  useMotionValueEvent(rotate, "change", (x) => void console.log(x));
+
   const opacity = useTransform(pullChange, [0, PULL_THRESHOLD], [0, 1]);
 
   const pullMargin = useTransform(pullChange, (x) => x / 3.118);
@@ -84,6 +90,7 @@ export const usePullToRefresh = ({
       currentScrollLeft.current = el.scrollLeft;
 
       const [touch] = e.targetTouches;
+      assertIsNode(touch.target);
 
       // Prevent drag if current active element is not the ref or a child of the ref
       if (!el.contains(touch.target) && touch.target !== el) {
@@ -113,6 +120,7 @@ export const usePullToRefresh = ({
       if (!el) return;
 
       const [touch] = e.targetTouches;
+      assertIsNode(touch.target);
 
       const offset = {
         x: touch.clientX - startClientPoint.current.x,
