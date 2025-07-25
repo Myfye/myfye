@@ -43,11 +43,14 @@ const HomeTabs = () => {
   const dispatch = useDispatch();
   const solanaAddress = wallets[0].address;
 
+  const [isScrolling, setScrolling] = useState(false);
+
   const { spinnerParams, pullMargin } = usePullToRefresh({
     onRefresh: async () => {
       await getSolanaBalances(solanaAddress, dispatch);
     },
     ref: tabPanelsRef,
+    isScrolling,
   });
 
   // Track the scroll position of the tab panel container.
@@ -104,7 +107,11 @@ const HomeTabs = () => {
   // When the user scrolls, update the selected key
   // so that the correct tab panel becomes interactive.
   useMotionValueEvent(scrollXProgress, "change", (x) => {
-    if (animationRef.current || !tabElements.length) return;
+    if (x === 0 || x == 1 / 3 || x === 2 / 3 || x === 1) {
+      setScrolling(true);
+    } else {
+      setScrolling(false);
+    }
     setSelectedKey(tabs[getIndex(x)].id);
   });
 
@@ -140,6 +147,7 @@ const HomeTabs = () => {
         onComplete: () => {
           tabPanel.style.scrollSnapType = "";
           animationRef.current = null;
+          setScrolling(false);
         },
       }
     );
@@ -237,6 +245,7 @@ const HomeTabs = () => {
         >
           <PullToRefreshIndicator style={spinnerParams} />
           <motion.div
+            data-scrolling={isScrolling}
             ref={tabPanelsRef}
             className="no-scrollbar"
             css={css`
