@@ -42,7 +42,7 @@ const Overlay = ({
 
   const titleId = useId();
 
-  const overlayRef = useRef<HTMLDivElement | null>(null);\
+  const overlayRef = useRef<HTMLDivElement | null>(null);
 
   useOverlay({ isOpen, onOpenChange, ref: overlayRef });
 
