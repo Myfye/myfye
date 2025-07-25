@@ -1,12 +1,11 @@
 import {
   animate,
-  MotionValue,
   spring,
   useMotionValue,
   useTime,
   useTransform,
 } from "motion/react";
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 
 export type UsePullToRefreshParams = {
   onRefresh?: () => void | Promise<void>;
@@ -39,6 +38,8 @@ export const usePullToRefresh = ({
   const baseRotationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
+  const scrollLeftRef = useRef<number>(0);
+
   // Spinner animation params
   const rotate = useTransform(pullChange, (x) => {
     if (isRefreshing) {
@@ -68,17 +69,21 @@ export const usePullToRefresh = ({
       const el = ref.current;
       if (!el) return;
 
-      if (el.classList.contains("no-scroll-y")) return;
+      const [touch] = e.targetTouches;
+
+      // Prevent drag if current active element is not the ref or a child of the ref
+      if (!el.contains(touch.target) && touch.target !== el) {
+        setRefresh(false);
+        return;
+      }
 
       if (el.scrollTop === 0) {
         setRefresh(true);
       } else {
         setRefresh(false);
+        return;
       }
 
-      if (!canRefresh) return;
-
-      const [touch] = e.targetTouches;
       const { screenY } = touch;
 
       setStartPoint(screenY);
@@ -86,11 +91,14 @@ export const usePullToRefresh = ({
         x: touch.clientX,
         y: touch.clientY,
       };
+
+      scrollLeftRef.current = el.scrollLeft;
     };
 
     const pull = (e: TouchEvent) => {
       const el = ref.current;
-      if (!canRefresh || !el || el?.classList.contains("no-scroll-y")) return;
+
+      if (!canRefresh || !el) return;
 
       const [touch] = e.targetTouches;
 
@@ -103,6 +111,7 @@ export const usePullToRefresh = ({
 
       if (direction === "x") return;
 
+      el.scrollLeft = scrollLeftRef.current;
       el.classList.add("no-scroll");
 
       const { screenY } = touch;
@@ -114,7 +123,8 @@ export const usePullToRefresh = ({
 
     const endPull = async (e: TouchEvent) => {
       const el = ref.current;
-      if (!canRefresh || !el || el?.classList.contains("no-scroll-y")) return;
+
+      if (!canRefresh || !el) return;
 
       setStartPoint(0);
 
