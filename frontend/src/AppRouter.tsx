@@ -171,7 +171,7 @@ function WebAppInner() {
 
   if (!userDataLoaded) {
     return (
-      <div className="app-layout">
+      <div className="landing-layout">
         <LoadingScreen />
       </div>
     );
