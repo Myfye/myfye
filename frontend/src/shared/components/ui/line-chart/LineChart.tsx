@@ -1,15 +1,8 @@
-// install (please try to align the version of installed @nivo packages)
-// yarn add @nivo/line
 import { ResponsiveLine, Serie } from "@nivo/line";
 import { css } from "@emotion/react";
 import DateSelect from "./DateSelect";
 import { Key } from "react-aria";
 
-// make sure parent container have a defined height when using
-// responsive component, otherwise height will be 0 and
-// no chart will be rendered.
-// website examples showcase many properties,
-// you'll often use just a few of them.
 const LineChart = ({
   data,
   selectedDateRange,
@@ -67,15 +60,14 @@ const LineChart = ({
           legends={[]}
           motionConfig="default"
           onTouchStart={() => {
-            console.log("HI");
             document
               .querySelector(".overlay-scroll")
-              ?.classList.add("no-scroll");
+              ?.classList.add("no-scroll-y");
           }}
           onTouchEnd={() => {
             document
               .querySelector(".overlay-scroll")
-              ?.classList.remove("no-scroll");
+              ?.classList.remove("no-scroll-y");
           }}
         />
       </div>
