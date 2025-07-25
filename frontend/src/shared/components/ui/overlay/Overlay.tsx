@@ -4,7 +4,7 @@ import {
   motion,
   useMotionValue,
 } from "motion/react";
-import { ReactNode, useEffect, useId, useRef } from "react";
+import { ReactNode, RefObject, useId, useRef } from "react";
 
 import { css } from "@emotion/react";
 
@@ -13,7 +13,6 @@ import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
 import Header from "@/shared/components/layout/nav/header/Header";
 
-import { Dialog, DialogPanel } from "@headlessui/react";
 import { createPortal } from "react-dom";
 import { useOverlay } from "./useOverlay";
 
@@ -28,6 +27,7 @@ interface OverlayProps extends HTMLMotionProps<"div"> {
   title?: string;
   zIndex?: number;
   children?: ReactNode;
+  initialFocus?: RefObject<HTMLElement>;
 }
 const Overlay = ({
   isOpen,
@@ -35,6 +35,7 @@ const Overlay = ({
   title,
   zIndex = 1000,
   children,
+  initialFocus,
   ...restProps
 }: OverlayProps) => {
   const w = window.innerWidth;
@@ -44,7 +45,7 @@ const Overlay = ({
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
-  useOverlay({ isOpen, onOpenChange, ref: overlayRef });
+  useOverlay({ isOpen, onOpenChange, ref: overlayRef, initialFocus });
 
   return (
     <>

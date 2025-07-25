@@ -1,11 +1,36 @@
-import { RefObject, useEffect } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 
 interface UseOverlayParams {
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   ref?: RefObject<HTMLElement | null>;
+  initialFocus?: RefObject<HTMLElement>;
 }
-export const useOverlay = ({ isOpen, onOpenChange, ref }: UseOverlayParams) => {
+export const useOverlay = ({
+  isOpen,
+  onOpenChange,
+  ref,
+  initialFocus,
+}: UseOverlayParams) => {
+  const prevFocusEl = useRef<Element | null>(null!);
+
+  useEffect(() => {
+    // TODO focus goes to body after close. need to update this for a11y
+    const focusEl = initialFocus?.current;
+    prevFocusEl.current = document.activeElement;
+
+    if (isOpen && focusEl) {
+      focusEl.focus();
+    }
+
+    return () => {
+      focusEl?.blur();
+
+      // focus on previous active element
+      if (prevFocusEl instanceof HTMLElement) prevFocusEl?.focus();
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     if (isOpen) {
       const el = ref?.current;
