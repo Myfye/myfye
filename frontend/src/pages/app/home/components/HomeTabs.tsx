@@ -243,6 +243,7 @@ const HomeTabs = () => {
               display: flex;
               overflow: auto;
               scroll-snap-type: x mandatory;
+              scroll-snap-stop: always;
               background-color: var(--clr-surface);
               grid-column: 1 / -1;
               grid-row: 1 / -1;
