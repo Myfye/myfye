@@ -75,8 +75,6 @@ export const usePullToRefresh = ({
     }
   });
 
-  useMotionValueEvent(rotate, "change", (x) => void console.log(x));
-
   const opacity = useTransform(pullChange, [0, PULL_THRESHOLD], [0, 1]);
 
   const pullMargin = useTransform(pullChange, (x) => x / 3.118);
