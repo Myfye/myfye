@@ -48,7 +48,8 @@ const { add_kyc_doc_to_entity } = require('./routes/dinari_shares/kyc_doc');
 const { create_new_dinari_account } = require('./routes/dinari_shares/account');
 const { sign_nonce } = require('./routes/dinari_shares/sign_nonce');
 const { sign_order } = require('./routes/dinari_shares/sign_order.js');
-const { getWalletIdByAddress } = require('./routes/privy/getWallets');
+const { getWalletByAddress } = require('./routes/privy/getWallets');
+const { create_new_payout, get_payout_quote } = require('./routes/onOffRamp/payOut');
 
 app.set('trust proxy', true);
 
@@ -771,7 +772,7 @@ app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
     }
 });
 
-app.post("/get_wallet_id_by_address", generalLimiter, async (req, res) => {
+app.post("/get_wallet_by_address", generalLimiter, async (req, res) => {
     console.log("\n=== Get Wallet ID by Address Request Received ===");
     console.log("Request body:", JSON.stringify(req.body, null, 2));
 
@@ -783,7 +784,7 @@ app.post("/get_wallet_id_by_address", generalLimiter, async (req, res) => {
             });
         }
 
-        const result = await getWalletIdByAddress(address);
+        const result = await getWalletByAddress(address);
         console.log("Get wallet ID result:", JSON.stringify(result, null, 2));
         res.json(result);
     } catch (error) {
@@ -1147,6 +1148,48 @@ app.post("/sign_dinari_order", sensitiveLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to execute order",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/payout_quote", async (req, res) => {
+  console.log("\n=== New Payout Quote Request Received ===");
+  try {
+    const data = req.body;
+    const result = await get_payout_quote(data);
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /payout_quote endpoint:", error);
+    res.status(500).json({ error: error.message || "Failed to get payout quote" });
+  }
+});
+
+app.post("/get_wallet_id_by_address", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Get Wallet ID by Address Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { address } = req.body;
+    
+    if (!address) {
+      return res.status(400).json({ 
+        error: 'Address parameter is required' 
+      });
+    }
+
+    const result = await getWalletByAddress(address);
+    console.log("Wallet ID lookup result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_wallet_id_by_address endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get wallet ID by address",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
