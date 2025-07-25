@@ -9,13 +9,19 @@
     font-family: var(--font-family);
   }
   .app-layout {
+    height: 100svh;
+    max-height: 100svh;
+    max-width: var(--app-max-width);
+    margin-inline: auto;
+    overflow: hidden;
+  }
+  .landing-layout {
     display: grid;
     grid-template-rows: 4rem 1fr 4.5rem;
     height: 100svh;
     max-height: 100svh;
-    max-width: 420px;
+    max-width: var(--app-max-width);
     margin-inline: auto;
-    font-family: var(--font-family);
-    overflow: hidden;
+    overflow-y: auto;
   }
 }
