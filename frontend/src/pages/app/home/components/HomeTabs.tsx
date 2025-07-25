@@ -50,42 +50,6 @@ const HomeTabs = () => {
     ref: tabPanelsRef,
   });
 
-  useEffect(() => {
-    const el = tabPanelsRef.current;
-    if (!el) return;
-    const getIndex = () =>
-      Math.max(0, Math.floor(el.scrollLeft / el.offsetWidth));
-
-    const handleScroll = () => {
-      const x = el.scrollLeft;
-      const y = el.scrollTop;
-
-      const width = el.getBoundingClientRect().width;
-
-      const index = getIndex();
-
-      const xByIndex = Math.abs(x) - width * index;
-
-      // Detect scroll direction
-      const activeAxis =
-        xByIndex === Math.abs(y) ? null : xByIndex > Math.abs(y) ? "x" : "y";
-
-      // Lock opposite axis
-      if (activeAxis === "x") {
-        el.classList.remove("no-scroll-x");
-        el.classList.add("no-scroll-y");
-      } else if (activeAxis === "y") {
-        el.classList.add("no-scroll-x");
-        el.classList.remove("no-scroll-y");
-      } else {
-        el.classList.remove("no-scroll-x");
-        el.classList.remove("no-scroll-y");
-      }
-    };
-    el.addEventListener("scroll", handleScroll);
-    return () => void el.removeEventListener("scroll", handleScroll);
-  }, []);
-
   // Track the scroll position of the tab panel container.
   const { scrollXProgress } = useScroll({
     container: tabPanelsRef,
