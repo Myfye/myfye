@@ -129,7 +129,7 @@ const SelectAssetOverlay = ({
             padding-block-start: var(--size-200);
             padding-block-end: var(--size-200);
             position: sticky;
-            top: 3rem;
+            top: 0;
             z-index: 1;
             background-color: var(--clr-surface);
           `}
