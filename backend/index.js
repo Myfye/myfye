@@ -1156,6 +1156,7 @@ app.post("/sign_dinari_order", sensitiveLimiter, async (req, res) => {
 
 app.post("/payout_quote", async (req, res) => {
   console.log("\n=== New Payout Quote Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
   try {
     const data = req.body;
     const result = await get_payout_quote(data);

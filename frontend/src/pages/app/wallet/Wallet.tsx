@@ -87,7 +87,7 @@ const Wallet = () => {
               Add money
             </ButtonGroupItem>
             <ButtonGroupItem
-              onPress={() => void dispatch(setDepositModalOpen(true))}
+              onPress={() => void dispatch(setWithdrawModalOpen(true))}
             >
               Withdraw
             </ButtonGroupItem>
