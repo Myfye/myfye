@@ -31,7 +31,7 @@ const WithdrawModal = () => {
 
   const openFiat = () => {
     setFiatOpen(true);
-    setHeight(680);
+    setHeight(0); // Hide the modal when fiat overlay opens
   };
 
   const onOpenChange = (isOpen: boolean) => {
@@ -89,18 +89,19 @@ const WithdrawModal = () => {
               }
             }}
           />
-        ) : (
-          <OffChainWithdrawOverlay
-            isOpen={isFiatOpen}
-            onOpenChange={(open) => {
-              setFiatOpen(open);
-              if (!open) {
-                setHeight(360);
-              }
-            }}
-          />
-        )}
+        ) : null}
       </Modal>
+      
+      {/* Render OffChainWithdrawOverlay outside the modal */}
+      <OffChainWithdrawOverlay
+        isOpen={isFiatOpen}
+        onOpenChange={(open) => {
+          setFiatOpen(open);
+          if (!open) {
+            setHeight(320); // Reset height when overlay closes
+          }
+        }}
+      />
     </>
   );
 };

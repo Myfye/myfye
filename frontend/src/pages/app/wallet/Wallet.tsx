@@ -3,6 +3,7 @@ import WalletCardList from "./_components/WalletCardList.tsx";
 import { css } from "@emotion/react";
 import { useDispatch } from "react-redux";
 import { setDepositModalOpen } from "@/redux/modalReducers.tsx";
+import { setWithdrawModalOpen } from "@/redux/modalReducers.tsx";
 import EarnOverlay from "./earn/EarnOverlay.tsx";
 import CryptoOverlay from "./crypto/CryptoOverlay.tsx";
 import CashOverlay from "./cash/CashOverlay.tsx";
@@ -115,7 +116,7 @@ const Wallet = () => {
                 Add money
               </ButtonGroupItem>
               <ButtonGroupItem
-                onPress={() => void dispatch(setDepositModalOpen(true))}
+                onPress={() => void dispatch(setWithdrawModalOpen(true))}
               >
                 Withdraw
               </ButtonGroupItem>
