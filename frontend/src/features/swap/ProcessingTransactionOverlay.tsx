@@ -10,6 +10,8 @@ import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
 import { useLottie } from "lottie-react";
 import { SwapTransactionStatus } from "./types";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 
 const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -168,38 +170,27 @@ const ProcessingTransactionOverlay = ({ zIndex = 1000 }) => {
             width: 100%;
           `}
         >
-          <menu
-            css={css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--controls-gap-medium);
-            `}
-          >
-            <li>
-              <Button
-                isDisabled={
-                  transaction.status === "signed" ||
-                  transaction.status === "idle"
-                }
-                expand
-                onPress={() => {
-                  dispatch(unmount());
-                }}
-              >
-                Done
-              </Button>
-            </li>
-            <li>
-              <Button
-                isDisabled={!transaction.id}
-                href={`https://solscan.io/tx/${transaction.id}`}
-                expand
-                color="neutral"
-              >
-                View transaction
-              </Button>
-            </li>
-          </menu>
+          <ButtonGroup expand direction="vertical">
+            <ButtonGroupItem
+              isDisabled={
+                transaction.status === "signed" || transaction.status === "idle"
+              }
+              onPress={() => {
+                dispatch(unmount());
+              }}
+            >
+              Done
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              isDisabled={!transaction.id}
+              href={
+                transaction.id ? `https://solscan.io/tx/${transaction.id}` : ""
+              }
+              color="neutral"
+            >
+              View transaction
+            </ButtonGroupItem>
+          </ButtonGroup>
         </section>
       </div>
     </HeadlessOverlay>
