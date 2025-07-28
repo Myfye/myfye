@@ -21,4 +21,12 @@
   .no-scroll-y {
     overflow-y: hidden;
   }
+
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
 }

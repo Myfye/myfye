@@ -3,7 +3,6 @@ import {
   animate,
   spring,
   useMotionValue,
-  useMotionValueEvent,
   useTime,
   useTransform,
 } from "motion/react";
@@ -13,9 +12,8 @@ export type UsePullToRefreshParams = {
   onRefresh?: () => void | Promise<void>;
   onRefreshStart?: () => void;
   onRefreshEnd?: () => void;
-  ref: RefObject<HTMLElement>;
+  container: RefObject<HTMLElement>;
   pullThreshold?: number;
-  isScrolling?: boolean;
 };
 
 export const PULL_THRESHOLD = 128;
@@ -24,33 +22,18 @@ export const usePullToRefresh = ({
   onRefreshStart,
   onRefresh,
   onRefreshEnd,
-  ref,
+  container,
   pullThreshold = PULL_THRESHOLD,
-  isScrolling,
 }: UsePullToRefreshParams) => {
   const [startPoint, setStartPoint] = useState(0);
   const pullChange = useMotionValue(0);
   const [isRefreshing, setRefreshing] = useState(false);
   const [canRefresh, setRefresh] = useState(false);
-  const startClientPoint = useRef({
-    x: 0,
-    y: 0,
-  });
 
   const time = useTime();
 
   const baseRotationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
-
-  const currentDirection = useRef<"x" | "y" | null>(null);
-  const currentScrollLeft = useRef<number | null>(null);
-  const [elWidth, setElWidth] = useState(0);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    setElWidth(el.getBoundingClientRect().width);
-  });
 
   // Spinner animation params
   const rotate = useTransform(pullChange, (x) => {
@@ -76,16 +59,13 @@ export const usePullToRefresh = ({
   });
 
   const opacity = useTransform(pullChange, [0, PULL_THRESHOLD], [0, 1]);
-
   const pullMargin = useTransform(pullChange, (x) => x / 3.118);
 
   useEffect(() => {
     // Only can refresh if at the top of scroll
     const pullStart = (e: TouchEvent) => {
-      const el = ref.current;
+      const el = container.current;
       if (!el) return;
-
-      currentScrollLeft.current = el.scrollLeft;
 
       const [touch] = e.targetTouches;
       assertIsNode(touch.target);
@@ -105,50 +85,19 @@ export const usePullToRefresh = ({
 
       const { screenY } = touch;
 
-      currentDirection.current = null;
       setStartPoint(screenY);
-      startClientPoint.current = {
-        x: touch.clientX,
-        y: touch.clientY,
-      };
     };
 
     const pull = (e: TouchEvent) => {
-      const el = ref.current;
+      const el = container.current;
       if (!el) return;
 
+      const scrollLock = el.dataset.scrollLock;
+      if (scrollLock && scrollLock === "x") return;
+
       const [touch] = e.targetTouches;
-      assertIsNode(touch.target);
-
-      const offset = {
-        x: touch.clientX - startClientPoint.current.x,
-        y: touch.clientY - startClientPoint.current.y,
-      };
-
-      const next = {
-        x: startClientPoint.current.x + offset.x,
-        y: startClientPoint.current.y + offset.y,
-      };
-
-      currentDirection.current = getCurrentDirection(offset);
-
-      if (isScrolling && currentDirection.current === "x") {
-        setRefresh(false);
-        return;
-      }
 
       if (!canRefresh) return;
-
-      // for home page
-      // makes sense to abstract later on to another event listener so it's only tied to the home page, but this will do for now
-      if (el.scrollLeft !== currentScrollLeft.current) {
-        const ratio = el.scrollLeft / elWidth;
-        currentScrollLeft.current =
-          elWidth * 3 * (ratio < 0.5 ? 0 : Math.round(ratio * 3) / (3 * 3));
-        el.scrollLeft = currentScrollLeft.current;
-      }
-
-      el.classList.add("no-scroll");
 
       const { screenY } = touch;
 
@@ -158,12 +107,9 @@ export const usePullToRefresh = ({
     };
 
     const endPull = async (e: TouchEvent) => {
-      const el = ref.current;
+      const el = container.current;
 
       if (!canRefresh || !el) return;
-
-      currentScrollLeft.current = null;
-      currentDirection.current = null;
 
       setStartPoint(0);
 
@@ -180,18 +126,15 @@ export const usePullToRefresh = ({
         setRefreshing(false);
         if (onRefreshEnd) onRefreshEnd();
       }
-
-      // Once refresh is completed, make it so the user can scroll again
-      el.classList.remove("no-scroll");
     };
 
-    window.addEventListener("touchstart", pullStart);
-    window.addEventListener("touchmove", pull);
-    window.addEventListener("touchend", endPull);
+    document.addEventListener("touchstart", pullStart);
+    document.addEventListener("touchmove", pull);
+    document.addEventListener("touchend", endPull);
     return () => {
-      window.removeEventListener("touchstart", pullStart);
-      window.removeEventListener("touchmove", pull);
-      window.removeEventListener("touchend", endPull);
+      document.removeEventListener("touchstart", pullStart);
+      document.removeEventListener("touchmove", pull);
+      document.removeEventListener("touchend", endPull);
     };
   });
   return {
@@ -205,40 +148,3 @@ export const usePullToRefresh = ({
     },
   };
 };
-
-/**
- * Based on an x/y offset determine the current drag direction. If both axis' offsets are lower
- * than the provided threshold, return `null`.
- *
- * @param offset - The x/y offset from origin.
- * @param lockThreshold - (Optional) - the minimum absolute offset before we can determine a drag direction.
- */
-function getCurrentDirection(
-  offset: { x: number; y: number },
-  lockThreshold = 10
-) {
-  let direction: "x" | "y" | null = null;
-
-  if (Math.abs(offset.y) > lockThreshold) {
-    direction = "y";
-  } else if (Math.abs(offset.x) > lockThreshold) {
-    direction = "x";
-  }
-
-  return direction;
-}
-
-export function applyConstraints(
-  point: number,
-  { min, max }: { min: number; max: number }
-): number {
-  if (min !== undefined && point < min) {
-    // If we have a min point defined, and this is outside of that, constrain
-    point = Math.max(point, min);
-  } else if (max !== undefined && point > max) {
-    // If we have a max point defined, and this is outside of that, constrain
-    point = Math.min(point, max);
-  }
-
-  return point;
-}
