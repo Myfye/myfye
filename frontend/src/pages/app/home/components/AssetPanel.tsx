@@ -23,10 +23,6 @@ const AssetPanel = ({
   >
     <section
       css={css`
-        padding-block-start: var(--size-200);
-        position: sticky;
-        top: 0;
-        z-index: 1;
         background-color: var(--clr-surface);
         padding-block-end: var(--size-300);
       `}

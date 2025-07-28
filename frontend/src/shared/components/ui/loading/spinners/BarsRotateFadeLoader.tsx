@@ -1,119 +1,52 @@
-import { css, keyframes } from "@emotion/react";
-import { Ref, SVGAttributes } from "react";
+import { css } from "@emotion/react";
+import { motion, MotionProps } from "motion/react";
+import { Ref } from "react";
 
-interface BarsRotateFadeLoaderProps extends SVGAttributes<SVGSVGElement> {
+type BarsRotateFadeLoaderProps = {
   ref?: Ref<SVGSVGElement>;
   width?: number;
   height?: number;
-  dur?: string;
-}
-
-const anim = keyframes`
-            8.3% {
-              transform: rotate(30deg);
-            }
-            16.6% {
-              transform: rotate(60deg);
-            }
-            25% {
-              transform: rotate(90deg);
-            }
-            33.3% {
-              transform: rotate(120deg);
-            }
-            41.6% {
-              transform: rotate(150deg);
-            }
-            50% {
-              transform: rotate(180deg);
-            }
-            58.3% {
-              transform: rotate(210deg);
-            }
-            66.6% {
-              transform: rotate(240deg);
-            }
-            75% {
-              transform: rotate(270deg);
-            }
-            83.3% {
-              transform: rotate(300deg);
-            }
-            91.6% {
-              transform: rotate(330deg);
-            }
-            100% {
-              transform: rotate(360deg);
-            }`;
+} & MotionProps;
 
 const BarsRotateFadeLoader = ({
   ref,
   height = 24,
   width = 24,
-  dur = "0.75s",
   ...restProps
 }: BarsRotateFadeLoaderProps) => {
   return (
-    <svg
+    <motion.svg
       {...restProps}
-      ref={ref}
       width={width}
       height={height}
-      viewBox="0 0 24 24"
+      version="1.1"
       xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 2400 2400"
+      css={css`
+        opacity: 0;
+      `}
     >
       <g
-        className="spinner_OSmW"
-        css={css`
-          transform-origin: center;
-          animation: ${anim} ${dur} step-end infinite;
-          }
-        `}
+        stroke-width="200"
+        stroke-linecap="round"
+        stroke="currentColor"
+        fill="none"
+        id="spinner"
       >
-        <rect x="11" y="1" width="2" height="5" opacity=".14" />
-        <rect
-          x="11"
-          y="1"
-          width="2"
-          height="5"
-          transform="rotate(30 12 12)"
-          opacity=".29"
-        />
-        <rect
-          x="11"
-          y="1"
-          width="2"
-          height="5"
-          transform="rotate(60 12 12)"
-          opacity=".43"
-        />
-        <rect
-          x="11"
-          y="1"
-          width="2"
-          height="5"
-          transform="rotate(90 12 12)"
-          opacity=".57"
-        />
-        <rect
-          x="11"
-          y="1"
-          width="2"
-          height="5"
-          transform="rotate(120 12 12)"
-          opacity=".71"
-        />
-        <rect
-          x="11"
-          y="1"
-          width="2"
-          height="5"
-          transform="rotate(150 12 12)"
-          opacity=".86"
-        />
-        <rect x="11" y="1" width="2" height="5" transform="rotate(180 12 12)" />
+        <line x1="1200" y1="600" x2="1200" y2="100" />
+        <line opacity="0.5" x1="1200" y1="2300" x2="1200" y2="1800" />
+        <line opacity="0.917" x1="900" y1="680.4" x2="650" y2="247.4" />
+        <line opacity="0.417" x1="1750" y1="2152.6" x2="1500" y2="1719.6" />
+        <line opacity="0.833" x1="680.4" y1="900" x2="247.4" y2="650" />
+        <line opacity="0.333" x1="2152.6" y1="1750" x2="1719.6" y2="1500" />
+        <line opacity="0.75" x1="600" y1="1200" x2="100" y2="1200" />
+        <line opacity="0.25" x1="2300" y1="1200" x2="1800" y2="1200" />
+        <line opacity="0.667" x1="680.4" y1="1500" x2="247.4" y2="1750" />
+        <line opacity="0.167" x1="2152.6" y1="650" x2="1719.6" y2="900" />
+        <line opacity="0.583" x1="900" y1="1719.6" x2="650" y2="2152.6" />
+        <line opacity="0.083" x1="1750" y1="247.4" x2="1500" y2="680.4" />
       </g>
-    </svg>
+    </motion.svg>
   );
 };
 

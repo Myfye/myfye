@@ -7,7 +7,6 @@ import {
   ArrowsDownUp,
 } from "@phosphor-icons/react";
 import { css } from "@emotion/react";
-import CTACarousel from "./cta-carousel/CTACarousel";
 import {
   setDepositModalOpen,
   setWithdrawModalOpen,
@@ -19,6 +18,7 @@ import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSli
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 import ChartTabs from "./chart_tabs/ChartTabs";
+
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
 
@@ -41,7 +41,6 @@ const DashboardPanel = ({}) => {
     >
       <section
         css={css`
-          margin-block-start: var(--size-200);
           padding-inline: var(--size-250);
         `}
       >

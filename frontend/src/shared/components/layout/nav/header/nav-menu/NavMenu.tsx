@@ -17,6 +17,7 @@ import Header from "../Header";
 import { RootState } from "@/redux/store";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
+import { createPortal } from "react-dom";
 
 const NavMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,147 +77,154 @@ const NavMenu = () => {
         {isOpen && (
           <>
             {/* Invisible overlay that covers the entire screen for click handling */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0 }}
-              exit={{ opacity: 0 }}
-              onClick={closeMenu}
-              css={css`
-                display: block;
-                position: fixed;
-                inset: 0;
-                margin: auto;
-                z-index: var(--z-index-nav);
-                width: 100%;
-                height: 100svh;
-              `}
-            />
+            {createPortal(
+              <>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0 }}
+                  exit={{ opacity: 0 }}
+                  onClick={closeMenu}
+                  css={css`
+                    display: block;
+                    position: fixed;
+                    inset: 0;
+                    margin: auto;
+                    z-index: var(--z-index-nav);
+                    width: 100%;
+                    height: 100svh;
+                  `}
+                />
 
-            {/* Sliding menu panel */}
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{
-                duration: 0.4,
-                ease: [0.32, 0.72, 0, 1],
-              }}
-              css={css`
-                display: flex;
-                flex-direction: column;
-                position: fixed;
-                inset: 0;
-                margin: auto;
-                height: 100svh;
-                background-color: var(--clr-surface);
-                z-index: 9999;
-                box-shadow: var(--box-shadow-nav);
-              `}
-            >
-              <div
-                css={css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--size-200);
-                  height: 100%;
-                  width: 100%;
-                  max-width: var(--app-max-width);
-                  margin-inline: auto;
-                `}
-              >
-                <Header>
-                  <Button
-                    iconOnly
-                    onPress={closeMenu}
-                    icon={XIcon}
-                    color="transparent"
-                  />
-                </Header>
-                {/* Menu content goes here */}
-                <main>
-                  <button
-                    css={css`
-                      display: grid;
-                      grid-template-columns: auto 1fr;
-                      gap: var(--size-150);
-                      align-items: center;
-                      padding-inline: var(--size-250);
-                      width: 100%;
-                    `}
-                  >
-                    <div
-                      css={css`
-                        aspect-ratio: 1;
-                        border-radius: var(--border-radius-circle);
-                        width: 2.75rem;
-                        background-color: var(--clr-surface-lowered);
-                      `}
-                    />
-                    <div
-                      css={css`
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                      `}
-                    >
-                      {name && (
-                        <p
-                          css={css`
-                            font-size: var(--fs-medium);
-                            font-weight: var(--fw-active);
-                            line-height: var(--line-height-tight);
-                          `}
-                        >
-                          {name}
-                        </p>
-                      )}
-                      {currentUserEmail && (
-                        <p
-                          css={css`
-                            font-size: var(--fs-${name ? "small" : "medium"});
-                            line-height: var(--line-height-tight);
-                            font-weight: var(
-                              --fw-${name ? "default" : "active"}
-                            );
-                          `}
-                        >
-                          {formatEmail(currentUserEmail)}
-                        </p>
-                      )}
-                      <CaretRight size={20} color="var(--clr-text)" />
-                    </div>
-                  </button>
-                </main>
-                {/* Sign Out button at the bottom */}
-                <footer
+                {/* Sliding menu panel */}
+                <motion.div
+                  initial={{ x: "-100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "-100%" }}
+                  transition={{
+                    duration: 0.4,
+                    ease: [0.32, 0.72, 0, 1],
+                  }}
                   css={css`
                     display: flex;
-                    justify-content: center;
-                    margin-top: auto;
-                    padding-bottom: var(--size-200);
-                    padding-inline: var(--size-250);
+                    flex-direction: column;
+                    position: fixed;
+                    inset: 0;
+                    margin: auto;
+                    height: 100svh;
+                    background-color: var(--clr-surface);
+                    z-index: 9999;
+                    box-shadow: var(--box-shadow-nav);
                   `}
                 >
-                  <ButtonGroup direction="vertical" expand>
-                    <ButtonGroupItem
-                      variant="primary"
-                      expand
-                      icon={ShieldCheck}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size-200);
+                      height: 100%;
+                      width: 100%;
+                      max-width: var(--app-max-width);
+                      margin-inline: auto;
+                    `}
+                  >
+                    <Header>
+                      <Button
+                        iconOnly
+                        onPress={closeMenu}
+                        icon={XIcon}
+                        color="transparent"
+                      />
+                    </Header>
+                    {/* Menu content goes here */}
+                    <main>
+                      <button
+                        css={css`
+                          display: grid;
+                          grid-template-columns: auto 1fr;
+                          gap: var(--size-150);
+                          align-items: center;
+                          padding-inline: var(--size-250);
+                          width: 100%;
+                        `}
+                      >
+                        <div
+                          css={css`
+                            aspect-ratio: 1;
+                            border-radius: var(--border-radius-circle);
+                            width: 2.75rem;
+                            background-color: var(--clr-surface-lowered);
+                          `}
+                        />
+                        <div
+                          css={css`
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                          `}
+                        >
+                          {name && (
+                            <p
+                              css={css`
+                                font-size: var(--fs-medium);
+                                font-weight: var(--fw-active);
+                                line-height: var(--line-height-tight);
+                              `}
+                            >
+                              {name}
+                            </p>
+                          )}
+                          {currentUserEmail && (
+                            <p
+                              css={css`
+                                font-size: var(
+                                  --fs-${name ? "small" : "medium"}
+                                );
+                                line-height: var(--line-height-tight);
+                                font-weight: var(
+                                  --fw-${name ? "default" : "active"}
+                                );
+                              `}
+                            >
+                              {formatEmail(currentUserEmail)}
+                            </p>
+                          )}
+                          <CaretRight size={20} color="var(--clr-text)" />
+                        </div>
+                      </button>
+                    </main>
+                    {/* Sign Out button at the bottom */}
+                    <footer
+                      css={css`
+                        display: flex;
+                        justify-content: center;
+                        margin-top: auto;
+                        padding-bottom: var(--size-200);
+                        padding-inline: var(--size-250);
+                      `}
                     >
-                      Verify KYC
-                    </ButtonGroupItem>
-                    <ButtonGroupItem
-                      onPress={signOut}
-                      variant="secondary"
-                      expand
-                      isDisabled={disableLogout}
-                    >
-                      Sign out
-                    </ButtonGroupItem>
-                  </ButtonGroup>
-                </footer>
-              </div>
-            </motion.div>
+                      <ButtonGroup direction="vertical" expand>
+                        <ButtonGroupItem
+                          variant="primary"
+                          expand
+                          icon={ShieldCheck}
+                        >
+                          Verify KYC
+                        </ButtonGroupItem>
+                        <ButtonGroupItem
+                          onPress={signOut}
+                          variant="secondary"
+                          expand
+                          isDisabled={disableLogout}
+                        >
+                          Sign out
+                        </ButtonGroupItem>
+                      </ButtonGroup>
+                    </footer>
+                  </div>
+                </motion.div>
+              </>,
+              document.body
+            )}
           </>
         )}
       </AnimatePresence>

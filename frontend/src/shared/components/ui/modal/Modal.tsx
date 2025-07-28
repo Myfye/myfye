@@ -113,7 +113,14 @@ const Modal = ({
               }}
               drag="y"
               dragConstraints={{ top: 0 }}
-              onDragEnd={(_, { offset, velocity }) => {
+              onDragStart={(e) => {
+                e.stopImmediatePropagation();
+              }}
+              onDrag={(e) => {
+                e.stopImmediatePropagation();
+              }}
+              onDragEnd={(e, { offset, velocity }) => {
+                e.stopImmediatePropagation();
                 if (offset.y > window.innerHeight * 0.75 || velocity.y > 10) {
                   onOpenChange(false);
                 } else {
