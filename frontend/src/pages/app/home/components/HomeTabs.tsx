@@ -52,7 +52,7 @@ const HomeTabs = () => {
     onRefresh: async () => {
       await getSolanaBalances(solanaAddress, dispatch);
     },
-    ref: tabPanelsRef,
+    container: tabPanelsRef,
   });
 
   // Track the scroll position of the tab panel container.
