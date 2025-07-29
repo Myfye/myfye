@@ -1,8 +1,7 @@
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "@/env";
-import { User } from "@privy-io/react-auth";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { User } from "./users.types";
 
-// Define a service using a base URL and expected endpoints
 export const usersApi = createApi({
   reducerPath: "usersApi",
   tagTypes: ["Users"],
@@ -14,7 +13,55 @@ export const usersApi = createApi({
     },
   }),
   endpoints: (build) => ({
-    searchUsers: build.query<User[], { query: string; userId: number }>({
+    createUser: build.query<User, User>({
+      query: ({
+        email,
+        phoneNumber,
+        firstName,
+        lastName,
+        country,
+        evmPubKey,
+        solanaPubKey,
+        privyUserId,
+        personaAccountId,
+        blindPayReceiverId,
+        blindPayEvmWalletId,
+      }) => {
+        return {
+          url: `/create_user`,
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: {
+            email,
+            phoneNumber,
+            firstName,
+            lastName,
+            country,
+            evmPubKey,
+            solanaPubKey,
+            privyUserId,
+            personaAccountId,
+            blindPayReceiverId,
+            blindPayEvmWalletId,
+          },
+        };
+      },
+    }),
+    getUser: build.query<User, { email: string; privyUserId?: string }>({
+      query: ({ privyUserId }) => {
+        return {
+          url: `/get_user_by_privy_id`,
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: {
+            privyUserId,
+          },
+        };
+      },
+    }),
+    searchUsers: build.query<User[], { query: string; userId: string }>({
       query: ({ query, userId }) => {
         return {
           url: `/search_users`,
@@ -25,14 +72,9 @@ export const usersApi = createApi({
           },
         };
       },
-      transformResponse: (response) => {
-        console.log("searchUsers - API response:", response);
-        return response;
-      },
     }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useSearchUsersQuery } = usersApi;
+export const { useCreateUserQuery, useGetUserQuery, useSearchUsersQuery } =
+  usersApi;

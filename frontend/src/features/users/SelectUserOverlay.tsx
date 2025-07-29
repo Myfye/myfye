@@ -10,10 +10,11 @@ import { RootState } from "@/redux/store";
 import QRScanner from "../qr-code/QRScanner";
 import { useGetTopContactsQuery } from "../contacts/contactsApi";
 import { useSearchUsersQuery } from "../users/usersApi";
-import { User } from "./types";
+import { User } from "./users.types";
 import Section from "@/shared/components/ui/section/Section";
 import CardSkeleton from "@/shared/components/ui/card/CardSkeleton";
 import { Link } from "react-aria-components";
+import QrScanner from "qr-scanner";
 
 const SelectUserOverlay = ({
   isOpen,
@@ -26,8 +27,8 @@ const SelectUserOverlay = ({
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onUserSelect: (user: User) => void;
-  onScanSuccess?: (e: unknown) => void;
-  onScanFail?: (e: unknown) => void;
+  onScanSuccess?: (data: QrScanner.ScanResult) => void;
+  onScanFail?: (error: Error | string) => void;
   zIndex?: number;
 }) => {
   const [query, setQuery] = useState("");
@@ -81,10 +82,12 @@ const SelectUserOverlay = ({
       <QRScanner
         isOpen={isQRScannerOpen}
         onOpenChange={handleQRScannerOpen}
-        onScanSuccess={onScanSuccess}
+        onScanSuccess={(data) => {
+          onScanSuccess && onScanSuccess(data);
+        }}
         onScanFail={(e) => {
           setQRScannerOpen(false);
-          onScanFail(e);
+          onScanFail && onScanFail(e);
         }}
         zIndex={2001}
       />
