@@ -14,7 +14,7 @@ const QrReader = ({
   ...restProps
 }: {
   onScanSuccess: (result: QrScanner.ScanResult) => void;
-  onScanFail: (error: string | Error) => void;
+  onScanFail?: (error: Error | string) => void;
 }) => {
   const scanner = useRef<QrScanner>(null);
   const videoEl = useRef<HTMLVideoElement>(null);

@@ -22,13 +22,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Header from "../../../shared/components/layout/nav/header/Header";
 import { RootState } from "@/redux/store";
-import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import {
+  toggleModal as toggleSendModal,
+  updateUser,
+} from "@/features/send/sendSlice";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import QrScanner from "qr-scanner";
 
 const MotionDialog = motion(Dialog);
 const MotionDialogBackdrop = motion(DialogBackdrop);
@@ -56,15 +60,11 @@ const QRCodeModal = () => {
     (state: RootState) => state.userWalletData.solanaPubKey
   );
 
-  const wallet = useSelector((state: RootState) => state.userWalletData);
-
-  useEffect(() => {
-    console.log(wallet);
-  }, [wallet]);
-
-  const onScanSuccess = ({ data }) => {
+  const onScanSuccess = ({ data }: QrScanner.ScanResult) => {
     dispatch(setQRCodeModalOpen(false));
     dispatch(toggleSendModal({ isOpen: true }));
+    // Fetch user
+    dispatch(updateUser(null));
   };
 
   const onScanFail = (err: unknown) => {
@@ -73,7 +73,11 @@ const QRCodeModal = () => {
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence
+        onExitComplete={() => {
+          setQRCodeVisible(false);
+        }}
+      >
         {isOpen && (
           <MotionDialog
             open
@@ -104,9 +108,6 @@ const QRCodeModal = () => {
                 top: 0,
                 // Extra padding at the bottom to account for rubber band scrolling.
                 paddingBottom: window.screen.height,
-              }}
-              onAnimationComplete={() => {
-                setQRCodeVisible(false);
               }}
               css={css`
                 background-color: var(--clr-black);
