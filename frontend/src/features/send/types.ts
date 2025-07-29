@@ -1,5 +1,5 @@
 import { AbstractedAsset, FiatCurrency } from "@/features/assets/types";
-import { User } from "../users/types";
+import { User } from "../users/users.types";
 
 export type SendTransactionStatus = "idle" | "success" | "fail" | "minted";
 

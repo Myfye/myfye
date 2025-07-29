@@ -7,7 +7,7 @@ import { formatUsdAmount, getUsdAmount } from "./utils";
 import { AbstractedAsset } from "../assets/types";
 import { selectAbstractedAsset } from "../assets/assetsSlice";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
-import { User } from "../users/types";
+import { User } from "../users/users.types";
 
 const AssetSection = ({
   abstractedAssetId,
