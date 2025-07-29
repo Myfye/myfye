@@ -2,7 +2,6 @@ import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "@/env";
 import { User } from "@privy-io/react-auth";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Define a service using a base URL and expected endpoints
 export const contactsApi = createApi({
   reducerPath: "contactsApi",
   tagTypes: ["Contacts"],
@@ -14,10 +13,31 @@ export const contactsApi = createApi({
     },
   }),
   endpoints: (build) => ({
+    createContact: build.query<User, { userId: string; contactId: string }>({
+      query: ({ userId, contactId }) => {
+        return {
+          url: `/create_contact`,
+          method: "POST",
+          body: {
+            user_id: userId,
+            contact_id: contactId,
+          },
+        };
+      },
+    }),
+    getContacts: build.query<User[], string>({
+      query: (userId) => {
+        return {
+          url: `/get_contacts`,
+          method: "POST",
+          body: {
+            current_user_id: userId,
+          },
+        };
+      },
+    }),
     getTopContacts: build.query<User[], string>({
       query: (userId) => {
-        console.log("getTopContacts - userId:", userId);
-        console.log("getTopContacts - userId type:", typeof userId);
         return {
           url: `/get_top_contacts`,
           method: "POST",
@@ -26,14 +46,12 @@ export const contactsApi = createApi({
           },
         };
       },
-      transformResponse: (response) => {
-        console.log("getTopContacts - API response:", response);
-        return response;
-      },
     }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetTopContactsQuery } = contactsApi;
+export const {
+  useGetTopContactsQuery,
+  useCreateContactQuery,
+  useGetContactsQuery,
+} = contactsApi;

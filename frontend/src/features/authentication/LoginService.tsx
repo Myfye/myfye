@@ -21,10 +21,10 @@ import {
   HttpsCallableResult,
 } from "firebase/functions";
 import { HELIUS_API_KEY, MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env.ts";
-import { getUSDCBalanceOnBase } from '../../functions/checkForEVMDeposit.ts'
-import { bridgeFromBaseToSolana } from '../../functions/bridge.ts'
-import { getPriceQuotes } from '../../functions/priceQuotes.ts'
-import { updateExchangeRateUSD } from '../../features/assets/assetsSlice.ts'
+import { getUSDCBalanceOnBase } from "../../functions/checkForEVMDeposit.ts";
+import { bridgeFromBaseToSolana } from "../../functions/bridge.ts";
+import { getPriceQuotes } from "../../functions/priceQuotes.ts";
+import { updateExchangeRateUSD } from "../../features/assets/assetsSlice.ts";
 
 const userCreationInProgress = new Set();
 
@@ -164,16 +164,13 @@ export const updateUserSolanaPubKey = async (
 const HandleUserLogIn = async (
   user: any,
   dispatch: Function,
-  wallets: any,
+  wallets: any
 ): Promise<{ success: boolean }> => {
-
-  
-
   dispatch(setcurrentUserEmail(user.email.address));
   dispatch(setPrivyUserId(user.id));
   if (user) {
     try {
-      const dbUser = await getUser(user.email.address, user.id); // user.id is privyUserId 
+      const dbUser = await getUser(user.email.address, user.id); // user.id is privyUserId
       if (dbUser && dbUser.uid) {
         dispatch(setCurrentUserID(dbUser.uid));
         console.log("dbUser.KYCverified", dbUser.kyc_verified);
@@ -182,14 +179,21 @@ const HandleUserLogIn = async (
         dispatch(setBlindPayReceiverId(dbUser.blind_pay_receiver_id));
 
         //getUSDCBalanceOnBase(dbUser.evm_pub_key, dbUser.solana_pub_key);
-        console.log('BRIDGING USDC BASE AMOUNT to SOLANA AMOUNT evm and solana keys', dbUser.evm_pub_key, dbUser.solana_pub_key)
-        console.log('BRIDGING running bridgeFromBaseToSolana', wallets)
+        console.log(
+          "BRIDGING USDC BASE AMOUNT to SOLANA AMOUNT evm and solana keys",
+          dbUser.evm_pub_key,
+          dbUser.solana_pub_key
+        );
+        console.log("BRIDGING running bridgeFromBaseToSolana", wallets);
 
         if (user.wallet && dbUser.solana_pub_key) {
-          bridgeFromBaseToSolana(0.01, dbUser.evm_pub_key, dbUser.solana_pub_key);
+          bridgeFromBaseToSolana(
+            0.01,
+            dbUser.evm_pub_key,
+            dbUser.solana_pub_key
+          );
         }
       }
-      
     } catch (error) {
       console.error("Error handling user:", error);
     }
@@ -210,15 +214,12 @@ const HandleUserLogIn = async (
 
   // Get price quotes for all assets
   try {
+    updateExchangeRateUSD({ assetId: "usdc_sol", exchangeRateUSD: 1 });
+    updateExchangeRateUSD({ assetId: "usdt_sol", exchangeRateUSD: 1 });
+    updateExchangeRateUSD({ assetId: "usdc_base", exchangeRateUSD: 1 });
 
-    
-    updateExchangeRateUSD({ assetId: "usdc_sol", exchangeRateUSD: 1 })
-    updateExchangeRateUSD({ assetId: "usdt_sol", exchangeRateUSD: 1 })
-    updateExchangeRateUSD({ assetId: "usdc_base", exchangeRateUSD: 1 })
-
-    await getUserData(user.wallet.address, dispatch)
+    await getUserData(user.wallet.address, dispatch);
     await getPriceQuotes(dispatch);
-
 
     return { success: true };
   } catch (e) {
