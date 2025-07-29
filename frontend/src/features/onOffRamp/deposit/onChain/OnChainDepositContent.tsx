@@ -1,34 +1,39 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { css } from "@emotion/react";
 import Button from "@/shared/components/ui/button/Button";
 import { Copy } from "@phosphor-icons/react";
 import QRCode from "../../../qr-code/QRCode";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import Modal from "@/shared/components/ui/modal/Modal";
-import { setDepositModalOpen } from "@/redux/modalReducers";
 import toast from "react-hot-toast/headless";
 
-const OnChainDepositOverlay = ({ isOpen, onOpenChange }) => {
+interface OnChainDepositContentProps {
+  onAddressCopy?: () => void;
+}
+
+const getTruncatedAddress = (address: string) => {
+  if (!address) return "";
+  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+};
+
+const OnChainDepositContent = ({
+  onAddressCopy,
+}: OnChainDepositContentProps) => {
   const dispatch = useDispatch();
-  const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
-  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
+  const evmPubKey = useSelector(
+    (state: RootState) => state.userWalletData.evmPubKey
+  );
+  const solanaPubKey = useSelector(
+    (state: RootState) => state.userWalletData.solanaPubKey
+  );
   const [selectedChain, setSelectedChain] = useState("solana"); // Disable base for now
-  const [showCopiedAddress, setShowCopiedAddress] = useState(false);
 
   const selectedAddress = selectedChain === "base" ? evmPubKey : solanaPubKey;
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(selectedAddress);
-    setShowCopiedAddress(true);
-    onOpenChange(false);
-    dispatch(setDepositModalOpen(false));
-    toast.success("Address copied!");
-  };
-
-  const getTruncatedAddress = (address: string) => {
-    if (!address) return "";
-    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+    toast.success(`Address ${getTruncatedAddress(selectedAddress)} copied!`);
+    onAddressCopy && onAddressCopy();
   };
 
   return (
@@ -79,11 +84,7 @@ const OnChainDepositOverlay = ({ isOpen, onOpenChange }) => {
           padding-inline: var(--size-200);
         `}
       >
-        <QRCode
-          data={selectedAddress}
-          color="#000407"
-          chain={selectedChain}
-        />
+        <QRCode data={selectedAddress} color="#000407" chain={selectedChain} />
       </section>
       <section
         css={css`
@@ -99,4 +100,4 @@ const OnChainDepositOverlay = ({ isOpen, onOpenChange }) => {
   );
 };
 
-export default OnChainDepositOverlay;
+export default OnChainDepositContent;

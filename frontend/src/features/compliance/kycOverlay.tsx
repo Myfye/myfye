@@ -1553,11 +1553,7 @@ const KYCOverlay = ({
             expand
             variant="primary"
             onPress={handlePageOneDone}
-            disabled={!isChecked}
-            css={css`
-              opacity: ${isChecked ? 1 : 0.5};
-              pointer-events: ${isChecked ? "auto" : "none"};
-            `}
+            isDisabled={!isChecked}
           >
             Continue
           </Button>

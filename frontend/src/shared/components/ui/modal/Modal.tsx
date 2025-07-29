@@ -3,8 +3,10 @@ import {
   AnimatePresence,
   HTMLMotionProps,
   motion,
+  MotionValue,
   useMotionTemplate,
   useMotionValue,
+  useMotionValueEvent,
   useTransform,
 } from "motion/react";
 
@@ -17,7 +19,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { ReactNode } from "react";
+import { ReactNode, Ref, useEffect, useState } from "react";
 
 // Wrap React Aria modal components so they support framer-motion values.
 const MotionDialogBackdrop = motion(DialogBackdrop);
@@ -39,12 +41,16 @@ const staticTransition = {
 interface ModalProps extends HTMLMotionProps<"div"> {
   zIndex?: number;
   title?: string;
-  height?: number;
+  height?: MotionValue<number> | number;
   onOpenChange: (isOpen: boolean) => void;
   isOpen: boolean;
   children: ReactNode;
   onExit?: () => void;
+  ref?: Ref<HTMLDivElement>;
 }
+
+const checkMotionValue = (val: any): val is MotionValue<number> =>
+  val instanceof MotionValue;
 
 const Modal = ({
   isOpen,
@@ -53,14 +59,44 @@ const Modal = ({
   title = "",
   zIndex = 1000,
   onExit,
+  ref,
   children,
   ...restProps
 }: ModalProps) => {
-  const top = window.innerHeight - height > 0 ? window.innerHeight - height : 0;
-  const h = Math.min(window.innerHeight, height);
-  const y = useMotionValue(h);
-  const bgOpacity = useTransform(y, [0, h], [0.4, 0]);
+  const isMotionValue = checkMotionValue(height);
+  const top = isMotionValue
+    ? useTransform(height, (x) =>
+        window.innerHeight - x > 0 ? window.innerHeight - x : 0
+      )
+    : window.innerHeight - height > 0
+    ? window.innerHeight - height
+    : 0;
+  const h = isMotionValue
+    ? useTransform(height, (x) => Math.min(window.innerHeight, x))
+    : Math.min(window.innerHeight, height);
+  const y = useMotionValue(checkMotionValue(h) ? h.get() : h);
+  const bgOpacity = useTransform(
+    y,
+    [0, checkMotionValue(h) ? h.get() : h],
+    [0.4, 0]
+  );
   const bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`;
+
+  const [initialY, setInitialY] = useState(checkMotionValue(h) ? h.get() : h);
+
+  useEffect(() => {
+    const unsubH = () => {
+      if (checkMotionValue(h) && checkMotionValue(height)) {
+        h.on("change", (x) => {
+          if (x !== height.get()) return;
+          setInitialY(x);
+        });
+      }
+    };
+    return () => {
+      unsubH();
+    };
+  }, [h, setInitialY, height]);
 
   return (
     <>
@@ -103,9 +139,9 @@ const Modal = ({
                 background-color: var(--clr-surface);
                 z-index: 1;
               `}
-              initial={{ y: h }}
+              initial={{ y: initialY }}
               animate={{ y: 0 }}
-              exit={{ y: h }}
+              exit={{ y: initialY }}
               transition={staticTransition}
               style={{
                 y: y,
@@ -131,11 +167,13 @@ const Modal = ({
               }}
               {...restProps}
             >
-              <div
+              <motion.div
+                style={{
+                  height: h,
+                }}
                 css={css`
                   display: grid;
                   grid-template-rows: auto 1fr;
-                  height: ${h}px;
                   gap: var(--size-200);
                 `}
               >
@@ -194,7 +232,7 @@ const Modal = ({
                     {children}
                   </main>
                 </div>
-              </div>
+              </motion.div>
             </MotionDialogPanel>
           </MotionDialog>
         )}

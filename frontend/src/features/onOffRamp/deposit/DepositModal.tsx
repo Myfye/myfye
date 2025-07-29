@@ -8,21 +8,25 @@ import Modal from "@/shared/components/ui/modal/Modal";
 import { RootState } from "@/redux/store";
 import { setDepositModalOpen } from "@/redux/modalReducers";
 // import toast from "react-hot-toast/headless";
-import OnChainDepositOverlay from "./onChain/OnChainDepositContent";
+import OnChainDepositContent from "./onChain/OnChainDepositContent";
 import OffChainDepositOverlay from "./offChain/DepositOverlay";
 import KYCOverlay from "@/features/compliance/kycOverlay";
 import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import { animate, useMotionValue, useMotionValueEvent } from "motion/react";
 
 const DepositModal = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state: RootState) => state.depositModal.isOpen);
+  const height = useMotionValue(320);
+
   const onOpenChange = (isOpen: boolean) => {
     dispatch(setDepositModalOpen(isOpen));
   };
+
   const [showCopiedAddress, setShowCopiedAddress] = useState(false);
 
-  const [onChainDepositOpen, setOnChainDepositOpen] = useState(false);
-  const [offChainDepositOpen, setOffChainDepositOpen] = useState(false);
+  const [isOnChainDepositOpen, setOnChainDepositOpen] = useState(false);
+  const [isOffChainDepositOpen, setOffChainDepositOpen] = useState(false);
   const [showKYCOverlay, setShowKYCOverlay] = useState(false);
 
   const currentUserKYCVerified = useSelector(
@@ -35,15 +39,18 @@ const DepositModal = () => {
     setShowCopiedAddress(false);
   };
 
-  const openOnChainDeposit = () => {
-    /*
-    if (!currentUserKYCVerified) {
-      dispatch(toggleKYCModal({ isOpen: true }));
-    } else {
-      setOnChainDepositOpen(true);
+  const toggleOnChainDepositScreen = async (isOpen: boolean) => {
+    if (isOpen) {
+      await animate(height, 420, {
+        type: "inertia",
+        bounceStiffness: 300,
+        bounceDamping: 40,
+        timeConstant: 300,
+        min: 420,
+        max: 420,
+      });
     }
-      */
-    setOnChainDepositOpen(true);
+    // setOnChainDepositOpen(isOpen);
   };
 
   const openOffChainDeposit = () => {
@@ -62,12 +69,15 @@ const DepositModal = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Deposit"
-        height={320}
+        height={height}
         onExit={() => {
           resetModal();
+          height.set(320);
         }}
       >
-        {!offChainDepositOpen && !onChainDepositOpen && (
+        {isOnChainDepositOpen ? (
+          <OnChainDepositContent onAddressCopy={() => onOpenChange(false)} />
+        ) : (
           <menu
             css={css`
               display: flex;
@@ -76,37 +86,24 @@ const DepositModal = () => {
               padding-inline: var(--size-200);
             `}
           >
-            <li>
-              <ModalButton
-                icon={Wallet}
-                title="Wallet"
-                description="Deposit via wallet address"
-                onPress={openOnChainDeposit}
-              ></ModalButton>
-            </li>
-            <li>
-              <ModalButton
-                icon={Bank}
-                title="Fiat"
-                description="Deposit via bank transfer"
-                onPress={openOffChainDeposit}
-              ></ModalButton>
-            </li>
+            <ModalButton
+              icon={Wallet}
+              title="Wallet"
+              description="Deposit via wallet address"
+              onPress={async () =>
+                void (await toggleOnChainDepositScreen(true))
+              }
+            />
+            <ModalButton
+              icon={Bank}
+              title="Fiat"
+              description="Deposit via bank transfer"
+              onPress={openOffChainDeposit}
+            />
           </menu>
         )}
       </Modal>
-      <Modal
-        isOpen={onChainDepositOpen}
-        onOpenChange={setOnChainDepositOpen}
-        title="Deposit"
-        height={580}
-      >
-        <OnChainDepositOverlay
-          isOpen={onChainDepositOpen}
-          onOpenChange={setOnChainDepositOpen}
-        />
-      </Modal>
-      {offChainDepositOpen && (
+      {/* {offChainDepositOpen && (
         <OffChainDepositOverlay
           isOpen={offChainDepositOpen}
           onOpenChange={setOffChainDepositOpen}
@@ -117,7 +114,7 @@ const DepositModal = () => {
           isOpen={showKYCOverlay}
           onBack={() => setShowKYCOverlay(false)}
         />
-      )}
+      )} */}
     </>
   );
 };
