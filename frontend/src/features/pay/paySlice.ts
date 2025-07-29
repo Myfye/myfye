@@ -6,7 +6,7 @@ import {
   PayTransactionType,
   PresetAmountOption,
 } from "./types";
-import { User } from "../users/types";
+import { User } from "../users/users.types";
 
 interface PayState {
   transaction: PayTransaction;
