@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/shared/components/ui/modal/Modal";
 import { RootState } from "@/redux/store";
 import { toggleModal } from "./receiveSlice";
+import toast from "react-hot-toast/headless";
 
 const ReceiveModal = () => {
   const dispatch = useDispatch();
@@ -54,7 +55,8 @@ const ReceiveModal = () => {
               icon={CopyIcon}
               onPress={() => {
                 navigator.clipboard.writeText(key);
-                return onOpenChange(false);
+                toast.success("Copied wallet address!");
+                onOpenChange(false);
               }}
             >
               Copy address
