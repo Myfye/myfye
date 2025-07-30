@@ -41,13 +41,20 @@ const HomeTabs = () => {
   const tabPanelsRef = useRef<HTMLDivElement>(null!);
   const { wallets } = useSolanaWallets();
   const dispatch = useDispatch();
-  const solanaAddress = wallets[0].address;
+  console.log("solana wallets", wallets);
+
+  let solanaAddress = "";
+  if (wallets.length > 0) {
+    solanaAddress = wallets[0].address;
+  }
 
   const [isScrolling, setScrolling] = useState(false);
 
   const { spinnerParams, pullMargin } = usePullToRefresh({
     onRefresh: async () => {
-      await getSolanaBalances(solanaAddress, dispatch);
+      if (solanaAddress) {
+        await getSolanaBalances(solanaAddress, dispatch);
+      }
     },
     ref: tabPanelsRef,
     isScrolling,
