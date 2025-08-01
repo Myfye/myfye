@@ -24,14 +24,19 @@ const WithdrawModal = () => {
     setShowCopiedAddress(false);
   };
 
+  const resetOverlays = () => {
+    setCryptoOpen(false);
+    setFiatOpen(false);
+  };
+
   const openCrypto = () => {
     setCryptoOpen(true);
-    setHeight(680);
+    dispatch(setWithdrawModalOpen(false)); // Close the modal when crypto overlay opens
   };
 
   const openFiat = () => {
     setFiatOpen(true);
-    setHeight(0); // Hide the modal when fiat overlay opens
+    dispatch(setWithdrawModalOpen(false)); // Close the modal when fiat overlay opens
   };
 
   const onOpenChange = (isOpen: boolean) => {
@@ -47,7 +52,10 @@ const WithdrawModal = () => {
         title="Withdraw"
         height={height}
         onAnimationComplete={() => {
-          isOpen && resetModal();
+          // Reset overlays when modal closes
+          if (!isOpen) {
+            resetOverlays();
+          }
         }}
       >
         {!isCryptoOpen && !isFiatOpen ? (
@@ -64,10 +72,7 @@ const WithdrawModal = () => {
                 icon={Wallet}
                 title="To wallet"
                 description="Send money on chain"
-                onPress={() => {
-                  setCryptoOpen(true);
-                  setHeight(680);
-                }}
+                onPress={openCrypto}
               />
             </li>
             <li>
@@ -79,27 +84,22 @@ const WithdrawModal = () => {
               />
             </li>
           </menu>
-        ) : isCryptoOpen ? (
-          <WithdrawCryptoOverlay
-            isOpen={isCryptoOpen}
-            onOpenChange={(open) => {
-              setCryptoOpen(open);
-              if (!open) {
-                setHeight(360);
-              }
-            }}
-          />
         ) : null}
       </Modal>
+      
+      {/* Render WithdrawCryptoOverlay outside the modal */}
+      <WithdrawCryptoOverlay
+        isOpen={isCryptoOpen}
+        onOpenChange={(open) => {
+          setCryptoOpen(open);
+        }}
+      />
       
       {/* Render OffChainWithdrawOverlay outside the modal */}
       <OffChainWithdrawOverlay
         isOpen={isFiatOpen}
         onOpenChange={(open) => {
           setFiatOpen(open);
-          if (!open) {
-            setHeight(320); // Reset height when overlay closes
-          }
         }}
       />
     </>

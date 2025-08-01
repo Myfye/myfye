@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useRef } from "react";
+import { useState, createContext, useContext, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
 import usdcSol from "@/assets/usdcSol.png";
 import eurcSol from "@/assets/eurcSol.png";
@@ -130,10 +130,19 @@ const WithdrawCryptoOverlay = ({
     setShowAddressEntry(true);
   };
 
+  const [isSendDisabled, setIsSendDisabled] = useState(true);
+
   const currentBalance =
     selectedToken === "USDC" ? usdcSolBalance : eurcSolBalance;
   const amount = parseFormattedAmount(formattedAmount);
-  const isSendDisabled = !amount || amount > currentBalance || amount < 0.01;
+
+  // Update isSendDisabled whenever relevant values change
+  useEffect(() => {
+    const disabled = !amount || amount > currentBalance || amount < 0.01;
+    console.log("isSendDisabled:", disabled);
+    console.log("amount:", amount);
+    setIsSendDisabled(disabled);
+  }, [amount, currentBalance, selectedToken]);
 
   const currentCoin = useSelector((state: any) => state.currentCoin);
 
@@ -257,17 +266,7 @@ const WithdrawCryptoOverlay = ({
     setFormattedAmount(updateFormattedAmount(formattedAmount, amount, true));
   };
 
-  if (showAddressEntry) {
-    return (
-      <AddressEntryOverlay
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        onBack={() => setShowAddressEntry(false)}
-        selectedToken={selectedToken}
-        amount={formattedAmount}
-      />
-    );
-  }
+
 
   return (
     <>
@@ -529,8 +528,8 @@ const WithdrawCryptoOverlay = ({
       </Overlay>
       {showAddressEntry && (
         <AddressEntryOverlay
-          isOpen={showAddressEntry}
-          onOpenChange={setShowAddressEntry}
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
           onBack={() => setShowAddressEntry(false)}
           selectedToken={selectedToken}
           amount={formattedAmount}
