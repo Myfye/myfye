@@ -96,7 +96,8 @@ async function searchUser(data) {
             u.first_name ILIKE '%' || $2 || '%' OR
             u.last_name ILIKE '%' || $2 || '%' OR
             u.email ILIKE '%' || $2 || '%' OR
-            u.phone_number ILIKE '%' || $2 || '%'
+            u.phone_number ILIKE '%' || $2 || '%' OR
+            u.solana_pub_key ILIKE '%' || $2 || '%'
         )
         ORDER BY is_contact DESC, u.first_name ASC
         LIMIT 25
