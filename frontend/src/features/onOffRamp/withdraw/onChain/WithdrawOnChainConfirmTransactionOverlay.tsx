@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleOverlay } from "../withdrawSlice";
+import { toggleOverlay } from "./withdrawSlice";
 import { ArrowLeft } from "@phosphor-icons/react";
 
 interface WithdrawConfirmTransactionOverlayProps {
@@ -22,11 +22,9 @@ const WithdrawConfirmTransactionOverlay = ({
   selectedToken,
   amount,
   address,
-  onConfirm
+  onConfirm,
 }: WithdrawConfirmTransactionOverlayProps) => {
   const dispatch = useDispatch();
-
-
 
   return (
     <Overlay
@@ -99,32 +97,29 @@ const WithdrawConfirmTransactionOverlay = ({
           </div>
         </section>
 
-
-
         <section
+          css={css`
+            margin-inline: var(--size-250);
+            margin-block-start: var(--size-500);
+          `}
+        >
+          <li
             css={css`
-              margin-inline: var(--size-250);
-              margin-block-start: var(--size-500);
+              display: flex;
+              justify-content: space-between;
             `}
           >
-        <li
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              >
-                <span className="heading-small">Network fee</span>{" "}
-                <span
-                  css={css`
-                    font-size: var(--fs-medium);
-                    color: var(--clr-text);
-                  `}
-                >
-                  $0
-                </span>
-              </li>
-              </section>
-
+            <span className="heading-small">Network fee</span>{" "}
+            <span
+              css={css`
+                font-size: var(--fs-medium);
+                color: var(--clr-text);
+              `}
+            >
+              $0
+            </span>
+          </li>
+        </section>
 
         <section
           css={css`
@@ -141,11 +136,7 @@ const WithdrawConfirmTransactionOverlay = ({
             `}
           >
             <li>
-              <Button
-                expand
-                color="neutral"
-                onPress={onBack}
-              >
+              <Button expand color="neutral" onPress={onBack}>
                 Cancel
               </Button>
             </li>
@@ -161,4 +152,4 @@ const WithdrawConfirmTransactionOverlay = ({
   );
 };
 
-export default WithdrawConfirmTransactionOverlay; 
+export default WithdrawConfirmTransactionOverlay;

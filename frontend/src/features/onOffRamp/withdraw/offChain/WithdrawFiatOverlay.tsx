@@ -1,26 +1,10 @@
-import { useState, createContext, useContext, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
-import mxn from "@/assets/flags/mx.svg";
-import brl from "@/assets/flags/br.svg";
-import usd from "@/assets/flags/us.svg";
-import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
-import AssetCardList from "@/features/assets/cards/AssetCardList";
-import Overlay from "@/shared/components/ui/overlay/Overlay";
-import { setWithdrawCryptoOverlayOpen } from "@/redux/overlayReducers";
-import { addCurrentCoin } from "@/redux/coinReducer";
-import { useRadioGroupState } from "react-stately";
-import {
-  useFocusRing,
-  useRadio,
-  useRadioGroup,
-  VisuallyHidden,
-} from "react-aria";
-import { selectAsset } from "@/features/assets/assetsSlice";
+import Overlay, { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
-import { Backspace, CaretUp, CaretDown, CreditCard, Plus } from "@phosphor-icons/react";
-import { createPortal } from "react-dom";
-import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../../env';
+import { Plus } from "@phosphor-icons/react";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../../../env";
 import toast from "react-hot-toast/headless";
 import leafLoading from "@/assets/lottie/leaf-loading.json";
 import Lottie from "lottie-react";
@@ -34,7 +18,11 @@ import BankPickerOverlay from "./BankPickerOverlay";
 import BankInputOverlay from "./BankInputOverlay";
 import AmountInputOverlay from "./AmountInputOverlay";
 import { useLottie } from "lottie-react";
-  /*
+import { RootState } from "@/redux/store";
+import { useGetUserBankAccountsQuery } from "@/features/users/usersApi";
+import { useCreatePayoutQuery } from "../withdrawApi";
+
+/*
   40002 Banco Nacional de México (Banamex / Citibanamex)
   40012 BBVA México
   40014 Santander México
@@ -42,26 +30,18 @@ import { useLottie } from "lottie-react";
   40072 Banorte (Banco Mercantil del Norte)
   */
 
-const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
-  const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
+const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }: OverlayProps) => {
   const [formattedAmount, setFormattedAmount] = useState("0");
-  const [showDepositInstructionsOverlay, setShowDepositInstructionsOverlay] =
-    useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState("MXN"); // MXN BRL USD
-  const [payin, setPayin] = useState(null);
   const [bankAccounts, setBankAccounts] = useState([]);
   const [selectedBankAccount, setSelectedBankAccount] = useState(null);
   const [isLoadingBankAccounts, setIsLoadingBankAccounts] = useState(false);
-  const [currentStep, setCurrentStep] = useState('amount'); // 'amount' or 'bankAccount'
+  const [currentStep, setCurrentStep] = useState("amount"); // 'amount' or 'bankAccount'
   const [showBankPickerOverlay, setShowBankPickerOverlay] = useState(false);
   const [showBankInputOverlay, setShowBankInputOverlay] = useState(false);
   const [selectedBank, setSelectedBank] = useState(null);
   const [showAmountInputOverlay, setShowAmountInputOverlay] = useState(false);
-  
-  /* Public keys */
-  const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
+
   const currentUserEmail = useSelector(
     (state: any) => state.userWalletData.currentUserEmail
   );
@@ -74,68 +54,23 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
   const blindPayReceiverId = useSelector(
     (state: any) => state.userWalletData.blindPayReceiverId
   );
-  
-  useEffect(() => {
-    console.log("blindPayEvmWalletId", blindPayEvmWalletId);
-    console.log("blindPayReceiverId", blindPayReceiverId);
-    console.log("currentUserID", currentUserID);
-  }, [blindPayEvmWalletId, blindPayReceiverId, currentUserID]);
-  
+
+  /* Public keys */
   const solanaPubKey = useSelector(
-    (state: any) => state.userWalletData.solanaPubKey
+    (state: RootState) => state.userWalletData.solanaPubKey
   );
+
+  const [canCreatePayout, setCanCreatePayout] = useState(false);
+
+  const { isError, isLoading, isSuccess, isFetching } =
+    useGetUserBankAccountsQuery(currentUserID);
+
+  // const { isError, isLoading, isSuccess, isFetching } =
+  // useCreatePayoutQuery({});
+
   const isSendDisabled = !formattedAmount || formattedAmount === "0";
-  const selectedAddress = solanaPubKey;
-  const dropdownRef = useRef(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
-  // Fetch bank accounts when component mounts
-  useEffect(() => {
-    if (isOpen && currentUserID) {
-      fetchBankAccounts();
-    }
-  }, [isOpen, currentUserID]);
-
-  const fetchBankAccounts = async () => {
-    if (!currentUserID) return;
-    
-    setIsLoadingBankAccounts(true);
-    try {
-      const response = await fetch(`${MYFYE_BACKEND}/get_bank_accounts`, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': MYFYE_BACKEND_KEY,
-        },
-        body: JSON.stringify({
-          user_id: currentUserID,
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error fetching bank accounts:', errorData);
-        return;
-      }
-
-      const result = await response.json();
-      console.log('Bank accounts result:', result);
-      
-      if (result.success && result.data) {
-        setBankAccounts(result.data);
-        console.log('Bank accounts fetched successfully:', result.data);
-      }
-    } catch (error) {
-      console.error('Error fetching bank accounts:', error);
-      toast.error('Failed to load bank accounts');
-    } finally {
-      setIsLoadingBankAccounts(false);
-    }
-  };
-
-  const getBankIcon = (institutionCode) => {
+  const getBankIcon = (institutionCode: string) => {
     switch (institutionCode) {
       case "40002":
         return banamex; // Banco Nacional de México (Banamex / Citibanamex)
@@ -156,45 +91,6 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
     if (selectedBankAccount && !showAmountInputOverlay) {
       setShowAmountInputOverlay(true);
     } else {
-      // Placeholder for payout logic or next step
-    }
-  };
-
-  const handlePayout = async (amount: number, currency: string, bankAccount: any) => {
-    try {
-      // For now, this is a placeholder - you'll need to implement the actual payout endpoint
-      const response = await fetch(`${MYFYE_BACKEND}/create_payout`, {
-          method: 'POST',
-          mode: 'cors',
-          credentials: 'include',
-          headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': MYFYE_BACKEND_KEY,
-          },
-          body: JSON.stringify({
-            user_id: currentUserID,
-            bank_account_id: bankAccount.id,
-            amount: amount,
-            currency: currency,
-            email: currentUserEmail,
-          })
-      });
-
-      if (!response.ok) {
-          const errorData = await response.json();
-          const errorMessage = errorData.error || 'Error creating payout';
-          toast.error(errorMessage);
-          throw new Error(errorMessage);
-      }
-
-      const result = await response.json();
-      return result;
-    } catch (error) {
-        console.error("Error in handlePayout:", error);
-        if (!error.message || error.message === 'Failed to create payout') {
-          toast.error('Error creating payout');
-        }
-        throw error;
     }
   };
 
@@ -209,11 +105,11 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
 
   const handleBankAccountCreated = (newBankAccount) => {
     // Refresh bank accounts list
-    fetchBankAccounts().then(() => {
-      if (newBankAccount) {
-        setSelectedBankAccount(newBankAccount);
-      }
-    });
+    // fetchBankAccounts().then(() => {
+    //   if (newBankAccount) {
+    //     setSelectedBankAccount(newBankAccount);
+    //   }
+    // });
     setShowBankInputOverlay(false);
     setShowBankPickerOverlay(false);
   };
@@ -239,7 +135,10 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
         padding: var(--size-200);
         border-radius: var(--border-radius-medium);
         background-color: var(--clr-surface-raised);
-        border: 2px solid ${selectedBankAccount?.id === bankAccount.id ? 'var(--clr-primary)' : 'transparent'};
+        border: 2px solid
+          ${selectedBankAccount?.id === bankAccount.id
+            ? "var(--clr-primary)"
+            : "transparent"};
         cursor: pointer;
         transition: all 0.2s ease;
         &:hover {
@@ -311,20 +210,7 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
             isolation: isolate;
             position: relative;
           `}
-        >
-          {isLoading ? (
-            <Lottie animationData={leafLoading} loop={true} style={{ width: 800, height: 800 }} />
-          ) : (
-            <div
-              css={css`
-                display: flex;
-                align-items: center;
-                gap: var(--size-100);
-              `}
-            >
-            </div>
-          )}
-        </div>
+        ></div>
       </section>
       <div
         css={css`
@@ -337,8 +223,7 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
           css={css`
             padding-inline: var(--size-250);
           `}
-        >
-        </section>
+        ></section>
 
         <section
           css={css`
@@ -349,10 +234,7 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
             expand
             variant="primary"
             onPress={handleNextButtonPress}
-            disabled={isSendDisabled || isLoading}
-            css={css`
-              opacity: ${isSendDisabled || isLoading ? 0.5 : 1};
-            `}
+            isDisabled={isSendDisabled || isLoading}
           >
             Next
           </Button>
@@ -378,16 +260,21 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
         `}
       >
         {isLoadingBankAccounts ? (
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "60%"}}>
-              <div
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "60%",
+            }}
+          >
+            <div
               css={css`
                 width: 12rem;
                 height: 12rem;
               `}
-            >
-              <LoadingAnimation />
-            </div>
-            </div>
+            ></div>
+          </div>
         ) : (
           <div
             css={css`
@@ -397,7 +284,7 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
             `}
           >
             {bankAccounts.map(renderBankAccountCard)}
-            
+
             {/* Create New Bank Account Button */}
             <div
               css={css`
@@ -451,7 +338,7 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
           </div>
         )}
       </section>
-      
+
       <section
         css={css`
           padding-inline: var(--size-200);
@@ -461,12 +348,9 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
           expand
           variant="primary"
           onPress={handleNextButtonPress}
-          disabled={!selectedBankAccount || isLoading}
-          css={css`
-            opacity: ${!selectedBankAccount || isLoading ? 0.5 : 1};
-          `}
+          isDisabled={!selectedBankAccount || isLoading}
         >
-          {isLoading ? 'Processing...' : 'Next'}
+          {isLoading ? "Processing..." : "Next"}
         </Button>
       </section>
     </div>
@@ -478,8 +362,7 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
         isOpen={isOpen}
         onOpenChange={(open) => {
           if (!open) {
-            setIsDropdownOpen(false);
-            setCurrentStep('amount');
+            setCurrentStep("amount");
             setSelectedBankAccount(null);
             setSelectedBank(null);
             setShowBankPickerOverlay(false);
@@ -490,8 +373,10 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
         }}
         title="Withdraw"
       >
-        {(blindPayReceiverId && blindPayEvmWalletId) ? (
-          !showAmountInputOverlay ? renderBankAccountStep() : null
+        {blindPayReceiverId && blindPayEvmWalletId ? (
+          !showAmountInputOverlay ? (
+            renderBankAccountStep()
+          ) : null
         ) : (
           <div
             css={css`
@@ -503,8 +388,18 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
             `}
           >
             <section>
-              <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
-                <p style={{textAlign: "center"}}>Error verifying your account. Please contact support: gavin@myfye.com</p>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
+                <p style={{ textAlign: "center" }}>
+                  Error verifying your account. Please contact support:
+                  gavin@myfye.com
+                </p>
               </div>
             </section>
           </div>
@@ -543,18 +438,6 @@ const OffChainWithdrawOverlay = ({ isOpen, onOpenChange }) => {
       )}
     </>
   );
-};
-
-const LoadingAnimation = () => {
-    const options = {
-      loop: true,
-      animationData: leafLoading,
-      autoplay: true,
-    };
-  
-    const { View } = useLottie(options);
-  
-    return <>{View}</>;
 };
 
 export default OffChainWithdrawOverlay;
