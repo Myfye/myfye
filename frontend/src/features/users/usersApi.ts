@@ -61,6 +61,17 @@ export const usersApi = createApi({
         };
       },
     }),
+    getUserBankAccounts: build.query<User[], string>({
+      query: (userId) => {
+        return {
+          url: `/get_bank_accounts`,
+          method: "POST",
+          body: {
+            current_user_id: userId,
+          },
+        };
+      },
+    }),
     searchUsers: build.query<User[], { query: string; userId: string }>({
       query: ({ query, userId }) => {
         return {
@@ -76,5 +87,9 @@ export const usersApi = createApi({
   }),
 });
 
-export const { useCreateUserQuery, useGetUserQuery, useSearchUsersQuery } =
-  usersApi;
+export const {
+  useCreateUserQuery,
+  useGetUserQuery,
+  useSearchUsersQuery,
+  useGetUserBankAccountsQuery,
+} = usersApi;
