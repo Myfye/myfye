@@ -11,6 +11,8 @@ import usDollarYieldIcon from "@/assets/icons/assets/earn/US Dollar Yield.svg";
 import xrpIcon from "@/assets/icons/assets/crypto/Ripple.svg";
 import dogeIcon from "@/assets/icons/assets/crypto/Dogecoin.svg";
 import suiIcon from "@/assets/icons/assets/crypto/Sui.svg";
+import usdcIcon from "@/assets/icons/assets/crypto/USDC.svg";
+import eurcIcon from "@/assets/icons/assets/crypto/EURC.svg";
 
 // List of stock icons
 import AbbottIcon from "@/assets/icons/assets/stocks/Abbott.svg";
@@ -80,7 +82,8 @@ import SPYIcon from "@/assets/icons/assets/stocks/S&P.png";
 //import AMCIcon from "@/assets/icons/assets/stocks/AMC Entertainment Holdings, Inc..svg";
 
 const initialState: AssetsState = {
-  assetIds: [ //SPY, Tesla, Coin, Hood, and Apple
+  assetIds: [
+    //SPY, Tesla, Coin, Hood, and Apple
     // Stocks
     "AAPL_sol",
     //"MSFT_sol",
@@ -218,7 +221,7 @@ const initialState: AssetsState = {
   dashboardIds: ["stocks", "cash", "crypto"],
   assets: {
     // Stocks
-    "AAPL_sol": {
+    AAPL_sol: {
       id: "AAPL_sol",
       label: "Apple, Inc.",
       symbol: "AAPL",
@@ -274,7 +277,7 @@ const initialState: AssetsState = {
       },
     },
     */
-    "NVDA_sol": {
+    NVDA_sol: {
       id: "NVDA_sol",
       label: "NVIDIA Corporation",
       symbol: "NVDA",
@@ -292,7 +295,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "TSLA_sol": {
+    TSLA_sol: {
       id: "TSLA_sol",
       label: "Tesla, Inc.",
       symbol: "TSLA",
@@ -310,7 +313,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "SPY_sol": {
+    SPY_sol: {
       id: "SPY_sol",
       label: "S&P 500 ETF",
       symbol: "SPY",
@@ -767,7 +770,7 @@ const initialState: AssetsState = {
       },
     },
     */
-    "COIN_sol": {
+    COIN_sol: {
       id: "COIN_sol",
       label: "Coinbase Global, Inc.",
       symbol: "COIN",
@@ -1257,11 +1260,11 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    
+
     // Cash
     usdt_sol: {
       id: "usdt_sol",
-      label: "US Dollar",
+      label: "USDT",
       abstractedAssetId: "us_dollar",
       symbol: "USDT",
       dashboardId: "cash",
@@ -1270,7 +1273,7 @@ const initialState: AssetsState = {
       balance: 0,
       exchangeRateUSD: 1,
       icon: {
-        content: usDollarIcon,
+        content: usdcIcon,
         type: "svg",
       },
       overlay: {
@@ -1279,7 +1282,7 @@ const initialState: AssetsState = {
     },
     usdc_sol: {
       id: "usdc_sol",
-      label: "US Dollar",
+      label: "USDC",
       abstractedAssetId: "us_dollar",
       symbol: "USDC",
       dashboardId: "cash",
@@ -1288,7 +1291,7 @@ const initialState: AssetsState = {
       balance: 0,
       exchangeRateUSD: 1,
       icon: {
-        content: usDollarIcon,
+        content: usdcIcon,
         type: "svg",
       },
       overlay: {
@@ -1306,7 +1309,7 @@ const initialState: AssetsState = {
       balance: 0,
       exchangeRateUSD: 1,
       icon: {
-        content: usDollarIcon,
+        content: usdcIcon,
         type: "svg",
       },
       overlay: {
@@ -1315,7 +1318,7 @@ const initialState: AssetsState = {
     },
     eurc_sol: {
       id: "eurc_sol",
-      label: "Euro",
+      label: "EURC",
       abstractedAssetId: "euro",
       symbol: "EURC",
       dashboardId: "cash",
@@ -1324,7 +1327,7 @@ const initialState: AssetsState = {
       balance: 0,
       exchangeRateUSD: 0,
       icon: {
-        content: euroIcon,
+        content: eurcIcon,
         type: "svg",
       },
       overlay: {
@@ -1350,7 +1353,6 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    
   },
   groups: {
     stocks: {
@@ -1416,7 +1418,7 @@ const initialState: AssetsState = {
       },
     },
     */
-   /*
+    /*
     AMZN: {
       id: "AMZN",
       assetIds: ["AMZN_sol"],
@@ -2418,6 +2420,7 @@ const initialState: AssetsState = {
 
 export const selectAsset = (state: RootState, asset: string) =>
   state.assets.assets[asset];
+export const selectAssetId = (_: RootState, assetId: Asset["id"]) => assetId;
 export const selectAbstractedAsset = (
   state: RootState,
   abstractedAssetId: AbstractedAsset["id"]
@@ -2481,38 +2484,45 @@ export const selectAssetsBalanceUSD = createSelector(
   (assets) => {
     const allAssets = assets.assetIds.map((assetId, index) => {
       const asset = assets.assets[assetId];
-      
+
       if (!asset) {
-        console.error(`selectAssetsBalanceUSD - MISSING ASSET: ${assetId} is not found in assets.assets`);
-        console.error(`selectAssetsBalanceUSD - Available assets:`, Object.keys(assets.assets));
+        console.error(
+          `selectAssetsBalanceUSD - MISSING ASSET: ${assetId} is not found in assets.assets`
+        );
+        console.error(
+          `selectAssetsBalanceUSD - Available assets:`,
+          Object.keys(assets.assets)
+        );
       }
-      
+
       return asset;
     });
-    
-    
-    const result = allAssets.reduce(
-      (acc, val, index) => {
-        const assetId = assets.assetIds[index];
-        
-        if (!val) {
-          return acc;
-        }
-        if (typeof val.balance === 'undefined') {
-          console.error(`selectAssetsBalanceUSD - ERROR: assetId ${assetId} has undefined balance:`, val);
-          return acc;
-        }
-        if (typeof val.exchangeRateUSD === 'undefined') {
-          console.error(`selectAssetsBalanceUSD - ERROR: assetId ${assetId} has undefined exchangeRateUSD:`, val);
-          return acc;
-        }
-        
-        const calculation = val.balance * val.exchangeRateUSD;
-        return acc + calculation;
-      },
-      0
-    );
-    
+
+    const result = allAssets.reduce((acc, val, index) => {
+      const assetId = assets.assetIds[index];
+
+      if (!val) {
+        return acc;
+      }
+      if (typeof val.balance === "undefined") {
+        console.error(
+          `selectAssetsBalanceUSD - ERROR: assetId ${assetId} has undefined balance:`,
+          val
+        );
+        return acc;
+      }
+      if (typeof val.exchangeRateUSD === "undefined") {
+        console.error(
+          `selectAssetsBalanceUSD - ERROR: assetId ${assetId} has undefined exchangeRateUSD:`,
+          val
+        );
+        return acc;
+      }
+
+      const calculation = val.balance * val.exchangeRateUSD;
+      return acc + calculation;
+    }, 0);
+
     return result;
   }
 );
@@ -2616,6 +2626,16 @@ export const selectAssetBalanceUSD = createSelector(
   (asset) => Math.floor(asset.balance * asset.exchangeRateUSD * 100) / 100
 );
 
+export const selectAssetBalance = createSelector(
+  [selectAssetsArray, selectAssetId],
+  (assets, assetId) => {
+    // find assets
+    const result = assets.find((asset) => asset.id === assetId);
+    if (!result) throw new Error("Asset not found");
+    return result.balance;
+  }
+);
+
 export const assetsSlice = createSlice({
   name: "assets",
   initialState: initialState,
@@ -2659,7 +2679,3 @@ export const {
 } = assetsSlice.actions;
 
 export default assetsSlice.reducer;
-
-
-
-
