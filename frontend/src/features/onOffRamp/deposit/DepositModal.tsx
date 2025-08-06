@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { css } from "@emotion/react";
-import { Bank, Wallet } from "@phosphor-icons/react";
+import { Bank, Wallet, CreditCard } from "@phosphor-icons/react";
 import ModalButton from "../ModalButton";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/shared/components/ui/modal/Modal";
@@ -62,7 +62,7 @@ const DepositModal = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Deposit"
-        height={320}
+        height={350}
         onAnimationComplete={() => {
           isOpen && resetModal();
         }}
@@ -79,16 +79,24 @@ const DepositModal = () => {
             <li>
               <ModalButton
                 icon={Wallet}
-                title="Wallet"
-                description="Deposit via wallet address"
+                title="Crypto"
+                description="Send crypto to your wallet"
                 onPress={openOnChainDeposit}
               ></ModalButton>
             </li>
             <li>
               <ModalButton
                 icon={Bank}
-                title="Fiat"
+                title="Bank Account"
                 description="Deposit via bank transfer"
+                onPress={openOffChainDeposit}
+              ></ModalButton>
+            </li>
+            <li>
+              <ModalButton
+                icon={CreditCard}
+                title="Card / Apple Pay / Google Pay"
+                description="Deposit via credit/debit card"
                 onPress={openOffChainDeposit}
               ></ModalButton>
             </li>
