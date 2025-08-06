@@ -132,7 +132,8 @@ const OffChainPrivyDepositOverlay = ({ isOpen, onOpenChange, zIndex = 1000 }) =>
     fundWallet(solanaPubKey, {
         cluster: {name: 'mainnet-beta'}, 
         amount: solAmount.toString(), // Amount in SOL
-        defaultFundingMethod: 'card'
+        defaultFundingMethod: 'card',
+        asset: 'USDC'
     });
 
   };
