@@ -1,12 +1,12 @@
-import { PayTransaction } from "./types";
+import { PayTransaction } from "./pay.types";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth/solana";
-import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../env';
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env";
 
 export async function savePayTransaction(
   transaction: PayTransaction,
   transactionId: string,
   wallet: ConnectedSolanaWallet,
-  user_id: string,
+  user_id: string
 ) {
   if (!transaction.user?.solana_pub_key) {
     console.error("Missing recipient public key");
@@ -16,12 +16,12 @@ export async function savePayTransaction(
   console.log("transaction to save: ", transaction);
   // Call the pay transaction endpoint
   const response = await fetch(`${MYFYE_BACKEND}/create_pay_transaction`, {
-    method: 'POST',
-    mode: 'cors',
-    credentials: 'include',
+    method: "POST",
+    mode: "cors",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': MYFYE_BACKEND_KEY,
+      "Content-Type": "application/json",
+      "x-api-key": MYFYE_BACKEND_KEY,
     },
     body: JSON.stringify({
       user_id: user_id,
@@ -34,8 +34,8 @@ export async function savePayTransaction(
       receiver_public_key: transaction.user.solana_pub_key,
       currency: transaction.abstractedAssetId,
       transaction_hash: transactionId,
-      transaction_status: "success"
-    })
+      transaction_status: "success",
+    }),
   });
 
   if (!response.ok) {
