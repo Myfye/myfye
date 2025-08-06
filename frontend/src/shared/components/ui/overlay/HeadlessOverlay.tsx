@@ -12,6 +12,7 @@ import {
 } from "@headlessui/react";
 import { createPortal } from "react-dom";
 import { useOverlay } from "./useOverlay";
+import { OverlayProps } from "./Overlay";
 
 // Wrap React Aria modal components so they support motion values.
 const MotionDialog = motion(Dialog);
@@ -23,14 +24,8 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-interface HeadlessOverlayProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
+interface HeadlessOverlayProps extends OverlayProps {
   backgroundColor?: string;
-  zIndex?: number;
-  children: ReactNode;
-  onExitComplete?: () => void;
-  onEnterComplete?: () => void;
   titleId?: string;
 }
 
@@ -40,7 +35,8 @@ const HeadlessOverlay = ({
   backgroundColor = "var(--clr-surface)",
   zIndex = 1000,
   children,
-  onExitComplete,
+  initialFocus,
+  onExit,
   titleId,
 }: HeadlessOverlayProps) => {
   let w = window.innerWidth;
@@ -48,11 +44,11 @@ const HeadlessOverlay = ({
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
-  useOverlay({ isOpen, onOpenChange, ref: overlayRef });
+  useOverlay({ isOpen, onOpenChange, ref: overlayRef, initialFocus });
 
   return (
     <>
-      <AnimatePresence onExitComplete={onExitComplete}>
+      <AnimatePresence onExitComplete={onExit}>
         {isOpen && (
           <>
             {createPortal(

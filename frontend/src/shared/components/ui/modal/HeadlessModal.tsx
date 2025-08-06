@@ -1,25 +1,18 @@
 import {
   animate,
   AnimatePresence,
-  HTMLMotionProps,
   motion,
   MotionValue,
   useMotionTemplate,
   useMotionValue,
-  useMotionValueEvent,
   useTransform,
 } from "motion/react";
 
 import { css } from "@emotion/react";
-import Button from "@/shared/components/ui/button/Button";
-import { X } from "@phosphor-icons/react";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { ReactNode, Ref, useEffect, useState } from "react";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { useEffect, useState } from "react";
+import { VisuallyHidden } from "react-aria";
+import { ModalProps } from "./Modal";
 
 // Wrap React Aria modal components so they support framer-motion values.
 const MotionDialogBackdrop = motion(DialogBackdrop);
@@ -38,21 +31,10 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-export interface ModalProps extends HTMLMotionProps<"div"> {
-  zIndex?: number;
-  title?: string;
-  height?: MotionValue<number> | number;
-  onOpenChange: (isOpen: boolean) => void;
-  isOpen: boolean;
-  children: ReactNode;
-  onExit?: () => void;
-  ref?: Ref<HTMLDivElement>;
-}
-
 const checkMotionValue = (val: any): val is MotionValue<number> =>
   val instanceof MotionValue;
 
-const Modal = ({
+const HeadlessModal = ({
   isOpen,
   onOpenChange,
   height = 400,
@@ -120,6 +102,7 @@ const Modal = ({
               `}
             />
             <MotionDialogPanel
+              {...restProps}
               css={css`
                 display: grid;
                 font-family: var(--font-family);
@@ -164,7 +147,6 @@ const Modal = ({
                   animate(y, 0, { ...inertiaTransition, min: 0, max: 0 });
                 }
               }}
-              {...restProps}
             >
               <motion.div
                 style={{
@@ -194,35 +176,16 @@ const Modal = ({
                     gap: var(--size-300);
                   `}
                 >
-                  <header
-                    css={css`
-                      position: relative;
-                      padding-inline: var(--size-200);
-                    `}
-                  >
-                    <DialogTitle
-                      as="h2"
-                      className="heading-medium"
+                  <VisuallyHidden>
+                    <header
                       css={css`
-                        text-align: center;
+                        position: relative;
+                        padding-inline: var(--size-200);
                       `}
                     >
-                      {title}
-                    </DialogTitle>
-                    <Button
-                      onPress={() => onOpenChange(false)}
-                      iconOnly
-                      variant="transparent"
-                      icon={X}
-                      css={css`
-                        position: absolute;
-                        inset: 0;
-                        left: auto;
-                        right: var(--size-100);
-                        margin: auto;
-                      `}
-                    ></Button>
-                  </header>
+                      <h1>{title}</h1>
+                    </header>
+                  </VisuallyHidden>
                   <main
                     css={css`
                       container: modal-content / size;
@@ -240,4 +203,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+export default HeadlessModal;

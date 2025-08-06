@@ -21,13 +21,14 @@ const staticTransition = {
   ease: [0.32, 0.72, 0, 1],
 };
 
-interface OverlayProps extends HTMLMotionProps<"div"> {
+export interface OverlayProps extends HTMLMotionProps<"div"> {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   title?: string;
   zIndex?: number;
   children?: ReactNode;
   initialFocus?: RefObject<HTMLElement>;
+  onExit?: () => void;
 }
 const Overlay = ({
   isOpen,
@@ -36,6 +37,7 @@ const Overlay = ({
   zIndex = 1000,
   children,
   initialFocus,
+  onExit,
   ...restProps
 }: OverlayProps) => {
   const w = window.innerWidth;
@@ -49,7 +51,7 @@ const Overlay = ({
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={onExit}>
         {isOpen && (
           <>
             {createPortal(
