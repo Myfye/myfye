@@ -196,7 +196,7 @@ function WebAppInner() {
         <WithdrawModal />
         <QRCodeModal />
         <SwapModal />
-        <KYCOverlay />
+        <KYCOverlay zIndex={1100} />
         <PrivyUseSolanaWallets />
         <Toaster />
       </div>

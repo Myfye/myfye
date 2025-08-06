@@ -1,13 +1,15 @@
 require("dotenv").config();
 const axios = require("axios");
 
-//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
-//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
-//const TOKEN = 'USDC'
+const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
+const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+const TOKEN = 'USDC'
+const NETWORK = 'base'
 
-const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
-const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
-const TOKEN = 'USDB'
+//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
+//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+//const TOKEN = 'USDB'
+//const NETWORK = 'sepolia'
 
 async function create_new_payout(data) {
 
@@ -40,7 +42,7 @@ async function get_payout_quote(data) {
         currency_type: 'sender',
         cover_fees: false,
         request_amount: data.request_amount, // should be in cents
-        network: 'sepolia', // default to prod
+        network: NETWORK, // default to prod
         token: TOKEN,
       },
       {
@@ -50,6 +52,7 @@ async function get_payout_quote(data) {
         },
       }
     );
+    console.log("response:", response.data);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {

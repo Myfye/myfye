@@ -15,6 +15,34 @@ const WithdrawModal = ({ height = 300, ...restProps }: ModalProps) => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state: RootState) => state.withdrawModal.isOpen);
 
+<<<<<<< HEAD
+=======
+  const resetModal = () => {
+    setCryptoOpen(false);
+    setFiatOpen(false);
+    setHeight(320);
+    setShowCopiedAddress(false);
+  };
+
+  const resetOverlays = () => {
+    setCryptoOpen(false);
+    setFiatOpen(false);
+  };
+
+  const openCrypto = () => {
+    setCryptoOpen(true);
+    dispatch(setWithdrawModalOpen(false)); // Close the modal when crypto overlay opens
+  };
+
+  const openFiat = () => {
+    setFiatOpen(true);
+    dispatch(setWithdrawModalOpen(false)); // Close the modal when fiat overlay opens
+  };
+
+  const onOpenChange = (isOpen: boolean) => {
+    dispatch(setWithdrawModalOpen(isOpen));
+  };
+>>>>>>> revamp
   return (
     <>
       <Modal

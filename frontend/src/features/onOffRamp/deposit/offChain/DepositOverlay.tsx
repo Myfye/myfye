@@ -6,7 +6,7 @@ import usd from "@/assets/flags/us.svg";
 import { motion } from "motion/react";
 import { useDispatch, useSelector } from "react-redux";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
-import Overlay from "@/shared/components/ui/overlay/Overlay";
+import Overlay, { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
 import { setWithdrawCryptoOverlayOpen } from "@/redux/overlayReducers";
 import SelectContactOverlay from "./select-contact-overlay/SelectContactOverlay";
 import { addCurrentCoin } from "@/redux/coinReducer";
@@ -70,11 +70,7 @@ const parseFormattedAmount = (formattedAmount: string) => {
   return Math.round(parseFloat(formattedAmount.replace(/,/g, "")));
 };
 
-interface OffChainDepositOverlayProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  zIndex?: number;
-}
+interface OffChainDepositOverlayProps extends OverlayProps {}
 
 const OffChainDepositOverlay = ({
   isOpen,

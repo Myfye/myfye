@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useRef } from "react";
+import { useState, createContext, useContext, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
 import usdcSol from "@/assets/usdcSol.png";
 import eurcSol from "@/assets/eurcSol.png";
@@ -84,6 +84,15 @@ const AmountInputOverlay = ({ isOpen, onOpenChange, onBack, selectedBankAccount,
   console.log("AmountInputOverlay - selectedBankAccount:", selectedBankAccount);
   console.log("AmountInputOverlay - selectedBankAccount type:", typeof selectedBankAccount);
   
+  // Effect to show confirm overlay when payoutQuote is available
+  useEffect(() => {
+    if (payoutQuote && payoutQuote.id) {
+      console.log("Payout quote:", payoutQuote);
+      console.log("setting show withdraw confrim true")
+      setShowWithdrawConfirm(true);
+    }
+  }, [payoutQuote]);
+  
   /* Public keys */
   const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
   const solanaPubKey = useSelector(
@@ -150,9 +159,7 @@ const AmountInputOverlay = ({ isOpen, onOpenChange, onBack, selectedBankAccount,
         throw new Error(errorData.error || 'Failed to get payout quote');
       }
       const quote = await response.json();
-      console.log("Payout quote:", quote);
       setPayoutQuote(quote);
-      setShowWithdrawConfirm(true);
     } catch (error) {
       console.log("error:", error);
     } finally {
@@ -287,19 +294,7 @@ const AmountInputOverlay = ({ isOpen, onOpenChange, onBack, selectedBankAccount,
     setFormattedAmount(updateFormattedAmount(formattedAmount, amount, true));
   };
 
-  if (showWithdrawConfirm && payoutQuote) {
-    return (
-      <WithdrawConfirmOverlay
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        onBack={() => setShowWithdrawConfirm(false)}
-        payoutQuote={payoutQuote}
-        selectedToken={selectedToken}
-        amount={formattedAmount}
-        selectedBankAccount={selectedBankAccount}
-      />
-    );
-  }
+
 
   return (
     <>
@@ -465,11 +460,17 @@ const AmountInputOverlay = ({ isOpen, onOpenChange, onBack, selectedBankAccount,
           </section>
         </div>
       </Overlay>
-      {showWithdrawConfirm && (
+      {showWithdrawConfirm && payoutQuote && (
         <WithdrawConfirmOverlay
           isOpen={showWithdrawConfirm}
-          onOpenChange={setShowWithdrawConfirm}
+          onOpenChange={(open) => {
+            setShowWithdrawConfirm(open);
+            if (!open) {
+              setShowWithdrawConfirm(false);
+            }
+          }}
           onBack={() => setShowWithdrawConfirm(false)}
+          payoutQuote={payoutQuote}
           selectedToken={selectedToken}
           amount={formattedAmount}
           selectedBankAccount={selectedBankAccount}

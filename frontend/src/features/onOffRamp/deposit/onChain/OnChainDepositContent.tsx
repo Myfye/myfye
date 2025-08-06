@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { css } from "@emotion/react";
 import Button from "@/shared/components/ui/button/Button";
-import { Copy } from "@phosphor-icons/react";
+import { Copy, Info } from "@phosphor-icons/react";
 import QRCode from "../../../qr-code/QRCode";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";

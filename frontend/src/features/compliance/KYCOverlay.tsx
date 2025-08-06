@@ -29,12 +29,14 @@ interface KYCOverlayProps {
   amount?: unknown;
   onCloseAll?: unknown;
   isOpen?: boolean;
+  zIndex?: number;
 }
 const KYCOverlay = ({
   onBack,
   selectedToken,
   amount,
   onCloseAll,
+  zIndex = 1000,
 }: KYCOverlayProps) => {
   const isOpen = useSelector((state: RootState) => state.kyc.modal.isOpen);
   const dispatch = useDispatch();
@@ -440,7 +442,7 @@ const KYCOverlay = ({
           }
         }}
         title="Upload Your Identification"
-        zIndex={10003}
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -486,7 +488,7 @@ const KYCOverlay = ({
           }
         }}
         title="Upload Your Identification"
-        zIndex={10003}
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -821,7 +823,7 @@ const KYCOverlay = ({
           }
         }}
         title="Verify Your Identity"
-        zIndex={10002}
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -1024,7 +1026,7 @@ const KYCOverlay = ({
               expand
               variant="primary"
               onPress={handlePageThreeDone}
-              disabled={!isFormValid}
+              isDisabled={!isFormValid}
               css={css`
                 opacity: ${isFormValid ? 1 : 0.5};
                 pointer-events: ${isFormValid ? "auto" : "none"};
@@ -1048,7 +1050,7 @@ const KYCOverlay = ({
           }
         }}
         title="Enter Your Address"
-        zIndex={10001}
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -1207,7 +1209,7 @@ const KYCOverlay = ({
               expand
               variant="primary"
               onPress={handlePageTwoDone}
-              disabled={!isAddressSelected}
+              isDisabled={!isAddressSelected}
               css={css`
                 opacity: ${isAddressSelected ? 1 : 0.5};
                 pointer-events: ${isAddressSelected ? "auto" : "none"};
@@ -1242,7 +1244,7 @@ const KYCOverlay = ({
         }
       }}
       title="Account Setup"
-      zIndex={10000}
+      zIndex={zIndex}
     >
       <div
         css={css`
