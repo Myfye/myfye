@@ -105,7 +105,7 @@ const generalLimiter = rateLimit({
 // Stricter limiter for authentication endpoints
 const authLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 10, // Limit each IP requests per windowMs
+  max: 20, // Limit each IP requests per windowMs
   message: { error: 'Too many authentication attempts, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -114,7 +114,7 @@ const authLimiter = rateLimit({
 // Very strict limiter for sensitive operations
 const sensitiveLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 6, // Limit each IP per windowMs
+  max: 12, // Limit each IP per windowMs
   message: { error: 'Too many sensitive operations attempted, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,

@@ -46,12 +46,14 @@ interface KYCOverlayProps {
   amount?: unknown;
   onCloseAll?: unknown;
   isOpen?: boolean;
+  zIndex?: number;
 }
 const KYCOverlay = ({
   onBack,
   selectedToken,
   amount,
   onCloseAll,
+  zIndex = 1000,
 }: KYCOverlayProps) => {
   const isOpen = useSelector((state: RootState) => state.kyc.modal.isOpen);
   const dispatch = useDispatch();
@@ -454,6 +456,7 @@ const KYCOverlay = ({
           }
         }}
         title="Upload Your Identification"
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -499,6 +502,7 @@ const KYCOverlay = ({
           }
         }}
         title="Upload Your Identification"
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -833,6 +837,7 @@ const KYCOverlay = ({
           }
         }}
         title="Verify Your Identity"
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -1059,6 +1064,7 @@ const KYCOverlay = ({
           }
         }}
         title="Enter Your Address"
+        zIndex={zIndex}
       >
         <div
           css={css`
@@ -1252,6 +1258,7 @@ const KYCOverlay = ({
         }
       }}
       title="Account Setup"
+      zIndex={zIndex}
     >
       <div
         css={css`

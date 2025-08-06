@@ -1,13 +1,8 @@
 import { useState } from "react";
 
 import { css } from "@emotion/react";
-<<<<<<< HEAD
 import { Bank, Wallet, CreditCard } from "@phosphor-icons/react";
-import ModalButton from "../ModalButton";
-=======
-import { Bank, Wallet } from "@phosphor-icons/react";
 import ModalButton from "../_components/ModalButton";
->>>>>>> new_updates
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/shared/components/ui/modal/Modal";
 import { RootState } from "@/redux/store";
@@ -15,11 +10,14 @@ import { setDepositModalOpen } from "@/redux/modalReducers";
 // import toast from "react-hot-toast/headless";
 import OnChainDepositOverlay from "./onChain/OnChainDepositContent";
 import OffChainDepositOverlay from "./offChain/DepositOverlay";
-import KYCOverlay from "@/features/compliance/kycOverlay";
+import OffChainPrivyDepositOverlay from "./offChain/privy/DepositWithPrivyOverlay";
 import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import {useFundWallet} from '@privy-io/react-auth/solana';
+
 
 const DepositModal = () => {
   const dispatch = useDispatch();
+  const {fundWallet} = useFundWallet();
   const isOpen = useSelector((state: RootState) => state.depositModal.isOpen);
   const onOpenChange = (isOpen: boolean) => {
     dispatch(setDepositModalOpen(isOpen));
@@ -28,7 +26,10 @@ const DepositModal = () => {
 
   const [onChainDepositOpen, setOnChainDepositOpen] = useState(false);
   const [offChainDepositOpen, setOffChainDepositOpen] = useState(false);
-  const [showKYCOverlay, setShowKYCOverlay] = useState(false);
+  const [privyDepositOpen, setPrivyDepositOpen] = useState(false);
+
+
+  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
 
   const currentUserKYCVerified = useSelector(
     (state: RootState) => state.userWalletData.currentUserKYCVerified
@@ -37,6 +38,7 @@ const DepositModal = () => {
   const resetModal = () => {
     setOnChainDepositOpen(false);
     setOffChainDepositOpen(false);
+    setPrivyDepositOpen(false);
     setShowCopiedAddress(false);
   };
 
@@ -61,24 +63,24 @@ const DepositModal = () => {
     }
   };
 
+  const openPrivyDeposit = () => {
+
+    setPrivyDepositOpen(true);
+  };
+
+
   return (
     <>
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Deposit"
-<<<<<<< HEAD
         height={350}
         onAnimationComplete={() => {
           isOpen && resetModal();
-=======
-        height={320}
-        onExit={() => {
-          resetModal();
->>>>>>> new_updates
         }}
       >
-        {!offChainDepositOpen && !onChainDepositOpen && (
+        {!offChainDepositOpen && !onChainDepositOpen && !privyDepositOpen && (
           <menu
             css={css`
               display: flex;
@@ -108,7 +110,7 @@ const DepositModal = () => {
                 icon={CreditCard}
                 title="Card / Apple Pay / Google Pay"
                 description="Deposit via credit/debit card"
-                onPress={openOffChainDeposit}
+                onPress={openPrivyDeposit}
               ></ModalButton>
             </li>
           </menu>
@@ -129,14 +131,17 @@ const DepositModal = () => {
         <OffChainDepositOverlay
           isOpen={offChainDepositOpen}
           onOpenChange={setOffChainDepositOpen}
+          zIndex={1100}
         />
       )}
-      {showKYCOverlay && (
-        <KYCOverlay
-          isOpen={showKYCOverlay}
-          onBack={() => setShowKYCOverlay(false)}
+      {privyDepositOpen && (
+        <OffChainPrivyDepositOverlay
+          isOpen={privyDepositOpen}
+          onOpenChange={setPrivyDepositOpen}
+          zIndex={1100}
         />
       )}
+
     </>
   );
 };

@@ -66,7 +66,7 @@ const parseFormattedAmount = (formattedAmount: string) => {
   return Math.round(parseFloat(formattedAmount.replace(/,/g, "")));
 };
 
-const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
+const OffChainDepositOverlay = ({ isOpen, onOpenChange, zIndex = 1000 }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [formattedAmount, setFormattedAmount] = useState("0");
@@ -328,6 +328,7 @@ const OffChainDepositOverlay = ({ isOpen, onOpenChange }) => {
           onOpenChange(open);
         }}
         title="Deposit"
+        zIndex={zIndex}
       >
 
           {(blindPayReceiverId && blindPayEvmWalletId) ? (

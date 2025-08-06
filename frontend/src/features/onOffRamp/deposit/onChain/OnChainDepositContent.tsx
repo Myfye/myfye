@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import Button from "@/shared/components/ui/button/Button";
-import { Copy } from "@phosphor-icons/react";
+import { Copy, Info } from "@phosphor-icons/react";
 import QRCode from "../../../qr-code/QRCode";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -91,6 +91,23 @@ const OnChainDepositOverlay = ({ isOpen, onOpenChange }) => {
           padding-bottom: var(--size-200);
         `}
       >
+        <div
+          css={css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--size-100);
+            padding: var(--size-150);
+            background-color: var(--clr-surface-raised);
+            border-radius: var(--border-radius-small);
+            margin-bottom: var(--size-200);
+            color: var(--clr-text);
+            font-size: var(--fs-small);
+          `}
+        >
+          <Info size={16} weight="fill" color="#F8C86F" />
+          <span>Make sure to send funds on Solana</span>
+        </div>
         <Button expand icon={Copy} onPress={handleCopyAddress}>
           {`Copy ${selectedChain === "base" ? "Base" : "Solana"} Address`}
         </Button>

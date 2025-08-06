@@ -53,6 +53,7 @@ const WithdrawModal = () => {
         height={height}
         onExit={() => {
           resetModal();
+        }}
         onAnimationComplete={() => {
           // Reset overlays when modal closes
           if (!isOpen) {
