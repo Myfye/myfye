@@ -29,9 +29,13 @@ import assetsReducer from "@/features/assets/assetsSlice.ts";
 import sendReducer from "@/features/send/sendSlice.ts";
 import receiveReducer from "@/features/receive/receiveSlice.ts";
 import payReducer from "@/features/pay/paySlice.ts";
+import withdrawReducer from "@/features/onOffRamp/withdraw/withdrawSlice.ts";
+import withdrawOnChainReducer from "@/features/onOffRamp/withdraw/onChain/withdrawOnChainSlice.ts";
+import withdrawOffChainReducer from "@/features/onOffRamp/withdraw/offChain/withdrawOffChainSlice.ts";
 import { usersApi } from "@/features/users/usersApi.ts";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { contactsApi } from "@/features/contacts/contactsApi.ts";
+import { solanaApi } from "@/features/solana/solanaApi.ts";
 
 const store = configureStore({
   reducer: {
@@ -78,14 +82,21 @@ const store = configureStore({
     // Pay
     pay: payReducer,
 
+    // Withdraw
+    withdraw: withdrawReducer,
+    withdrawOnChain: withdrawOnChainReducer,
+    withdrawOffChain: withdrawOffChainReducer,
+
     // APIs
     [usersApi.reducerPath]: usersApi.reducer,
     [contactsApi.reducerPath]: contactsApi.reducer,
+    [solanaApi.reducerPath]: solanaApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
       usersApi.middleware,
       contactsApi.middleware,
+      solanaApi.middleware,
     ]),
 });
 
