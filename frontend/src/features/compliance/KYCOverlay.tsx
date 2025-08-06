@@ -1,25 +1,10 @@
-import { useState, createContext, useContext, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
-import AssetCardList from "@/features/assets/cards/AssetCardList";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
-import { addCurrentCoin } from "@/redux/coinReducer";
-import { useRadioGroupState } from "react-stately";
-import {
-  useFocusRing,
-  useRadio,
-  useRadioGroup,
-  VisuallyHidden,
-} from "react-aria";
+
 import Button from "@/shared/components/ui/button/Button";
-import {
-  Backspace,
-  ArrowLeft,
-  Copy,
-  Check,
-  CaretLeft,
-  CaretRight,
-} from "@phosphor-icons/react";
+import { Check } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast/headless";
 import {
@@ -27,10 +12,8 @@ import {
   MYFYE_BACKEND_KEY,
   GOOGLE_MAPS_API_KEY,
 } from "../../env";
-import { Autocomplete } from "@react-google-maps/api";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { app } from "../../main";
-import { set } from "zod";
 import leafLoading from "@/assets/lottie/leaf-loading.json";
 import Lottie from "lottie-react";
 import Page1 from "@/assets/Page1.png";
@@ -224,7 +207,10 @@ const KYCOverlay = ({
     }
   };
 
-  const handleKYCData = async (frontDownloadURL, backDownloadURL) => {
+  const handleKYCData = async (
+    frontDownloadURL: string,
+    backDownloadURL: string
+  ) => {
     try {
       const response = await fetch(`${MYFYE_BACKEND}/create_user_kyc`, {
         method: "POST",
@@ -454,6 +440,7 @@ const KYCOverlay = ({
           }
         }}
         title="Upload Your Identification"
+        zIndex={10003}
       >
         <div
           css={css`
@@ -472,7 +459,7 @@ const KYCOverlay = ({
               height: 120px;
             `}
           >
-            <Lottie animationData={leafLoading} loop={true} />
+            Loading...
           </div>
           <div
             css={css`
@@ -499,6 +486,7 @@ const KYCOverlay = ({
           }
         }}
         title="Upload Your Identification"
+        zIndex={10003}
       >
         <div
           css={css`
@@ -833,6 +821,7 @@ const KYCOverlay = ({
           }
         }}
         title="Verify Your Identity"
+        zIndex={10002}
       >
         <div
           css={css`
@@ -1059,6 +1048,7 @@ const KYCOverlay = ({
           }
         }}
         title="Enter Your Address"
+        zIndex={10001}
       >
         <div
           css={css`
@@ -1252,6 +1242,7 @@ const KYCOverlay = ({
         }
       }}
       title="Account Setup"
+      zIndex={10000}
     >
       <div
         css={css`
