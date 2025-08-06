@@ -5,7 +5,7 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import { useEffect, useId, useState } from "react";
+import { useId } from "react";
 
 import { css } from "@emotion/react";
 
@@ -19,6 +19,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import QrScanner from "qr-scanner";
 
 const MotionDialog = motion(Dialog);
 const MotionDialogBackdrop = motion(DialogBackdrop);
@@ -38,8 +39,8 @@ const QRScanner = ({
 }: {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onScanSuccess: (e: unknown) => void;
-  onScanFail: (err: unknown) => void;
+  onScanSuccess: (data: QrScanner.ScanResult) => void;
+  onScanFail: (error: Error | string) => void;
   zIndex: number;
 }) => {
   let h = window.innerHeight;

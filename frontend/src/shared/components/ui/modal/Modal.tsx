@@ -43,6 +43,7 @@ interface ModalProps extends HTMLMotionProps<"div"> {
   onOpenChange: (isOpen: boolean) => void;
   isOpen: boolean;
   children: ReactNode;
+  onExit?: () => void;
 }
 
 const Modal = ({
@@ -51,6 +52,7 @@ const Modal = ({
   height = 400,
   title = "",
   zIndex = 1000,
+  onExit,
   children,
   ...restProps
 }: ModalProps) => {
@@ -62,7 +64,7 @@ const Modal = ({
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={onExit}>
         {isOpen && (
           <MotionDialog
             open

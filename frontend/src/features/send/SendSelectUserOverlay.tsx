@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import SelectUserOverlay from "../users/SelectUserOverlay";
 import { toggleOverlay, updateUser } from "./sendSlice";
-import { User } from "../users/types";
+import { User } from "../users/users.types";
 import toast from "react-hot-toast/headless";
 import { useEffect } from "react";
 

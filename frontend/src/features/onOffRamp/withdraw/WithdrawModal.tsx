@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { css } from "@emotion/react";
 import { Bank, Wallet } from "@phosphor-icons/react";
-import ModalButton from "../ModalButton";
+import ModalButton from "../_components/ModalButton";
 import Modal from "@/shared/components/ui/modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -51,6 +51,8 @@ const WithdrawModal = () => {
         }}
         title="Withdraw"
         height={height}
+        onExit={() => {
+          resetModal();
         onAnimationComplete={() => {
           // Reset overlays when modal closes
           if (!isOpen) {

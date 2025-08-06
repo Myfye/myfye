@@ -10,7 +10,7 @@ import { useSolanaWallets } from "@privy-io/react-auth/solana";
 import { updateUserSolanaPubKey } from "./LoginService.tsx";
 import getSolanaBalances from "../../functions/GetSolanaBalances.tsx";
 
-function PrivyUseSolanaWallets() {
+const PrivyUseSolanaWallets = () => {
   /*
     Create solana wallets for the user no input
     required. 
@@ -21,10 +21,18 @@ function PrivyUseSolanaWallets() {
     signing. (the passkey is connected)
     */
   const { createWallet, ready, wallets } = useSolanaWallets();
+
+  const createWalletAsync = async () => {
+    try {
+      console.log("Creating wallet");
+      await createWallet();
+    } catch (error) {
+      console.error("Error creating wallet", error);
+    }
+  };
+
   const dispatch = useDispatch();
-  const currentUser = useSelector(
-    (state: any) => state.userWalletData.currentUserEmail
-  );
+
   const privyUserId = useSelector(
     (state: any) => state.userWalletData.privyUserId
   );
@@ -34,12 +42,6 @@ function PrivyUseSolanaWallets() {
       createWalletAsync();
     }
   }, []);
-
-  /*
-    useEffect(() => {
-        console.log('ready', ready);
-    }, [ready]);
-    */
 
   useEffect(() => {
     if (Array.isArray(wallets) && wallets.length > 0 && wallets[0].address) {
@@ -68,16 +70,7 @@ function PrivyUseSolanaWallets() {
     dispatch(setPrivySolanaWalletReady(ready));
   }, [ready]);
 
-  const createWalletAsync = async () => {
-    try {
-      console.log("creating wallet");
-      await createWallet();
-    } catch (error) {
-      console.error("Error ", error);
-    }
-  };
-
   return <></>;
-}
+};
 
 export default PrivyUseSolanaWallets;

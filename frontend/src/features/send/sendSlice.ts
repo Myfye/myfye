@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { updateFormattedAmount, parseFormattedAmount } from "./utils";
 import { AbstractedAsset } from "@/features/assets/types";
 import { PresetAmountOption, SendTransaction } from "./types";
-import { User } from "../users/types";
+import { User } from "../users/users.types";
 
 interface SendState {
   modal: {

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { toggleOverlay, updateUser } from "./paySlice";
-import { User } from "../users/types";
+import { User } from "../users/users.types";
 import SelectUserOverlay from "../users/SelectUserOverlay";
 
 const PaySelectUserOverlay = ({ zIndex = 2000 }) => {

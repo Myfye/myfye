@@ -1,8 +1,13 @@
 import { useState } from "react";
 
 import { css } from "@emotion/react";
+<<<<<<< HEAD
 import { Bank, Wallet, CreditCard } from "@phosphor-icons/react";
 import ModalButton from "../ModalButton";
+=======
+import { Bank, Wallet } from "@phosphor-icons/react";
+import ModalButton from "../_components/ModalButton";
+>>>>>>> new_updates
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/shared/components/ui/modal/Modal";
 import { RootState } from "@/redux/store";
@@ -62,9 +67,15 @@ const DepositModal = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         title="Deposit"
+<<<<<<< HEAD
         height={350}
         onAnimationComplete={() => {
           isOpen && resetModal();
+=======
+        height={320}
+        onExit={() => {
+          resetModal();
+>>>>>>> new_updates
         }}
       >
         {!offChainDepositOpen && !onChainDepositOpen && (

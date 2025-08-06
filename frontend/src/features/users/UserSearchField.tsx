@@ -1,17 +1,29 @@
 import { Scan as ScanIcon, X as XIcon } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
 import { useSearchFieldState } from "react-stately";
-import { useRef, useState } from "react";
-import { useSearchField } from "react-aria";
+import { RefObject, useRef } from "react";
+import { AriaSearchFieldProps, useSearchField } from "react-aria";
 
 import { css } from "@emotion/react";
 
-const UserSearchField = (props) => {
-  const { label } = props;
-  let state = useSearchFieldState(props);
-  let ref = useRef(null);
-  let { labelProps, inputProps, clearButtonProps } = useSearchField(
-    props,
+interface UserSearchFieldProps extends AriaSearchFieldProps {
+  label: string;
+  ref?: RefObject<HTMLInputElement>;
+  onScanTogglerPress?: () => void;
+}
+const UserSearchField = ({
+  label,
+  onScanTogglerPress,
+  ref,
+  ...restProps
+}: UserSearchFieldProps) => {
+  const state = useSearchFieldState({
+    label,
+    ...restProps,
+  });
+  if (!ref) ref = useRef<HTMLInputElement>(null!);
+  const { labelProps, inputProps, clearButtonProps } = useSearchField(
+    { label, ...restProps },
     state,
     ref
   );
@@ -86,8 +98,8 @@ const UserSearchField = (props) => {
                 size="small"
                 iconOnly
                 icon={ScanIcon}
-                onPress={props.onScanTogglerPress}
-              ></Button>
+                onPress={onScanTogglerPress}
+              />
             </li>
           </menu>
         )}

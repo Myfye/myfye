@@ -28,7 +28,7 @@ const Wallet = () => {
     onRefresh: async () => {
       await getSolanaBalances(solanaAddress, dispatch);
     },
-    ref,
+    container: ref,
   });
 
   return (
