@@ -16,6 +16,9 @@ import { useRadioGroupState } from "react-stately";
 import { useContext, useRef, createContext } from "react";
 import { motion } from "motion/react";
 import { PresetAmountOption } from "./types";
+import AmountSelector from "@/shared/components/ui/amount-selector/AmountSelector";
+import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSelectorGroup";
+import AmountDisplay from "@/shared/components/ui/amount-display/AmountDisplay";
 
 const AssetSelectButton = ({
   abstractedAssetId,
@@ -161,91 +164,6 @@ const AssetSelectButton = ({
   );
 };
 
-const AmountSelectContext = createContext(null);
-
-const AmountSelectorGroup = (props) => {
-  const { children, label } = props;
-  const state = useRadioGroupState(props);
-  const { radioGroupProps, labelProps } = useRadioGroup(props, state);
-
-  return (
-    <>
-      <p className="visually-hidden" {...labelProps}>
-        {label}
-      </p>
-      <menu
-        {...radioGroupProps}
-        css={css`
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          width: min(100%, 20rem);
-          gap: var(--controls-gap-small);
-          margin-inline: auto;
-        `}
-      >
-        <AmountSelectContext.Provider value={state}>
-          {children}
-        </AmountSelectContext.Provider>
-      </menu>
-    </>
-  );
-};
-
-function AmountSelector(props) {
-  let { children } = props;
-  let state = useContext(AmountSelectContext);
-  let ref = useRef(null);
-  let { inputProps, isSelected, isDisabled, isPressed } = useRadio(
-    props,
-    state,
-    ref
-  );
-  let { isFocusVisible, focusProps } = useFocusRing();
-
-  return (
-    <li>
-      <motion.label
-        className="button"
-        data-size="small"
-        data-color="neutral"
-        data-variant="primary"
-        data-expand="true"
-        ref={ref}
-        css={css`
-          --_outline-opacity: 0;
-          display: inline-block;
-          position: relative;
-          isolation: isolate;
-          &::before {
-            content: "";
-            display: block;
-            position: absolute;
-            inset: 0;
-            margin: auto;
-            outline: 2px solid var(--clr-primary);
-            outline-offset: -1px;
-            z-index: 1;
-            user-select: none;
-            pointer-events: none;
-            opacity: var(--_outline-opacity);
-            border-radius: var(--border-radius-pill);
-          }
-        `}
-        animate={{
-          scale: isPressed ? 0.9 : 1,
-          "--_outline-opacity": isSelected ? 1 : 0,
-          "--_color": isSelected ? "var(--clr-primary)" : "var(--clr-text)",
-        }}
-      >
-        <VisuallyHidden>
-          <input {...inputProps} {...focusProps} ref={ref} />
-        </VisuallyHidden>
-        {children}
-      </motion.label>
-    </li>
-  );
-}
-
 const SendController = () => {
   const dispatch = useDispatch();
 
@@ -266,7 +184,7 @@ const SendController = () => {
 
   const transaction = useSelector((state: RootState) => state.send.transaction);
 
-  const handleSelectAmountChange = (presetAmount: PresetAmountOption) => {
+  const handleSelectAmountChange = (presetAmount: string) => {
     dispatch(updatePresetAmount(presetAmount));
     dispatch(
       updateAmount({
@@ -294,29 +212,7 @@ const SendController = () => {
           width: 100%;
         `}
       >
-        <div
-          css={css`
-            display: grid;
-            place-items: center;
-            height: 100%;
-            isolation: isolate;
-            position: relative;
-          `}
-        >
-          <p
-            css={css`
-              color: var(--clr-text);
-              line-height: var(--line-height-tight);
-              font-size: 3rem;
-              font-weight: var(--fw-heading);
-            `}
-          >
-            <span>$</span>
-            {formattedAmountArr.map((val, i) => {
-              return <span key={`value-${i}`}>{val}</span>;
-            })}
-          </p>
-        </div>
+        <AmountDisplay amount={formattedAmountArr} />
       </section>
       <section>
         <AmountSelectorGroup
