@@ -25,14 +25,11 @@ import ReceiveModal from "@/features/receive/ReceiveModal.tsx";
 import DepositModal from "@/features/onOffRamp/deposit/DepositModal.tsx";
 import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
-import KYCOverlay from "@/features/compliance/kycOverlay.tsx";
+import KYCOverlay from "@/features/compliance/KYCOverlay.tsx";
 import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWallets.tsx";
-import peopleOnMyfye from "@/assets/peopleOnMyfye.png";
-import { useNavigate } from "react-router-dom";
-import { checkIfMobileOrTablet } from "./shared/utils/mobileUtils.ts";
 import MFAOnboarding from "./pages/app/login/mfaOnboarding.tsx";
 import Button from "./shared/components/ui/button/Button.tsx";
 
