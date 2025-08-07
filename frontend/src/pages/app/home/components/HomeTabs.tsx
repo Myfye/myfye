@@ -42,16 +42,11 @@ const HomeTabs = () => {
   const tabPanelsRef = useRef<HTMLDivElement>(null!);
   const { wallets } = useSolanaWallets();
   const dispatch = useDispatch();
-  console.log("solana wallets", wallets);
 
   let solanaAddress = "";
   if (wallets.length > 0) {
     solanaAddress = wallets[0].address;
   }
-
-  const scrollDirection = useScrollDirectionLock({
-    container: tabPanelsRef,
-  });
 
   const { spinnerParams, pullMargin } = usePullToRefresh({
     onRefresh: async () => {

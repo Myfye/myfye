@@ -1,8 +1,7 @@
 import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
 
 import { css } from "@emotion/react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch } from "react-redux";
 import {
   toggleOverlay,
   updateAmount,
@@ -10,60 +9,33 @@ import {
   updateTransactionType,
 } from "@/features/pay/paySlice";
 import PayController from "@/features/pay/PayController";
-import { useEffect, useRef } from "react";
 import PaySelectUserOverlay from "@/features/pay/PaySelectUserOverlay";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import PaySelectAssetOverlay from "@/features/pay/PaySelectAssetOverlay";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 import PayConfirmTransactionOverlay from "@/features/pay/PayConfirmTransactionOverlay";
 import ProcessingTransactionOverlay from "@/features/pay/ProcessingTransactionOverlay";
+import { useAppSelector } from "@/redux/hooks";
+import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 
 const Pay = () => {
   const dispatch = useDispatch();
 
-  const transaction = useSelector((state: RootState) => state.pay.transaction);
-  const assets = useSelector((state: RootState) => state.assets);
+  const transaction = useAppSelector((state) => state.pay.transaction);
+  const assets = useAppSelector((state) => state.assets);
 
-  const intervalDelete = useRef<NodeJS.Timeout | null>(null);
-  const delayDelete = useRef<NodeJS.Timeout | null>(null);
-
-  const startDelete = (input: string) => {
-    intervalDelete.current = setInterval(() => {
+  const numberPadProps = useNumberPad({
+    onStartDelete: (input) => {
       dispatch(updateAmount({ input }));
-    }, 50);
-  };
-
-  const stopDelete = () => {
-    if (intervalDelete.current) {
-      clearInterval(intervalDelete.current);
-    }
-    if (delayDelete.current) {
-      clearTimeout(delayDelete.current);
-    }
-  };
-
-  useEffect(() => {
-    if (transaction.formattedAmount === "") stopDelete();
-  }, [transaction]);
-
-  const handleNumberPressStart = (input: string) => {
-    if (input === "delete") {
+    },
+    onUpdateAmount: (input) => {
       dispatch(updateAmount({ input }));
-      delayDelete.current = setTimeout(() => {
-        startDelete(input);
-      }, 200);
-    }
-  };
-
-  const handleNumberPress = (input: string) => {
-    dispatch(updatePresetAmount(null));
-    if (input === "delete") return;
-    dispatch(updateAmount({ input }));
-  };
-
-  const handleNumberPressEnd = () => {
-    stopDelete();
-  };
+    },
+    onUpdatePresetAmount: (presetAmount) => {
+      dispatch(updatePresetAmount(presetAmount));
+    },
+    formattedAmount: transaction.formattedAmount,
+  });
 
   const checkIfInvalidSwapTransaction = () => {
     if (!transaction.abstractedAssetId) {
@@ -91,16 +63,6 @@ const Pay = () => {
   };
 
   const isInvalidSwapTransaction = checkIfInvalidSwapTransaction();
-
-  const handleRequest = () => {
-    dispatch(updateTransactionType("request"));
-    dispatch(toggleOverlay({ type: "selectUser", isOpen: true }));
-  };
-
-  const handlePay = () => {
-    dispatch(updateTransactionType("send"));
-    dispatch(toggleOverlay({ type: "selectUser", isOpen: true }));
-  };
 
   return (
     <>
@@ -134,11 +96,7 @@ const Pay = () => {
                 padding-inline: var(--size-250);
               `}
             >
-              <NumberPad
-                onNumberPress={handleNumberPress}
-                onNumberPressEnd={handleNumberPressEnd}
-                onNumberPressStart={handleNumberPressStart}
-              />
+              <NumberPad {...numberPadProps} />
             </section>
             <section
               css={css`
@@ -152,13 +110,23 @@ const Pay = () => {
                 expand
               >
                 <ButtonGroupItem
-                  onPress={handleRequest}
+                  onPress={() => {
+                    dispatch(updateTransactionType("request"));
+                    dispatch(
+                      toggleOverlay({ type: "selectUser", isOpen: true })
+                    );
+                  }}
                   isDisabled={isInvalidSwapTransaction}
                 >
                   Request
                 </ButtonGroupItem>
                 <ButtonGroupItem
-                  onPress={handlePay}
+                  onPress={() => {
+                    dispatch(updateTransactionType("send"));
+                    dispatch(
+                      toggleOverlay({ type: "selectUser", isOpen: true })
+                    );
+                  }}
                   isDisabled={isInvalidSwapTransaction}
                 >
                   Pay

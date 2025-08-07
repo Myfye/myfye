@@ -3,15 +3,15 @@ import solCoinIcon from "@/assets/svgs/coins/sol-coin.svg";
 
 import { css } from "@emotion/react";
 import { useDispatch } from "react-redux";
-import { setDepositModalOpen } from "@/redux/modalReducers";
 import {
   ArrowCircleDown,
   ArrowCircleUp,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
-import { toggleModal as toggleSendModal } from "@/features/pay/send/sendSlice";
-import { toggleModal as toggleReceiveModal } from "@/features/send/receiveSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 
 const CryptoSummary = () => {
   const dispatch = useDispatch();
@@ -109,7 +109,7 @@ const CryptoSummary = () => {
               size="small"
               icon={ArrowsLeftRight}
               onPress={() => {
-                dispatch(setDepositModalOpen(true));
+                dispatch(toggleSwapModal({ isOpen: true }));
               }}
             >
               Swap
