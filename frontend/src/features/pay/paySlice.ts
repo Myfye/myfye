@@ -79,16 +79,9 @@ const paySlice = createSlice({
       };
       state.overlays = newOverlays;
     },
-    unmountOverlays: (state, action) => {
+    unmountOverlays: (state) => {
       state.overlays = { ...initialState.overlays };
-      state.transaction.type = initialState.transaction.type;
-      state.transaction.amount = initialState.transaction.amount;
-      state.transaction.formattedAmount =
-        initialState.transaction.formattedAmount;
-      state.transaction.presetAmount = initialState.transaction.presetAmount;
-      state.transaction.user = initialState.transaction.user;
-      state.transaction.abstractedAssetId =
-        initialState.transaction.abstractedAssetId;
+      state = { ...state, overlays: { ...initialState.overlays } };
     },
     updateTransactionType: (
       state,

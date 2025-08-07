@@ -12,6 +12,7 @@ import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSe
 import AmountSelector from "@/shared/components/ui/amount-selector/AmountSelector";
 import AssetSelectButton from "../assets/AssetSelectButton";
 import { useEffect } from "react";
+import AmountDisplay from "@/shared/components/ui/amount-display/AmountDisplay";
 
 const PayController = () => {
   const dispatch = useDispatch();
@@ -31,22 +32,6 @@ const PayController = () => {
   );
 
   const transaction = useSelector((state: RootState) => state.pay.transaction);
-
-  const handleSelectAmountChange = (presetAmount: string) => {
-    dispatch(updatePresetAmount(presetAmount));
-    dispatch(
-      updateAmount({
-        input:
-          asset && presetAmount === "max"
-            ? asset.balanceUSD
-            : (presetAmount as string),
-        replace: true,
-      })
-    );
-  };
-
-  // Formatted Amount
-  const formattedAmountArr = formattedAmount.split("");
 
   return (
     <div
@@ -68,35 +53,24 @@ const PayController = () => {
           isolation: isolate;
         `}
       >
-        <div
-          css={css`
-            display: grid;
-            place-items: center;
-            height: 100%;
-            isolation: isolate;
-            position: relative;
-          `}
-        >
-          <p
-            css={css`
-              color: var(--clr-text);
-              line-height: var(--line-height-tight);
-              font-size: 3rem;
-              font-weight: var(--fw-heading);
-            `}
-          >
-            <span>$</span>
-            {formattedAmountArr.map((val, i) => {
-              return <span key={`value-${i}`}>{val}</span>;
-            })}
-          </p>
-        </div>
+        <AmountDisplay amount={formattedAmount} fiatCurrency="usd" />
       </section>
       <section>
         <AmountSelectorGroup
           label="Select preset amount"
           value={transaction.presetAmount}
-          onChange={handleSelectAmountChange}
+          onChange={(amount) => {
+            dispatch(updatePresetAmount(amount as PresetAmountOption));
+            dispatch(
+              updateAmount({
+                input:
+                  asset && amount === "max"
+                    ? asset.balanceUSD
+                    : (amount as string),
+                replace: true,
+              })
+            );
+          }}
         >
           <AmountSelector value="10">$10</AmountSelector>
           <AmountSelector value="50">$50</AmountSelector>
