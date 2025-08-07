@@ -9,6 +9,30 @@ export interface WithdrawOffChainTransaction {
   assetId: Asset["id"] | null;
   fiatCurrency: "usd" | "euro";
   fee: number;
+  presetAmount: string | null;
+  bankInfo: {
+    id: string | null;
+    accountName: string | null;
+    code: string | null;
+    speiClabe: string | null;
+    beneficiaryName: string | null;
+  };
 }
 
-export type WithdrawOffChainOverlay = "withdrawOffChain" | "test" | "test2";
+export type WithdrawOffChainOverlay =
+  | "withdrawOffChain"
+  | "bankPicker"
+  | "bankInput"
+  | "selectAmount"
+  | "confirmTransaction"
+  | "processingTransaction"
+  | "selectAsset";
+
+export interface BankInfo {
+  id: string;
+  code: string;
+  label: string;
+  icon: string;
+}
+
+export type PresetAmountOption = "10" | "50" | "100" | "max" | null;

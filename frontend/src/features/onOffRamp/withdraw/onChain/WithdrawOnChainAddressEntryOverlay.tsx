@@ -30,22 +30,15 @@ const WithdrawOnChainAddressEntryOverlay = ({
     (state: RootState) => state.withdrawOnChain.transaction.solAddress
   );
 
-  const [recentAddresses, setRecentAddresses] =
-    useState<RecentSolAddress | null>(null);
-
   const userId = useSelector(
     (state: RootState) => state.userWalletData.currentUserID
   );
-
-  const { wallets } = useSolanaWallets();
-  const wallet = wallets[0];
+  const {
+    wallets: [wallet],
+  } = useSolanaWallets();
 
   const { isSuccess, isLoading, isError, data } =
     useGetRecentlyUsedAddressesQuery(userId);
-
-  useEffect(() => {
-    console.log(data, isSuccess, isLoading, isError, userId);
-  });
 
   const handleAddressSelect = (selectedAddress: string) => {
     dispatch(updateSolAddress(selectedAddress));
@@ -111,7 +104,7 @@ const WithdrawOnChainAddressEntryOverlay = ({
               />
             </div>
 
-            {recentAddresses?.addresses &&
+            {/* {recentAddresses?.addresses &&
               recentAddresses.addresses.length > 0 && (
                 <div
                   css={css`
@@ -167,7 +160,7 @@ const WithdrawOnChainAddressEntryOverlay = ({
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
           </div>
 
           <section

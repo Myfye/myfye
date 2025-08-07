@@ -3,6 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Asset } from "@/features/assets/types";
 import { parseFormattedAmount, updateFormattedAmount } from "../utils";
 import {
+  PresetAmountOption,
   WithdrawOnChainModal,
   WithdrawOnChainOverlay,
   WithdrawOnChainTransaction,
@@ -10,11 +11,6 @@ import {
 
 interface WithdrawOnChainState {
   transaction: WithdrawOnChainTransaction;
-  modals: {
-    selectToken: {
-      isOpen: boolean;
-    };
-  };
   overlays: {
     withdrawOnChain: {
       isOpen: boolean;
@@ -41,11 +37,7 @@ const initialState: WithdrawOnChainState = {
     solAddress: null,
     fiatCurrency: "usd",
     fee: 0,
-  },
-  modals: {
-    selectToken: {
-      isOpen: false,
-    },
+    presetAmount: null,
   },
   overlays: {
     withdrawOnChain: {
@@ -82,21 +74,21 @@ const withdrawOnChainSlice = createSlice({
         },
       };
     },
-    toggleModal: (
-      state,
-      action: PayloadAction<{
-        type: WithdrawOnChainModal;
-        isOpen: boolean;
-      }>
-    ) => {
-      state.modals = {
-        ...state.modals,
-        [action.payload.type]: {
-          ...state.modals[action.payload.type],
-          isOpen: action.payload.isOpen,
-        },
-      };
-    },
+    // toggleModal: (
+    //   state,
+    //   action: PayloadAction<{
+    //     type: WithdrawOnChainModal;
+    //     isOpen: boolean;
+    //   }>
+    // ) => {
+    //   state.modals = {
+    //     ...state.modals,
+    //     [action.payload.type]: {
+    //       ...state.modals[action.payload.type],
+    //       isOpen: action.payload.isOpen,
+    //     },
+    //   };
+    // },
     unmountOverlays: (state) => ({
       ...state,
       overlays: initialState.overlays,
@@ -122,6 +114,9 @@ const withdrawOnChainSlice = createSlice({
         ? (state.transaction.amount = null)
         : (state.transaction.amount = parsedFormattedAmount);
     },
+    updatePresetAmount: (state, action: PayloadAction<PresetAmountOption>) => {
+      state.transaction.presetAmount = action.payload;
+    },
     updateAssetId(state, action: PayloadAction<Asset["id"] | null>) {
       state.transaction.assetId = action.payload;
     },
@@ -135,7 +130,8 @@ const withdrawOnChainSlice = createSlice({
 export const {
   updateAssetId,
   toggleOverlay,
-  toggleModal,
+  // toggleModal,
+  updatePresetAmount,
   updateAmount,
   unmount,
   unmountOverlays,

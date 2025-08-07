@@ -1,6 +1,12 @@
 import { css } from "@emotion/react";
 import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
 import { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
+import toast from "react-hot-toast/headless";
+import { tokenTransfer } from "@/functions/Transaction";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { truncateSolanaAddress } from "@/shared/utils/solanaUtils";
+import Button from "@/shared/components/ui/button/Button";
 
 interface WithdrawProcessingTransactionOverlayProps extends OverlayProps {
   status: "idle" | "success" | "fail";
@@ -9,30 +15,38 @@ interface WithdrawProcessingTransactionOverlayProps extends OverlayProps {
 const WithdrawProcessingTransactionOverlay = ({
   isOpen,
   onOpenChange,
-  status,
 }: WithdrawProcessingTransactionOverlayProps) => {
+  const transaction = useSelector(
+    (state: RootState) => state.withdrawOnChain.transaction
+  );
+  const userId = useSelector(
+    (state: RootState) => state.userWalletData.currentUserID
+  );
+  const solanaPubKey = useSelector(
+    (state: RootState) => state.userWalletData.solanaPubKey
+  );
+  const assets = useSelector((state: RootState) => state.assets.assets);
   const handleConfirm = async () => {
-    console.log("userID", userId);
-
     try {
-      if (!amount) throw new Error("Amount is required");
+      if (!transaction.amount) throw new Error("Amount is required");
       if (!userId) throw new Error("User ID is required");
-      if (!selectedToken) throw new Error("Token is required");
-      if (!solAddress) throw new Error("Sol address is required");
+      if (!transaction.assetId) throw new Error("Token is required");
+      if (!transaction.solAddress) throw new Error("Sol address is required");
 
       let assetCode = "";
-      if (selectedToken === "USDC") {
+      if (transaction.assetId === "usdc_sol") {
         assetCode = "usdcSol";
-      } else if (selectedToken === "EURC") {
+      } else if (transaction.assetId === "eurc_sol") {
         assetCode = "eurcSol";
       }
 
-      const sendAmount = parseFloat(amount);
+      const tokenLabel = assets[transaction.assetId].label;
+      const sendAmount = +transaction.amount;
       const sendAmountMicro = sendAmount * 1000000;
 
       const result = await tokenTransfer(
         solanaPubKey,
-        solAddress,
+        transaction.solAddress,
         sendAmountMicro,
         assetCode,
         wallet
@@ -41,10 +55,9 @@ const WithdrawProcessingTransactionOverlay = ({
       if (result.success) {
         console.log("Transaction successful:", result.transactionId);
         toast.success(
-          `Sent ${amount} ${selectedToken} to ${solAddress.slice(
-            0,
-            6
-          )}...${solAddress.slice(-4)}`
+          `Sent ${transaction.amount} ${tokenLabel} to ${truncateSolanaAddress(
+            transaction.solAddress
+          )}`
         );
 
         // Here if the address is not in the recent addresses, save the address to the database
@@ -74,16 +87,14 @@ const WithdrawProcessingTransactionOverlay = ({
           height: 100svh;
         `}
       >
-        <section css={css``}>
+        <section>
           <div
             css={css`
               width: 12rem;
               aspect-ratio: 1;
               margin-inline: auto;
             `}
-          >
-            {/* <UIAnimation status={status} /> */}
-          </div>
+          ></div>
           <section>
             <hgroup>
               <h1
@@ -94,20 +105,12 @@ const WithdrawProcessingTransactionOverlay = ({
                   margin-block-end: var(--size-200);
                 `}
               >
-                {status === "idle" && "Processing..."}
-                {status === "success" && "Success!"}
-                {status === "fail" && "Failed"}
+                {transaction.status === "idle" && "Processing..."}
+                {transaction.status === "success" && "Success!"}
+                {transaction.status === "fail" && "Failed"}
               </h1>
-              {status !== "idle" && (
-                <button
-                  css={css`
-                    text-align: center;
-                    width: 100%;
-                  `}
-                  onClick={() => onOpenChange(false)}
-                >
-                  Close
-                </button>
+              {transaction.status !== "idle" && (
+                <Button onPress={() => onOpenChange(false)}>Close</Button>
               )}
             </hgroup>
           </section>

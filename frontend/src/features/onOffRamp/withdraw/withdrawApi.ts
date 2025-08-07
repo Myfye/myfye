@@ -29,7 +29,40 @@ export const withdrawApi = createApi({
         };
       },
     }),
+    addBankAccount: build.query<unknown, unknown>({
+      query: ({
+        userId,
+        receiverId,
+        accountName,
+        beneficiaryName,
+        speiInstitutionCode,
+        speiClabe,
+        type = "spei_bitso",
+        speiProtocol = "clabe",
+      }) => {
+        return {
+          url: `/add_bank_account`,
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+          body: {
+            user_id: userId,
+            receiver_id: receiverId,
+            name: accountName,
+            beneficiary_name: beneficiaryName,
+            spei_institution_code: speiInstitutionCode,
+            spei_clabe: speiClabe,
+            type,
+            spei_protocol: speiProtocol,
+          },
+        };
+      },
+    }),
   }),
 });
 
-export const { useCreatePayoutQuery } = withdrawApi;
+export const {
+  useCreatePayoutQuery,
+  useLazyCreatePayoutQuery,
+  useLazyAddBankAccountQuery,
+} = withdrawApi;

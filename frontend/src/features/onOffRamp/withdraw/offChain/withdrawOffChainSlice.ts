@@ -1,23 +1,42 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-
-import { Asset } from "@/features/assets/types";
 import { parseFormattedAmount, updateFormattedAmount } from "../utils";
 import {
+  PresetAmountOption,
   WithdrawOffChainOverlay,
   WithdrawOffChainTransaction,
 } from "./withdrawOffChain.types";
+import { Asset } from "@/features/assets/types";
 
 interface WithdrawOffChainState {
   transaction: WithdrawOffChainTransaction;
   overlays: {
-    withdrawOnChain: {
+    withdrawOffChain: {
       isOpen: boolean;
+      zIndex: number;
     };
-    addressEntry: {
+    bankPicker: {
       isOpen: boolean;
+      zIndex: number;
+    };
+    bankInput: {
+      isOpen: boolean;
+      zIndex: number;
+    };
+    selectAsset: {
+      isOpen: boolean;
+      zIndex: number;
+    };
+    selectAmount: {
+      isOpen: boolean;
+      zIndex: number;
+    };
+    confirmTransaction: {
+      isOpen: boolean;
+      zIndex: number;
     };
     processingTransaction: {
       isOpen: boolean;
+      zIndex: number;
     };
   };
 }
@@ -32,16 +51,43 @@ const initialState: WithdrawOffChainState = {
     solAddress: null,
     fiatCurrency: "usd",
     fee: 0,
+    presetAmount: null,
+    bankInfo: {
+      id: null,
+      code: null,
+      speiClabe: null,
+      accountName: null,
+      beneficiaryName: null,
+    },
   },
   overlays: {
-    withdrawOnChain: {
+    withdrawOffChain: {
       isOpen: false,
+      zIndex: 2000,
     },
-    addressEntry: {
+    bankPicker: {
       isOpen: false,
+      zIndex: 2001,
+    },
+    bankInput: {
+      isOpen: false,
+      zIndex: 2002,
+    },
+    selectAmount: {
+      isOpen: false,
+      zIndex: 2003,
+    },
+    selectAsset: {
+      isOpen: false,
+      zIndex: 2003,
+    },
+    confirmTransaction: {
+      isOpen: false,
+      zIndex: 2004,
     },
     processingTransaction: {
       isOpen: false,
+      zIndex: 2005,
     },
   },
 };
@@ -57,14 +103,13 @@ const withdrawOffChainSlice = createSlice({
         isOpen: boolean;
       }>
     ) => {
-      const newOverlays = {
+      state.overlays = {
         ...state.overlays,
         [action.payload.type]: {
-          ...state.overlays,
+          ...state.overlays[action.payload.type],
           isOpen: action.payload.isOpen,
         },
       };
-      state.overlays = newOverlays;
     },
     unmountOverlays: (state) => ({
       ...state,
@@ -77,32 +122,40 @@ const withdrawOffChainSlice = createSlice({
         replace?: boolean;
       }>
     ) {
-      // first, change the sell amount label
       state.transaction.formattedAmount = updateFormattedAmount(
         state.transaction.formattedAmount,
         action.payload.input,
         action.payload.replace
       );
 
-      // next, change the sell amount
-      const parsedFormattedSellAmount = parseFormattedAmount(
+      const parsedFormattedAmount = parseFormattedAmount(
         state.transaction.formattedAmount
       );
 
-      isNaN(parsedFormattedSellAmount)
+      isNaN(parsedFormattedAmount)
         ? (state.transaction.amount = null)
-        : (state.transaction.amount = parsedFormattedSellAmount);
+        : (state.transaction.amount = parsedFormattedAmount);
     },
-    updateAssetId(
+    updatePresetAmount: (state, action: PayloadAction<PresetAmountOption>) => {
+      state.transaction.presetAmount = action.payload;
+    },
+    updateBankInfo(
       state,
       action: PayloadAction<{
-        assetId: Asset["id"] | null;
+        id?: string | null;
+        code?: string | null;
+        speiClabe?: string | null;
+        accountName?: string | null;
+        beneficiaryName?: string | null;
       }>
     ) {
-      state.transaction.assetId = action.payload.assetId;
+      state.transaction.bankInfo = {
+        ...state.transaction.bankInfo,
+        ...action.payload,
+      };
     },
-    updateSolAddress(state, action: PayloadAction<string | null>) {
-      state.transaction.solAddress = action.payload;
+    updateAssetId(state, action: PayloadAction<Asset["id"] | null>) {
+      state.transaction.assetId = action.payload;
     },
     unmount: () => ({ ...initialState }),
   },
@@ -110,11 +163,12 @@ const withdrawOffChainSlice = createSlice({
 
 export const {
   updateAssetId,
+  updatePresetAmount,
+  updateBankInfo,
   toggleOverlay,
   updateAmount,
   unmount,
   unmountOverlays,
-  updateSolAddress,
 } = withdrawOffChainSlice.actions;
 
 export default withdrawOffChainSlice.reducer;

@@ -15,6 +15,9 @@ export interface WithdrawOnChainTransaction {
   assetId: Asset["id"] | null;
   fiatCurrency: "usd" | "euro";
   fee: number;
+  presetAmount: null | string;
 }
 
 export type WithdrawOnChainModal = "selectToken";
+
+export type PresetAmountOption = "10" | "50" | "100" | "max" | null;

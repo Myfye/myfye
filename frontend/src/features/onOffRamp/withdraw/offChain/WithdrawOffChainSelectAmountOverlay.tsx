@@ -1,43 +1,79 @@
 import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
-import { selectAsset, selectAssetBalance } from "@/features/assets/assetsSlice";
+import {
+  selectAbstractedAsset,
+  selectAsset,
+  selectAssetBalance,
+} from "@/features/assets/assetsSlice";
 import Button from "@/shared/components/ui/button/Button";
-import { RootState } from "@/redux/store";
 import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSelectorGroup";
 import AmountSelector from "@/shared/components/ui/amount-selector/AmountSelector";
-import AmountDisplay from "@/shared/components/ui/amount-display/AmountDisplay";
 import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
+import { RootState } from "@/redux/store";
 import {
   toggleOverlay,
   updateAmount,
   updatePresetAmount,
-} from "./withdrawOnChainSlice";
-import { ModalProps } from "@/shared/components/ui/modal/Modal";
+} from "./withdrawOffChainSlice";
 import { getFiatCurrencySymbol } from "@/shared/utils/currencyUtils";
+import { PresetAmountOption } from "./withdrawOffChain.types";
 import AssetSelectButton from "@/features/assets/AssetSelectButton";
-import WithdrawOnChainSelectAssetOverlay from "./WithdrawOnChainSelectAssetOverlay";
-import WithdrawOnChainAddressEntryOverlay from "./WithdrawOnChainAddressEntryOverlay";
-import { PresetAmountOption } from "./withdrawOnChain.types";
+import AmountDisplay from "@/shared/components/ui/amount-display/AmountDisplay";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 
-const WithdrawOnChainOverlay = ({
-  ...restProps
-}: Omit<ModalProps, "onOpenChange" | "isOpen" | "children">) => {
+const WthdrawOffChainSelectAmountOverlay = () => {
   const dispatch = useDispatch();
-
   const isOpen = useSelector(
-    (state: RootState) => state.withdrawOnChain.overlays.withdrawOnChain.isOpen
+    (state: RootState) => state.withdrawOffChain.overlays.selectAmount.isOpen
   );
   const transaction = useSelector(
-    (state: RootState) => state.withdrawOnChain.transaction
+    (state: RootState) => state.withdrawOffChain.transaction
   );
   const amount = useSelector(
-    (state: RootState) => state.withdrawOnChain.transaction.amount
+    (state: RootState) => state.withdrawOffChain.transaction.amount
   );
+
   const asset = useSelector((state: RootState) =>
-    transaction.assetId ? selectAsset(state, transaction.assetId) : null
+    transaction.assetId
+      ? selectAbstractedAsset(state, transaction.assetId)
+      : null
   );
+
+  // const handleNextPressed = async () => {
+  //   const amount = parseFormattedAmount(formattedAmount);
+
+  //   console.log("selectedBankAccount:", selectedBankAccount);
+  //   try {
+  //     // Call backend to get payout quote
+  //     const response = await fetch(`${MYFYE_BACKEND}/payout_quote`, {
+  //       method: "POST",
+  //       mode: "cors",
+  //       credentials: "include",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "x-api-key": MYFYE_BACKEND_KEY,
+  //       },
+  //       body: JSON.stringify({
+  //         bank_account_id: selectedBankAccount.id,
+  //         currency_type: "sender",
+  //         cover_fees: false,
+  //         request_amount: Math.round(amount * 100),
+  //       }),
+  //     });
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.error || "Failed to get payout quote");
+  //     }
+  //     const quote = await response.json();
+  //   } catch (error) {
+  //     console.log("error:", error);
+  //   } finally {
+  //   }
+  // };
+
+  // const amount = parseFormattedAmount(formattedAmount);
+  // const isSendDisabled = !amount || amount > currentBalance || amount < 0.01;
 
   // Balances
   const eurcSolBalance = useSelector((state: RootState) =>
@@ -46,14 +82,6 @@ const WithdrawOnChainOverlay = ({
   const usdcSolBalance = useSelector((state: RootState) =>
     selectAssetBalance(state, "usdc_sol")
   );
-
-  const currencySymbol =
-    getFiatCurrencySymbol(
-      transaction.id === "usdc_sol" || !transaction.id ? "usd" : "euro"
-    ) ?? "$";
-
-  const isAddressEntryDisabled =
-    amount === 0 || eurcSolBalance === 0 || usdcSolBalance === 0 || !amount;
 
   const numberPadProps = useNumberPad({
     onStartDelete: (input) => {
@@ -68,15 +96,23 @@ const WithdrawOnChainOverlay = ({
     formattedAmount: transaction.formattedAmount,
   });
 
+  const currencySymbol =
+    getFiatCurrencySymbol(
+      transaction.id === "usdc_sol" || !transaction.id ? "usd" : "euro"
+    ) ?? "$";
+
+  const isAddressEntryDisabled =
+    amount === 0 || eurcSolBalance === 0 || usdcSolBalance === 0 || !amount;
+
   return (
     <>
       <Overlay
-        {...restProps}
         isOpen={isOpen}
         onOpenChange={(isOpen) => {
-          dispatch(toggleOverlay({ type: "withdrawOnChain", isOpen }));
+          dispatch(toggleOverlay({ type: "selectAmount", isOpen }));
         }}
-        title="Enter send amount"
+        title="Withdraw amount"
+        zIndex={9999}
       >
         <div
           css={css`
@@ -123,9 +159,9 @@ const WithdrawOnChainOverlay = ({
               }}
               value={transaction.presetAmount}
             >
-              <AmountSelector value="10">10</AmountSelector>
-              <AmountSelector value="50">50</AmountSelector>
-              <AmountSelector value="100">100</AmountSelector>
+              <AmountSelector value="10">{10}</AmountSelector>
+              <AmountSelector value="50">{50}</AmountSelector>
+              <AmountSelector value="100">{100}</AmountSelector>
               <AmountSelector value="max">MAX</AmountSelector>
             </AmountSelectorGroup>
           </section>
@@ -160,19 +196,34 @@ const WithdrawOnChainOverlay = ({
             <Button
               expand
               onPress={() => {
-                dispatch(toggleOverlay({ type: "addressEntry", isOpen: true }));
+                dispatch(
+                  toggleOverlay({ type: "confirmTransaction", isOpen: true })
+                );
               }}
-              // isDisabled={isAddressEntryDisabled}
             >
               Next
             </Button>
           </section>
         </div>
       </Overlay>
-      <WithdrawOnChainSelectAssetOverlay zIndex={3000} />
-      <WithdrawOnChainAddressEntryOverlay zIndex={3000} />
+      {/* {showWithdrawConfirm && payoutQuote && (
+        <WithdrawConfirmOverlay
+          isOpen={showWithdrawConfirm}
+          onOpenChange={(open) => {
+            setShowWithdrawConfirm(open);
+            if (!open) {
+              setShowWithdrawConfirm(false);
+            }
+          }}
+          onBack={() => setShowWithdrawConfirm(false)}
+          payoutQuote={payoutQuote}
+          selectedToken={selectedToken}
+          amount={formattedAmount}
+          selectedBankAccount={selectedBankAccount}
+        />
+      )} */}
     </>
   );
 };
 
-export default WithdrawOnChainOverlay;
+export default WthdrawOffChainSelectAmountOverlay;

@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Input from "@/shared/components/ui/inputs/Input";
 import Button from "@/shared/components/ui/button/Button";
-import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../../env';
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../../../../env";
 import toast from "react-hot-toast/headless";
 import { useSelector } from "react-redux";
 import { ArrowLeft } from "@phosphor-icons/react";
@@ -20,15 +20,27 @@ interface BankInputOverlayProps {
   onBack: () => void;
 }
 
-const BankInputOverlay = ({ isOpen, onOpenChange, selectedBank, onBankAccountCreated, onBack }: BankInputOverlayProps) => {
+const BankInputOverlay = ({
+  isOpen,
+  onOpenChange,
+  selectedBank,
+  onBankAccountCreated,
+  onBack,
+}: BankInputOverlayProps) => {
   const [name, setName] = useState("");
   const [beneficiaryName, setBeneficiaryName] = useState("");
   const [speiClabe, setSpeiClabe] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
-  const currentUserID = useSelector((state: any) => state.userWalletData.currentUserID);
-  const currentUserFirstName = useSelector((state: any) => state.userWalletData.currentUserFirstName);
-  const currentUserLastName = useSelector((state: any) => state.userWalletData.currentUserLastName);
+
+  const currentUserID = useSelector(
+    (state: any) => state.userWalletData.currentUserID
+  );
+  const currentUserFirstName = useSelector(
+    (state: any) => state.userWalletData.currentUserFirstName
+  );
+  const currentUserLastName = useSelector(
+    (state: any) => state.userWalletData.currentUserLastName
+  );
   const blindPayReceiverId = useSelector(
     (state: any) => state.userWalletData.blindPayReceiverId
   );
@@ -54,12 +66,12 @@ const BankInputOverlay = ({ isOpen, onOpenChange, selectedBank, onBankAccountCre
     setIsLoading(true);
     try {
       const response = await fetch(`${MYFYE_BACKEND}/add_bank_account`, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
+        method: "POST",
+        mode: "cors",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': MYFYE_BACKEND_KEY,
+          "Content-Type": "application/json",
+          "x-api-key": MYFYE_BACKEND_KEY,
         },
         body: JSON.stringify({
           user_id: currentUserID,
@@ -70,25 +82,29 @@ const BankInputOverlay = ({ isOpen, onOpenChange, selectedBank, onBankAccountCre
           spei_clabe: speiClabe.trim(),
           type: "spei_bitso",
           spei_protocol: "clabe",
-        })
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        const errorMessage = errorData.error || 'Error adding bank account';
+        const errorMessage = errorData.error || "Error adding bank account";
         toast.error(errorMessage);
         return;
       }
 
       const result = await response.json();
-      console.log('Bank account added successfully:', result);
-      toast.success('Bank account added successfully');
-      
+      console.log("Bank account added successfully:", result);
+      toast.success("Bank account added successfully");
+
       // Reset form
       setName("");
-      setBeneficiaryName(currentUserFirstName && currentUserLastName ? `${currentUserFirstName} ${currentUserLastName}` : "");
+      setBeneficiaryName(
+        currentUserFirstName && currentUserLastName
+          ? `${currentUserFirstName} ${currentUserLastName}`
+          : ""
+      );
       setSpeiClabe("");
-      
+
       // Close overlay and notify parent with new account
       onOpenChange(false);
       if (result && result.data) {
@@ -96,10 +112,9 @@ const BankInputOverlay = ({ isOpen, onOpenChange, selectedBank, onBankAccountCre
       } else {
         onBankAccountCreated(undefined);
       }
-      
     } catch (error) {
-      console.error('Error adding bank account:', error);
-      toast.error('Failed to add bank account');
+      console.error("Error adding bank account:", error);
+      toast.error("Failed to add bank account");
     } finally {
       setIsLoading(false);
     }
@@ -223,7 +238,7 @@ const BankInputOverlay = ({ isOpen, onOpenChange, selectedBank, onBankAccountCre
               opacity: ${!isFormValid || isLoading ? 0.5 : 1};
             `}
           >
-            {isLoading ? 'Adding...' : 'Add Bank Account'}
+            {isLoading ? "Adding..." : "Add Bank Account"}
           </Button>
         </div>
       </div>

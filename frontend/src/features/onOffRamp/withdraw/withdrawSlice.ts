@@ -7,7 +7,6 @@ interface WithdrawState {
   };
 }
 
-// Define the initial state
 const initialState: WithdrawState = {
   modal: {
     isOpen: false,

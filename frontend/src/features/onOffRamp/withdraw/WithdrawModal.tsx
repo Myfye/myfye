@@ -3,56 +3,29 @@ import { css } from "@emotion/react";
 import { Bank, Wallet } from "@phosphor-icons/react";
 import ModalButton from "../_components/ModalButton";
 import Modal, { ModalProps } from "@/shared/components/ui/modal/Modal";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { setWithdrawModalOpen } from "@/redux/modalReducers";
 import { toggleModal } from "./withdrawSlice";
 import { toggleOverlay as toggleOnChainOverlay } from "./onChain/withdrawOnChainSlice";
 import { toggleOverlay as toggleOffChainOverlay } from "./offChain/withdrawOffChainSlice";
 import WithdrawOnChainOverlay from "./onChain/WithdrawOnChainOverlay";
+import WithdrawOffChainOverlay from "./offChain/WithdrawOffChainOverlay";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
-const WithdrawModal = ({ height = 300, ...restProps }: ModalProps) => {
-  const dispatch = useDispatch();
-  const isOpen = useSelector((state: RootState) => state.withdrawModal.isOpen);
+const WithdrawModal = () => {
+  const dispatch = useAppDispatch();
+  const isOpen = useAppSelector(
+    (state: RootState) => state.withdraw.modal.isOpen
+  );
 
-<<<<<<< HEAD
-=======
-  const resetModal = () => {
-    setCryptoOpen(false);
-    setFiatOpen(false);
-    setHeight(320);
-    setShowCopiedAddress(false);
-  };
-
-  const resetOverlays = () => {
-    setCryptoOpen(false);
-    setFiatOpen(false);
-  };
-
-  const openCrypto = () => {
-    setCryptoOpen(true);
-    dispatch(setWithdrawModalOpen(false)); // Close the modal when crypto overlay opens
-  };
-
-  const openFiat = () => {
-    setFiatOpen(true);
-    dispatch(setWithdrawModalOpen(false)); // Close the modal when fiat overlay opens
-  };
-
-  const onOpenChange = (isOpen: boolean) => {
-    dispatch(setWithdrawModalOpen(isOpen));
-  };
->>>>>>> revamp
   return (
     <>
       <Modal
-        {...restProps}
+        height={300}
         isOpen={isOpen}
         onOpenChange={(isOpen) => {
           dispatch(toggleModal(isOpen));
         }}
         title="Withdraw"
-        height={height}
         zIndex={1000}
       >
         <menu
@@ -97,6 +70,8 @@ const WithdrawModal = ({ height = 300, ...restProps }: ModalProps) => {
       </Modal>
       {/* On Chain */}
       <WithdrawOnChainOverlay zIndex={2000} />
+      {/* Off Chain */}
+      <WithdrawOffChainOverlay />
     </>
   );
 };
