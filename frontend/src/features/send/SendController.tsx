@@ -171,7 +171,6 @@ const SendController = () => {
     (state: RootState) => state.send.transaction.formattedAmount
   );
 
-  const formattedAmountArr = formattedAmount.split("");
   const abstractedAssetId = useSelector(
     (state: RootState) => state.send.transaction.abstractedAssetId
   );
@@ -212,7 +211,7 @@ const SendController = () => {
           width: 100%;
         `}
       >
-        <AmountDisplay amount={formattedAmountArr} />
+        <AmountDisplay amount={formattedAmount} fiatCurrency={null} />
       </section>
       <section>
         <AmountSelectorGroup
