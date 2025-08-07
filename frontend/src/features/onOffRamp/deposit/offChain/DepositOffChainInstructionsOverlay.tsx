@@ -12,7 +12,7 @@ import { Check, Copy } from "@phosphor-icons/react";
 import { useCopyAndPaste } from "@/features/copy-and-paste/useCopyAndPaste";
 import BankDepositDetailsList from "./_components/BankDepositDetailsList";
 import BankDepositDetailsListItem from "./_components/BankDepositDetailsListItem";
-import { unmount as unmountDeposit } from "../depositSlice";
+import { toggleModal, unmount as unmountDeposit } from "../depositSlice";
 
 const DepositOffChainInstructionsOverlay = ({
   ...restProps
@@ -35,63 +35,6 @@ const DepositOffChainInstructionsOverlay = ({
   const solanaPubKey = useSelector(
     (state: any) => state.userWalletData.solanaPubKey
   );
-
-  // const handleAmountCopy = () => {
-  //   navigator.clipboard.writeText((payin?.sender_amount / 100).toString());
-  //   setCopiedField("amount");
-  //   setTimeout(() => setCopiedField(null), 2000);
-  // };
-
-  // const handleAddressCopy = () => {
-  //   let addressToCopy = "";
-  //   if (payin?.currency === "MXN") {
-  //     addressToCopy = clabeAddress;
-  //   } else if (payin?.currency === "BRL") {
-  //     addressToCopy = pixAddress;
-  //   } else if (payin?.currency === "USD") {
-  //     addressToCopy = achAccountNumber;
-  //   }
-
-  //   if (addressToCopy) {
-  //     navigator.clipboard.writeText(addressToCopy);
-  //     setCopiedField("address");
-  //     setTimeout(() => setCopiedField(null), 2000);
-  //   }
-  // };
-
-  // const handleBankNameCopy = () => {
-  //   let addressToCopy = "";
-  //   if (payin?.currency === "MXN") {
-  //     addressToCopy = "Nvio";
-  //   }
-  //   if (addressToCopy) {
-  //     navigator.clipboard.writeText(addressToCopy);
-  //     setCopiedField("bankName");
-  //     setTimeout(() => setCopiedField(null), 2000);
-  //   }
-  // };
-
-  // const handleBeneficiaryNameCopy = () => {
-  //   const beneficiaryName = payin?.blindpay_bank_details?.beneficiary?.name;
-  //   if (beneficiaryName) {
-  //     navigator.clipboard.writeText(beneficiaryName);
-  //     setCopiedField("beneficiaryName");
-  //     setTimeout(() => setCopiedField(null), 2000);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (payin) {
-  //     if (payin.currency == "MXN") {
-  //       setClabeAddress(payin.clabe);
-  //     } else if (payin.currency == "BRL") {
-  //       setPixAddress(payin.pix_code);
-  //     } else if (payin.currency == "USD") {
-  //       setAchAccountNumber(payin.ach_account_number);
-  //       setAchRoutingNumber(payin.ach_routing_number);
-  //     }
-  //   }
-  // }, [payin]);
 
   return (
     <Overlay
@@ -222,6 +165,7 @@ const DepositOffChainInstructionsOverlay = ({
             onPress={() => {
               dispatch(unmount());
               dispatch(unmountDeposit());
+              toggleModal(false);
             }}
           >
             Done
