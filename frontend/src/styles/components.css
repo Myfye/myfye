@@ -258,7 +258,12 @@
       --_width: 100%;
     }
 
-    &:is([disabled], [data-disabled], [aria-disabled="true"]) {
+    &:is(
+        [disabled],
+        [data-disabled],
+        [aria-disabled="true"],
+        [data-loading="true"]
+      ) {
       opacity: 0.75;
       cursor: not-allowed;
     }
