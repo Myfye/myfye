@@ -6,23 +6,14 @@ import kycReducer from "@/features/compliance/kycSlice.ts";
 import {
   QRCodeModalReducer,
   addContactModalReducer,
-  depositModalReducer,
-  receiveModalReducer,
-  sendModalReducer,
-  withdrawModalReducer,
 } from "./modalReducers.tsx";
 import {
   cashBalanceOverlayReducer,
   coinSummaryOverlayReducer,
   cryptoBalanceOverlayReducer,
-  depositFiatOverlayReducer,
-  requestOverlayReducer,
   selectContactOverlayReducer,
-  sendOverlayReducer,
   settingsOverlayReducer,
   userInfoOverlayReducer,
-  withdrawCryptoOverlayReducer,
-  withdrawFiatOverlayReducer,
 } from "./overlayReducers.tsx";
 
 import assetsReducer from "@/features/assets/assetsSlice.ts";
@@ -32,36 +23,33 @@ import payReducer from "@/features/pay/paySlice.ts";
 import withdrawReducer from "@/features/onOffRamp/withdraw/withdrawSlice.ts";
 import withdrawOnChainReducer from "@/features/onOffRamp/withdraw/onChain/withdrawOnChainSlice.ts";
 import withdrawOffChainReducer from "@/features/onOffRamp/withdraw/offChain/withdrawOffChainSlice.ts";
+import depositOffChainReducer from "@/features/onOffRamp/deposit/offChain/depositOffChainSlice.ts";
+import depositReducer from "@/features/onOffRamp/deposit/depositSlice.ts";
 import { usersApi } from "@/features/users/usersApi.ts";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { contactsApi } from "@/features/contacts/contactsApi.ts";
 import { solanaApi } from "@/features/solana/solanaApi.ts";
+import { depositApi } from "@/features/onOffRamp/deposit/depositApi.ts";
 
 const store = configureStore({
   reducer: {
     userWalletData: userWalletDataReducer,
 
     // Modals
-    sendModal: sendModalReducer,
-    receiveModal: receiveModalReducer,
-    depositModal: depositModalReducer,
-    withdrawModal: withdrawModalReducer,
+    // USE SPECIFIC SLICES NOT THESE
     QRCodeModal: QRCodeModalReducer,
     addContactModal: addContactModalReducer,
 
     // Overlays
-    withdrawFiatOverlay: withdrawFiatOverlayReducer,
-    withdrawCryptoOverlay: withdrawCryptoOverlayReducer,
+    // USE SPECIFIC SLICES NOT THESE
     cashBalanceOverlay: cashBalanceOverlayReducer,
     cryptoBalanceOverlay: cryptoBalanceOverlayReducer,
-    sendOverlay: sendOverlayReducer,
-    requestOverlay: requestOverlayReducer,
-    depositFiatOverlay: depositFiatOverlayReducer,
     userInfoOverlay: userInfoOverlayReducer,
     settingsOverlay: settingsOverlayReducer,
     selectContactOverlay: selectContactOverlayReducer,
 
     // Coin overlay
+    // USE SPECIFIC SLICES NOT THESE
     coinSummaryOverlay: coinSummaryOverlayReducer,
 
     // Swap
@@ -87,16 +75,22 @@ const store = configureStore({
     withdrawOnChain: withdrawOnChainReducer,
     withdrawOffChain: withdrawOffChainReducer,
 
+    // deposit
+    deposit: depositReducer,
+    depositOffChain: depositOffChainReducer,
+
     // APIs
     [usersApi.reducerPath]: usersApi.reducer,
     [contactsApi.reducerPath]: contactsApi.reducer,
     [solanaApi.reducerPath]: solanaApi.reducer,
+    [depositApi.reducerPath]: depositApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
       usersApi.middleware,
       contactsApi.middleware,
       solanaApi.middleware,
+      depositApi.middleware,
     ]),
 });
 
