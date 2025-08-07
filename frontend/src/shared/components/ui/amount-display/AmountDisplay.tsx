@@ -1,17 +1,19 @@
 import { getFiatCurrencySymbol } from "@/shared/utils/currencyUtils";
 import { css } from "@emotion/react";
+import { ReactNode } from "react";
 
 interface AmountDisplayProps {
-  amount: string[] | string;
-  fiatCurrency: "usd" | "euro";
+  amount: string;
+  fiatCurrency?: "usd" | "euro" | "mxn" | "brl" | null;
+  children?: ReactNode;
 }
 
 const AmountDisplay = ({
-  amount,
+  amount = "0",
   fiatCurrency = "usd",
+  children,
 }: AmountDisplayProps) => {
-  if (!amount) throw new Error("Could not find amount");
-  amount = Array.isArray(amount) ? amount : amount.split("");
+  const amountArr = amount.split("");
 
   const symbol = getFiatCurrencySymbol(fiatCurrency);
   return (
@@ -34,10 +36,11 @@ const AmountDisplay = ({
         `}
       >
         {symbol && <span>{symbol}</span>}
-        {amount.map((val, i) => {
+        {amountArr.map((val, i) => {
           return <span key={`value-${i}`}>{val}</span>;
         })}
       </p>
+      {children}
     </div>
   );
 };

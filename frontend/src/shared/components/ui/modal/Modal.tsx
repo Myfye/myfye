@@ -202,7 +202,7 @@ const Modal = ({
                   >
                     <DialogTitle
                       as="h2"
-                      className="heading-medium"
+                      className="heading-small"
                       css={css`
                         text-align: center;
                       `}

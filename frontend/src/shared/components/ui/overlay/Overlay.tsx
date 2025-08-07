@@ -22,14 +22,18 @@ const staticTransition = {
 };
 
 export interface OverlayProps extends HTMLMotionProps<"div"> {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
   title?: string;
   zIndex?: number;
   children?: ReactNode;
   initialFocus?: RefObject<HTMLElement>;
+  color?: string;
   onExit?: () => void;
 }
+
+export type LocalOverlayProps = Omit<OverlayProps, "isOpen" | "onOpenChange">;
+
 const Overlay = ({
   isOpen,
   onOpenChange,
@@ -37,6 +41,7 @@ const Overlay = ({
   zIndex = 1000,
   children,
   initialFocus,
+  color = "var(--clr-surface)",
   onExit,
   ...restProps
 }: OverlayProps) => {
@@ -57,10 +62,10 @@ const Overlay = ({
             {createPortal(
               <>
                 <motion.div
+                  {...restProps}
                   ref={overlayRef}
                   tabIndex={0}
-                  aria-labelledby={title && titleId}
-                  aria-label={!title ? "Page" : title}
+                  aria-labelledby={title ? title : restProps["aria-labelledby"]}
                   role="region"
                   css={css`
                     position: fixed;
@@ -80,7 +85,7 @@ const Overlay = ({
                       will-change: transform;
                       height: ${window.innerHeight}px; // TODO test with 100svh
                       z-index: 1;
-                      background-color: var(--clr-surface);
+                      background-color: ${color};
                     `}
                     initial={{ x: w }}
                     animate={{ x: 0 }}
@@ -91,7 +96,6 @@ const Overlay = ({
                       left: 0,
                       paddingRight: window.screen.width,
                     }}
-                    {...restProps}
                   >
                     <div
                       css={css`
@@ -103,11 +107,11 @@ const Overlay = ({
                         position: relative;
                       `}
                     >
-                      <Header color="var(--clr-surface)">
+                      <Header color={color}>
                         <Button
                           iconOnly
                           icon={CaretLeftIcon}
-                          onPress={() => onOpenChange(false)}
+                          onPress={() => onOpenChange && onOpenChange(false)}
                           variant="transparent"
                         />
                         {title && (

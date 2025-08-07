@@ -16,9 +16,11 @@ const Input = ({
   return (
     <div className="wrapper">
       <label
-        className={`${hideLabel ? "visually-hidden" : ""}`}
+        className={`${hideLabel ? "visually-hidden" : ""} caption-small`}
         css={css`
-          font-size: var(--fs-small);
+          display: inline-block;
+          margin-block-end: var(--size-075);
+          font-weight: var(--fw-active);
         `}
         htmlFor={id}
       >

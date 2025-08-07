@@ -5,10 +5,12 @@ import { useRadioGroupState } from "react-stately";
 import { AmountSelectContext } from "./AmountSelectContext";
 
 interface AmountSelectorGroupProps extends AriaRadioGroupProps {
+  expand?: boolean;
   children: ReactNode;
 }
 
 const AmountSelectorGroup = ({
+  expand,
   label,
   children,
   ...restProps
@@ -27,8 +29,9 @@ const AmountSelectorGroup = ({
       <div
         css={css`
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          width: min(100%, 20rem);
+          grid-auto-columns: 1fr;
+          grid-auto-flow: dense column;
+          width: ${expand ? "100%" : "min(100%, 20rem)"};
           gap: var(--controls-gap-small);
           margin-inline: auto;
         `}

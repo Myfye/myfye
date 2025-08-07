@@ -41,10 +41,11 @@ const HeadlessModal = ({
   title = "",
   zIndex = 1000,
   onExit,
+  color = "var(--clr-surface)",
   ref,
   children,
   ...restProps
-}: ModalProps) => {
+}: ModalProps & { color?: string }) => {
   const isMotionValue = checkMotionValue(height);
   const top = isMotionValue
     ? useTransform(height, (x) =>
@@ -118,7 +119,7 @@ const HeadlessModal = ({
                 border-bottom-right-radius: 0;
                 box-shadow: var(--box-shadow-modal);
                 will-change: transform;
-                background-color: var(--clr-surface);
+                background-color: ${color};
                 z-index: 1;
               `}
               initial={{ y: initialY }}
@@ -177,12 +178,7 @@ const HeadlessModal = ({
                   `}
                 >
                   <VisuallyHidden>
-                    <header
-                      css={css`
-                        position: relative;
-                        padding-inline: var(--size-200);
-                      `}
-                    >
+                    <header>
                       <h1>{title}</h1>
                     </header>
                   </VisuallyHidden>
