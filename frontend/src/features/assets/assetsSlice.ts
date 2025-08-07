@@ -2658,7 +2658,6 @@ export const assetsSlice = createSlice({
       state,
       action: PayloadAction<{ assetId: Asset["id"]; balance: number }>
     ) => {
-      console.log("updateBalance", action.payload);
       state.assets[action.payload.assetId].balance = action.payload.balance;
     },
     updateExchangeRateUSD: (
