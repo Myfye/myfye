@@ -34,37 +34,27 @@ const DepositOffChainPrivyOverlay = ({ ...restProps }: LocalOverlayProps) => {
   );
 
   // Get Solana price from assets slice
-  const solanaPriceUSD = useSelector(
-    (state: any) => state.assets.assets.sol.exchangeRateUSD
+  const solanaPriceUSD = useAppSelector(
+    (state) => state.assets.assets.sol.exchangeRateUSD
   );
 
-  const solanaPubKey = useSelector(
-    (state: any) => state.userWalletData.solanaPubKey
+  const solanaPubKey = useAppSelector(
+    (state) => state.userWalletData.solanaPubKey
   );
 
-  const handleNextButtonPress = async () => {
-    // Check if Solana exchange rate is valid
+  const handleNextPress = async () => {
+    if (!transaction.amount) throw new Error("Invalid Amount");
     if (!solanaPriceUSD || solanaPriceUSD <= 0) {
       toast.error("Unable to get Solana price. Please try again.");
       return;
     }
 
-    // Convert USD amount to SOL
-    let solAmount = 0;
-    if (solanaPriceUSD > 0) {
-      solAmount = amount / solanaPriceUSD;
-      console.log("Converted amount in SOL:", solAmount);
-    } else {
-      toast.error("Unable to get Solana price. Please try again.");
-      return;
-    }
+    const solAmount = transaction.amount / solanaPriceUSD;
 
-    // Prompts user to fund their wallet with SOL on Solana's mainnet.
     fundWallet(solanaPubKey, {
       cluster: { name: "mainnet-beta" },
-      amount: solAmount.toString(), // Amount in SOL
+      amount: solAmount.toString(),
       defaultFundingMethod: "card",
-      asset: "USDC",
     });
   };
 
@@ -119,7 +109,9 @@ const DepositOffChainPrivyOverlay = ({ ...restProps }: LocalOverlayProps) => {
                 padding-inline: var(--size-250);
               `}
             >
-              <Button expand>Next</Button>
+              <Button expand onPress={handleNextPress}>
+                Next
+              </Button>
             </section>
           </div>
         </div>

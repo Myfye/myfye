@@ -3,13 +3,10 @@ import { useState } from "react";
 import { css } from "@emotion/react";
 import { Bank, Wallet } from "@phosphor-icons/react";
 import ModalButton from "../_components/ModalButton";
-import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/shared/components/ui/modal/Modal";
-import { RootState } from "@/redux/store";
 // import toast from "react-hot-toast/headless";
 import OnChainDepositContent from "./onChain/OnChainDepositContent";
-import OffChainDepositOverlay from "./offChain/DepositOffChainOverlay";
-import { useFundWallet } from "@privy-io/react-auth/solana";
+import DepositOffChainBankAccountOverlay from "./offChain/bankAccount/DepositOffChainBankAccountOverlay";
 import { AnimatePresence, useMotionValue, animate } from "motion/react";
 import toast from "react-hot-toast/headless";
 import { toggleModal, unmount } from "./depositSlice";
@@ -19,6 +16,7 @@ import {
   unmount as unmountOffChain,
 } from "./offChain/depositOffChainSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import DepositOffChainPrivyOverlay from "./offChain/privy/DepositOffChainPrivyOverlay";
 
 const DEFAULT_HEIGHT = 360;
 
@@ -117,7 +115,8 @@ const DepositModal = () => {
           )}
         </AnimatePresence>
       </Modal>
-      <OffChainDepositOverlay />
+      <DepositOffChainBankAccountOverlay />
+      <DepositOffChainPrivyOverlay />
     </>
   );
 };
