@@ -13,7 +13,7 @@ const SelectCurrencyModal = () => {
     (state) => state.depositOffChain.modals.selectCurrency.isOpen
   );
   const selectedCurrency = useAppSelector(
-    (state) => state.depositOffChain.transaction.payin.currency
+    (state) => state.depositOffChain.bankAccountTransaction.payin.currency
   );
   const dispatch = useAppDispatch();
 

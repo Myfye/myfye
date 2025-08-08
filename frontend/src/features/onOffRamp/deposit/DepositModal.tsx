@@ -6,16 +6,16 @@ import ModalButton from "../_components/ModalButton";
 import Modal from "@/shared/components/ui/modal/Modal";
 // import toast from "react-hot-toast/headless";
 import OnChainDepositContent from "./onChain/OnChainDepositContent";
-import DepositOffChainBankAccountOverlay from "./offChain/bankAccount/DepositOffChainBankAccountOverlay";
 import { AnimatePresence, useMotionValue, animate } from "motion/react";
 import toast from "react-hot-toast/headless";
 import { toggleModal, unmount } from "./depositSlice";
-import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+// import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 import {
   toggleOverlay,
   unmount as unmountOffChain,
 } from "./offChain/depositOffChainSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import DepositOffChainBankAccountOverlay from "./offChain/bankAccount/DepositOffChainBankAccountOverlay";
 import DepositOffChainPrivyOverlay from "./offChain/privy/DepositOffChainPrivyOverlay";
 
 const DEFAULT_HEIGHT = 360;
@@ -101,7 +101,7 @@ const DepositModal = () => {
                   // if (!currentUserKYCVerified)
                   //   return dispatch(toggleKYCModal({ isOpen: true }));
                   dispatch(
-                    toggleOverlay({ type: "depositOffChain", isOpen: true })
+                    toggleOverlay({ type: "bankAccount", isOpen: true })
                   );
                 }}
               />
@@ -109,7 +109,9 @@ const DepositModal = () => {
                 icon={Bank}
                 title="Card / Apple Pay / Google Pay"
                 description="Deposit via credit/debit card"
-                onPress={() => {}}
+                onPress={() => {
+                  dispatch(toggleOverlay({ type: "privy", isOpen: true }));
+                }}
               />
             </menu>
           )}

@@ -1,15 +1,11 @@
 import { useId } from "react";
 import { css } from "@emotion/react";
-import { useSelector } from "react-redux";
-import { Button as AriaButton } from "react-aria-components";
 import Overlay, {
   LocalOverlayProps,
 } from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toggleOverlay, unmount } from "../depositOffChainSlice";
-import { Check, Copy } from "@phosphor-icons/react";
-import { useCopyAndPaste } from "@/features/copy-and-paste/useCopyAndPaste";
 import BankDepositDetailsList from "../_components/BankDepositDetailsList";
 import BankDepositDetailsListItem from "../_components/BankDepositDetailsListItem";
 import { toggleModal, unmount as unmountDeposit } from "../../depositSlice";
@@ -21,19 +17,11 @@ const DepositOffChainBankAccountInstructionsOverlay = ({
 
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(
-    (state) => state.depositOffChain.overlays.instructions.isOpen
+    (state) => state.depositOffChain.overlays.bankAccountInstructions.isOpen
   );
 
-  const transaction = useAppSelector(
-    (state) => state.depositOffChain.transaction
-  );
   const payin = useAppSelector(
-    (state) => state.depositOffChain.transaction.payin
-  );
-  /* Public keys */
-  const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
-  const solanaPubKey = useSelector(
-    (state: any) => state.userWalletData.solanaPubKey
+    (state) => state.depositOffChain.bankAccountTransaction.payin
   );
 
   return (
@@ -42,7 +30,7 @@ const DepositOffChainBankAccountInstructionsOverlay = ({
       color="var(--clr-surface-raised)"
       isOpen={isOpen}
       onOpenChange={(isOpen) => {
-        dispatch(toggleOverlay({ type: "instructions", isOpen }));
+        dispatch(toggleOverlay({ type: "bankAccountInstructions", isOpen }));
       }}
       aria-labelledby={headingId}
       zIndex={2001}
@@ -115,6 +103,7 @@ const DepositOffChainBankAccountInstructionsOverlay = ({
               )}
               <BankDepositDetailsListItem
                 title="Account number"
+                // @ts-ignore
                 content={
                   payin.pixAddress || payin.clabeAddress
                     ? payin.currency === "brl"

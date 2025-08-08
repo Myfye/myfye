@@ -1,8 +1,6 @@
 import { css } from "@emotion/react";
-import { useDispatch, useSelector } from "react-redux";
-import Overlay, {
-  LocalOverlayProps,
-} from "@/shared/components/ui/overlay/Overlay";
+import { useSelector } from "react-redux";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
 import { useFundWallet } from "@privy-io/react-auth/solana";
@@ -16,7 +14,7 @@ import AmountDisplay from "@/shared/components/ui/amount-display/AmountDisplay";
 import toast from "react-hot-toast/headless";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 
-const DepositOffChainPrivyOverlay = ({ ...restProps }: LocalOverlayProps) => {
+const DepositOffChainPrivyOverlay = () => {
   const { fundWallet } = useFundWallet();
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(
@@ -25,12 +23,6 @@ const DepositOffChainPrivyOverlay = ({ ...restProps }: LocalOverlayProps) => {
 
   const transaction = useAppSelector(
     (state) => state.depositOffChain.privyTransaction
-  );
-
-  /* Public keys */
-  const evmPubKey = useSelector((state: any) => state.userWalletData.evmPubKey);
-  const currentUserEmail = useSelector(
-    (state: any) => state.userWalletData.currentUserEmail
   );
 
   // Get Solana price from assets slice
@@ -51,11 +43,12 @@ const DepositOffChainPrivyOverlay = ({ ...restProps }: LocalOverlayProps) => {
 
     const solAmount = transaction.amount / solanaPriceUSD;
 
-    fundWallet(solanaPubKey, {
+    await fundWallet(solanaPubKey, {
       cluster: { name: "mainnet-beta" },
       amount: solAmount.toString(),
       defaultFundingMethod: "card",
     });
+    toggleOverlay({ type: "privy", isOpen: false });
   };
 
   const numberPadProps = useNumberPad({

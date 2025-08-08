@@ -13,10 +13,10 @@ interface DepositOffChainState {
   bankAccountTransaction: BankAccountTransaction;
   privyTransaction: Transaction;
   overlays: {
-    depositOffChain: {
+    bankAccount: {
       isOpen: boolean;
     };
-    instructions: {
+    bankAccountInstructions: {
       isOpen: boolean;
     };
     privy: {
@@ -59,10 +59,10 @@ const initialState: DepositOffChainState = {
     presetAmount: null,
   },
   overlays: {
-    depositOffChain: {
+    bankAccount: {
       isOpen: false,
     },
-    instructions: {
+    bankAccountInstructions: {
       isOpen: false,
     },
     privy: {
@@ -123,7 +123,7 @@ const depositOffChainSlice = createSlice({
       }>
     ) {
       const transactionKey = (action.payload.transactionType +
-        "transaction") as TransactionKey;
+        "Transaction") as TransactionKey;
       state[transactionKey].formattedAmount = updateFormattedAmount(
         state[transactionKey].formattedAmount,
         action.payload.input,
@@ -137,9 +137,10 @@ const depositOffChainSlice = createSlice({
       if (isNaN(parsedFormattedAmount)) {
         state[transactionKey].amount = null;
       } else {
-        console.log(state[transactionKey].fee);
         state[transactionKey].amount = parsedFormattedAmount;
-        state[transactionKey].fee = parsedFormattedAmount * 0.01;
+        if (action.payload.transactionType === "bankAccount") {
+          state[transactionKey].fee = parsedFormattedAmount * 0.01;
+        }
       }
     },
     updatePresetAmount: (
@@ -150,7 +151,7 @@ const depositOffChainSlice = createSlice({
       }>
     ) => {
       const transactionKey = (action.payload.transactionType +
-        "transaction") as TransactionKey;
+        "Transaction") as TransactionKey;
       state[transactionKey].presetAmount = action.payload.presetAmount;
     },
     updatePayin(
@@ -159,13 +160,13 @@ const depositOffChainSlice = createSlice({
         currency?: /*"usd" |*/ "brl" | "mxn";
         achRoutingNumber?: string | null;
         achAccountNumber?: string | null;
-        senderAmount?: string | null;
+        senderAmount?: number | null;
         clabeAddress?: string | null;
         pixAddress?: string | null;
-        beneficiary: {
+        beneficiary?: {
           name: string | null;
-          address1: string | null;
-          address2: string | null;
+          addressLine1: string | null;
+          addressLine2: string | null;
         };
       }>
     ) {

@@ -38,8 +38,8 @@ export interface BankAccountTransaction extends Transaction {
 }
 
 export type DepositOffChainOverlay =
-  | "depositOffChain"
-  | "instructions"
+  | "bankAccount"
+  | "bankAccountInstructions"
   | "privy";
 
 export type PresetAmountOption = "10" | "50" | "100" | "max" | null;

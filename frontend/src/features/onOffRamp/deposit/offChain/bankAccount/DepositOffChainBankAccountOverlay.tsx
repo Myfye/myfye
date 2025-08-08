@@ -1,9 +1,7 @@
 import { css } from "@emotion/react";
-import Overlay, {
-  LocalOverlayProps,
-} from "@/shared/components/ui/overlay/Overlay";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
-import DepositOffChainInstructionsOverlay from "./DepositOffChainInstructionsOverlay";
+import DepositOffChainInstructionsOverlay from "./DepositOffChainBankAccountInstructionsOverlay";
 import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
 import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSelectorGroup";
 import AmountSelector from "@/shared/components/ui/amount-selector/AmountSelector";
@@ -18,22 +16,19 @@ import {
   updatePresetAmount,
 } from "../depositOffChainSlice";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
-import { PresetAmountOption } from "../depositOffChain.types";
 import { CaretDown } from "@phosphor-icons/react";
 import { currencyMap } from "../_components/currencyMap";
 import SelectCurrencyModal from "../SelectCurrencyModal";
 import { useLazyCreatePayinQuery } from "../../depositApi";
 import toast from "react-hot-toast/headless";
 
-const DepositOffChainBankAccountOverlay = ({
-  ...restProps
-}: LocalOverlayProps) => {
+const DepositOffChainBankAccountOverlay = () => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(
-    (state) => state.depositOffChain.overlays.depositOffChain.isOpen
+    (state) => state.depositOffChain.overlays.bankAccount.isOpen
   );
   const transaction = useAppSelector(
-    (state) => state.depositOffChain.transaction
+    (state) => state.depositOffChain.bankAccountTransaction
   );
 
   const blindPayEvmWalletId = useAppSelector(
@@ -46,13 +41,15 @@ const DepositOffChainBankAccountOverlay = ({
 
   const numberPadProps = useNumberPad({
     onStartDelete: (input) => {
-      dispatch(updateAmount({ input }));
+      dispatch(updateAmount({ input, transactionType: "bankAccount" }));
     },
     onUpdateAmount: (input) => {
-      dispatch(updateAmount({ input }));
+      dispatch(updateAmount({ input, transactionType: "bankAccount" }));
     },
     onUpdatePresetAmount: (presetAmount) => {
-      dispatch(updatePresetAmount(presetAmount));
+      dispatch(
+        updatePresetAmount({ presetAmount, transactionType: "bankAccount" })
+      );
     },
     formattedAmount: transaction.formattedAmount,
   });
@@ -60,10 +57,9 @@ const DepositOffChainBankAccountOverlay = ({
   const currency = currencyMap.currencies[transaction.payin.currency];
   const CurrencyIcon = currency.icon;
 
-  const [payinTrigger, { isLoading, isError, isSuccess }] =
-    useLazyCreatePayinQuery();
+  const [payinTrigger, { isLoading }] = useLazyCreatePayinQuery();
 
-  const handleNext = async () => {
+  const handleNextPress = async () => {
     if (!transaction.amount) return;
     const { data, isError } = await payinTrigger({
       amount: transaction.amount,
@@ -88,7 +84,7 @@ const DepositOffChainBankAccountOverlay = ({
         },
       })
     );
-    dispatch(toggleOverlay({ type: "instructions", isOpen: true }));
+    dispatch(toggleOverlay({ type: "bankAccountInstructions", isOpen: true }));
   };
 
   return (
@@ -96,7 +92,7 @@ const DepositOffChainBankAccountOverlay = ({
       <Overlay
         isOpen={isOpen}
         onOpenChange={(isOpen) => {
-          dispatch(toggleOverlay({ type: "depositOffChain", isOpen }));
+          dispatch(toggleOverlay({ type: "bankAccount", isOpen }));
         }}
         title="Amount"
         zIndex={2000}
@@ -197,12 +193,16 @@ const DepositOffChainBankAccountOverlay = ({
                 label="Select preset amount"
                 onChange={(presetAmount) => {
                   dispatch(
-                    updatePresetAmount(presetAmount as PresetAmountOption)
+                    updatePresetAmount({
+                      presetAmount,
+                      transactionType: "bankAccount",
+                    })
                   );
                   dispatch(
                     updateAmount({
-                      input: presetAmount,
+                      input: presetAmount ?? "0",
                       replace: true,
+                      transactionType: "bankAccount",
                     })
                   );
                 }}
@@ -236,7 +236,7 @@ const DepositOffChainBankAccountOverlay = ({
               <Button
                 expand
                 variant="primary"
-                onPress={handleNext}
+                onPress={handleNextPress}
                 isLoading={isLoading}
                 isDisabled={transaction.amount === 0}
               >
