@@ -1,19 +1,12 @@
 import SelectorGroup from "./_components/SelectorGroup";
 import Selector from "./_components/Selector";
-import { Collection } from "react-aria-components";
 
-import HeadlessModal from "@/shared/components/ui/modal/HeadlessModal";
 import { css } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toggleModal, updatePayin } from "./depositOffChainSlice";
-import {
-  currencyArr,
-  currencyArrNoIcons,
-  currencyMap,
-} from "./_components/currencyMap";
+import { currencyArr } from "./_components/currencyMap";
 import { CurrencyType } from "./depositOffChain.types";
 import Modal from "@/shared/components/ui/modal/Modal";
-import { useEffect } from "react";
 
 const SelectCurrencyModal = () => {
   const isOpen = useAppSelector(
@@ -23,10 +16,6 @@ const SelectCurrencyModal = () => {
     (state) => state.depositOffChain.transaction.payin.currency
   );
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    console.log("selected currency", selectedCurrency);
-  }, [selectedCurrency]);
 
   return (
     <Modal
