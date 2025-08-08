@@ -260,8 +260,10 @@ async function delete_blockchain_wallet_and_receiver(receiverId, walletId) {
     console.log(`Starting deletion process for receiver ${receiverId} and wallet ${walletId}...`);
     
     // First delete the blockchain wallet
-    console.log(`Deleting blockchain wallet ${walletId}...`);
-    await delete_blockchain_wallet(receiverId, walletId);
+    if (walletId) {
+      console.log(`Deleting blockchain wallet ${walletId}...`);
+      await delete_blockchain_wallet(receiverId, walletId);
+    }
     
     // Then delete the receiver
     console.log(`Deleting receiver ${receiverId}...`);
