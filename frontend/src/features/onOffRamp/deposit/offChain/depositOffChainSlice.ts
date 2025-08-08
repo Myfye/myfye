@@ -120,8 +120,6 @@ const depositOffChainSlice = createSlice({
         state.transaction.formattedAmount
       );
 
-      console.log(parsedFormattedAmount);
-
       if (isNaN(parsedFormattedAmount)) {
         state.transaction.amount = null;
       } else {
