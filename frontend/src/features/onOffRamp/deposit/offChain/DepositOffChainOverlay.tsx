@@ -13,7 +13,6 @@ import {
   toggleModal,
   toggleOverlay,
   unmount,
-  unmountOverlays,
   updateAmount,
   updatePayin,
   updatePresetAmount,
@@ -23,7 +22,6 @@ import { PresetAmountOption } from "./depositOffChain.types";
 import { CaretDown } from "@phosphor-icons/react";
 import { currencyMap } from "./_components/currencyMap";
 import SelectCurrencyModal from "./SelectCurrencyModal";
-import { useEffect } from "react";
 import { useLazyCreatePayinQuery } from "../depositApi";
 import toast from "react-hot-toast/headless";
 
