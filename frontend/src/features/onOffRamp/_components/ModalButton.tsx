@@ -2,8 +2,9 @@ import { css } from "@emotion/react";
 import { ButtonHTMLAttributes, RefObject, useMemo, useRef } from "react";
 import { ButtonContext, useContextProps } from "react-aria-components";
 import { AriaButtonProps, useButton } from "react-aria";
-import { motion, MotionProps } from "motion/react";
+import { HTMLMotionProps, motion, MotionProps } from "motion/react";
 import { Icon } from "@phosphor-icons/react";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 
 interface ModalButtonProps extends AriaButtonProps {
   icon: Icon;
@@ -11,6 +12,8 @@ interface ModalButtonProps extends AriaButtonProps {
   description?: string;
   ref?: RefObject<HTMLButtonElement>;
 }
+
+const MotionButtonGroupItem = motion(ButtonGroupItem);
 const ModalButton = ({
   icon,
   title,
@@ -27,12 +30,11 @@ const ModalButton = ({
     ButtonContext
   );
 
-  let { buttonProps, isPressed } = useButton(restPropsButton, refButton);
+  const { buttonProps, isPressed } = useButton(restPropsButton, refButton);
 
   return (
     <motion.button
-      {...(buttonProps as ButtonHTMLAttributes<HTMLButtonElement> &
-        MotionProps)}
+      {...(buttonProps as HTMLMotionProps<"button">)}
       ref={ref}
       animate={{
         scale: isPressed ? 0.98 : 1,

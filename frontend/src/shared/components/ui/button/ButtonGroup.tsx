@@ -2,10 +2,15 @@ import { HTMLProps } from "react";
 import { ButtonGroupContext } from "./ButtonGroupContext";
 
 interface ButtonGroupProps extends Omit<HTMLProps<HTMLMenuElement>, "size"> {
+  /** Button sizes */
   size?: "x-small" | "small" | "medium" | "large" | "x-large";
+  /** Button directions */
   direction?: "horizontal" | "vertical";
+  /** Expand buttons to fill space available */
   expand?: boolean;
+  /** Enable scrolling */
   scroll?: boolean;
+  /** Should buttons be equal size? */
   equalSize?: boolean;
 }
 const ButtonGroup = ({

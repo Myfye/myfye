@@ -4,6 +4,8 @@ import { motion, MotionProps } from "motion/react";
 import { ButtonProps, LinkProps } from "./button.types";
 import { getIconSize } from "./utils";
 import { AnchorHTMLAttributes, ButtonHTMLAttributes, useRef } from "react";
+import RingLoader from "../loading/spinners/RingLoader";
+import { css } from "@emotion/react";
 
 const _Button = ({
   ref,
@@ -18,6 +20,7 @@ const _Button = ({
   iconRight,
   wrap = false,
   expand = false,
+  isLoading = false,
   children,
   ...restProps
 }: ButtonProps) => {
@@ -45,6 +48,7 @@ const _Button = ({
       data-expand={expand}
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
+      data-loading={isLoading}
       className={`button ${className ? className : ""} ${
         variant === "token-select" ? "token-select" : ""
       }`}
@@ -53,6 +57,16 @@ const _Button = ({
         scale: isPressed ? 0.9 : 1,
       }}
     >
+      {isLoading && (
+        <RingLoader
+          width={iconSize}
+          height={iconSize}
+          fill="currentColor"
+          css={css`
+            margin-inline-end: var(--size-050);
+          `}
+        />
+      )}
       {IconLeft && <IconLeft size={iconSize} />}
       {children}
       {IconRight && <IconRight size={iconSize} />}
@@ -73,6 +87,7 @@ const _Link = ({
   iconRight,
   wrap = false,
   expand = false,
+  isLoading = false,
   children,
   ...restProps
 }: LinkProps) => {
@@ -112,7 +127,11 @@ function isLinkProps(props: ButtonProps | LinkProps): props is LinkProps {
 }
 
 const Button = (props: ButtonProps | LinkProps) => {
-  return isLinkProps(props) ? <_Link {...props} /> : <_Button {...props} />;
+  return isLinkProps(props) ? (
+    <_Link {...props} />
+  ) : (
+    <_Button {...props} isDisabled={props.isDisabled || props.isLoading} />
+  );
 };
 
 export default Button;

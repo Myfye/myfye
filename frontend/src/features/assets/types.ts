@@ -4,10 +4,9 @@ import { EarnId } from "../../pages/app/wallet/earn/earn.types";
 import { StocksId } from "../../pages/app/wallet/stocks/stocks.types";
 
 export type FiatCurrency = "usd" | "eur";
-
 export type DashboardId = "cash" | "crypto" | "stocks";
-
 export type GroupId = "cash" | "crypto" | "stocks" | "earn";
+export type AssetId = "";
 
 export interface AbstractedAsset {
   id: string;

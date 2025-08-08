@@ -19,6 +19,7 @@ import { RootState } from "@/redux/store";
 import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
 import SelectSwapAssetOverlay from "./SelectSwapAssetOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
+import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 
 const SwapModal = () => {
   const [height] = useState(667);
@@ -44,24 +45,14 @@ const SwapModal = () => {
     (state: RootState) => state.userWalletData.evmPubKey
   );
 
-  const startDelete = (input: string) => {
-    intervalDelete.current = setInterval(() => {
-      dispatch(updateAmount({ input }));
-    }, 50);
-  };
-
-  const stopDelete = () => {
-    if (intervalDelete.current) {
-      clearInterval(intervalDelete.current);
-    }
-    if (delayDelete.current) {
-      clearTimeout(delayDelete.current);
-    }
-  };
-
-  useEffect(() => {
-    if (transaction.buy.formattedAmount === "") stopDelete();
-  }, [transaction]);
+  const numberPadProps = useNumberPad({
+    onStartDelete: (input) => {
+      updateAmount({ input });
+    },
+    onUpdateAmount: (input) => {
+      updateAmount({ input });
+    },
+  });
 
   useEffect(() => {
     console.log("adding user_id to trx", user_id);
@@ -79,15 +70,6 @@ const SwapModal = () => {
       console.warn("solanaPubKey is not available in the Redux store");
     }
   }, [user_id, solanaPubKey]);
-
-  const handleNumberPressStart = (input: string) => {
-    if (input === "delete") {
-      dispatch(updateAmount({ input }));
-      delayDelete.current = setTimeout(() => {
-        startDelete(input);
-      }, 200);
-    }
-  };
 
   const checkIfInvalidSwapTransaction = () => {
     if (
@@ -159,14 +141,7 @@ const SwapModal = () => {
               padding-inline: var(--size-200);
             `}
           >
-            <NumberPad
-              onNumberPress={(input) => {
-                if (input === "delete") return;
-                dispatch(updateAmount({ input }));
-              }}
-              onNumberPressStart={handleNumberPressStart}
-              onNumberPressEnd={() => void stopDelete()}
-            />
+            <NumberPad {...numberPadProps} />
           </section>
           <section
             css={css`

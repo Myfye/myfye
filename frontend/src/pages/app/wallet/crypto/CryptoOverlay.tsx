@@ -13,8 +13,8 @@ import {
 import WalletOverlay from "../_components/WalletOverlay";
 import Section from "@/shared/components/ui/section/Section";
 import PieChart from "../_components/PieChart";
-import { setDepositModalOpen } from "@/redux/modalReducers";
 import { walletPieChartLabelFormatter } from "../utils";
+import { toggleModal } from "@/features/onOffRamp/deposit/depositSlice";
 
 const CryptoOverlay = () => {
   const dispatch = useDispatch();
@@ -202,9 +202,7 @@ const CryptoOverlay = () => {
                   margin-block-start: var(--size-300);
                 `}
               >
-                <Button
-                  onPress={() => void dispatch(setDepositModalOpen(true))}
-                >
+                <Button onPress={() => void dispatch(toggleModal(true))}>
                   Deposit crypto
                 </Button>
               </div>

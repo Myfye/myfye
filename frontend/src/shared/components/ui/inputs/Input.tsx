@@ -1,23 +1,26 @@
 import { css } from "@emotion/react";
-import { ReactNode } from "react";
+import { HTMLProps, InputHTMLAttributes, useId } from "react";
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+  id?: string;
+  hideLabel?: boolean;
+}
 
 const Input = ({
   label,
-  id,
-  hideLabel,
+  id = useId(),
+  hideLabel = false,
   ...restProps
-}: {
-  label: string;
-  id: string;
-  hideLabel: boolean;
-  children: ReactNode;
-}) => {
+}: InputProps) => {
   return (
     <div className="wrapper">
       <label
-        className={`${hideLabel ? "visually-hidden" : ""}`}
+        className={`${hideLabel ? "visually-hidden" : ""} caption-small`}
         css={css`
-          font-size: var(--fs-small);
+          display: inline-block;
+          margin-block-end: var(--size-075);
+          font-weight: var(--fw-active);
         `}
         htmlFor={id}
       >
@@ -30,6 +33,8 @@ const Input = ({
         `}
       >
         <input
+          {...restProps}
+          id={id}
           css={css`
             width: 100%;
             height: var(--control-size-medium);
@@ -41,7 +46,6 @@ const Input = ({
             }
             font-size: 16px;
           `}
-          {...restProps}
         />
       </div>
     </div>

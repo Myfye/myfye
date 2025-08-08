@@ -2,8 +2,6 @@ import WalletCardList from "./_components/WalletCardList.tsx";
 
 import { css } from "@emotion/react";
 import { useDispatch } from "react-redux";
-import { setDepositModalOpen } from "@/redux/modalReducers.tsx";
-import { setWithdrawModalOpen } from "@/redux/modalReducers.tsx";
 import EarnOverlay from "./earn/EarnOverlay.tsx";
 import CryptoOverlay from "./crypto/CryptoOverlay.tsx";
 import CashOverlay from "./cash/CashOverlay.tsx";
@@ -17,6 +15,8 @@ import PullToRefreshIndicator from "@/features/pull-to-refresh/PullToRefreshIndi
 import getSolanaBalances from "@/functions/GetSolanaBalances.tsx";
 import { useSolanaWallets } from "@privy-io/react-auth";
 import { motion } from "motion/react";
+import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice.ts";
+import { toggleModal as toggleWithdrawModal } from "@/features/onOffRamp/withdraw/withdrawSlice.ts";
 
 const Wallet = () => {
   const ref = useRef<HTMLDivElement>(null!);
@@ -111,12 +111,12 @@ const Wallet = () => {
           >
             <ButtonGroup size="medium" expand>
               <ButtonGroupItem
-                onPress={() => void dispatch(setDepositModalOpen(true))}
+                onPress={() => void dispatch(toggleDepositModal(true))}
               >
                 Add money
               </ButtonGroupItem>
               <ButtonGroupItem
-                onPress={() => void dispatch(setWithdrawModalOpen(true))}
+                onPress={() => void dispatch(toggleWithdrawModal(true))}
               >
                 Withdraw
               </ButtonGroupItem>

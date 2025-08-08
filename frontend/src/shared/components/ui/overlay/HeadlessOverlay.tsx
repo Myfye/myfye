@@ -12,25 +12,16 @@ import {
 } from "@headlessui/react";
 import { createPortal } from "react-dom";
 import { useOverlay } from "./useOverlay";
-
-// Wrap React Aria modal components so they support motion values.
-const MotionDialog = motion(Dialog);
-const MotionDialogPanel = motion(DialogPanel);
-const MotionDialogBackdrop = motion(DialogBackdrop);
+import { OverlayProps } from "./Overlay";
+import Portal from "../portal/Portal";
 
 const staticTransition = {
   duration: 0.5,
   ease: [0.32, 0.72, 0, 1],
 };
 
-interface HeadlessOverlayProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
+interface HeadlessOverlayProps extends OverlayProps {
   backgroundColor?: string;
-  zIndex?: number;
-  children: ReactNode;
-  onExitComplete?: () => void;
-  onEnterComplete?: () => void;
   titleId?: string;
 }
 
@@ -40,7 +31,8 @@ const HeadlessOverlay = ({
   backgroundColor = "var(--clr-surface)",
   zIndex = 1000,
   children,
-  onExitComplete,
+  initialFocus,
+  onExit,
   titleId,
 }: HeadlessOverlayProps) => {
   let w = window.innerWidth;
@@ -48,68 +40,61 @@ const HeadlessOverlay = ({
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
-  useOverlay({ isOpen, onOpenChange, ref: overlayRef });
+  useOverlay({ isOpen, onOpenChange, ref: overlayRef, initialFocus });
 
   return (
     <>
-      <AnimatePresence onExitComplete={onExitComplete}>
-        {isOpen && (
-          <>
-            {createPortal(
-              <>
-                <motion.div
-                  aria-labelledby={titleId}
-                  aria-label={!titleId ? "Page" : undefined}
-                  ref={overlayRef}
+      <Portal containerId="screens">
+        <AnimatePresence onExitComplete={onExit}>
+          {isOpen && (
+            <motion.div
+              aria-labelledby={titleId}
+              aria-label={!titleId ? "Page" : undefined}
+              ref={overlayRef}
+              css={css`
+                position: fixed;
+                inset: 0;
+                z-index: ${zIndex};
+                max-width: 420px;
+                margin-inline: auto;
+                isolation: isolate;
+              `}
+            >
+              <motion.div
+                css={css`
+                  background-color: ${backgroundColor};
+                  position: absolute;
+                  bottom: 0;
+                  width: 100%;
+                  will-change: transform;
+                  height: ${window.innerHeight}px;
+                  z-index: 1;
+                `}
+                initial={{ x: w }}
+                animate={{ x: 0 }}
+                exit={{ x: w }}
+                transition={staticTransition}
+                style={{
+                  x,
+                  left: 0,
+                  // Extra padding at the right to account for rubber band scrolling.
+                  paddingRight: window.screen.width,
+                }}
+              >
+                <div
                   css={css`
-                    position: fixed;
-                    inset: 0;
-                    z-index: ${zIndex};
-                    max-width: 420px;
-                    margin-inline: auto;
-                    isolation: isolate;
+                    height: ${window.innerHeight}px;
+                    max-width: var(--app-max-width);
+                    width: 100vw;
                   `}
                 >
-                  <motion.div
-                    css={css`
-                      background-color: ${backgroundColor};
-                      position: absolute;
-                      bottom: 0;
-                      width: 100%;
-                      will-change: transform;
-                      height: ${window.innerHeight}px;
-                      z-index: 1;
-                    `}
-                    initial={{ x: w }}
-                    animate={{ x: 0 }}
-                    exit={{ x: w }}
-                    transition={staticTransition}
-                    style={{
-                      x,
-                      left: 0,
-                      // Extra padding at the right to account for rubber band scrolling.
-                      paddingRight: window.screen.width,
-                    }}
-                  >
-                    <div
-                      css={css`
-                        height: ${window.innerHeight}px;
-                        max-width: var(--app-max-width);
-                        width: 100vw;
-                      `}
-                    >
-                      {children}
-                    </div>
-                  </motion.div>
-                </motion.div>
-              </>,
-              document.querySelector<HTMLDivElement>(
-                "#screens"
-              ) as HTMLDivElement
-            )}
-          </>
-        )}
-      </AnimatePresence>
+                  {children}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Portal>
     </>
   );
 };

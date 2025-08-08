@@ -133,7 +133,13 @@ const AssetCardListSelect = ({
             symbol={asset.symbol}
             fiatCurrency={asset.fiatCurrency}
             // @ts-ignore Need to update assets to fix this
-            balance={showBalanceUSD ? asset.balanceUSD : asset.balance}
+            balance={
+              asset?.balanceUSD
+                ? showBalanceUSD
+                  ? asset.balanceUSD
+                  : asset.balance
+                : asset.balance
+            }
             showCurrencySymbol={showCurrencySymbol}
             icon={asset.icon}
             showBalance={showBalance}

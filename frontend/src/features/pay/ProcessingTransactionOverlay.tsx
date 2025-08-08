@@ -9,7 +9,7 @@ import success from "@/assets/lottie/success.json";
 import fail from "@/assets/lottie/fail.json";
 import { useLottie } from "lottie-react";
 import { unmountOverlays, toggleOverlay, unmount } from "./paySlice";
-import { PayTransactionStatus } from "./types";
+import { PayTransactionStatus } from "./pay.types";
 import toast from "react-hot-toast/headless";
 import { ProgressBar } from "react-aria-components";
 

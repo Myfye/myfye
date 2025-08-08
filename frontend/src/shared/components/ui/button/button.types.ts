@@ -27,6 +27,7 @@ export interface SharedButtonAndLinkProps {
   expand?: boolean;
   borderRadius?: string;
   className?: string;
+  isLoading?: boolean;
 }
 
 export interface ButtonProps extends AriaButtonProps, SharedButtonAndLinkProps {

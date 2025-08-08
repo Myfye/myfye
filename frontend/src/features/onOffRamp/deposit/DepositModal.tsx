@@ -1,147 +1,124 @@
 import { useState } from "react";
 
 import { css } from "@emotion/react";
-import { Bank, Wallet, CreditCard } from "@phosphor-icons/react";
+import { Bank, Wallet } from "@phosphor-icons/react";
 import ModalButton from "../_components/ModalButton";
-import { useDispatch, useSelector } from "react-redux";
 import Modal from "@/shared/components/ui/modal/Modal";
-import { RootState } from "@/redux/store";
-import { setDepositModalOpen } from "@/redux/modalReducers";
 // import toast from "react-hot-toast/headless";
-import OnChainDepositOverlay from "./onChain/OnChainDepositContent";
-import OffChainDepositOverlay from "./offChain/DepositOverlay";
-import OffChainPrivyDepositOverlay from "./offChain/privy/DepositWithPrivyOverlay";
-import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
-import {useFundWallet} from '@privy-io/react-auth/solana';
+import OnChainDepositContent from "./onChain/OnChainDepositContent";
+import { AnimatePresence, useMotionValue, animate } from "motion/react";
+import toast from "react-hot-toast/headless";
+import { toggleModal, unmount } from "./depositSlice";
+// import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import {
+  toggleOverlay,
+  unmount as unmountOffChain,
+} from "./offChain/depositOffChainSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import DepositOffChainBankAccountOverlay from "./offChain/bankAccount/DepositOffChainBankAccountOverlay";
+import DepositOffChainPrivyOverlay from "./offChain/privy/DepositOffChainPrivyOverlay";
 
+const DEFAULT_HEIGHT = 360;
 
 const DepositModal = () => {
-  const dispatch = useDispatch();
-  const {fundWallet} = useFundWallet();
-  const isOpen = useSelector((state: RootState) => state.depositModal.isOpen);
-  const onOpenChange = (isOpen: boolean) => {
-    dispatch(setDepositModalOpen(isOpen));
-  };
-  const [showCopiedAddress, setShowCopiedAddress] = useState(false);
-
-  const [onChainDepositOpen, setOnChainDepositOpen] = useState(false);
-  const [offChainDepositOpen, setOffChainDepositOpen] = useState(false);
-  const [privyDepositOpen, setPrivyDepositOpen] = useState(false);
-
-
-  const solanaPubKey = useSelector((state: any) => state.userWalletData.solanaPubKey);
-
-  const currentUserKYCVerified = useSelector(
-    (state: RootState) => state.userWalletData.currentUserKYCVerified
+  const dispatch = useAppDispatch();
+  const isOpen = useAppSelector((state) => state.deposit.modal.isOpen);
+  const height = useMotionValue(DEFAULT_HEIGHT);
+  const currentUserKYCVerified = useAppSelector(
+    (state) => state.userWalletData.currentUserKYCVerified
   );
 
-  const resetModal = () => {
-    setOnChainDepositOpen(false);
-    setOffChainDepositOpen(false);
-    setPrivyDepositOpen(false);
-    setShowCopiedAddress(false);
-  };
+  const [isOnChainDepositOpen, setOnChainDepositOpen] = useState(false);
 
-  const openOnChainDeposit = () => {
-    /*
-    if (!currentUserKYCVerified) {
-      dispatch(toggleKYCModal({ isOpen: true }));
-    } else {
-      setOnChainDepositOpen(true);
-    }
-      */
-    setOnChainDepositOpen(true);
-  };
+  // const solanaPubKey = useSelector(
+  //   (state: any) => state.userWalletData.solanaPubKey
+  // );
 
-  const openOffChainDeposit = () => {
-    console.log("currentUserKYCVerified", currentUserKYCVerified);
-    if (!currentUserKYCVerified) {
-      //setShowKYCOverlay(true);
-      dispatch(toggleKYCModal({ isOpen: true }));
-    } else {
-      setOffChainDepositOpen(true);
+  // const currentUserKYCVerified = useSelector(
+  //   (state: RootState) => state.userWalletData.currentUserKYCVerified
+  // );
+
+  const toggleOnChainDepositScreen = async (isOpen: boolean) => {
+    setOnChainDepositOpen(isOpen);
+    if (isOpen) {
+      await animate(height, 400, {
+        type: "inertia",
+        bounceStiffness: 300,
+        bounceDamping: 40,
+        timeConstant: 300,
+        min: 400,
+        max: 400,
+      });
     }
   };
-
-  const openPrivyDeposit = () => {
-
-    setPrivyDepositOpen(true);
-  };
-
 
   return (
     <>
       <Modal
+        zIndex={1000}
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={(isOpen) => dispatch(toggleModal(isOpen))}
         title="Deposit"
-        height={350}
-        onAnimationComplete={() => {
-          isOpen && resetModal();
+        height={height}
+        onExit={() => {
+          unmount();
+          unmountOffChain();
+          toggleOnChainDepositScreen(false);
+          height.set(DEFAULT_HEIGHT);
         }}
       >
-        {!offChainDepositOpen && !onChainDepositOpen && !privyDepositOpen && (
-          <menu
-            css={css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--size-150);
-              padding-inline: var(--size-200);
-            `}
-          >
-            <li>
+        <AnimatePresence>
+          {isOnChainDepositOpen ? (
+            <OnChainDepositContent
+              onAddressCopy={(address) => {
+                navigator.clipboard.writeText(address);
+                dispatch(toggleModal(false));
+                toast.success("Copied wallet address!");
+              }}
+            />
+          ) : (
+            <menu
+              css={css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size-150);
+                padding-inline: var(--size-200);
+              `}
+            >
               <ModalButton
                 icon={Wallet}
-                title="Crypto"
-                description="Send crypto to your wallet"
-                onPress={openOnChainDeposit}
-              ></ModalButton>
-            </li>
-            <li>
+                title="Wallet"
+                description="Deposit via wallet address"
+                onPress={async () =>
+                  void (await toggleOnChainDepositScreen(true))
+                }
+              />
               <ModalButton
                 icon={Bank}
                 title="Bank Account"
                 description="Deposit via bank transfer"
-                onPress={openOffChainDeposit}
-              ></ModalButton>
-            </li>
-            <li>
+                onPress={() => {
+                  // if (!currentUserKYCVerified)
+                  //   return dispatch(toggleKYCModal({ isOpen: true }));
+                  dispatch(
+                    toggleOverlay({ type: "bankAccount", isOpen: true })
+                  );
+                }}
+              />
               <ModalButton
-                icon={CreditCard}
+                icon={Bank}
                 title="Card / Apple Pay / Google Pay"
                 description="Deposit via credit/debit card"
-                onPress={openPrivyDeposit}
-              ></ModalButton>
-            </li>
-          </menu>
-        )}
+                onPress={() => {
+                  dispatch(toggleOverlay({ type: "privy", isOpen: true }));
+                }}
+              />
+            </menu>
+          )}
+        </AnimatePresence>
       </Modal>
-      <Modal
-        isOpen={onChainDepositOpen}
-        onOpenChange={setOnChainDepositOpen}
-        title="Deposit"
-        height={580}
-      >
-        <OnChainDepositOverlay
-          isOpen={onChainDepositOpen}
-          onOpenChange={setOnChainDepositOpen}
-        />
-      </Modal>
-      {offChainDepositOpen && (
-        <OffChainDepositOverlay
-          isOpen={offChainDepositOpen}
-          onOpenChange={setOffChainDepositOpen}
-          zIndex={1100}
-        />
-      )}
-      {privyDepositOpen && (
-        <OffChainPrivyDepositOverlay
-          isOpen={privyDepositOpen}
-          onOpenChange={setPrivyDepositOpen}
-          zIndex={1100}
-        />
-      )}
-
+      <DepositOffChainBankAccountOverlay />
+      <DepositOffChainPrivyOverlay />
     </>
   );
 };

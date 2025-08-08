@@ -1,46 +1,64 @@
-import {
-  Backspace,
-  Dot,
-  NumberEight,
-  NumberFive,
-  NumberFour,
-  NumberNine,
-  NumberOne,
-  NumberSeven,
-  NumberSix,
-  NumberThree,
-  NumberTwo,
-  NumberZero,
-} from "@phosphor-icons/react";
+import { Backspace, Icon } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
 import NumberPadButton from "./NumberPadButton";
 
-interface NumberPadProps {
-  onNumberPress?: (e: string) => void;
-  onNumberPressStart?: (e: string) => void;
-  onNumberPressEnd?: (e: string) => void;
+type PredefinedNumberPadButtonType =
+  | { id: "1"; icon: "1"; value: "1" }
+  | { id: "2"; icon: "2"; value: "2" }
+  | { id: "3"; icon: "3"; value: "3" }
+  | { id: "4"; icon: "4"; value: "4" }
+  | { id: "5"; icon: "5"; value: "5" }
+  | { id: "6"; icon: "6"; value: "6" }
+  | { id: "7"; icon: "7"; value: "7" }
+  | { id: "8"; icon: "8"; value: "8" }
+  | { id: "9"; icon: "9"; value: "9" }
+  | { id: "."; icon: "."; value: "." }
+  | { id: "0"; icon: "0"; value: "0" }
+  | { id: "backspace"; icon: Icon; value: "delete" };
+
+type NumberPadButtonType = {
+  id: string;
+  icon: string | Icon;
+  value: string;
+};
+
+type ValueType<T> = T extends NumberPadButtonType
+  ? T["value"]
+  : PredefinedNumberPadButtonType["value"];
+
+export interface NumberPadProps<
+  T extends NumberPadButtonType = PredefinedNumberPadButtonType
+> {
+  buttons?: T extends PredefinedNumberPadButtonType
+    ? PredefinedNumberPadButtonType[]
+    : NumberPadButtonType[];
+  onNumberPress?: (value: ValueType<T>) => void;
+  onNumberPressStart?: (value: ValueType<T>) => void;
+  onNumberPressEnd?: (value: ValueType<T>) => void;
 }
+
+const defaultButtons: PredefinedNumberPadButtonType[] = [
+  { id: "1", icon: "1", value: "1" },
+  { id: "2", icon: "2", value: "2" },
+  { id: "3", icon: "3", value: "3" },
+  { id: "4", icon: "4", value: "4" },
+  { id: "5", icon: "5", value: "5" },
+  { id: "6", icon: "6", value: "6" },
+  { id: "7", icon: "7", value: "7" },
+  { id: "8", icon: "8", value: "8" },
+  { id: "9", icon: "9", value: "9" },
+  { id: ".", icon: ".", value: "." },
+  { id: "0", icon: "0", value: "0" },
+  { id: "backspace", icon: Backspace, value: "delete" },
+];
+
 const NumberPad = ({
+  buttons = defaultButtons,
   onNumberPress,
   onNumberPressStart,
   onNumberPressEnd,
 }: NumberPadProps) => {
-  const buttons = [
-    { id: "1", icon: "1", value: "1" },
-    { id: "2", icon: "2", value: "2" },
-    { id: "3", icon: "3", value: "3" },
-    { id: "4", icon: "4", value: "4" },
-    { id: "5", icon: "5", value: "5" },
-    { id: "6", icon: "6", value: "6" },
-    { id: "7", icon: "7", value: "7" },
-    { id: "8", icon: "8", value: "8" },
-    { id: "9", icon: "9", value: "9" },
-    { id: ".", icon: ".", value: "." },
-    { id: "0", icon: "0", value: "0" },
-    { id: "backspace", icon: Backspace, value: "delete" },
-  ];
-
   return (
     <div
       className="number-pad-container"

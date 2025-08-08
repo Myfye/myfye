@@ -8,8 +8,11 @@ import SwapAssetsSummary from "./SwapAssetsSummary";
 import { toggleOverlay } from "./swapSlice";
 import { swap } from "./solana-swap/SwapService";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
-import { useCallback } from "react";
+import { useCallback, useId } from "react";
 import { AbstractedAsset } from "../assets/types";
+import TransactionConfirmationScreen from "@/shared/components/ui/transaction/confirmation/TransactionConfirmationScreen";
+import { getUsdAmount } from "./utils";
+import { useAppSelector } from "@/redux/hooks";
 
 const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -22,10 +25,6 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
   const { wallets } = useSolanaWallets();
   const wallet = wallets[0];
   const transaction = useSelector((state: RootState) => state.swap.transaction);
-
-  const handleOpen = (e: boolean) => {
-    dispatch(toggleOverlay({ type: "confirmSwap", isOpen: e }));
-  };
 
   const assets = useSelector((state: RootState) => state.assets);
 
@@ -218,7 +217,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
     }
   };
 
-  const handleSwapConfirmation = useCallback(() => {
+  const handleSwapConfirmation = () => {
     const buyAssetId = getAssetId(transaction.buy.abstractedAssetId);
     const sellAssetId = getAssetId(transaction.sell.abstractedAssetId);
 
@@ -249,103 +248,67 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
         isOpen: true,
       })
     );
-  }, [transaction]);
+  };
+
+  const headingId = useId();
+
+  const sellAbstractedAsset = useAppSelector((state) =>
+    transaction.sell.abstractedAssetId
+      ? state.assets.abstractedAssets[transaction.sell.abstractedAssetId]
+      : null
+  );
+  const buyAbstractedAsset = useAppSelector((state) =>
+    transaction.buy.abstractedAssetId
+      ? state.assets.abstractedAssets[transaction.buy.abstractedAssetId]
+      : null
+  );
+
+  const sellAmountUSD = getUsdAmount(
+    transaction.sell.abstractedAssetId,
+    assets,
+    transaction.sell.amount
+  );
+
+  const buyAmountUSD = getUsdAmount(
+    transaction.buy.abstractedAssetId,
+    assets,
+    transaction.buy.amount
+  );
+
   return (
     <>
       <Overlay
         isOpen={isOpen}
-        onOpenChange={handleOpen}
-        title="Confirm Swap"
+        onOpenChange={(isOpen) => {
+          dispatch(toggleOverlay({ type: "confirmSwap", isOpen }));
+        }}
         zIndex={zIndex}
+        aria-labelledby={headingId}
       >
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-          `}
-        >
-          <section
-            css={css`
-              margin-block-start: var(--size-300);
-              margin-inline: var(--size-250);
-            `}
-          >
-            <SwapAssetsSummary />
-          </section>
-          <section
-            css={css`
-              margin-inline: var(--size-250);
-              margin-block-start: var(--size-400);
-            `}
-          >
-            <ul
-              css={css`
-                width: 100%;
-                color: var(--clr-text);
-                line-height: var(--line-height-tight);
-                > * + * {
-                  margin-block-start: var(--size-200);
-                }
-              `}
-            >
-              <li
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                `}
-              >
-                <span className="heading-small">Fee</span>
-                <span
-                  css={css`
-                    font-size: var(--fs-medium);
-                    color: var(--clr-text);
-                  `}
-                >
-                  {transaction.fee &&
-                    new Intl.NumberFormat("en-EN", {
-                      style: "currency",
-                      currency: "usd",
-                    }).format(transaction.fee)}
-                </span>
-              </li>
-            </ul>
-          </section>
-          <section
-            css={css`
-              margin-block-start: auto;
-              margin-bottom: var(--size-250);
-              margin-inline: var(--size-250);
-            `}
-          >
-            <menu
-              css={css`
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: var(--control-gap-medium);
-              `}
-            >
-              <li>
-                <Button
-                  expand
-                  color="neutral"
-                  onPress={() =>
-                    void dispatch(
-                      toggleOverlay({ type: "confirmSwap", isOpen: false })
-                    )
-                  }
-                >
-                  Cancel
-                </Button>
-              </li>
-              <li>
-                <Button expand onPress={handleSwapConfirmation}>
-                  Confirm
-                </Button>
-              </li>
-            </menu>
-          </section>
-        </div>
+        <TransactionConfirmationScreen
+          input={{
+            amount: transaction.sell.amount ?? 0,
+            amountInFiat: sellAmountUSD,
+            icon: sellAbstractedAsset?.icon.content,
+            label: sellAbstractedAsset?.label ?? "",
+            tokenSymbol: sellAbstractedAsset?.symbol ?? "",
+            fiatCurrency: "usd",
+          }}
+          output={{
+            amount: transaction.buy.amount ?? 0,
+            amountInFiat: buyAmountUSD,
+            icon: buyAbstractedAsset?.icon.content,
+            label: buyAbstractedAsset?.label ?? "",
+            tokenSymbol: buyAbstractedAsset?.symbol ?? "",
+            fiatCurrency: "usd",
+          }}
+          onConfirm={handleSwapConfirmation}
+          onCancel={() => {
+            dispatch(toggleOverlay({ type: "confirmSwap", isOpen: false }));
+          }}
+          headingId={headingId}
+          title="Confirm Swap"
+        />
       </Overlay>
     </>
   );

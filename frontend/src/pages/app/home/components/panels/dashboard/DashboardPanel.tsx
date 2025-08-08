@@ -7,15 +7,13 @@ import {
   ArrowsDownUp,
 } from "@phosphor-icons/react";
 import { css } from "@emotion/react";
-import {
-  setDepositModalOpen,
-  setWithdrawModalOpen,
-} from "@/redux/modalReducers";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAssetsBalanceUSD } from "@/features/assets/assetsSlice";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
+import { toggleModal as toggleWithdrawModal } from "@/features/onOffRamp/withdraw/withdrawSlice";
 import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 import ChartTabs from "./chart_tabs/ChartTabs";
 
@@ -101,7 +99,7 @@ const DashboardPanel = ({}) => {
               size="x-small"
               icon={ArrowLineUpIcon}
               onPress={() => {
-                dispatch(setDepositModalOpen(true));
+                dispatch(toggleDepositModal(true));
               }}
             >
               Deposit
@@ -112,7 +110,7 @@ const DashboardPanel = ({}) => {
               size="x-small"
               icon={ArrowLineDownIcon}
               onPress={() => {
-                dispatch(setWithdrawModalOpen(true));
+                dispatch(toggleWithdrawModal(true));
               }}
             >
               Withdraw
@@ -143,7 +141,7 @@ const DashboardPanel = ({}) => {
             <Button
               expand
               onPress={() => {
-                dispatch(setDepositModalOpen(true));
+                dispatch(toggleDepositModal(true));
               }}
               css={css`
                 margin-block-start: var(--size-300);
