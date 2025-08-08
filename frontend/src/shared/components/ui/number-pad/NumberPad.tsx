@@ -27,11 +27,11 @@ type ValueType<T> = T extends NumberPadButtonType
   ? T["value"]
   : PredefinedNumberPadButtonType["value"];
 
-interface NumberPadProps<
+export interface NumberPadProps<
   T extends NumberPadButtonType = PredefinedNumberPadButtonType
 > {
   buttons?: T extends PredefinedNumberPadButtonType
-    ? PredefinedNumberPadButtonType
+    ? PredefinedNumberPadButtonType[]
     : NumberPadButtonType[];
   onNumberPress?: (value: ValueType<T>) => void;
   onNumberPressStart?: (value: ValueType<T>) => void;
