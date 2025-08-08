@@ -13,16 +13,22 @@ import { useFundWallet } from "@privy-io/react-auth/solana";
 import { AnimatePresence, useMotionValue, animate } from "motion/react";
 import toast from "react-hot-toast/headless";
 import { toggleModal, unmount } from "./depositSlice";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 import {
   toggleOverlay,
   unmount as unmountOffChain,
 } from "./offChain/depositOffChainSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
+const DEFAULT_HEIGHT = 360;
+
 const DepositModal = () => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector((state) => state.deposit.modal.isOpen);
-  const height = useMotionValue(360);
+  const height = useMotionValue(DEFAULT_HEIGHT);
+  const currentUserKYCVerified = useAppSelector(
+    (state) => state.userWalletData.currentUserKYCVerified
+  );
 
   const [isOnChainDepositOpen, setOnChainDepositOpen] = useState(false);
 
@@ -48,15 +54,6 @@ const DepositModal = () => {
     }
   };
 
-  // const onOffChainDepositScreenOpen = (isOpen: boolean) => {
-  //   // if (!currentUserKYCVerified) {
-  //   //   dispatch(toggleKYCModal({ isOpen: true }));
-  //   // } else {
-  //   //   setOffChainDepositOpen(isOpen);
-  //   // }
-  //   setOffChainDepositOpen(isOpen);
-  // };
-
   return (
     <>
       <Modal
@@ -69,7 +66,7 @@ const DepositModal = () => {
           unmount();
           unmountOffChain();
           toggleOnChainDepositScreen(false);
-          height.set(360);
+          height.set(DEFAULT_HEIGHT);
         }}
       >
         <AnimatePresence>
@@ -77,8 +74,8 @@ const DepositModal = () => {
             <OnChainDepositContent
               onAddressCopy={(address) => {
                 navigator.clipboard.writeText(address);
+                dispatch(toggleModal(false));
                 toast.success("Copied wallet address!");
-                onOpenChange(false);
               }}
             />
           ) : (
@@ -103,6 +100,8 @@ const DepositModal = () => {
                 title="Bank Account"
                 description="Deposit via bank transfer"
                 onPress={() => {
+                  // if (!currentUserKYCVerified)
+                  //   return dispatch(toggleKYCModal({ isOpen: true }));
                   dispatch(
                     toggleOverlay({ type: "depositOffChain", isOpen: true })
                   );
