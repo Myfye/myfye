@@ -10,6 +10,8 @@ import { validateSolanaAddress } from "@/shared/utils/solanaUtils";
 import { RootState } from "@/redux/store";
 import { useGetRecentlyUsedAddressesQuery } from "@/features/solana/solanaApi";
 import { toggleOverlay, updateSolAddress } from "./withdrawOnChainSlice";
+import { useAppSelector } from "@/redux/hooks";
+import toast from "react-hot-toast/headless";
 
 interface WithdrawOnChainAddressEntryOverlayProps
   extends Omit<OverlayProps, "children" | "isOpen" | "onOpenChange"> {
@@ -24,25 +26,20 @@ const WithdrawOnChainAddressEntryOverlay = ({
 }: WithdrawOnChainAddressEntryOverlayProps) => {
   const dispatch = useDispatch();
   const isOpen = useSelector(
-    (state: RootState) => state.withdrawOnChain.overlays.addressEntry.isOpen
+    (state) => state.withdrawOnChain.overlays.addressEntry.isOpen
   );
-  const solAddress = useSelector(
-    (state: RootState) => state.withdrawOnChain.transaction.solAddress
+  const solAddress = useAppSelector(
+    (state) => state.withdrawOnChain.transaction.solAddress
   );
 
-  const userId = useSelector(
-    (state: RootState) => state.userWalletData.currentUserID
-  );
+  const userId = useAppSelector((state) => state.userWalletData.currentUserID);
+
   const {
-    wallets: [wallet],
-  } = useSolanaWallets();
-
-  const { isSuccess, isLoading, isError, data } =
-    useGetRecentlyUsedAddressesQuery(userId);
-
-  const handleAddressSelect = (selectedAddress: string) => {
-    dispatch(updateSolAddress(selectedAddress));
-  };
+    isSuccess,
+    isLoading: areRecentlyUsedAddressesLoading,
+    isError: areRecentlyUsedAddressesError,
+    data: recentlyUsedAddresses,
+  } = useGetRecentlyUsedAddressesQuery(userId);
 
   // const handleSaveAddress = async () => {
   //   try {
@@ -66,7 +63,6 @@ const WithdrawOnChainAddressEntryOverlay = ({
         onOpenChange={(isOpen) => {
           dispatch(toggleOverlay({ type: "addressEntry", isOpen }));
         }}
-        title="Enter Address"
         zIndex={2002}
       >
         <div
@@ -75,22 +71,23 @@ const WithdrawOnChainAddressEntryOverlay = ({
             grid-template-rows: 1fr auto;
             gap: var(--size-200);
             height: 100%;
-            padding: var(--size-200);
           `}
         >
-          <div
+          <section
             css={css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--size-200);
-              width: min(100%, 24rem);
-              margin-inline: auto;
+              padding-inline: var(--size-400);
             `}
           >
             <div
               css={css`
-                border-radius: var(--border-radius-medium);
-                padding: var(--size-100);
+                margin-block-start: var(--size-300);
+              `}
+            >
+              <h1 className="heading-x-large">Enter Solana Address</h1>
+            </div>
+            <div
+              css={css`
+                margin-block-start: var(--size-400);
               `}
             >
               <Input
@@ -104,9 +101,8 @@ const WithdrawOnChainAddressEntryOverlay = ({
                 placeholder="Solana address"
               />
             </div>
-
-            {/* {recentAddresses?.addresses &&
-              recentAddresses.addresses.length > 0 && (
+            {/* {recentlyUsedAddresses?.addresses &&
+              Array.isArray(recentlyUsedAddresses?.addresses) && (
                 <div
                   css={css`
                     display: flex;
@@ -130,7 +126,7 @@ const WithdrawOnChainAddressEntryOverlay = ({
                       gap: var(--size-100);
                     `}
                   >
-                    {recentAddresses.addresses.map((addr, index) => (
+                    {/* {recentAddresses.addresses.map((addr, index) => (
                       <button
                         key={index}
                         onClick={() => handleAddressSelect(addr)}
@@ -158,23 +154,29 @@ const WithdrawOnChainAddressEntryOverlay = ({
                       >
                         {addr}
                       </button>
-                    ))}
-                  </div>
-                </div>
-              )} */}
-          </div>
+                    ))} */}
+            {/* </div>
+                </div> */}
+            {/* )} */}
+          </section>
           <section
             css={css`
               margin-block-start: auto;
+              padding-inline: var(--size-400);
+              padding-block-end: var(--size-200);
             `}
           >
             <Button
               expand
               variant="primary"
               onPress={() => {
+                const isSolanaAddressValid = validateSolanaAddress(
+                  solAddress ?? ""
+                );
+                if (!isSolanaAddressValid)
+                  return toast.error("Please input a valid Solana address");
                 dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
               }}
-              isDisabled={validateSolanaAddress("")}
             >
               Next
             </Button>
