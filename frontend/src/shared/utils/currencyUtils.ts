@@ -20,3 +20,13 @@ export const getFiatCurrencySymbol = (
     }
   }
 };
+
+export const formatAmountWithCurrency = (
+  amount: number,
+  currency: string = "usd"
+) =>
+  new Intl.NumberFormat("en-EN", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: Number.isInteger(amount) ? 0 : 2,
+  }).format(amount);

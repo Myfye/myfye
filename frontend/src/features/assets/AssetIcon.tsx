@@ -1,13 +1,12 @@
 import { css } from "@emotion/react";
 import { Asset } from "./types";
 
-const AssetIcon = ({
-  icon,
-  width = "2.75rem",
-}: {
-  icon: Asset["icon"];
+interface AssetIconProps {
+  icon: Asset["icon"] | string;
   width?: string;
-}) => {
+}
+
+const AssetIcon = ({ icon, width = "2.75rem" }: AssetIconProps) => {
   return (
     <div
       className="icon-wrapper | aspect-ratio-square"
@@ -17,7 +16,16 @@ const AssetIcon = ({
         overflow: hidden;
       `}
     >
-      {icon.type !== "text" ? (
+      {typeof icon === "string" ? (
+        <img
+          src={icon}
+          css={css`
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+          `}
+        />
+      ) : icon.type !== "text" ? (
         <img
           src={icon.content}
           css={css`

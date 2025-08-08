@@ -318,7 +318,7 @@
     inset: 0;
     margin: auto;
     padding-inline: var(--size-150);
-    width: 15rem;
+    width: 16rem;
     height: 3.5rem;
     box-shadow: var(--box-shadow-popout);
     border-radius: var(--border-radius-medium);
