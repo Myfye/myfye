@@ -84,18 +84,10 @@ const Modal = ({
 
   const [initialY, setInitialY] = useState(checkMotionValue(h) ? h.get() : h);
 
-  useEffect(() => {
-    const unsubH = () => {
-      if (!checkMotionValue(h) || !checkMotionValue(height)) return;
-      h.on("change", (x) => {
-        if (x !== height.get()) return;
-        setInitialY(x);
-      });
-    };
-    return () => {
-      unsubH();
-    };
-  }, [h, setInitialY, height]);
+  if (checkMotionValue(h) && checkMotionValue(height))
+    useMotionValueEvent(height, "animationComplete", () => {
+      if (h.get() === height.get()) setInitialY(h.get());
+    });
 
   return (
     <>
