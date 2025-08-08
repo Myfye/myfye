@@ -56,7 +56,6 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "node scripts/create-assetlinks.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
