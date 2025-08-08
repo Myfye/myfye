@@ -16,16 +16,18 @@ import {
   updateAmount,
   updatePayin,
   updatePresetAmount,
-} from "./depositOffChainSlice";
+} from "../depositOffChainSlice";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
-import { PresetAmountOption } from "./depositOffChain.types";
+import { PresetAmountOption } from "../depositOffChain.types";
 import { CaretDown } from "@phosphor-icons/react";
-import { currencyMap } from "./_components/currencyMap";
-import SelectCurrencyModal from "./SelectCurrencyModal";
-import { useLazyCreatePayinQuery } from "../depositApi";
+import { currencyMap } from "../_components/currencyMap";
+import SelectCurrencyModal from "../SelectCurrencyModal";
+import { useLazyCreatePayinQuery } from "../../depositApi";
 import toast from "react-hot-toast/headless";
 
-const DepositOffChainOverlay = ({ ...restProps }: LocalOverlayProps) => {
+const DepositOffChainBankAccountOverlay = ({
+  ...restProps
+}: LocalOverlayProps) => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(
     (state) => state.depositOffChain.overlays.depositOffChain.isOpen
@@ -250,4 +252,4 @@ const DepositOffChainOverlay = ({ ...restProps }: LocalOverlayProps) => {
   );
 };
 
-export default DepositOffChainOverlay;
+export default DepositOffChainBankAccountOverlay;

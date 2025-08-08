@@ -7,14 +7,14 @@ import Overlay, {
 } from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { toggleOverlay, unmount } from "./depositOffChainSlice";
+import { toggleOverlay, unmount } from "../depositOffChainSlice";
 import { Check, Copy } from "@phosphor-icons/react";
 import { useCopyAndPaste } from "@/features/copy-and-paste/useCopyAndPaste";
-import BankDepositDetailsList from "./_components/BankDepositDetailsList";
-import BankDepositDetailsListItem from "./_components/BankDepositDetailsListItem";
-import { toggleModal, unmount as unmountDeposit } from "../depositSlice";
+import BankDepositDetailsList from "../_components/BankDepositDetailsList";
+import BankDepositDetailsListItem from "../_components/BankDepositDetailsListItem";
+import { toggleModal, unmount as unmountDeposit } from "../../depositSlice";
 
-const DepositOffChainInstructionsOverlay = ({
+const DepositOffChainBankAccountInstructionsOverlay = ({
   ...restProps
 }: LocalOverlayProps) => {
   const headingId = useId();
@@ -176,4 +176,4 @@ const DepositOffChainInstructionsOverlay = ({
   );
 };
 
-export default DepositOffChainInstructionsOverlay;
+export default DepositOffChainBankAccountInstructionsOverlay;

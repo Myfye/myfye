@@ -1,13 +1,17 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import {
+  BankAccountTransaction,
   DepositOffChainOverlay,
-  DepositOffChainTransaction,
   PresetAmountOption,
+  Transaction,
 } from "./depositOffChain.types";
 import { parseFormattedAmount, updateFormattedAmount } from "../utils";
 
+type TransactionKey = "bankAccountTransaction" | "privyTransaction";
+
 interface DepositOffChainState {
-  transaction: DepositOffChainTransaction;
+  bankAccountTransaction: BankAccountTransaction;
+  privyTransaction: Transaction;
   overlays: {
     depositOffChain: {
       isOpen: boolean;
@@ -27,7 +31,7 @@ interface DepositOffChainState {
 }
 
 const initialState: DepositOffChainState = {
-  transaction: {
+  bankAccountTransaction: {
     id: null,
     amount: 0,
     formattedAmount: "0",
@@ -46,6 +50,13 @@ const initialState: DepositOffChainState = {
         addressLine2: null,
       },
     },
+  },
+  privyTransaction: {
+    id: null,
+    amount: 0,
+    formattedAmount: "0",
+    fee: 0,
+    presetAmount: null,
   },
   overlays: {
     depositOffChain: {
@@ -108,28 +119,39 @@ const depositOffChainSlice = createSlice({
       action: PayloadAction<{
         input: string | number;
         replace?: boolean;
+        transactionType: "bankAccount" | "privy";
       }>
     ) {
-      state.transaction.formattedAmount = updateFormattedAmount(
-        state.transaction.formattedAmount,
+      const transactionKey = (action.payload.transactionType +
+        "transaction") as TransactionKey;
+      state[transactionKey].formattedAmount = updateFormattedAmount(
+        state[transactionKey].formattedAmount,
         action.payload.input,
         action.payload.replace
       );
 
       const parsedFormattedAmount = parseFormattedAmount(
-        state.transaction.formattedAmount
+        state[transactionKey].formattedAmount
       );
 
       if (isNaN(parsedFormattedAmount)) {
-        state.transaction.amount = null;
+        state[transactionKey].amount = null;
       } else {
-        console.log(state.transaction.fee);
-        state.transaction.amount = parsedFormattedAmount;
-        state.transaction.fee = parsedFormattedAmount * 0.01;
+        console.log(state[transactionKey].fee);
+        state[transactionKey].amount = parsedFormattedAmount;
+        state[transactionKey].fee = parsedFormattedAmount * 0.01;
       }
     },
-    updatePresetAmount: (state, action: PayloadAction<PresetAmountOption>) => {
-      state.transaction.presetAmount = action.payload;
+    updatePresetAmount: (
+      state,
+      action: PayloadAction<{
+        presetAmount: PresetAmountOption;
+        transactionType: "bankAccount" | "privy";
+      }>
+    ) => {
+      const transactionKey = (action.payload.transactionType +
+        "transaction") as TransactionKey;
+      state[transactionKey].presetAmount = action.payload.presetAmount;
     },
     updatePayin(
       state,
@@ -147,8 +169,8 @@ const depositOffChainSlice = createSlice({
         };
       }>
     ) {
-      state.transaction.payin = {
-        ...state.transaction.payin,
+      state.bankAccountTransaction.payin = {
+        ...state.bankAccountTransaction.payin,
         ...action.payload,
       };
     },

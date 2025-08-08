@@ -25,13 +25,15 @@ interface Payin {
   };
 }
 
-export interface DepositOffChainTransaction {
+export interface Transaction {
   id: string | null;
-  status: "idle" | "success" | "fail";
   amount: number | null;
   formattedAmount: string;
   fee: number;
   presetAmount: string | null;
+}
+
+export interface BankAccountTransaction extends Transaction {
   payin: Payin;
 }
 
