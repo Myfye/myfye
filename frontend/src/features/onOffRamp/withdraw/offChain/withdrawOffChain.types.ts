@@ -17,6 +17,14 @@ export interface WithdrawOffChainTransaction {
     speiClabe: string | null;
     beneficiaryName: string | null;
   };
+  payout: {
+    id: null;
+    contract: {
+      blindpayContractAddress: string | null;
+      address: string | null;
+      amount: number | null;
+    };
+  };
 }
 
 export type WithdrawOffChainOverlay =

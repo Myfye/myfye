@@ -19,6 +19,7 @@ interface TransactionConfirmationScreenProps {
   onCancel?: () => void;
   /** Title */
   title: string;
+  isLoading?: boolean;
 }
 const TransactionConfirmationScreen = ({
   headingId,
@@ -27,6 +28,7 @@ const TransactionConfirmationScreen = ({
   fee,
   onCancel,
   onConfirm,
+  isLoading = false,
   title,
 }: TransactionConfirmationScreenProps) => {
   return (
@@ -102,11 +104,17 @@ const TransactionConfirmationScreen = ({
       >
         <ButtonGroup expand scroll={false}>
           {onCancel && (
-            <ButtonGroupItem onPress={onCancel} color="neutral">
+            <ButtonGroupItem
+              onPress={onCancel}
+              color="neutral"
+              isDisabled={isLoading}
+            >
               Cancel
             </ButtonGroupItem>
           )}
-          <ButtonGroupItem onPress={onConfirm}>Confirm</ButtonGroupItem>
+          <ButtonGroupItem onPress={onConfirm} isLoading={isLoading}>
+            Confirm
+          </ButtonGroupItem>
         </ButtonGroup>
       </section>
     </div>

@@ -59,6 +59,9 @@ const initialState: WithdrawOffChainState = {
       accountName: null,
       beneficiaryName: null,
     },
+    payout: {
+      id: null,
+    },
   },
   overlays: {
     withdrawOffChain: {

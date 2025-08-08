@@ -31,6 +31,7 @@ export interface OverlayProps extends HTMLMotionProps<"div"> {
   initialFocus?: RefObject<HTMLElement>;
   color?: string;
   onExit?: () => void;
+  isBackDisabled?: boolean;
 }
 
 export type LocalOverlayProps = Omit<OverlayProps, "isOpen" | "onOpenChange">;
@@ -44,6 +45,7 @@ const Overlay = ({
   initialFocus,
   color = "var(--clr-surface)",
   onExit,
+  isBackDisabled = false,
   ...restProps
 }: OverlayProps) => {
   const w = window.innerWidth;
@@ -112,6 +114,7 @@ const Overlay = ({
                       icon={CaretLeftIcon}
                       onPress={() => onOpenChange && onOpenChange(false)}
                       variant="transparent"
+                      isDisabled={isBackDisabled}
                     />
                     {title && (
                       <h1

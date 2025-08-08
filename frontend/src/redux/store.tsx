@@ -30,6 +30,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { contactsApi } from "@/features/contacts/contactsApi.ts";
 import { solanaApi } from "@/features/solana/solanaApi.ts";
 import { depositApi } from "@/features/onOffRamp/deposit/depositApi.ts";
+import { baseRelayerApi } from "@/features/base_relayer/baseRelayerApi.ts";
 
 const store = configureStore({
   reducer: {
@@ -84,6 +85,7 @@ const store = configureStore({
     [contactsApi.reducerPath]: contactsApi.reducer,
     [solanaApi.reducerPath]: solanaApi.reducer,
     [depositApi.reducerPath]: depositApi.reducer,
+    [baseRelayerApi.reducerPath]: baseRelayerApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
@@ -91,6 +93,7 @@ const store = configureStore({
       contactsApi.middleware,
       solanaApi.middleware,
       depositApi.middleware,
+      baseRelayerApi.middleware,
     ]),
 });
 
