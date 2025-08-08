@@ -1,9 +1,10 @@
 import baseLogoBlack from "@/assets/baseLogoBlack.png";
 import solanaLogoBlack from "@/assets/solanaLogoBlack.png";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
 
 import { css } from "@emotion/react";
+import RingLoader from "@/shared/components/ui/loading/spinners/RingLoader";
 
 const QRCode = ({
   data = "",
@@ -14,6 +15,7 @@ const QRCode = ({
   chain = "solana",
 }) => {
   const logo = chain === "base" ? baseLogoBlack : solanaLogoBlack;
+  const [isLoading, setLoading] = useState(false);
 
   const qrCode = new QRCodeStyling({
     type: "svg",
@@ -54,9 +56,14 @@ const QRCode = ({
       ref={ref}
       className={`qr-code | ${className}`}
       css={css`
-        display: ${visible ? "block" : "none"};
+        display: ${visible ? "grid" : "none"};
+        place-items: center;
+        width: ${size}px;
+        height: ${size}px;
       `}
-    ></div>
+    >
+      {/* {isLoading && <RingLoader width={24} height={24} />} */}
+    </div>
   );
 };
 
