@@ -50,6 +50,7 @@ const WithdrawOnChainSelectAssetOverlay = ({ ...restProps }: OverlayProps) => {
           { id: "cash", label: "", abstractedAssets: [usdcAsset, eurcAsset] },
         ]}
         assetCardListSelectOptions={{ showCurrencySymbol: false }}
+        zIndex={2001}
       />
     </>
   );

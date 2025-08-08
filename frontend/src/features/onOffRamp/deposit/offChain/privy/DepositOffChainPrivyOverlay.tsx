@@ -92,7 +92,7 @@ const DepositOffChainPrivyOverlay = () => {
             <section
               css={css`
                 padding-inline: var(--size-250);
-                margin-block-end: var(--size-200);
+                margin-block-end: var(--size-300);
               `}
             >
               <NumberPad {...numberPadProps} />

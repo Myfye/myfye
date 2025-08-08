@@ -67,6 +67,7 @@ const WithdrawOnChainAddressEntryOverlay = ({
           dispatch(toggleOverlay({ type: "addressEntry", isOpen }));
         }}
         title="Enter Address"
+        zIndex={2002}
       >
         <div
           css={css`
@@ -162,7 +163,6 @@ const WithdrawOnChainAddressEntryOverlay = ({
                 </div>
               )} */}
           </div>
-
           <section
             css={css`
               margin-block-start: auto;
@@ -171,7 +171,9 @@ const WithdrawOnChainAddressEntryOverlay = ({
             <Button
               expand
               variant="primary"
-              onPress={() => {}}
+              onPress={() => {
+                dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
+              }}
               isDisabled={validateSolanaAddress("")}
             >
               Next

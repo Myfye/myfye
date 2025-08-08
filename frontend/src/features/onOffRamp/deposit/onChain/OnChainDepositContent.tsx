@@ -37,7 +37,7 @@ const OnChainDepositContent = ({
         display: grid;
         place-items: center;
         height: 100%;
-        padding-block-start: var(--size-200);
+        padding-block-start: var(--size-100);
         padding-inline: var(--size-200);
         padding-block-end: var(--size-200);
       `}

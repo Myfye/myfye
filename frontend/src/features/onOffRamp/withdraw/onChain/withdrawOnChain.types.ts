@@ -4,7 +4,8 @@ export type WithdrawOnChainOverlay =
   | "withdrawOnChain"
   | "addressEntry"
   | "processingTransaction"
-  | "selectAsset";
+  | "selectAsset"
+  | "confirmTransaction";
 
 export interface WithdrawOnChainTransaction {
   id: string | null;

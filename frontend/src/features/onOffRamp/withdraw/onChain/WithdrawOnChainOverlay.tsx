@@ -20,40 +20,32 @@ import WithdrawOnChainSelectAssetOverlay from "./WithdrawOnChainSelectAssetOverl
 import WithdrawOnChainAddressEntryOverlay from "./WithdrawOnChainAddressEntryOverlay";
 import { PresetAmountOption } from "./withdrawOnChain.types";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
+import { useAppSelector } from "@/redux/hooks";
+import WithdrawOnChainConfirmOverlay from "./WithdrawOnChainConfirmTransactionOverlay";
 
 const WithdrawOnChainOverlay = ({
   ...restProps
 }: Omit<ModalProps, "onOpenChange" | "isOpen" | "children">) => {
   const dispatch = useDispatch();
 
-  const isOpen = useSelector(
-    (state: RootState) => state.withdrawOnChain.overlays.withdrawOnChain.isOpen
+  const isOpen = useAppSelector(
+    (state) => state.withdrawOnChain.overlays.withdrawOnChain.isOpen
   );
-  const transaction = useSelector(
-    (state: RootState) => state.withdrawOnChain.transaction
+  const transaction = useAppSelector(
+    (state) => state.withdrawOnChain.transaction
   );
-  const amount = useSelector(
-    (state: RootState) => state.withdrawOnChain.transaction.amount
-  );
-  const asset = useSelector((state: RootState) =>
+
+  const asset = useAppSelector((state) =>
     transaction.assetId ? selectAsset(state, transaction.assetId) : null
   );
 
   // Balances
-  const eurcSolBalance = useSelector((state: RootState) =>
+  const eurcSolBalance = useAppSelector((state) =>
     selectAssetBalance(state, "eurc_sol")
   );
-  const usdcSolBalance = useSelector((state: RootState) =>
+  const usdcSolBalance = useAppSelector((state) =>
     selectAssetBalance(state, "usdc_sol")
   );
-
-  const currencySymbol =
-    getFiatCurrencySymbol(
-      transaction.id === "usdc_sol" || !transaction.id ? "usd" : "euro"
-    ) ?? "$";
-
-  const isAddressEntryDisabled =
-    amount === 0 || eurcSolBalance === 0 || usdcSolBalance === 0 || !amount;
 
   const numberPadProps = useNumberPad({
     onStartDelete: (input) => {
@@ -77,6 +69,7 @@ const WithdrawOnChainOverlay = ({
           dispatch(toggleOverlay({ type: "withdrawOnChain", isOpen }));
         }}
         title="Enter send amount"
+        zIndex={2000}
       >
         <div
           css={css`
@@ -169,8 +162,9 @@ const WithdrawOnChainOverlay = ({
           </section>
         </div>
       </Overlay>
-      <WithdrawOnChainSelectAssetOverlay zIndex={3000} />
-      <WithdrawOnChainAddressEntryOverlay zIndex={3000} />
+      <WithdrawOnChainSelectAssetOverlay />
+      <WithdrawOnChainAddressEntryOverlay />
+      <WithdrawOnChainConfirmOverlay />
     </>
   );
 };

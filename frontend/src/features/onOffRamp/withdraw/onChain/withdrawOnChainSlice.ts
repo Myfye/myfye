@@ -4,7 +4,6 @@ import { Asset } from "@/features/assets/types";
 import { parseFormattedAmount, updateFormattedAmount } from "../utils";
 import {
   PresetAmountOption,
-  WithdrawOnChainModal,
   WithdrawOnChainOverlay,
   WithdrawOnChainTransaction,
 } from "./withdrawOnChain.types";
@@ -22,6 +21,9 @@ interface WithdrawOnChainState {
       isOpen: boolean;
     };
     selectAsset: {
+      isOpen: boolean;
+    };
+    confirmTransaction: {
       isOpen: boolean;
     };
   };
@@ -50,6 +52,9 @@ const initialState: WithdrawOnChainState = {
       isOpen: false,
     },
     selectAsset: {
+      isOpen: false,
+    },
+    confirmTransaction: {
       isOpen: false,
     },
   },
