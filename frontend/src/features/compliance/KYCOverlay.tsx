@@ -14,14 +14,13 @@ import {
 } from "../../env";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { app } from "../../main";
-import leafLoading from "@/assets/lottie/leaf-loading.json";
-import Lottie from "lottie-react";
 import Page1 from "@/assets/Page1.png";
 import Page2 from "@/assets/Page2.png";
 import Page3 from "@/assets/Page3.png";
 import { logError } from "../../functions/LogError";
 import { RootState } from "@/redux/store";
 import { toggleModal } from "./kycSlice";
+import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
 
 interface KYCOverlayProps {
   onBack?: unknown;
@@ -87,11 +86,6 @@ const KYCOverlay = ({
   const currentUserID = useSelector(
     (state: any) => state.userWalletData.currentUserID
   );
-
-  const handleBack = () => {
-    dispatch(toggleModal({ isOpen: false }));
-    if (onBack) onBack();
-  };
 
   const handlePageOneDone = () => {
     if (!isChecked) return;
@@ -435,13 +429,11 @@ const KYCOverlay = ({
 
   if (loading) {
     return (
-      <Overlay
+      <HeadlessOverlay
         isOpen={isOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-          }
+        onOpenChange={(isOpen) => {
+          toggleModal({ isOpen });
         }}
-        title="Upload Your Identification"
         zIndex={zIndex}
       >
         <div
@@ -474,13 +466,13 @@ const KYCOverlay = ({
             Verifying your identity...
           </div>
         </div>
-      </Overlay>
+      </HeadlessOverlay>
     );
   }
 
   if (pageThreeDone) {
     return (
-      <Overlay
+      <HeadlessOverlay
         isOpen={isOpen}
         onOpenChange={(open) => {
           if (!open) {
@@ -810,12 +802,12 @@ const KYCOverlay = ({
             </Button>
           </div>
         </div>
-      </Overlay>
+      </HeadlessOverlay>
     );
   }
   if (pageTwoDone) {
     return (
-      <Overlay
+      <HeadlessOverlay
         isOpen={isOpen}
         onOpenChange={(open) => {
           if (!open) {
@@ -1036,13 +1028,13 @@ const KYCOverlay = ({
             </Button>
           </div>
         </div>
-      </Overlay>
+      </HeadlessOverlay>
     );
   }
 
   if (pageOneDone) {
     return (
-      <Overlay
+      <HeadlessOverlay
         isOpen={isOpen}
         onOpenChange={(open) => {
           if (!open) {
@@ -1231,17 +1223,14 @@ const KYCOverlay = ({
             )}
           </div>
         </div>
-      </Overlay>
+      </HeadlessOverlay>
     );
   }
   return (
-    <Overlay
+    <HeadlessOverlay
       isOpen={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          dispatch(toggleModal({ isOpen: false }));
-          if (onBack) onBack();
-        }
+      onOpenChange={(isOpen) => {
+        dispatch(toggleModal({ isOpen }));
       }}
       title="Account Setup"
       zIndex={zIndex}
@@ -1552,7 +1541,7 @@ const KYCOverlay = ({
           </Button>
         </section>
       </div>
-    </Overlay>
+    </HeadlessOverlay>
   );
 };
 
