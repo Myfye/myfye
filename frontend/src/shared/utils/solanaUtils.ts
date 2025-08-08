@@ -3,11 +3,18 @@ import { PublicKey } from "@solana/web3.js";
 // Solana address validation regex
 export const validateSolanaAddress = (address: string) => {
   if (!address) return false;
-  const key = new PublicKey(address);
-  return PublicKey.isOnCurve(key.toBytes());
+  try {
+    const key = new PublicKey(address);
+    return PublicKey.isOnCurve(key.toBytes());
+  } catch (err) {
+    // return false if invalid
+    return false;
+  }
 };
 
 export const truncateSolanaAddress = (address: string) => {
-  if (!address) throw new Error("Please input a Solana address");
+  const isSolanaAddressValid = validateSolanaAddress(address);
+  if (!isSolanaAddressValid)
+    throw new Error("Please input a valid Solana address");
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
