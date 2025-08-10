@@ -128,6 +128,9 @@ const withdrawOnChainSlice = createSlice({
     updateSolAddress(state, action: PayloadAction<string | null>) {
       state.transaction.solAddress = action.payload;
     },
+    updateTransactionStatus(state, action: PayloadAction<"idle" | "success" | "fail">) {
+      state.transaction.status = action.payload;
+    },
     unmount: () => ({ ...initialState }),
   },
 });
@@ -141,6 +144,7 @@ export const {
   unmount,
   unmountOverlays,
   updateSolAddress,
+  updateTransactionStatus,
 } = withdrawOnChainSlice.actions;
 
 export default withdrawOnChainSlice.reducer;

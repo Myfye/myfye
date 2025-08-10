@@ -1,80 +1,29 @@
 import { css } from "@emotion/react";
 import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
 import { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
-import toast from "react-hot-toast/headless";
-import { tokenTransfer } from "@/functions/Transaction";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { truncateSolanaAddress } from "@/shared/utils/solanaUtils";
 import Button from "@/shared/components/ui/button/Button";
+import { useAppDispatch } from "@/redux/hooks";
+import { toggleOverlay, unmountOverlays } from "./withdrawOnChainSlice";
+import { toggleModal as toggleWithdrawModal } from "../withdrawSlice";
+import Ring180Loader from "@/shared/components/ui/loading/spinners/180RingLoader";
 
-interface WithdrawProcessingTransactionOverlayProps extends OverlayProps {
-  status: "idle" | "success" | "fail";
-}
+interface WithdrawProcessingTransactionOverlayProps extends OverlayProps {}
 
 const WithdrawProcessingTransactionOverlay = ({
   isOpen,
   onOpenChange,
 }: WithdrawProcessingTransactionOverlayProps) => {
+  const dispatch = useAppDispatch();
   const transaction = useSelector(
     (state: RootState) => state.withdrawOnChain.transaction
   );
-  const userId = useSelector(
-    (state: RootState) => state.userWalletData.currentUserID
-  );
-  const solanaPubKey = useSelector(
-    (state: RootState) => state.userWalletData.solanaPubKey
-  );
-  const assets = useSelector((state: RootState) => state.assets.assets);
-  const handleConfirm = async () => {
-    try {
-      if (!transaction.amount) throw new Error("Amount is required");
-      if (!userId) throw new Error("User ID is required");
-      if (!transaction.assetId) throw new Error("Token is required");
-      if (!transaction.solAddress) throw new Error("Sol address is required");
 
-      let assetCode = "";
-      if (transaction.assetId === "usdc_sol") {
-        assetCode = "usdcSol";
-      } else if (transaction.assetId === "eurc_sol") {
-        assetCode = "eurcSol";
-      }
-
-      const tokenLabel = assets[transaction.assetId].label;
-      const sendAmount = +transaction.amount;
-      const sendAmountMicro = sendAmount * 1000000;
-
-      const result = await tokenTransfer(
-        solanaPubKey,
-        transaction.solAddress,
-        sendAmountMicro,
-        assetCode,
-        wallet
-      );
-
-      if (result.success) {
-        console.log("Transaction successful:", result.transactionId);
-        toast.success(
-          `Sent ${transaction.amount} ${tokenLabel} to ${truncateSolanaAddress(
-            transaction.solAddress
-          )}`
-        );
-
-        // Here if the address is not in the recent addresses, save the address to the database
-        if (!recentAddresses?.addresses.includes(address)) {
-          await handleSaveAddress();
-        }
-      } else {
-        throw new Error(result.error || "Transaction failed");
-      }
-    } catch (error) {
-      console.error("Withdrawal failed:", error);
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Error sending money. Please try again"
-      );
-    }
+  const handleClose = () => {
+    dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
+    dispatch(toggleWithdrawModal(false));
+    dispatch(unmountOverlays());
   };
   return (
     <HeadlessOverlay isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -93,8 +42,35 @@ const WithdrawProcessingTransactionOverlay = ({
               width: 12rem;
               aspect-ratio: 1;
               margin-inline: auto;
+              display: flex;
+              align-items: center;
+              justify-content: center;
             `}
-          ></div>
+          >
+            {transaction.status === "idle" && (
+              <Ring180Loader width={80} height={80} fill="var(--clr-primary)" />
+            )}
+            {transaction.status === "success" && (
+              <div
+                css={css`
+                  font-size: 4rem;
+                  color: var(--clr-success);
+                `}
+              >
+                ✓
+              </div>
+            )}
+            {transaction.status === "fail" && (
+              <div
+                css={css`
+                  font-size: 4rem;
+                  color: var(--clr-error);
+                `}
+              >
+                ✗
+              </div>
+            )}
+          </div>
           <section>
             <hgroup>
               <h1
@@ -105,12 +81,23 @@ const WithdrawProcessingTransactionOverlay = ({
                   margin-block-end: var(--size-200);
                 `}
               >
-                {transaction.status === "idle" && "Processing..."}
-                {transaction.status === "success" && "Success!"}
-                {transaction.status === "fail" && "Failed"}
+                {transaction.status === "idle" && "Processing Transaction..."}
+                {transaction.status === "success" && "Transaction Successful!"}
+                {transaction.status === "fail" && "Transaction Failed"}
               </h1>
+              <p
+                css={css`
+                  color: var(--clr-text-secondary);
+                  text-align: center;
+                  margin-block-end: var(--size-300);
+                `}
+              >
+                {transaction.status === "idle" && "Please wait while we process your withdrawal"}
+                {transaction.status === "success" && "Your funds have been sent successfully"}
+                {transaction.status === "fail" && "There was an error processing your transaction"}
+              </p>
               {transaction.status !== "idle" && (
-                <Button onPress={() => onOpenChange(false)}>Close</Button>
+                <Button onPress={handleClose}>Close</Button>
               )}
             </hgroup>
           </section>
