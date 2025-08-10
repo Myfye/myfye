@@ -109,7 +109,7 @@ const WithdrawOnChainConfirmOverlay = () => {
           }}
           output={{
             icon: "wallet",
-            label: transaction.solAddress ?? "0x832838232889",
+            label: transaction.solAddress,
           }}
           onConfirm={handleConfirm}
           onCancel={() => {

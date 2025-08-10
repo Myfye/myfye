@@ -45,6 +45,9 @@ const Input = ({
               color: var(--clr-text-weaker);
             }
             font-size: 16px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
           `}
         />
       </div>

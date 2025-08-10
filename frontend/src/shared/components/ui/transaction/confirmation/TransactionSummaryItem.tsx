@@ -33,15 +33,29 @@ const TransactionSummaryItem = ({
       <div
         css={css`
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: var(--size-150);
+          min-height: fit-content;
         `}
       >
-        {icon === "wallet" ? <WalletIcon /> : <AssetIcon src={icon} />}
+        <div
+          css={css`
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+          `}
+        >
+          {icon === "wallet" ? <WalletIcon /> : <AssetIcon src={icon} />}
+        </div>
         <span
           css={css`
             font-size: var(--fs-large);
             font-weight: var(--fw-active);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            max-width: 100%;
+            line-height: 1.2;
           `}
         >
           {label}
