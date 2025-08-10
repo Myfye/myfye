@@ -47,6 +47,7 @@ const DepositOffChainPrivyOverlay = () => {
       cluster: { name: "mainnet-beta" },
       amount: solAmount.toString(),
       defaultFundingMethod: "card",
+      asset: "USDC"
     });
     toggleOverlay({ type: "privy", isOpen: false });
   };

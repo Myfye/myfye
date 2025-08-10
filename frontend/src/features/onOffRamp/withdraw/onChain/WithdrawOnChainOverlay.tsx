@@ -22,6 +22,7 @@ import { PresetAmountOption } from "./withdrawOnChain.types";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 import { useAppSelector } from "@/redux/hooks";
 import WithdrawOnChainConfirmOverlay from "./WithdrawOnChainConfirmTransactionOverlay";
+import WithdrawOnChainProcessingTransactionOverlay from "./WithdrawOnChainProcessingTransactionOverlay";
 
 const WithdrawOnChainOverlay = ({
   ...restProps
@@ -165,6 +166,14 @@ const WithdrawOnChainOverlay = ({
       <WithdrawOnChainSelectAssetOverlay />
       <WithdrawOnChainAddressEntryOverlay />
       <WithdrawOnChainConfirmOverlay />
+      <WithdrawOnChainProcessingTransactionOverlay
+        isOpen={useAppSelector(
+          (state) => state.withdrawOnChain.overlays.processingTransaction.isOpen
+        )}
+        onOpenChange={(isOpen) => {
+          dispatch(toggleOverlay({ type: "processingTransaction", isOpen }));
+        }}
+      />
     </>
   );
 };
