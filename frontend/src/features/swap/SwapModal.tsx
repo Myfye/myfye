@@ -47,10 +47,10 @@ const SwapModal = () => {
 
   const numberPadProps = useNumberPad({
     onStartDelete: (input) => {
-      updateAmount({ input });
+      dispatch(updateAmount({ input }));
     },
     onUpdateAmount: (input) => {
-      updateAmount({ input });
+      dispatch(updateAmount({ input }));
     },
   });
 
