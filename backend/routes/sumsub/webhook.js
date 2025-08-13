@@ -120,7 +120,7 @@ async function handleSumsubWebhook(req, res) {
     switch (eventData.type) {
       case 'applicantReviewed':
         console.log('Webhook type applicantReviewed');
-        await processKYCStatusUpdate(eventData.applicantId, eventData.reviewResult, eventData.externalUserId);
+        await processKYCStatusUpdate(eventData.applicantId, eventData.reviewResult.reviewAnswer, eventData.externalUserId);
         break;
         
       case 'applicantPending':
