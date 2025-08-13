@@ -4,9 +4,9 @@ const cors = require("cors");
 const geoip = require('geoip-lite');
 const rateLimit = require('express-rate-limit');
 const app = express();
-const { create_new_on_ramp_path, get_all_receivers, delete_blockchain_wallet, delete_receiver, delete_blockchain_wallet_and_receiver } = require('./routes/onOffRamp/receiver');
-const { create_new_payin, get_payin_quote } = require('./routes/onOffRamp/payIn');
-const { create_new_bank_account, get_bank_accounts, delete_bank_account, get_all_bank_accounts } = require('./routes/onOffRamp/bankAccount.js');
+const { create_new_on_ramp_path, get_all_receivers, delete_blockchain_wallet, delete_receiver, delete_blockchain_wallet_and_receiver } = require('./routes/blindPay/receiver.js');
+const { create_new_payin, get_payin_quote } = require('./routes/blindPay/payIn.js');
+const { create_new_bank_account, get_bank_accounts, delete_bank_account, get_all_bank_accounts } = require('./routes/blindPay/bankAccount.js');
 const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
 const { ensureTokenAccount } = require('./routes/sol_transaction/tokenAccount');
 const { signTransaction, signVersionedTransaction } = require('./routes/sol_transaction/solanaTransaction');
@@ -39,7 +39,6 @@ const {
     getRecentlyUsedAddresses 
 } = require('./routes/sol_transaction/recentlyUsedAddresses');
 const { emailService } = require('./routes/emailService');
-const { createUserKYC, getAllKYCUsers, deleteKYCUser } = require('./routes/user_kyc');
 const { create_new_dinari_user } = require('./routes/dinari_shares/entity');
 const { create_new_wallet } = require('./routes/dinari_shares/wallet');
 const { generate_nonce } = require('./routes/dinari_shares/generate_nonce');
@@ -49,7 +48,13 @@ const { create_new_dinari_account } = require('./routes/dinari_shares/account');
 const { sign_nonce } = require('./routes/dinari_shares/sign_nonce');
 const { sign_order } = require('./routes/dinari_shares/sign_order.js');
 const { getWalletByAddress } = require('./routes/privy/getWallets');
-const { create_new_payout, get_payout_quote } = require('./routes/onOffRamp/payOut');
+const { create_new_payout, get_payout_quote } = require('./routes/blindPay/payOut.js');
+const { getAccessToken } = require('./routes/sumsub/accessToken');
+const { generateExternalLink } = require('./routes/sumsub/generateExternalLink');
+const { getApplicantData } = require('./routes/sumsub/getApplicantData');
+const { getSumsubKYCStatus } = require('./routes/sumsub/sumsub_kyc_status');
+const { serveTempImage } = require('./routes/sumsub/serveTempImage');
+const { handleSumsubWebhook } = require('./routes/sumsub/webhook');
 
 app.set('trust proxy', true);
 
@@ -126,6 +131,13 @@ const blockUnauthorizedIPs = (req, res, next) => {
   if (req.method === 'OPTIONS') {
     return next();
   }
+  
+  // Allow webhook routes without API key (they use signature authentication)
+  if (req.path.startsWith('/webhooks/')) {
+    console.log(`Webhook request from IP: ${req.ip} - bypassing API key check`);
+    return next();
+  }
+  
   const apiKey = req.headers['x-api-key'];
   const ip = req.ip;
   const geo = geoip.lookup(ip);
@@ -153,6 +165,9 @@ const blockUnauthorizedIPs = (req, res, next) => {
   next();
 };
 
+// Serve temporary images (no API key required)
+app.get("/api/sumsub/temp-image/:filename", serveTempImage);
+
 // Apply general rate limiting to all routes
 app.use(generalLimiter);
 // Apply IP blocking and API key validation to all routes
@@ -174,25 +189,6 @@ app.post('/create_user', sensitiveLimiter, async (req, res) => {
     }
 });
 
-app.post('/create_user_kyc', sensitiveLimiter, async (req, res) => {
-    console.log("\n=== Create User KYC Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
-
-    try {
-        const kycData = req.body;
-        const result = await createUserKYC(kycData);
-        console.log("KYC creation result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /create_user_kyc endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to create user KYC",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
-});
 
 app.post("/get_user_by_email", authLimiter, async (req, res) => {
   console.log("\n=== User Lookup Request Received ===");
@@ -818,49 +814,6 @@ app.post("/send_email", async (req, res) => {
     }
 });
 
-app.post("/get_all_kyc_users", generalLimiter, async (req, res) => {
-    console.log("\n=== Get All KYC Users Request Received ===");
-
-    try {
-        const result = await getAllKYCUsers();
-        console.log(`Retrieved ${result.length} KYC users`);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_all_kyc_users endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to fetch KYC users",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
-});
-
-app.post("/delete_kyc_user", sensitiveLimiter, async (req, res) => {
-    console.log("\n=== Delete KYC User Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
-
-    try {
-        const { user_id } = req.body;
-        if (!user_id) {
-            return res.status(400).json({ 
-                error: 'Invalid request. user_id is required.' 
-            });
-        }
-        const result = await deleteKYCUser(user_id);
-        console.log("KYC user deletion result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /delete_kyc_user endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to delete KYC user",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
-});
-
 app.get("/get_all_receivers", generalLimiter, async (req, res) => {
   console.log("\n=== Get All Receivers Request Received ===");
 
@@ -1191,6 +1144,118 @@ app.post("/get_wallet_id_by_address", sensitiveLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to get wallet ID by address",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_sumsub_access_token", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Get Sumsub Access Token Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    
+    const result = await getAccessToken(data);
+    console.log("Sumsub access token result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_sumsub_access_token endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get Sumsub access token",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/generate_sumsub_external_link", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Generate Sumsub External Link Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    
+    const result = await generateExternalLink(data);
+    console.log("Sumsub external link result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /generate_sumsub_external_link endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to generate Sumsub external link",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/get_sumsub_applicant_data", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Get Sumsub Applicant Data Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    
+    const result = await getApplicantData(data);
+    console.log("Sumsub applicant data result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_sumsub_applicant_data endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get Sumsub applicant data",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/sumsub_kyc_status", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Get Sumsub KYC Status Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ 
+        error: "userId is required in request body"
+      });
+    }
+    
+    const result = await getSumsubKYCStatus(userId);
+    console.log("Sumsub KYC status result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /sumsub_kyc_status endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get Sumsub KYC status",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+// Serve temporary images
+app.get("/api/sumsub/temp-image/:filename", serveTempImage);
+
+// Sumsub webhook endpoint (no rate limiting for webhooks)
+app.post("/webhooks/sumsub", async (req, res) => {
+  console.log("\n=== Sumsub Webhook Received ===");
+  console.log("Headers:", JSON.stringify(req.headers, null, 2));
+  console.log("Body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    await handleSumsubWebhook(req, res);
+  } catch (error) {
+    console.error("Error handling Sumsub webhook:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to process webhook",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });

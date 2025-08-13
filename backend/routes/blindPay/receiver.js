@@ -281,6 +281,74 @@ async function delete_blockchain_wallet_and_receiver(receiverId, walletId) {
   }
 }
 
+async function get_receiver(receiverId) {
+
+  const options = {
+    method: 'GET',
+    url: `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/receivers/${receiverId}`,
+    headers: {Authorization: `Bearer ${BLIND_PAY_API_KEY}`}
+  };
+
+  try {
+    const { data } = await axios.request(options);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function update_receiver(receiverId, data) {
+  try {
+
+    // Format date_of_birth to ISO 8601 with UTC timezone
+    const formattedDateOfBirth = new Date(data.date_of_birth).toISOString();
+
+    console.log("Updating receiver...");
+    console.log(data);
+    const response = await axios.post(
+      `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/receivers/${receiverId}`,
+      {
+        type: "individual",
+        kyc_type: "standard",
+        email: data.email,
+        tax_id: data.tax_id,
+        address_line_1: data.address_line_1, // not required
+        //address_line_2: data.address_line_2, // not required
+        city: data.city,
+        state_province_region: data.state_province_region,
+        country: data.country, // required
+        postal_code: data.postal_code,
+        //ip_address: data.ip_address, // not required
+        //phone_number: data.phone_number, // not required
+        //proof_of_address_doc_type: data.proof_of_address_doc_type, // not required
+        //proof_of_address_doc_file: data.proof_of_address_doc_file, // not required
+        first_name: data.first_name, // not required
+        last_name: data.last_name, // not required
+        date_of_birth: formattedDateOfBirth,
+        id_doc_country: data.id_doc_country,
+        id_doc_type: data.id_doc_type,
+        id_doc_front_file: data.id_doc_front_file,
+        id_doc_back_file: data.id_doc_back_file
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${BLIND_PAY_API_KEY}`,
+        },
+      }
+    );
+
+    console.log("Receiver update response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error in update_receiver:",
+      JSON.stringify(error.response?.data || error.message, null, 2)
+    );
+    throw error;
+  }
+}
+
 // TO DO GET RECEIVERS THEIR CORRESPONDING BLOCKCHAIN WALLETS
 /*
 import axios from 'axios';
@@ -355,4 +423,6 @@ module.exports = {
   delete_blockchain_wallet,
   delete_receiver,
   delete_blockchain_wallet_and_receiver,
+  get_receiver,
+  update_receiver
 };

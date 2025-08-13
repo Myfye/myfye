@@ -14,7 +14,9 @@ $$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS users (
     uid TEXT PRIMARY KEY DEFAULT generate_unique_id(),
-    kyc_verified BOOLEAN DEFAULT FALSE,
+    kyc_status TEXT,
+    blind_pay_kyc_status TEXT,
+    sumsub_kyc_status TEXT,
     creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
     last_login_date TIMESTAMP WITH TIME ZONE,
     email VARCHAR(255) NOT NULL,
@@ -100,24 +102,6 @@ CREATE TABLE IF NOT EXISTS user_contacts (
   user_id TEXT NOT NULL REFERENCES users(uid),
   contact_id TEXT NOT NULL REFERENCES users(uid),
   UNIQUE(user_id, contact_id)
-);
-
-CREATE TABLE IF NOT EXISTS user_kyc (
-  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
-  user_id TEXT NOT NULL REFERENCES users(uid),
-  address_line_1 TEXT,
-  city TEXT,
-  state_province_region TEXT,
-  postal_code TEXT,
-  country TEXT,
-  date_of_birth TEXT,
-  first_name TEXT,
-  last_name TEXT,
-  tax_id TEXT,
-  id_doc_type TEXT,
-  id_doc_front_file TEXT,
-  id_doc_back_file TEXT,
-  id_doc_country TEXT
 );
 
 CREATE TABLE IF NOT EXISTS blind_pay_bank_accounts (

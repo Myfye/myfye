@@ -1,0 +1,175 @@
+{
+    "userId": "Test6",
+    "applicantData": {
+        "id": "689cba98554e8722cadb2a12",
+        "createdAt": "2025-08-13 16:17:28",
+        "key": "PFKBWPGDVZRBUW",
+        "clientId": "myfye.com",
+        "inspectionId": "689cba98554e8722cadb2a12",
+        "externalUserId": "Test6",
+        "info": {
+            "firstName": "John",
+            "firstNameEn": "John",
+            "lastName": "Mock-Doe",
+            "lastNameEn": "Mock-Doe",
+            "dob": "2006-02-14",
+            "country": "USA",
+            "idDocs": [
+                {
+                    "idDocType": "PASSPORT",
+                    "country": "USA",
+                    "firstName": "John",
+                    "firstNameEn": "John",
+                    "lastName": "Mock-Doe",
+                    "lastNameEn": "Mock-Doe",
+                    "validUntil": "2026-08-04",
+                    "number": "Mock-FTWXRWNVPP",
+                    "dob": "2006-02-14",
+                    "mrzLine1": "P<BLRLEANEN<<GEORGIA<<<<<<<<<<<<<<<<<<<<<<<<",
+                    "mrzLine2": "U2HZWN97A1BLR0704113F3309276<<<<<<<<<<<<<<08",
+                    "termless": false
+                }
+            ]
+        },
+        "fixedInfo": {
+            "firstName": "Gavin",
+            "firstNameEn": "Gavin",
+            "lastName": "Milligan",
+            "lastNameEn": "Milligan",
+            "dob": "1997-10-03",
+            "addresses": [
+                {
+                    "street": "11 Buckingham Way",
+                    "streetEn": "11 Buckingham Way",
+                    "state": "CA",
+                    "stateEn": "CA",
+                    "town": "Rancho Mirage",
+                    "townEn": "Rancho Mirage",
+                    "postCode": "92270",
+                    "formattedAddress": "11 Buckingham Way, Rancho Mirage, CA, 92270"
+                }
+            ],
+            "tin": "123123123"
+        },
+        "applicantPlatform": "Web",
+        "ipCountry": "USA",
+        "agreement": {
+            "items": [
+                {
+                    "id": "d0f50637-3893-4135-8adf-2e037128272c",
+                    "acceptedAt": "2025-08-13 16:17:33",
+                    "source": "WebSDK",
+                    "type": "onboarding",
+                    "recordIds": [
+                        "685707aef26d8087f16f8f87",
+                        "689b78e3c90dcb6ffbfd24e9"
+                    ]
+                }
+            ],
+            "createdAt": "2025-08-13 16:17:33",
+            "acceptedAt": "2025-08-13 16:17:33",
+            "source": "WebSDK",
+            "recordIds": [
+                "685707aef26d8087f16f8f87",
+                "689b78e3c90dcb6ffbfd24e9"
+            ]
+        },
+        "requiredIdDocs": {
+            "docSets": [
+                {
+                    "idDocSetType": "APPLICANT_DATA",
+                    "fields": [
+                        {
+                            "name": "firstName",
+                            "required": true,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        },
+                        {
+                            "name": "lastName",
+                            "required": true,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        },
+                        {
+                            "name": "dob",
+                            "required": true,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        },
+                        {
+                            "name": "tin",
+                            "required": true,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        },
+                        {
+                            "name": "street",
+                            "required": true,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        },
+                        {
+                            "name": "subStreet",
+                            "required": false,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        },
+                        {
+                            "name": "town",
+                            "required": true,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        },
+                        {
+                            "name": "state",
+                            "required": true,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        },
+                        {
+                            "name": "postCode",
+                            "required": true,
+                            "prefill": null,
+                            "immutableIfPresent": false
+                        }
+                    ]
+                },
+                {
+                    "idDocSetType": "IDENTITY",
+                    "types": [
+                        "PASSPORT",
+                        "DRIVERS",
+                        "ID_CARD",
+                        "RESIDENCE_PERMIT"
+                    ],
+                    "videoRequired": "disabled",
+                    "nfcVerificationSettings": {
+                        "mode": "disabled"
+                    }
+                }
+            ]
+        },
+        "review": {
+            "reviewId": "ChWDL",
+            "attemptId": "eEkNk",
+            "attemptCnt": 1,
+            "elapsedSincePendingMs": 261,
+            "elapsedSinceQueuedMs": 261,
+            "reprocessing": true,
+            "levelName": "levelVersion1",
+            "levelAutoCheckMode": null,
+            "createDate": "2025-08-13 16:18:12+0000",
+            "reviewDate": "2025-08-13 16:18:13+0000",
+            "reviewResult": {
+                "reviewAnswer": "GREEN"
+            },
+            "reviewStatus": "completed",
+            "priority": 0
+        },
+        "lang": "en",
+        "type": "individual",
+        "notes": []
+    },
+    "documentImages": []
+}
