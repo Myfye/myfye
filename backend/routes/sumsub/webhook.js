@@ -6,15 +6,20 @@ const { saveTemporaryImage } = require('./tempImageStorage');
 
 // Verify webhook signature from Sumsub
 function verifyWebhookSignature(payload, signature, secret) {
+  console.log('Verifying webhook signature:');
+  console.log('Payload:', payload);
+  console.log('Received signature:', signature);
+  console.log('Secret length:', secret ? secret.length : 0);
+  
   const expectedSignature = crypto
     .createHmac('sha256', secret)
     .update(payload)
     .digest('hex');
   
-  return crypto.timingSafeEqual(
-    Buffer.from(signature, 'hex'),
-    Buffer.from(expectedSignature, 'hex')
-  );
+  console.log('Expected signature:', expectedSignature);
+  console.log('Signatures match:', signature === expectedSignature);
+  
+  return signature === expectedSignature;
 }
 
 // Process KYC status update
@@ -112,9 +117,19 @@ async function triggerPostApprovalProcesses(userId, applicantData) {
 // Main webhook handler
 async function handleSumsubWebhook(req, res) {
   try {
-    const payload = JSON.stringify(req.body);
+    console.log('=== Webhook Signature Verification Debug ===');
+    console.log('All headers:', JSON.stringify(req.headers, null, 2));
+    
+    // Get the raw body - this is what Sumsub signs
+    const rawBody = req.rawBody ? req.rawBody.toString() : JSON.stringify(req.body);
     const signature = req.headers['x-payload-digest']; // Sumsub uses x-payload-digest
+    const signatureAlg = req.headers['x-payload-digest-alg']; // Check the algorithm
     const secret = process.env.SUMSUB_WEBHOOK_KEY;
+    
+    console.log('Raw body:', rawBody);
+    console.log('Signature from header:', signature);
+    console.log('Signature algorithm:', signatureAlg);
+    console.log('Secret configured:', !!secret);
     
     // Check if secret is configured
     if (!secret) {
@@ -122,8 +137,14 @@ async function handleSumsubWebhook(req, res) {
       return res.status(500).json({ error: 'Webhook configuration error' });
     }
     
+    // Check if signature is present
+    if (!signature) {
+      console.error('No signature found in headers');
+      return res.status(401).json({ error: 'No signature provided' });
+    }
+    
     // Verify webhook signature
-    if (!verifyWebhookSignature(payload, signature, secret)) {
+    if (!verifyWebhookSignature(rawBody, signature, secret)) {
       console.error('Invalid webhook signature');
       return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -160,4 +181,43 @@ async function handleSumsubWebhook(req, res) {
   }
 }
 
-module.exports = { handleSumsubWebhook };
+// Test function to verify signature manually
+function testSignatureVerification() {
+  const testPayload = JSON.stringify({
+    "applicantId": "689b8e2cb8bca0852e8905c0",
+    "inspectionId": "689b8e2cb8bca0852e8905c0",
+    "applicantType": "individual",
+    "correlationId": "1c6e916e941a5e55d7c0ffdfbc86e1e3",
+    "levelName": "levelVersion1",
+    "sandboxMode": true,
+    "externalUserId": "Test1",
+    "type": "applicantReviewed",
+    "reviewResult": {
+      "reviewAnswer": "GREEN"
+    },
+    "reviewStatus": "completed",
+    "createdAt": "2025-08-13 21:15:40+0000",
+    "createdAtMs": "2025-08-13 21:15:40.922",
+    "clientId": "myfye.com"
+  });
+  
+  const testSignature = "dfeda2c51bd2329fd5d0ad7365f47746029fecd38fec72e6b5b6500fe4cf1891";
+  const secret = process.env.SUMSUB_WEBHOOK_KEY;
+  
+  console.log('=== Manual Signature Test ===');
+  console.log('Test payload:', testPayload);
+  console.log('Test signature:', testSignature);
+  console.log('Secret available:', !!secret);
+  
+  if (secret) {
+    const expectedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(testPayload)
+      .digest('hex');
+    
+    console.log('Expected signature:', expectedSignature);
+    console.log('Signatures match:', testSignature === expectedSignature);
+  }
+}
+
+module.exports = { handleSumsubWebhook, testSignatureVerification };

@@ -54,7 +54,7 @@ const { generateExternalLink } = require('./routes/sumsub/generateExternalLink')
 const { getApplicantData } = require('./routes/sumsub/getApplicantData');
 const { getSumsubKYCStatus } = require('./routes/sumsub/sumsub_kyc_status');
 const { serveTempImage } = require('./routes/sumsub/serveTempImage');
-const { handleSumsubWebhook } = require('./routes/sumsub/webhook');
+const { handleSumsubWebhook, testSignatureVerification } = require('./routes/sumsub/webhook');
 
 app.set('trust proxy', true);
 
@@ -89,7 +89,15 @@ const allowedOrigins = [
 // Add explicit OPTIONS handling for preflight requests
 app.options('*', cors());
 
-app.use(express.json());
+// Store raw body for webhook signature verification
+app.use(express.json({
+  verify: (req, res, buf) => {
+    if (req.path.startsWith('/webhooks/')) {
+      req.rawBody = buf;
+    }
+  }
+}));
+
 // Add middleware logging
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -1248,6 +1256,18 @@ app.post("/sumsub_kyc_status", sensitiveLimiter, async (req, res) => {
 
 // Serve temporary images
 app.get("/api/sumsub/temp-image/:filename", serveTempImage);
+
+// Test webhook signature endpoint (for debugging)
+app.get("/test-webhook-signature", async (req, res) => {
+  console.log("\n=== Testing Webhook Signature ===");
+  try {
+    testSignatureVerification();
+    res.json({ message: "Signature test completed - check server logs" });
+  } catch (error) {
+    console.error("Error testing webhook signature:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Sumsub webhook endpoint (no rate limiting for webhooks)
 app.post("/webhooks/sumsub", async (req, res) => {
