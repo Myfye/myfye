@@ -6,10 +6,12 @@ const pool = require('../../db');
 
 // Verify webhook signature from Sumsub
 function verifyWebhookSignature(payload, signature, secret) {
+  /*
   console.log('Verifying webhook signature:');
   console.log('Payload:', payload);
   console.log('Received signature:', signature);
   console.log('Secret length:', secret ? secret.length : 0);
+  */
   
   const expectedSignature = crypto
     .createHmac('sha256', secret)
@@ -36,6 +38,8 @@ async function processKYCStatusUpdate(applicantId, reviewResult, externalUserId 
       }
       userId = applicantData.externalUserId;
     }
+    
+    console.log('Review result: ', reviewResult);
     
     // If approved, you might want to trigger additional processes
     if (reviewResult === 'GREEN') {
@@ -86,8 +90,10 @@ async function triggerPostApprovalProcesses(userId) {
 // Main webhook handler
 async function handleSumsubWebhook(req, res) {
   try {
+    /*
     console.log('=== Webhook Signature Verification Debug ===');
     console.log('All headers:', JSON.stringify(req.headers, null, 2));
+    */
     
     // Get the raw body - this is what Sumsub signs
     const rawBody = req.rawBody ? req.rawBody.toString() : JSON.stringify(req.body);
