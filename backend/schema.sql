@@ -15,8 +15,6 @@ $$ LANGUAGE plpgsql;
 CREATE TABLE IF NOT EXISTS users (
     uid TEXT PRIMARY KEY DEFAULT generate_unique_id(),
     kyc_status TEXT,
-    blind_pay_kyc_status TEXT,
-    sumsub_kyc_status TEXT,
     creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
     last_login_date TIMESTAMP WITH TIME ZONE,
     email VARCHAR(255) NOT NULL,

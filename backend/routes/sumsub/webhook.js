@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const pool = require('../../db');
 const { getApplicantData } = require('./getApplicantData');
 const { getDocumentImages } = require('./getDocumentImages');
 const { saveTemporaryImage } = require('./tempImageStorage');
@@ -52,17 +51,6 @@ async function processKYCStatusUpdate(applicantId, reviewResult, externalUserId 
       default:
         newStatus = 'PENDING';
     }
-    
-    // Update user KYC status in database
-    const updateQuery = `
-      UPDATE users 
-      SET kyc_status = $1, 
-          kyc_updated_at = NOW(),
-          sumsub_applicant_id = $2
-      WHERE uid = $3
-    `;
-    
-    await pool.query(updateQuery, [newStatus, applicantId, userId]);
     
     console.log(`Updated KYC status for user ${userId} to ${newStatus}`);
     
@@ -181,43 +169,4 @@ async function handleSumsubWebhook(req, res) {
   }
 }
 
-// Test function to verify signature manually
-function testSignatureVerification() {
-  const testPayload = JSON.stringify({
-    "applicantId": "689b8e2cb8bca0852e8905c0",
-    "inspectionId": "689b8e2cb8bca0852e8905c0",
-    "applicantType": "individual",
-    "correlationId": "1c6e916e941a5e55d7c0ffdfbc86e1e3",
-    "levelName": "levelVersion1",
-    "sandboxMode": true,
-    "externalUserId": "Test1",
-    "type": "applicantReviewed",
-    "reviewResult": {
-      "reviewAnswer": "GREEN"
-    },
-    "reviewStatus": "completed",
-    "createdAt": "2025-08-13 21:15:40+0000",
-    "createdAtMs": "2025-08-13 21:15:40.922",
-    "clientId": "myfye.com"
-  });
-  
-  const testSignature = "dfeda2c51bd2329fd5d0ad7365f47746029fecd38fec72e6b5b6500fe4cf1891";
-  const secret = process.env.SUMSUB_WEBHOOK_KEY;
-  
-  console.log('=== Manual Signature Test ===');
-  console.log('Test payload:', testPayload);
-  console.log('Test signature:', testSignature);
-  console.log('Secret available:', !!secret);
-  
-  if (secret) {
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(testPayload)
-      .digest('hex');
-    
-    console.log('Expected signature:', expectedSignature);
-    console.log('Signatures match:', testSignature === expectedSignature);
-  }
-}
-
-module.exports = { handleSumsubWebhook, testSignatureVerification };
+module.exports = { handleSumsubWebhook };
