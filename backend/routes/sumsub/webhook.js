@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { getApplicantData } = require('./getApplicantData');
 const { getDocumentImages } = require('./getDocumentImages');
 const { saveTemporaryImage } = require('./tempImageStorage');
+const pool = require('../../db');
 
 // Verify webhook signature from Sumsub
 function verifyWebhookSignature(payload, signature, secret) {
@@ -76,7 +77,7 @@ async function triggerPostApprovalProcesses(userId) {
       
     console.log('Applicant userID: ', userId);
     console.log('Ready to submit to BlindPay');
-    
+
   } catch (error) {
     console.error('Error in post-approval processes:', error);
   }
