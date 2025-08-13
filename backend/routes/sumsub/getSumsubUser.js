@@ -7,7 +7,7 @@ const { saveTemporaryImage } = require('./tempImageStorage');
 
 
 
-const getSumsubKYCStatus = async (userId) => {
+const getSumsubUser = async (userId) => {
   const APP_TOKEN = process.env.SUMSUB_TOKEN;
   const APP_SECRET = process.env.SUMSUB_KEY;
 
@@ -134,4 +134,4 @@ const getSumsubKYCStatus = async (userId) => {
   }
 };
 
-module.exports = { getSumsubKYCStatus };
+module.exports = { getSumsubUser };

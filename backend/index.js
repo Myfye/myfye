@@ -49,10 +49,7 @@ const { sign_nonce } = require('./routes/dinari_shares/sign_nonce');
 const { sign_order } = require('./routes/dinari_shares/sign_order.js');
 const { getWalletByAddress } = require('./routes/privy/getWallets');
 const { create_new_payout, get_payout_quote } = require('./routes/blindPay/payOut.js');
-const { getAccessToken } = require('./routes/sumsub/accessToken');
 const { generateExternalLink } = require('./routes/sumsub/generateExternalLink');
-const { getApplicantData } = require('./routes/sumsub/getApplicantData');
-const { getSumsubKYCStatus } = require('./routes/sumsub/sumsub_kyc_status');
 const { serveTempImage } = require('./routes/sumsub/serveTempImage');
 const { handleSumsubWebhook } = require('./routes/sumsub/webhook');
 
@@ -1164,27 +1161,6 @@ app.post("/get_wallet_id_by_address", sensitiveLimiter, async (req, res) => {
   }
 });
 
-app.post("/get_sumsub_access_token", sensitiveLimiter, async (req, res) => {
-  console.log("\n=== Get Sumsub Access Token Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
-
-  try {
-    const data = req.body;
-    
-    const result = await getAccessToken(data);
-    console.log("Sumsub access token result:", JSON.stringify(result, null, 2));
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /get_sumsub_access_token endpoint:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({ 
-      error: error.message || "Failed to get Sumsub access token",
-      details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
 app.post("/generate_sumsub_external_link", sensitiveLimiter, async (req, res) => {
   console.log("\n=== Generate Sumsub External Link Request Received ===");
   console.log("Request body:", JSON.stringify(req.body, null, 2));
@@ -1200,54 +1176,6 @@ app.post("/generate_sumsub_external_link", sensitiveLimiter, async (req, res) =>
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to generate Sumsub external link",
-      details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
-app.post("/get_sumsub_applicant_data", sensitiveLimiter, async (req, res) => {
-  console.log("\n=== Get Sumsub Applicant Data Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
-
-  try {
-    const data = req.body;
-    
-    const result = await getApplicantData(data);
-    console.log("Sumsub applicant data result:", JSON.stringify(result, null, 2));
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /get_sumsub_applicant_data endpoint:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({ 
-      error: error.message || "Failed to get Sumsub applicant data",
-      details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
-app.post("/sumsub_kyc_status", sensitiveLimiter, async (req, res) => {
-  console.log("\n=== Get Sumsub KYC Status Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
-
-  try {
-    const { userId } = req.body;
-    
-    if (!userId) {
-      return res.status(400).json({ 
-        error: "userId is required in request body"
-      });
-    }
-    
-    const result = await getSumsubKYCStatus(userId);
-    console.log("Sumsub KYC status result:", JSON.stringify(result, null, 2));
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /sumsub_kyc_status endpoint:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({ 
-      error: error.message || "Failed to get Sumsub KYC status",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });

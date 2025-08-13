@@ -35,29 +35,18 @@ async function processKYCStatusUpdate(applicantId, reviewResult, externalUserId 
       }
       userId = applicantData.externalUserId;
     }
-    let newStatus = 'PENDING';
-    
-    // Map Sumsub review result to your status
-    switch (reviewResult.reviewAnswer) {
-      case 'GREEN':
-        newStatus = 'APPROVED';
-        break;
-      case 'RED':
-        newStatus = 'REJECTED';
-        break;
-      case 'GRAY':
-        newStatus = 'PENDING';
-        break;
-      default:
-        newStatus = 'PENDING';
-    }
-    
-    console.log(`Updated KYC status for user ${userId} to ${newStatus}`);
     
     // If approved, you might want to trigger additional processes
-    if (newStatus === 'APPROVED') {
+    if (reviewResult === 'GREEN') {
       // Trigger BlindPay integration or other post-approval processes
-      await triggerPostApprovalProcesses(userId, applicantData);
+      await triggerPostApprovalProcesses(userId);
+      updateUserKycStatus(userId, 'PENDING'); // still pending because we need to wait for the blindpay to be accepted
+    } else if (reviewResult === 'RED') {
+      // save the user KYC status to REJECTED
+      updateUserKycStatus(userId, 'REJECTED');
+    } else {
+      // save user KYC status to PENDING
+      updateUserKycStatus(userId, 'PENDING');
     }
     
   } catch (error) {
@@ -66,36 +55,27 @@ async function processKYCStatusUpdate(applicantId, reviewResult, externalUserId 
   }
 }
 
-// Trigger additional processes after KYC approval
-async function triggerPostApprovalProcesses(userId, applicantData) {
+async function updateUserKycStatus(userId, newStatus) {
   try {
-    // Get document images for BlindPay integration
-    if (applicantData.inspectionId) {
-      const documentImages = [];
+    const updateQuery = `
+      UPDATE users 
+      SET kyc_status = $1 
+      WHERE uid = $2
+    `;
+    await pool.query(updateQuery, [newStatus, userId]);
+    console.log(`Updated user KYC status to ${newStatus}`);
+  } catch (error) {
+    console.error(`Error updating user KYC status to ${newStatus}:`, error);
+    throw error;
+  }
+}
+
+// Trigger additional processes after KYC approval
+async function triggerPostApprovalProcesses(userId) {
+  try {
       
-      // Get document images (simplified version)
-      try {
-        const imageData = await getDocumentImages(applicantData.inspectionId, 'main');
-        const tempImageInfo = saveTemporaryImage(
-          imageData, 
-          'main', 
-          'main', 
-          'unknown', 
-          'unknown'
-        );
-        
-        documentImages.push({
-          url: tempImageInfo.url,
-          expiresAt: tempImageInfo.expiresAt
-        });
-        
-        // Here you could integrate with BlindPay or other services
-        console.log(`Document images ready for user ${userId}:`, documentImages.length);
-        
-      } catch (imageError) {
-        console.error('Error fetching document images for post-approval:', imageError);
-      }
-    }
+    console.log('Applicant userID: ', userId);
+    console.log('Ready to submit to BlindPay');
     
   } catch (error) {
     console.error('Error in post-approval processes:', error);
@@ -113,11 +93,6 @@ async function handleSumsubWebhook(req, res) {
     const signature = req.headers['x-payload-digest']; // Sumsub uses x-payload-digest
     const signatureAlg = req.headers['x-payload-digest-alg']; // Check the algorithm
     const secret = process.env.SUMSUB_WEBHOOK_KEY;
-    
-    console.log('Raw body:', rawBody);
-    console.log('Signature from header:', signature);
-    console.log('Signature algorithm:', signatureAlg);
-    console.log('Secret configured:', !!secret);
     
     // Check if secret is configured
     if (!secret) {
@@ -143,16 +118,19 @@ async function handleSumsubWebhook(req, res) {
     // Handle different webhook event types
     switch (eventData.type) {
       case 'applicantReviewed':
+        console.log('Webhook type applicantReviewed');
         await processKYCStatusUpdate(eventData.applicantId, eventData.reviewResult, eventData.externalUserId);
         break;
         
       case 'applicantPending':
         // Handle pending status
+        console.log('Webhook type applicantPending');
         await processKYCStatusUpdate(eventData.applicantId, { reviewAnswer: 'GRAY' }, eventData.externalUserId);
         break;
         
       case 'applicantOnHold':
         // Handle on-hold status
+        console.log('Webhook type applicantOnHold');
         await processKYCStatusUpdate(eventData.applicantId, { reviewAnswer: 'GRAY' }, eventData.externalUserId);
         break;
         
