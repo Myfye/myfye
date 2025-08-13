@@ -168,8 +168,14 @@ const blockUnauthorizedIPs = (req, res, next) => {
 // Serve temporary images (no API key required)
 app.get("/api/sumsub/temp-image/:filename", serveTempImage);
 
-// Apply general rate limiting to all routes
-app.use(generalLimiter);
+// Apply general rate limiting to all routes (excluding webhooks)
+app.use((req, res, next) => {
+  // Skip rate limiting for webhook routes
+  if (req.path.startsWith('/webhooks/')) {
+    return next();
+  }
+  generalLimiter(req, res, next);
+});
 // Apply IP blocking and API key validation to all routes
 app.use(blockUnauthorizedIPs);
 

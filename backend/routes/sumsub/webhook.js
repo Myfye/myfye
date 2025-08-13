@@ -18,17 +18,19 @@ function verifyWebhookSignature(payload, signature, secret) {
 }
 
 // Process KYC status update
-async function processKYCStatusUpdate(applicantId, reviewResult) {
+async function processKYCStatusUpdate(applicantId, reviewResult, externalUserId = null) {
   try {
-    // Get applicant data to find the user ID
-    const applicantData = await getApplicantData({ applicantId });
+    let userId = externalUserId;
     
-    if (!applicantData || !applicantData.externalUserId) {
-      console.error('No external user ID found for applicant:', applicantId);
-      return;
+    // If externalUserId is not provided, try to get it from applicant data
+    if (!userId) {
+      const applicantData = await getApplicantData({ applicantId });
+      if (!applicantData || !applicantData.externalUserId) {
+        console.error('No external user ID found for applicant:', applicantId);
+        return;
+      }
+      userId = applicantData.externalUserId;
     }
-    
-    const userId = applicantData.externalUserId;
     let newStatus = 'PENDING';
     
     // Map Sumsub review result to your status
@@ -111,8 +113,14 @@ async function triggerPostApprovalProcesses(userId, applicantData) {
 async function handleSumsubWebhook(req, res) {
   try {
     const payload = JSON.stringify(req.body);
-    const signature = req.headers['x-payload-signature'];
+    const signature = req.headers['x-payload-digest']; // Sumsub uses x-payload-digest
     const secret = process.env.SUMSUB_WEBHOOK_KEY;
+    
+    // Check if secret is configured
+    if (!secret) {
+      console.error('SUMSUB_WEBHOOK_KEY environment variable is not set');
+      return res.status(500).json({ error: 'Webhook configuration error' });
+    }
     
     // Verify webhook signature
     if (!verifyWebhookSignature(payload, signature, secret)) {
@@ -125,18 +133,18 @@ async function handleSumsubWebhook(req, res) {
     
     // Handle different webhook event types
     switch (eventData.type) {
-      case 'applicant.reviewed':
-        await processKYCStatusUpdate(eventData.data.applicantId, eventData.data.reviewResult);
+      case 'applicantReviewed':
+        await processKYCStatusUpdate(eventData.applicantId, eventData.reviewResult, eventData.externalUserId);
         break;
         
-      case 'applicant.pending':
+      case 'applicantPending':
         // Handle pending status
-        await processKYCStatusUpdate(eventData.data.applicantId, { reviewAnswer: 'GRAY' });
+        await processKYCStatusUpdate(eventData.applicantId, { reviewAnswer: 'GRAY' }, eventData.externalUserId);
         break;
         
-      case 'applicant.onHold':
+      case 'applicantOnHold':
         // Handle on-hold status
-        await processKYCStatusUpdate(eventData.data.applicantId, { reviewAnswer: 'GRAY' });
+        await processKYCStatusUpdate(eventData.applicantId, { reviewAnswer: 'GRAY' }, eventData.externalUserId);
         break;
         
       default:
