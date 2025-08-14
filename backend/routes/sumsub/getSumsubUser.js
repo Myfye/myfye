@@ -115,6 +115,18 @@ const getSumsubUser = async (userId) => {
       }
     }
 
+    // Replace localhost URLs with production BASE_URL if available
+    const baseUrl = process.env.BASE_URL;
+    if (baseUrl && baseUrl !== 'http://localhost:3001') {
+      console.log(`Replacing localhost URLs with production URL: ${baseUrl}`);
+      documentImages.forEach(image => {
+        if (image.url && image.url.includes('http://localhost:3001')) {
+          image.url = image.url.replace('http://localhost:3001', baseUrl);
+          console.log(`Updated image URL: ${image.url}`);
+        }
+      });
+    }
+
     return {
       userId: userId,
       applicantData: applicantData,

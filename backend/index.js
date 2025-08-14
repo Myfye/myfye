@@ -1182,9 +1182,6 @@ app.post("/generate_sumsub_external_link", sensitiveLimiter, async (req, res) =>
   }
 });
 
-// Serve temporary images
-app.get("/api/sumsub/temp-image/:filename", serveTempImage);
-
 // Sumsub webhook endpoint (no rate limiting for webhooks)
 app.post("/webhooks/sumsub", async (req, res) => {
   console.log("\n=== Sumsub Webhook Received ===");
