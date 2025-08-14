@@ -29,3 +29,6 @@ frontend/node_modules/
 backend/node_modules/
 frontend/dist/
 frontend/build/
+
+# temp files and images
+**/temp_images/
