@@ -3,6 +3,7 @@ const { getApplicantData } = require('./getApplicantData');
 const { getDocumentImages } = require('./getDocumentImages');
 const { saveTemporaryImage } = require('./tempImageStorage');
 const pool = require('../../db');
+const { getSumsubUser } = require('./getSumsubUser');
 
 // Verify webhook signature from Sumsub
 function verifyWebhookSignature(payload, signature, secret) {
@@ -40,11 +41,11 @@ async function processKYCStatusUpdate(applicantId, reviewResult, externalUserId 
     }
     
     console.log('Review result: ', reviewResult);
-    
+
     // If approved, you might want to trigger additional processes
     if (reviewResult === 'GREEN') {
       // Trigger BlindPay integration or other post-approval processes
-      await triggerPostApprovalProcesses(userId);
+      await triggerSumsubApprovalProcesses(userId);
       updateUserKycStatus(userId, 'PENDING'); // still pending because we need to wait for the blindpay to be accepted
     } else if (reviewResult === 'RED') {
       // save the user KYC status to REJECTED
@@ -76,11 +77,17 @@ async function updateUserKycStatus(userId, newStatus) {
 }
 
 // Trigger additional processes after KYC approval
-async function triggerPostApprovalProcesses(userId) {
+async function triggerSumsubApprovalProcesses(userId) {
   try {
       
     console.log('Applicant userID: ', userId);
     console.log('Ready to submit to BlindPay');
+
+    const sumsubUserData = await getSumsubUser(userId);
+
+    // parse the data from sumsubUserData and feed to blind pay
+
+    console.log('Sumsub user data:', sumsubUserData);
 
   } catch (error) {
     console.error('Error in post-approval processes:', error);
