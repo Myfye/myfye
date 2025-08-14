@@ -86,11 +86,109 @@ async function triggerSumsubApprovalProcesses(userId) {
     const sumsubUserData = await getSumsubUser(userId);
 
     // parse the data from sumsubUserData and feed to blind pay
+    const parsedData = await parseSumsubUserData(sumsubUserData);
 
     console.log('Sumsub user data:', sumsubUserData);
+    console.log('Parsed data for BlindPay:', parsedData);
 
   } catch (error) {
     console.error('Error in post-approval processes:', error);
+  }
+}
+
+async function parseSumsubUserData(sumsubUserData) {
+  try {
+    if (!sumsubUserData || !sumsubUserData.applicantData) {
+      throw new Error('Invalid Sumsub user data structure');
+    }
+
+    const applicantData = sumsubUserData.applicantData;
+    const fixedInfo = applicantData.fixedInfo || {};
+    const addresses = fixedInfo.addresses || [];
+    const primaryAddress = addresses[0] || {};
+    const idDocs = applicantData.info?.idDocs || [];
+    const primaryIdDoc = idDocs[0] || {};
+    const documentImages = sumsubUserData.documentImages || [];
+
+    // Extract personal information
+    const personalInfo = {
+      first_name: fixedInfo.firstName || applicantData.info?.firstName,
+      last_name: fixedInfo.lastName || applicantData.info?.lastName,
+      date_of_birth: fixedInfo.dob || applicantData.info?.dob,
+      email: applicantData.email || null, // Note: email might not be in the example data
+      tax_id: fixedInfo.tin || null,
+      country: fixedInfo.country || applicantData.info?.country || primaryIdDoc.country,
+    };
+
+    // Extract address information
+    const addressInfo = {
+      address_line_1: primaryAddress.street,
+      city: primaryAddress.town,
+      state_province_region: primaryAddress.state,
+      country: primaryAddress.country || personalInfo.country,
+      postal_code: primaryAddress.postCode,
+    };
+
+    // Extract ID document information
+    const idDocInfo = {
+      id_doc_country: primaryIdDoc.country,
+      id_doc_type: primaryIdDoc.idDocType,
+      id_doc_number: primaryIdDoc.number,
+      id_doc_valid_until: primaryIdDoc.validUntil,
+    };
+
+    // Extract document images
+    const documentImageUrls = documentImages.map(img => ({
+      imageId: img.imageId,
+      position: img.position,
+      docType: img.docType,
+      url: img.url,
+      expiresAt: img.expiresAt
+    }));
+
+    // Find front and back document images
+    const frontImage = documentImages.find(img => img.position === 'front' || img.position === 'unknown');
+    const backImage = documentImages.find(img => img.position === 'back');
+
+    const parsedData = {
+      user_id: sumsubUserData.userId,
+      applicant_id: applicantData.id,
+      personal_info: personalInfo,
+      address_info: addressInfo,
+      id_doc_info: idDocInfo,
+      document_images: documentImageUrls,
+      id_doc_front_file: frontImage?.url || null,
+      id_doc_back_file: backImage?.url || null,
+    };
+
+    // Log the extracted information
+    console.log('=== Parsed Sumsub Data for BlindPay ===');
+    console.log('User ID:', parsedData.user_id);
+    console.log('Applicant ID:', parsedData.applicant_id);
+    console.log('First Name:', parsedData.personal_info.first_name);
+    console.log('Last Name:', parsedData.personal_info.last_name);
+    console.log('Date of Birth:', parsedData.personal_info.date_of_birth);
+    console.log('Country:', parsedData.personal_info.country);
+    console.log('Tax ID:', parsedData.personal_info.tax_id);
+    console.log('Email:', parsedData.personal_info.email);
+    console.log('Address Line 1:', parsedData.address_info.address_line_1);
+    console.log('City:', parsedData.address_info.city);
+    console.log('State:', parsedData.address_info.state_province_region);
+    console.log('Postal Code:', parsedData.address_info.postal_code);
+    console.log('ID Doc Country:', parsedData.id_doc_info.id_doc_country);
+    console.log('ID Doc Type:', parsedData.id_doc_info.id_doc_type);
+    console.log('ID Doc Number:', parsedData.id_doc_info.id_doc_number);
+    console.log('ID Doc Valid Until:', parsedData.id_doc_info.id_doc_valid_until);
+    console.log('Front Image URL:', parsedData.id_doc_front_file);
+    console.log('Back Image URL:', parsedData.id_doc_back_file);
+    console.log('Total Document Images:', parsedData.document_images.length);
+    console.log('==========================================');
+
+    return parsedData;
+    
+  } catch (error) {
+    console.error('Error parsing Sumsub user data:', error);
+    throw error;
   }
 }
 
