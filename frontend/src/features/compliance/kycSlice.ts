@@ -2,6 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface KYCState {
+  steps: {
+    1: {};
+    2: {};
+    3: {};
+  };
   modal: {
     isOpen: boolean;
     zIndex: number;
@@ -32,9 +37,6 @@ const kycSlice = createSlice({
   },
 });
 
-export const {
-  toggleModal,
-  unmount,
-} = kycSlice.actions;
+export const { toggleModal, unmount } = kycSlice.actions;
 
 export default kycSlice.reducer;
