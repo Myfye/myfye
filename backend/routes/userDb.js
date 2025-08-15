@@ -44,7 +44,7 @@ async function createUser(userData) {
         if (result.rows.length === 0) {
             throw new Error('Failed to create user');
         }
-        console.log("User creation result:", JSON.stringify(result, null, 2));
+        // console.log("User creation result:", JSON.stringify(result, null, 2));
         return result.rows[0];
     } catch (error) {
         console.error('Error creating user:', error);

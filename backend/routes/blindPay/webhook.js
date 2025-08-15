@@ -27,7 +27,7 @@ async function handleBlindPayKycStatusUpdate(data, eventType) {
         break;
     }
     
-    if (newKycStatus) {
+    if (newKycStatus != "PENDING") { // Should already be pending at this point, we do not want to switch APPROVED back to PENDING
       // Try to find user by BlindPay receiver ID first
       if (data.id) {
         try {
