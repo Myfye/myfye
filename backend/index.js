@@ -208,7 +208,7 @@ app.post("/get_user_by_email", authLimiter, async (req, res) => {
   try {
     const { email } = req.body;
     const result = await getUserByEmail(email);
-    console.log("User lookup result:", JSON.stringify(result, null, 2));
+    // console.log("User lookup result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {
     console.error("Error in /get_user_by_email endpoint:", error);
@@ -222,7 +222,7 @@ app.post("/get_user_by_privy_id", authLimiter, async (req, res) => {
   try {
     const { privyUserId } = req.body;
     const result = await getUserByPrivyId(privyUserId);
-    console.log("User lookup result:", JSON.stringify(result, null, 2));
+    // console.log("User lookup result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {
     console.error("Error in /get_user_by_privy_id endpoint:", error);
@@ -464,7 +464,7 @@ app.post("/get_all_bank_accounts", generalLimiter, async (req, res) => {
 
   try {
     const result = await get_all_bank_accounts();
-    console.log("All bank accounts retrieval result:", JSON.stringify(result, null, 2));
+    // console.log("All bank accounts retrieval result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {
     console.error("Error in /get_all_bank_accounts endpoint:", error);
@@ -576,7 +576,7 @@ app.post("/get_contacts", async (req, res) => {
   try {
     const data = req.body;
     const result = await getContacts(data);
-    console.log("Get contacts result:", JSON.stringify(result, null, 2));
+    // console.log("Get contacts result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {
     console.error("Error in /get_contacts endpoint:", error);
@@ -611,7 +611,7 @@ app.post("/search_users", async (req, res) => {
 
 app.post("/get_top_contacts", async (req, res) => {
   console.log("\n=== Get Top Contacts Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
+  // console.log("Request body:", JSON.stringify(req.body, null, 2));
 
   try {
     const data = req.body;
@@ -675,7 +675,7 @@ app.post("/get_error_logs", generalLimiter, async (req, res) => {
 
   try {
     const result = await getErrorLogs();
-    console.log(`Retrieved ${result.length} error logs`);
+    // console.log(`Retrieved ${result.length} error logs`);
     res.json(result);
   } catch (error) {
     console.error("Error in /get_error_logs endpoint:", error);
@@ -693,7 +693,7 @@ app.post("/get_all_users", generalLimiter, async (req, res) => {
 
   try {
     const result = await getAllUsers();
-    console.log(`Retrieved ${result.length} users`);
+    // console.log(`Retrieved ${result.length} users`);
     res.json(result);
   } catch (error) {
     console.error("Error in /get_all_users endpoint:", error);
@@ -757,7 +757,7 @@ app.post("/save_recently_used_addresses", generalLimiter, async (req, res) => {
 
 app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
     console.log("\n=== Get Recently Used Addresses Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+    // console.log("Request body:", JSON.stringify(req.body, null, 2));
 
     try {
         const { user_id } = req.body;
@@ -767,7 +767,7 @@ app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
             });
         }
         const result = await getRecentlyUsedAddresses(user_id);
-        console.log("Get addresses result:", JSON.stringify(result, null, 2));
+        // console.log("Get addresses result:", JSON.stringify(result, null, 2));
         res.json(result);
     } catch (error) {
         console.error("Error in /get_recently_used_addresses endpoint:", error);
@@ -782,7 +782,7 @@ app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
 
 app.post("/get_wallet_by_address", generalLimiter, async (req, res) => {
     console.log("\n=== Get Wallet ID by Address Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+    // console.log("Request body:", JSON.stringify(req.body, null, 2));
 
     try {
         const { address } = req.body;
@@ -831,7 +831,7 @@ app.get("/get_all_receivers", generalLimiter, async (req, res) => {
 
   try {
     const result = await get_all_receivers();
-    console.log(`Retrieved ${result.length} receivers with their blockchain wallets`);
+    // console.log(`Retrieved ${result.length} receivers with their blockchain wallets`);
     res.json(result);
   } catch (error) {
     console.error("Error in /get_all_receivers endpoint:", error);
@@ -897,7 +897,7 @@ app.post("/delete_receiver", sensitiveLimiter, async (req, res) => {
 
 app.post("/delete_blockchain_wallet_and_receiver", sensitiveLimiter, async (req, res) => {
   console.log("\n=== Delete Blockchain Wallet and Receiver Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
+  // console.log("Request body:", JSON.stringify(req.body, null, 2));
 
   try {
     const { receiverId, walletId } = req.body;
@@ -1137,7 +1137,7 @@ app.post("/payout_quote", async (req, res) => {
 
 app.post("/get_wallet_id_by_address", sensitiveLimiter, async (req, res) => {
   console.log("\n=== Get Wallet ID by Address Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
+  // console.log("Request body:", JSON.stringify(req.body, null, 2));
 
   try {
     const { address } = req.body;
@@ -1164,7 +1164,7 @@ app.post("/get_wallet_id_by_address", sensitiveLimiter, async (req, res) => {
 
 app.post("/generate_sumsub_external_link", sensitiveLimiter, async (req, res) => {
   console.log("\n=== Generate Sumsub External Link Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
+  // console.log("Request body:", JSON.stringify(req.body, null, 2));
 
   try {
     const data = req.body;
