@@ -56,6 +56,8 @@ async function processKYCStatusUpdate(applicantId, reviewResult, externalUserId 
     } else if (reviewResult === 'RED') {
       // save the user KYC status to REJECTED
       updateUserKycStatus(userId, 'REJECTED');
+      console.log('Send rejection email to user');
+      // To do: send rejection email
     } else {
       // save user KYC status to PENDING
       updateUserKycStatus(userId, 'PENDING');

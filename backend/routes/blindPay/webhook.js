@@ -11,6 +11,8 @@ async function handleBlindPayKycStatusUpdate(data, eventType) {
       switch (data.kyc_status) {
         case 'approved':
           newKycStatus = 'APPROVED';
+          console.log('Send approval email to user');
+          // To do: send approcal email
           break;
         case 'rejected':
           newKycStatus = 'REJECTED';
@@ -20,6 +22,8 @@ async function handleBlindPayKycStatusUpdate(data, eventType) {
           break;
         case 'deprecated':
           newKycStatus = 'REJECTED';
+          console.log('Send rejection email to user');
+          // To do: send rejection email
           break;
         default:
           console.log(`Unknown BlindPay KYC status: ${data.kyc_status}`);
@@ -44,35 +48,24 @@ const handleBlindPayWebhook = async (req, res) => {
     
   try {
     console.log("\n=== BlindPay Webhook Received ===");
-    console.log("Headers:", JSON.stringify(req.headers, null, 2));
+    //console.log("Headers:", JSON.stringify(req.headers, null, 2));
     console.log("Body:", JSON.stringify(req.body, null, 2));
 
-    const { type, data } = req.body;
-
-    if (!type) {
-      console.error("No event type provided in webhook payload");
-      return res.status(400).json({ error: "No event type provided" });
-    }
+    const { type } = req.body;
 
     console.log(`Processing BlindPay webhook event: ${type}`);
 
-    switch (type) {
-      case 'receiver.new':
-        console.log("=== Receiver New Event ===");
-        // console.log("Receiver data:", JSON.stringify(data, null, 2));
-        break;
+    // Check if kyc_status exists in the body and handle it regardless of event type
+    if (req.body.kyc_status) {
+      console.log("=== KYC Status Update Detected ===");
+      await handleBlindPayKycStatusUpdate(req.body, type || 'unknown');
+    } else {
+      console.log("No KYC status found in webhook body");
+    }
 
-      case 'receiver.update':
-        console.log("=== Receiver Update Event ===");
-        console.log("Receiver data:", JSON.stringify(data, null, 2));
-        await handleBlindPayKycStatusUpdate(data, 'receiver.update');
-        break;
-
-      default:
-        console.log(`Unhandled BlindPay webhook event type: ${type}`);
-        console.log("Event data:", JSON.stringify(data, null, 2));
-
-            
+    // Log event type for debugging but don't filter by it
+    if (type) {
+      console.log(`Event type: ${type}`);
     }
 
     // Always return 200 to acknowledge receipt
