@@ -2,31 +2,33 @@ import store, { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAbstractedAsset,
+  selectAbstractedAssetsWithBalanceByGroup,
   selectAsset,
 } from "@/features/assets/assetsSlice";
 import SelectAssetOverlay from "@/features/assets/SelectAssetOverlay";
 import { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
 import { updateAmountDisplay } from "./withdrawOffChainThunks";
 import { toggleOverlay } from "./withdrawOffChainSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const WithdrawOffChainSelectAssetOverlay = ({ ...restProps }: OverlayProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const isOpen = useSelector(
-    (state: RootState) => state.withdrawOffChain.overlays.selectAsset.isOpen
+  const isOpen = useAppSelector(
+    (state) => state.withdrawOffChain.overlays.selectAsset.isOpen
   );
 
-  const asset = useSelector((state: RootState) =>
-    state.withdrawOnChain.transaction.assetId
-      ? selectAbstractedAsset(state, state.withdrawOffChain.transaction.assetId)
+  const asset = useAppSelector((state) =>
+    state.withdrawOffChain.transaction.abstractedAssetId
+      ? selectAbstractedAsset(
+          state,
+          state.withdrawOffChain.transaction.abstractedAssetId
+        )
       : null
   );
 
-  const euroAsset = useSelector((state: RootState) =>
-    selectAbstractedAsset(state, "euro")
-  );
-  const usDollarAsset = useSelector((state: RootState) =>
-    selectAbstractedAsset(state, "us_dollar")
+  const cashAssets = useAppSelector((state) =>
+    selectAbstractedAssetsWithBalanceByGroup(state, "cash")
   );
 
   return (
@@ -53,7 +55,7 @@ const WithdrawOffChainSelectAssetOverlay = ({ ...restProps }: OverlayProps) => {
           {
             id: "cash",
             label: "",
-            abstractedAssets: [euroAsset, usDollarAsset],
+            abstractedAssets: cashAssets,
           },
         ]}
         assetCardListSelectOptions={{ showCurrencySymbol: true }}

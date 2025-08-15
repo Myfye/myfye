@@ -1,52 +1,104 @@
+import { FlagComponent } from "country-flag-icons/react/3x2";
 import { IconCardContext } from "./IconCardContext";
 import IconCardInner from "./IconCardInner";
 import { css } from "@emotion/react";
+import {
+  CaretRight,
+  CaretRightIcon,
+  Icon,
+  PlusIcon,
+} from "@phosphor-icons/react";
+import { ButtonProps } from "../button/button.types";
+import { CheckIcon } from "@phosphor-icons/react/dist/ssr";
 
+interface Content {
+  title: string;
+  subtitle?: string;
+  align?: "start" | "center";
+  titleSize?: "medium" | "large";
+  titleWeight?: string;
+  textAlign?: string;
+}
 export interface IconCardContent {
-  leftContent: {
-    title: string;
-    description?: string;
-    align?: "start" | "center";
-    titleFontSize?: string;
+  leftContent: Content;
+  rightContent?: Content;
+  icon:
+    | "wallet"
+    | "user"
+    | "BRFlag"
+    | "USFlag"
+    | "MXFlag"
+    | "bank_neutral"
+    | string;
+  action?: {
+    id: string;
+    label: string;
+    icon: Icon;
+    props: ButtonProps;
   };
-  rightContent?: {
-    title: string;
-    description?: string;
-    align?: "start" | "center";
-    titleFontSize?: string;
-  };
-  icon?: "wallet" | "user" | string;
 }
 
 export interface IconCardProps extends IconCardContent {
   backgroundColor?: string;
-  isHighlighted?: boolean;
+  isActive?: boolean;
+  padding?: string;
+  height?: string;
+  showArrow?: boolean;
+  showPlus?: boolean;
 }
 
 const IconCard = ({
   leftContent,
   rightContent,
   backgroundColor = "var(--clr-surface-raised)",
-  isHighlighted = false,
   icon,
+  padding = "var(--size-150)",
+  action,
+  isActive = false,
+  showArrow = false,
+  showPlus = false,
+  height = "4.25rem",
 }: IconCardProps) => {
   return (
-    <IconCardContext value={{ leftContent, rightContent, icon }}>
+    <IconCardContext value={{ leftContent, rightContent, icon, action }}>
       <div
         className="icon-card"
         css={css`
-          display: block;
+          display: grid;
+          grid-template-columns: 1fr auto;
+          align-items: center;
           container: icon-card / size;
-          padding: var(--size-150);
-          height: 4.25rem;
+          padding: ${padding};
+          height: ${height};
           border-radius: var(--border-radius-medium);
           background-color: ${backgroundColor};
-          outline-offset: -2px;
-          outline: 2px solid
-            ${isHighlighted ? "var(--clr-primary)" : "transparent"};
         `}
       >
         <IconCardInner />
+        <div
+          css={css`
+            display: flex;
+            align-items: center;
+            margin-inline-end: var(--size-050);
+            margin-inline-start: var(--size-150);
+          `}
+        >
+          {isActive && <CheckIcon color="var(--clr-primary)" size={20} />}
+          {showArrow && <CaretRightIcon color="var(--clr-icon)" size={20} />}
+          {showPlus && (
+            <div
+              className="button"
+              data-variant="primary"
+              data-size="medium"
+              data-expand="false"
+              data-icon-only="true"
+              data-loading="false"
+              data-color="neutral"
+            >
+              <PlusIcon size={20} />
+            </div>
+          )}
+        </div>
       </div>
     </IconCardContext>
   );

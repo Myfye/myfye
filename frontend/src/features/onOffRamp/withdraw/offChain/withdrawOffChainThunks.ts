@@ -2,15 +2,15 @@ import { Action, ThunkAction } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
 import {
   toggleOverlay,
+  updateAbstractedAssetId,
   updateAmount,
-  updateAssetId,
 } from "./withdrawOffChainSlice";
 
 export const updateAmountDisplay = (
   assetId: string
 ): ThunkAction<void, RootState, unknown, Action<string>> => {
   return (dispatch, getState) => {
-    dispatch(updateAssetId(assetId));
+    dispatch(updateAbstractedAssetId(assetId));
 
     const state = getState();
     const newAsset = state.assets.assets[assetId];

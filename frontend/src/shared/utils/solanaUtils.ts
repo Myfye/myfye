@@ -13,8 +13,6 @@ export const validateSolanaAddress = (address: string) => {
 };
 
 export const truncateSolanaAddress = (address: string) => {
-  const isSolanaAddressValid = validateSolanaAddress(address);
-  if (!isSolanaAddressValid)
-    throw new Error("Please input a valid Solana address");
+  if (address.length < 11) return address;
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };

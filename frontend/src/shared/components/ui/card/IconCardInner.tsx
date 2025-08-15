@@ -2,35 +2,64 @@ import { useContext } from "react";
 import { IconCardContext } from "./IconCardContext";
 import { css } from "@emotion/react";
 import WalletIcon from "../icons/WalletIcon";
-import AssetIcon from "../icons/AssetIcon";
 import UserIcon from "../icons/UserIcon";
 import IconCardTextContent from "./IconCardTextContent";
+import FlagIcon from "../icons/FlagIcon";
+import Button from "../button/Button";
+import AssetIcon from "../icons/AssetIcon";
+import BankIcon from "../icons/BankIcon";
+import { IconSize } from "../icons/utils";
+
+export const getIcon = (icon: string, size: IconSize = "medium") => {
+  switch (icon) {
+    case "wallet": {
+      return <WalletIcon size={size} />;
+    }
+    case "user": {
+      return <UserIcon size={size} />;
+    }
+    case "BRFlag": {
+      return <FlagIcon flag="BR" size={size} />;
+    }
+    case "MXFlag": {
+      return <FlagIcon flag="MX" size={size} />;
+    }
+    case "USFlag": {
+      return <FlagIcon flag="US" size={size} />;
+    }
+    case "bank": {
+      return <BankIcon size={size} />;
+    }
+    case "bank_neutral": {
+      return <BankIcon size={size} type="neutral" />;
+    }
+    default: {
+      return <AssetIcon icon={icon} size={size} />;
+    }
+  }
+};
 
 const IconCardInner = () => {
   const iconCardProps = useContext(IconCardContext);
   if (!iconCardProps) throw new Error("Context not found");
-  const { icon, leftContent, rightContent } = iconCardProps;
+  const { icon, leftContent, rightContent, action } = iconCardProps;
   return (
     <div
       css={css`
         display: grid;
         grid-template-columns: auto 1fr auto;
         height: 100cqh;
+        align-content: center;
       `}
     >
       <div
         className="icon-card-icon"
         css={css`
-          display: grid;
-          grid-template-columns: auto 1fr auto;
-          height: 100cqh;
+          align-content: center;
+          margin-inline-end: var(--size-150);
         `}
       >
-        {icon === "wallet" && <WalletIcon />}
-        {icon === "user" && <UserIcon />}
-        {icon !== "wallet" && icon !== "user" && (
-          <AssetIcon src={icon} alt="" />
-        )}
+        {icon && getIcon(icon)}
       </div>
       <div
         className="icon-card-content"
@@ -43,19 +72,34 @@ const IconCardInner = () => {
       >
         <IconCardTextContent
           title={leftContent.title}
-          description={leftContent.description}
-          titleFontSize={leftContent.titleFontSize}
+          subtitle={leftContent.subtitle}
+          titleSize={leftContent.titleSize}
           align={leftContent.align}
+          titleWeight={leftContent.titleWeight}
+          textAlign={leftContent.textAlign}
         />
         {rightContent && (
           <IconCardTextContent
             title={rightContent.title}
-            description={rightContent.description}
-            titleFontSize={leftContent.titleFontSize}
-            align={leftContent.align}
+            subtitle={rightContent.subtitle}
+            titleSize={rightContent.titleSize}
+            align={rightContent.align}
+            titleWeight={rightContent.titleWeight}
+            textAlign={rightContent.textAlign}
           />
         )}
       </div>
+      {action && (
+        <div className="icon-card-action">
+          <Button
+            {...action.props}
+            icon={action.icon}
+            iconOnly
+            color="transparent"
+            aria-label={action.label}
+          />
+        </div>
+      )}
     </div>
   );
 };

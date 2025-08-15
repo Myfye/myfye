@@ -30,12 +30,16 @@ const Selector = ({ ref, children, ...restProps }: SelectorProps) => {
     <motion.label
       css={css`
         display: flex;
+        align-items: center;
         font-weight: ${isSelected ? "var(--fw-heading)" : "var(--fw-default)"};
+        background-color: ${isSelected
+          ? "var(--clr-surface-lowered)"
+          : "var(--clr-surface)"};
+        padding: var(--size-150);
+        border-radius: var(--border-radius-medium);
       `}
       animate={{
         scale: isPressed ? 0.9 : 1,
-        "--_outline-opacity": isSelected ? 1 : 0,
-        "--_color": isSelected ? "var(--clr-primary)" : "var(--clr-text)",
       }}
     >
       <VisuallyHidden>

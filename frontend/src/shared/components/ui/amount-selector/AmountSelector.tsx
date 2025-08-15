@@ -9,7 +9,7 @@ import { AmountSelectContext } from "./AmountSelectContext";
 import { motion } from "motion/react";
 import { css } from "@emotion/react";
 
-interface AmountSelectorProps extends AriaRadioProps {
+export interface AmountSelectorProps extends AriaRadioProps {
   ref?: RefObject<HTMLInputElement>;
 }
 

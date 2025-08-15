@@ -43,6 +43,7 @@ const WithdrawOffChainBankPickerOverlay = ({
             <h2
               className="heading-x-large"
               css={css`
+                text-align: center;
                 margin-block-end: var(--size-400);
                 margin-block-start: var(--size-300);
               `}

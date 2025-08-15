@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import UserCardList from "@/features/users/cards/UserCardList";
-import UserSearchField from "@/features/users/UserSearchField";
+import SearchField from "@/features/users/SearchField";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import QRScanner from "../qr-code/QRScanner";
@@ -58,7 +58,7 @@ const SelectUserOverlay = ({
               padding-block-start: var(--size-300);
             `}
           >
-            <UserSearchField
+            <SearchField
               value={query}
               onChange={(e: string) => setQuery(e)}
               onScanTogglerPress={() => setQRScannerOpen(true)}

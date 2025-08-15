@@ -1,15 +1,28 @@
+import { ArrowRightIcon } from "@phosphor-icons/react";
+import { getIcon } from "../../card/IconCardInner";
 import { css } from "@emotion/react";
-import { ArrowDown } from "@phosphor-icons/react";
 
-const TransactionFlowIndicator = () => {
+interface TransactionFlowIndicatorProps {
+  inputIcon: string;
+  outputIcon: string;
+}
+const TransactionFlowIndicator = ({
+  inputIcon,
+  outputIcon,
+}: TransactionFlowIndicatorProps) => {
   return (
     <div
-      className="icon-wrapper"
+      className="transaction-flow-indicator"
       css={css`
-        padding-inline-start: 0.675rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: var(--size-100);
       `}
     >
-      <ArrowDown color="var(--clr-icon)" size={20} />
+      {getIcon(inputIcon, "large")}
+      <ArrowRightIcon size={20} />
+      {getIcon(outputIcon, "large")}
     </div>
   );
 };

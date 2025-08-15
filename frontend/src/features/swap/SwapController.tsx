@@ -1,4 +1,4 @@
-import { ArrowsDownUp, CaretRight } from "@phosphor-icons/react";
+import { ArrowsDownUpIcon, CaretRightIcon } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
 
@@ -90,7 +90,7 @@ const AssetSelectButton = ({
       >
         {asset ? asset.label : "Select coin"}
       </span>
-      <CaretRight color="var(--clr-icon)" size={16} weight="bold" />
+      <CaretRightIcon color="var(--clr-icon)" size={16} weight="bold" />
     </Button>
   );
 };
@@ -343,14 +343,12 @@ const SwapController = () => {
           left: 50%;
           transform: translate(-50%, -50%);
           z-index: 1;
-          background-color: var(--clr-surface-raised);
+          background-color: var(--clr-primary);
           border-radius: var(--border-radius-medium);
           padding: var(--size-075);
-          box-shadow: var(--box-shadow);
-          border: 1px solid var(--clr-border-neutral);
         `}
       >
-        <ArrowsDownUp size={20} color="var(--clr-icon)" />
+        <ArrowsDownUpIcon size={20} color="var(--clr-white)" />
       </div>
       <SwapControl
         transactionType="buy"

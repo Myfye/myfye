@@ -26,12 +26,12 @@ import DepositModal from "@/features/onOffRamp/deposit/DepositModal.tsx";
 import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import KYCOverlay from "@/features/compliance/KYCOverlay.tsx";
-import { RootState } from "@/redux/store.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWallets.tsx";
 import MFAOnboarding from "./pages/app/login/mfaOnboarding.tsx";
 import Button from "./shared/components/ui/button/Button.tsx";
+import { useAppSelector } from "./redux/hooks.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -41,15 +41,13 @@ function WebAppInner() {
 
   const [userDataLoaded, setUserDataLoaded] = useState(false); // To do: get user data
 
-  const { user, ready, authenticated, login } = usePrivy();
+  const { user, ready, authenticated, login, logout } = usePrivy();
 
-  const mfaStatus = useSelector(
-    (state: RootState) => state.userWalletData.mfaStatus
-  );
+  const mfaStatus = useAppSelector((state) => state.userWalletData.mfaStatus);
 
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
-
+  2;
   useEffect(() => {
     console.log("MFA status", mfaStatus);
   }, [mfaStatus]);

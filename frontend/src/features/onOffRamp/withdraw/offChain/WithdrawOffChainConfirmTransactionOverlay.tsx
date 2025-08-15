@@ -3,7 +3,6 @@ import { useId } from "react";
 import TransactionConfirmationScreen from "@/shared/components/ui/transaction/confirmation/TransactionConfirmationScreen";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toggleModal } from "../withdrawSlice";
-import { truncateSolanaAddress } from "@/shared/utils/solanaUtils";
 import toast from "react-hot-toast/headless";
 import { toggleOverlay, unmountOverlays } from "./withdrawOffChainSlice";
 import {
@@ -17,21 +16,22 @@ import { selectAbstractedAsset } from "@/features/assets/assetsSlice";
 import { useSignTransaction, useWallets } from "@privy-io/react-auth";
 import { base } from "viem/chains";
 import { useLazyGetBaseRelayerQuery } from "@/features/base_relayer/baseRelayerApi";
+import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";
+import truncateBankAccountNumber from "@/shared/utils/bankUtils";
 
-const WithdrawOnChainConfirmOverlay = () => {
+const WithdrawOffChainConfirmTransactionOverlay = () => {
   const dispatch = useAppDispatch();
 
   const isOpen = useAppSelector(
-    (state) => state.withdrawOnChain.overlays.confirmTransaction.isOpen
+    (state) => state.withdrawOffChain.overlays.confirmTransaction.isOpen
+  );
+  const transaction = useAppSelector(
+    (state) => state.withdrawOffChain.transaction
   );
 
-  const transaction = useAppSelector(
-    (state) => state.withdrawOnChain.transaction
-  );
-  /* TODO fetch proper asset details */
   const asset = useAppSelector((state) =>
-    transaction.assetId
-      ? selectAbstractedAsset(state, transaction.assetId)
+    transaction.abstractedAssetId
+      ? selectAbstractedAsset(state, transaction.abstractedAssetId)
       : null
   );
 
@@ -76,6 +76,10 @@ const WithdrawOnChainConfirmOverlay = () => {
       ],
     };
 
+    if (!transaction.payout?.contract?.address) {
+      throw new Error("Payout address not found");
+    }
+
     // Get current nonce for the user
     const nonce = await publicClient.readContract({
       address: transaction.payout?.contract?.address,
@@ -90,7 +94,8 @@ const WithdrawOnChainConfirmOverlay = () => {
     const message = {
       owner: wallet.address,
       spender: transaction.payout.contract.blindpayContractAddress,
-      value: BigInt(transaction.payout.contract.amount),
+      // @ts-ignore
+      value: BigInt(+transaction.payout.contract.amount),
       nonce: nonce,
       deadline: deadline,
     };
@@ -101,6 +106,15 @@ const WithdrawOnChainConfirmOverlay = () => {
     }
 
     // Estimate gas for the approval transaction
+
+    if (!transaction.payout?.contract?.blindpayContractAddress) {
+      throw new Error("Blindpay contract address not found");
+    }
+
+    if (!transaction.payout?.contract?.amount) {
+      throw new Error("Contract amount not found");
+    }
+
     const gasEstimate = await publicClient.estimateContractGas({
       address: transaction.payout.contract.address,
       abi,
@@ -161,9 +175,7 @@ const WithdrawOnChainConfirmOverlay = () => {
     console.log(hash, receipt);
 
     toast.success(
-      `Transferred ${transaction.formattedAmount} ${
-        asset?.symbol
-      } to ${truncateSolanaAddress(transaction.solAddress ?? "0x38232288")}`
+      `Transferred ${transaction.formattedAmount} ${asset?.symbol} to ${transaction.bankInfo.speiClabe}`
     );
     dispatch(toggleModal(false));
     dispatch(unmountOverlays());
@@ -178,21 +190,10 @@ const WithdrawOnChainConfirmOverlay = () => {
           dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
         }}
         zIndex={2003}
-        aria-labelledby={headingId}
       >
-        {/* Update for abstracted asset */}
         <TransactionConfirmationScreen
-          input={{
-            amount: transaction.amount ?? 0,
-            icon: asset?.icon.content,
-            label: asset?.label ?? "",
-            tokenSymbol: asset?.symbol ?? "",
-            fiatCurrency: "usd",
-          }}
-          output={{
-            icon: "bank",
-            label: transaction.solAddress ?? "0x832838232889",
-          }}
+          inputIcon={asset?.icon.content ?? "src"}
+          outputIcon="bank"
           isLoading={isLoading}
           onConfirm={handleConfirm}
           onCancel={() => {
@@ -201,11 +202,18 @@ const WithdrawOnChainConfirmOverlay = () => {
             );
           }}
           headingId={headingId}
-          title="Confirm withdrawal"
+          title={`Withdraw ${formatAmountWithCurrency(
+            transaction.amount ?? 0,
+            asset?.fiatCurrency ?? "usd"
+          )} ${asset?.symbol}`}
+          subtitle={`To account ${truncateBankAccountNumber(
+            transaction.bankInfo.speiClabe ?? ""
+          )}`}
+          total={transaction.amount ?? 0 + transaction.fee ?? 0}
         />
       </Overlay>
     </>
   );
 };
 
-export default WithdrawOnChainConfirmOverlay;
+export default WithdrawOffChainConfirmTransactionOverlay;

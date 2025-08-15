@@ -1,59 +1,42 @@
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import Overlay, { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
-import { useDispatch, useSelector } from "react-redux";
-import { useSolanaWallets } from "@privy-io/react-auth/solana";
-import { RecentSolAddress } from "@/functions/RecentSolAddress";
-import Input from "@/shared/components/ui/inputs/Input";
-import { validateSolanaAddress } from "@/shared/utils/solanaUtils";
-import { RootState } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import {
+  truncateSolanaAddress,
+  validateSolanaAddress,
+} from "@/shared/utils/solanaUtils";
 import { useGetRecentlyUsedAddressesQuery } from "@/features/solana/solanaApi";
 import { toggleOverlay, updateSolAddress } from "./withdrawOnChainSlice";
 import { useAppSelector } from "@/redux/hooks";
 import toast from "react-hot-toast/headless";
+import TextInput from "@/shared/components/ui/inputs/TextInput";
+import { Button as AriaButton } from "react-aria-components";
+import IconCard from "@/shared/components/ui/card/IconCard";
+import Section from "@/shared/components/ui/section/Section";
+import SearchField from "@/features/users/SearchField";
+import QRScanner from "@/features/qr-code/QRScanner";
+import RecentlyUsedAddressesList from "./_components/RecentlyUsedAddresses";
 
 interface WithdrawOnChainAddressEntryOverlayProps
-  extends Omit<OverlayProps, "children" | "isOpen" | "onOpenChange"> {
-  selectedToken: string;
-  amount: string;
-}
+  extends Omit<OverlayProps, "children" | "isOpen" | "onOpenChange"> {}
 
 const WithdrawOnChainAddressEntryOverlay = ({
-  selectedToken,
-  amount,
   ...restProps
 }: WithdrawOnChainAddressEntryOverlayProps) => {
   const dispatch = useDispatch();
-  const isOpen = useSelector(
+  const isOpen = useAppSelector(
     (state) => state.withdrawOnChain.overlays.addressEntry.isOpen
   );
-  const solAddress = useAppSelector(
-    (state) => state.withdrawOnChain.transaction.solAddress
+  const transaction = useAppSelector(
+    (state) => state.withdrawOnChain.transaction
   );
+  const [solAddress, setSolAddress] = useState("");
 
   const userId = useAppSelector((state) => state.userWalletData.currentUserID);
 
-  const {
-    isSuccess,
-    isLoading: areRecentlyUsedAddressesLoading,
-    isError: areRecentlyUsedAddressesError,
-    data: recentlyUsedAddresses,
-  } = useGetRecentlyUsedAddressesQuery(userId);
-
-  // const handleSaveAddress = async () => {
-  //   try {
-  //     await saveSolAddress(userID, address);
-
-  //     // Update local state with the new address
-  //     setRecentAddresses((prev) => ({
-  //       ...prev,
-  //       addresses: prev?.addresses ? [...prev.addresses, address] : [address],
-  //     }));
-  //   } catch (error) {
-  //     console.error("Failed to save recent address:", error);
-  //   }
-  // };
+  const [isQRScannerOpen, setQRScannerOpen] = useState(false);
 
   return (
     <>
@@ -62,8 +45,10 @@ const WithdrawOnChainAddressEntryOverlay = ({
         isOpen={isOpen}
         onOpenChange={(isOpen) => {
           dispatch(toggleOverlay({ type: "addressEntry", isOpen }));
+          setSolAddress("");
         }}
         zIndex={2002}
+        direction="vertical"
       >
         <div
           css={css`
@@ -80,109 +65,110 @@ const WithdrawOnChainAddressEntryOverlay = ({
           >
             <div
               css={css`
-                margin-block-start: var(--size-300);
+                padding-block-start: var(--size-300);
               `}
             >
-              <h1 className="heading-x-large">Enter Solana Address</h1>
+              <h1
+                className="heading-x-large"
+                css={css`
+                  text-align: center;
+                `}
+              >
+                Enter Solana Address
+              </h1>
+              <p
+                className="caption"
+                css={css`
+                  text-align: center;
+                  color: var(--clr-text-weak);
+                  margin-block-start: var(--size-100);
+                `}
+              >
+                Enter a valid solana address in the field below
+              </p>
             </div>
             <div
               css={css`
                 margin-block-start: var(--size-400);
               `}
             >
-              <Input
-                hideLabel={true}
+              <SearchField
                 label="Enter solana address"
                 type="text"
-                value={solAddress ?? ""}
+                value={solAddress}
+                onScanTogglerPress={() => setQRScannerOpen(true)}
                 onChange={(e) => {
-                  dispatch(updateSolAddress(e.target.value));
+                  setSolAddress(e);
                 }}
                 placeholder="Solana address"
               />
             </div>
-            {/* {recentlyUsedAddresses?.addresses &&
-              Array.isArray(recentlyUsedAddresses?.addresses) && (
-                <div
-                  css={css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size-100);
-                  `}
-                >
-                  <div
+            {solAddress && (
+              <menu
+                css={css`
+                  margin-block-start: var(--size-400);
+                `}
+              >
+                <li>
+                  <AriaButton
+                    onPress={() => {
+                      if (!validateSolanaAddress(solAddress))
+                        return toast.error(
+                          "Please enter a valid Solana address"
+                        );
+
+                      dispatch(updateSolAddress(solAddress));
+                      dispatch(
+                        toggleOverlay({
+                          type: "addressEntry",
+                          isOpen: false,
+                        })
+                      );
+                      setSolAddress("");
+                      toast.success(
+                        `Using wallet ${truncateSolanaAddress(solAddress)}`
+                      );
+                    }}
                     css={css`
-                      color: var(--clr-text-secondary);
-                      font-size: var(--fs-small);
-                      font-weight: 500;
+                      width: 100%;
                     `}
                   >
-                    My addresses
-                  </div>
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--size-100);
-                    `}
-                  >
-                    {/* {recentAddresses.addresses.map((addr, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleAddressSelect(addr)}
-                        css={css`
-                          padding: var(--size-100) var(--size-200);
-                          border: 1px solid var(--clr-border);
-                          border-radius: var(--border-radius-small);
-                          background-color: var(--clr-surface-raised);
-                          color: var(--clr-text);
-                          font-size: 11px;
-                          font-family: monospace;
-                          text-align: left;
-                          cursor: pointer;
-                          transition: all 0.2s ease;
-
-                          &:hover {
-                            background-color: var(--clr-surface-hover);
-                            border-color: var(--clr-primary);
-                          }
-
-                          &:active {
-                            background-color: var(--clr-surface-active);
-                          }
-                        `}
-                      >
-                        {addr}
-                      </button>
-                    ))} */}
-            {/* </div>
-                </div> */}
-            {/* )} */}
-          </section>
-          <section
-            css={css`
-              margin-block-start: auto;
-              padding-inline: var(--size-400);
-              padding-block-end: var(--size-200);
-            `}
-          >
-            <Button
-              expand
-              variant="primary"
-              onPress={() => {
-                const isSolanaAddressValid = validateSolanaAddress(
-                  solAddress ?? ""
-                );
-                if (!isSolanaAddressValid)
-                  return toast.error("Please input a valid Solana address");
-                dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
-              }}
-            >
-              Next
-            </Button>
+                    <IconCard
+                      icon="wallet"
+                      leftContent={{
+                        title: truncateSolanaAddress(solAddress),
+                        align: "center",
+                      }}
+                      isActive={solAddress === transaction.solAddress}
+                      showPlus={solAddress !== transaction.solAddress}
+                    />
+                  </AriaButton>
+                </li>
+              </menu>
+            )}
+            {!solAddress && (
+              <RecentlyUsedAddressesList
+                userId={userId}
+                currentAddress={transaction.solAddress}
+              />
+            )}
           </section>
         </div>
       </Overlay>
+      <QRScanner
+        isOpen={isQRScannerOpen}
+        onOpenChange={(isOpen) => setQRScannerOpen(isOpen)}
+        onScanSuccess={(data) => {
+          const { data: address } = data;
+          if (!validateSolanaAddress(address)) {
+            toast.error("Invalid solana address. Please try again.");
+          } else {
+            setSolAddress(address);
+          }
+        }}
+        onScanFail={(e) => {}}
+        zIndex={2001}
+      />
     </>
   );
 };

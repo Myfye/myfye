@@ -35,7 +35,7 @@ const QRScanner = ({
   onOpenChange,
   onScanSuccess,
   onScanFail,
-  zIndex = 1000,
+  zIndex = 9999,
 }: {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;

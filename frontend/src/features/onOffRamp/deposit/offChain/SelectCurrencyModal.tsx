@@ -47,7 +47,7 @@ const SelectCurrencyModal = () => {
                   css={css`
                     display: flex;
                     align-items: center;
-                    gap: var(--size-100);
+                    gap: var(--size-150);
                   `}
                 >
                   <Icon width={32} height={32} />

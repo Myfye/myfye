@@ -2,15 +2,17 @@ import { css } from "@emotion/react";
 import ButtonGroup from "../../button/ButtonGroup";
 import ButtonGroupItem from "../../button/ButtonGroupItem";
 import TransactionSummary from "./TransactionSummary";
-import { TransactionSummaryItemProps } from "./TransactionSummaryItem";
+import { IconCardProps } from "../../card/IconCard";
+import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";
+import TransactionTable from "./TransactionTable";
 
 interface TransactionConfirmationScreenProps {
   /** Heading ID for accessibility, since Overlay requires a heading ID if not using default title */
   headingId: string;
   /** Input props */
-  input: Omit<TransactionSummaryItemProps, "type">;
+  inputIcon: string;
   /** Output props */
-  output: Omit<TransactionSummaryItemProps, "type">;
+  outputIcon: string;
   /** Total fee for transaction */
   fee?: number;
   /** Confirm the transaction */
@@ -19,17 +21,20 @@ interface TransactionConfirmationScreenProps {
   onCancel?: () => void;
   /** Title */
   title: string;
+  subtitle: string;
   isLoading?: boolean;
+  total?: number;
 }
 const TransactionConfirmationScreen = ({
-  headingId,
-  input,
-  output,
-  fee,
+  inputIcon,
+  outputIcon,
+  fee = 0,
   onCancel,
   onConfirm,
   isLoading = false,
   title,
+  subtitle,
+  total = 0,
 }: TransactionConfirmationScreenProps) => {
   return (
     <div
@@ -41,77 +46,64 @@ const TransactionConfirmationScreen = ({
     >
       <section
         css={css`
-          margin-block-start: var(--size-300);
-          padding-inline: var(--size-250);
-        `}
-      >
-        <h1
-          id={headingId}
-          className="heading-x-large"
-          css={css`
-            margin-block-end: var(--size-400);
-          `}
-        >
-          {title}
-        </h1>
-        <TransactionSummary input={input} output={output} />
-      </section>
-      <section
-        css={css`
-          padding-inline: var(--size-250);
+          padding-inline: var(--size-400);
           margin-block-start: var(--size-400);
         `}
       >
-        <ul
-          css={css`
-            width: 100%;
-            color: var(--clr-text);
-            line-height: var(--line-height-tight);
-            > * + * {
-              margin-block-start: var(--size-200);
-            }
-          `}
-        >
-          {fee && (
-            <li
-              css={css`
-                display: flex;
-                justify-content: space-between;
-              `}
-            >
-              <span className="heading-small">Fee</span>
-              <span
-                css={css`
-                  font-size: var(--fs-medium);
-                  color: var(--clr-text);
-                `}
-              >
-                {new Intl.NumberFormat("en-EN", {
-                  style: "currency",
-                  currency: "usd",
-                }).format(fee)}
-              </span>
-            </li>
-          )}
-        </ul>
+        <TransactionSummary
+          inputIcon={inputIcon}
+          outputIcon={outputIcon}
+          title={title}
+          subtitle={subtitle}
+        />
       </section>
       <section
         css={css`
-          margin-block-start: auto;
-          margin-bottom: var(--size-250);
-          padding-inline: var(--size-250);
+          padding-inline: var(--size-400);
+          margin-block-start: var(--size-500);
         `}
       >
-        <ButtonGroup expand scroll={false}>
-          {onCancel && (
-            <ButtonGroupItem
-              onPress={onCancel}
-              color="neutral"
-              isDisabled={isLoading}
-            >
-              Cancel
-            </ButtonGroupItem>
-          )}
+        <TransactionTable
+          items={[
+            {
+              key: "Fee",
+              value: formatAmountWithCurrency(fee, "usd"),
+            },
+          ]}
+        />
+      </section>
+      <section
+        css={css`
+          padding-inline: var(--size-400);
+          margin-block-start: auto;
+        `}
+      >
+        <div
+          css={css`
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          `}
+        >
+          <span className="heading-medium" css={css``}>
+            Total
+          </span>
+          <span className="heading-large">
+            {formatAmountWithCurrency(total, "usd")}
+          </span>
+        </div>
+      </section>
+      <section
+        css={css`
+          margin-block-start: var(--size-400);
+          margin-bottom: var(--size-250);
+          padding-inline: var(--size-400);
+        `}
+      >
+        <ButtonGroup expand>
+          <ButtonGroupItem color="neutral" onPress={onCancel}>
+            Cancel
+          </ButtonGroupItem>
           <ButtonGroupItem onPress={onConfirm} isLoading={isLoading}>
             Confirm
           </ButtonGroupItem>
