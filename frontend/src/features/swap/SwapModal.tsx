@@ -110,14 +110,14 @@ const SwapModal = () => {
       <Modal
         isOpen={isOpen}
         onOpenChange={(isOpen) => {
-          dispatch(toggleModal({ isOpen: isOpen }));
-          if (!isOpen) {
-            dispatch(unmount(undefined));
-          }
+          dispatch(toggleModal({ isOpen }));
         }}
         title="Swap"
         height={height}
         zIndex={zIndex}
+        onExit={() => {
+          dispatch(unmount());
+        }}
       >
         <div
           css={css`
@@ -156,7 +156,7 @@ const SwapModal = () => {
                 dispatch(toggleOverlay({ type: "confirmSwap", isOpen: true }));
               }}
             >
-              Confirm
+              Preview
             </Button>
           </section>
         </div>
