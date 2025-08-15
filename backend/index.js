@@ -52,6 +52,7 @@ const { create_new_payout, get_payout_quote } = require('./routes/blindPay/payOu
 const { generateExternalLink } = require('./routes/sumsub/generateExternalLink');
 const { serveTempImage } = require('./routes/sumsub/serveTempImage');
 const { handleSumsubWebhook } = require('./routes/sumsub/webhook');
+const { handleBlindPayWebhook } = require('./routes/blindPay/webhook');
 
 app.set('trust proxy', true);
 
@@ -1192,6 +1193,25 @@ app.post("/webhooks/sumsub", async (req, res) => {
     await handleSumsubWebhook(req, res);
   } catch (error) {
     console.error("Error handling Sumsub webhook:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to process webhook",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+// BlindPay webhook endpoint (no rate limiting for webhooks)
+app.post("/webhooks/blindpay", async (req, res) => {
+  console.log("\n=== BlindPay Webhook Received ===");
+  console.log("Headers:", JSON.stringify(req.headers, null, 2));
+  console.log("Body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    await handleBlindPayWebhook(req, res);
+  } catch (error) {
+    console.error("Error handling BlindPay webhook:", error);
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to process webhook",
