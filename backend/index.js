@@ -1,103 +1,136 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const geoip = require('geoip-lite');
-const rateLimit = require('express-rate-limit');
+const geoip = require("geoip-lite");
+const rateLimit = require("express-rate-limit");
 const app = express();
-const { create_new_on_ramp_path, get_all_receivers, delete_blockchain_wallet, delete_receiver, delete_blockchain_wallet_and_receiver } = require('./routes/onOffRamp/receiver');
-const { create_new_payin, get_payin_quote } = require('./routes/onOffRamp/payIn');
-const { create_new_bank_account, get_bank_accounts, delete_bank_account, get_all_bank_accounts } = require('./routes/onOffRamp/bankAccount.js');
-const { bridge_swap } = require('./routes/bridge_swap/bridgeSwap');
-const { ensureTokenAccount } = require('./routes/sol_transaction/tokenAccount');
-const { signTransaction, signVersionedTransaction } = require('./routes/sol_transaction/solanaTransaction');
-const { 
-    createUser, 
-    getUserByEmail, 
-    updateEvmPubKey, 
-    updateSolanaPubKey, 
-    getUserByPrivyId,
-    getAllUsers } = require('./routes/userDb');
-const { createErrorLog, getErrorLogs, deleteErrorLog } = require('./routes/errorLog');
-const { 
-    createContact, 
-    getContacts, 
-    searchUser, 
-    getTopContacts 
-} = require('./routes/interUser');
-const { 
-    createSwapTransaction, 
-    getSwapTransactionsByUserId,
-    getAllSwapTransactions 
-} = require('./routes/transactions/swapTransactions');
-const { 
-    createPayTransaction,
-    getAllPayTransactions 
-} = require('./routes/transactions/payTransactions');
-const { transactionHistory } = require('./routes/transactions/transactionHistory');
-const { 
-    saveRecentlyUsedAddresses, 
-    getRecentlyUsedAddresses 
-} = require('./routes/sol_transaction/recentlyUsedAddresses');
-const { emailService } = require('./routes/emailService');
-const { createUserKYC, getAllKYCUsers, deleteKYCUser } = require('./routes/user_kyc');
-const { create_new_dinari_user } = require('./routes/dinari_shares/entity');
-const { create_new_wallet } = require('./routes/dinari_shares/wallet');
-const { generate_nonce } = require('./routes/dinari_shares/generate_nonce');
-const { add_kyc_to_entity } = require('./routes/dinari_shares/kyc');
-const { add_kyc_doc_to_entity } = require('./routes/dinari_shares/kyc_doc');
-const { create_new_dinari_account } = require('./routes/dinari_shares/account');
-const { sign_nonce } = require('./routes/dinari_shares/sign_nonce');
-const { sign_order } = require('./routes/dinari_shares/sign_order.js');
-const { getWalletByAddress } = require('./routes/privy/getWallets');
-const { create_new_payout, get_payout_quote } = require('./routes/onOffRamp/payOut');
+const {
+  create_new_on_ramp_path,
+  get_all_receivers,
+  delete_blockchain_wallet,
+  delete_receiver,
+  delete_blockchain_wallet_and_receiver,
+} = require("./routes/onOffRamp/receiver");
+const {
+  create_new_payin,
+  get_payin_quote,
+} = require("./routes/onOffRamp/payIn");
+const {
+  create_new_bank_account,
+  get_bank_accounts,
+  delete_bank_account,
+  get_all_bank_accounts,
+} = require("./routes/onOffRamp/bankAccount.js");
+const { bridge_swap } = require("./routes/bridge_swap/bridgeSwap");
+const { ensureTokenAccount } = require("./routes/sol_transaction/tokenAccount");
+const {
+  signTransaction,
+  signVersionedTransaction,
+} = require("./routes/sol_transaction/solanaTransaction");
+const {
+  createUser,
+  getUserByEmail,
+  updateEvmPubKey,
+  updateSolanaPubKey,
+  getUserByPrivyId,
+  getAllUsers,
+} = require("./routes/userDb");
+const {
+  createErrorLog,
+  getErrorLogs,
+  deleteErrorLog,
+} = require("./routes/errorLog");
+const {
+  createContact,
+  getContacts,
+  searchUser,
+  getTopContacts,
+} = require("./routes/interUser");
+const {
+  createSwapTransaction,
+  getSwapTransactionsByUserId,
+  getAllSwapTransactions,
+} = require("./routes/transactions/swapTransactions");
+const {
+  createPayTransaction,
+  getAllPayTransactions,
+} = require("./routes/transactions/payTransactions");
+const {
+  transactionHistory,
+} = require("./routes/transactions/transactionHistory");
+const {
+  saveRecentlyUsedAddresses,
+  getRecentlyUsedAddresses,
+} = require("./routes/sol_transaction/recentlyUsedAddresses");
+const { emailService } = require("./routes/emailService");
+const {
+  createUserKYC,
+  getAllKYCUsers,
+  deleteKYCUser,
+} = require("./routes/user_kyc");
+const { create_new_dinari_user } = require("./routes/dinari_shares/entity");
+const { create_new_wallet } = require("./routes/dinari_shares/wallet");
+const { generate_nonce } = require("./routes/dinari_shares/generate_nonce");
+const { add_kyc_to_entity } = require("./routes/dinari_shares/kyc");
+const { add_kyc_doc_to_entity } = require("./routes/dinari_shares/kyc_doc");
+const { create_new_dinari_account } = require("./routes/dinari_shares/account");
+const { sign_nonce } = require("./routes/dinari_shares/sign_nonce");
+const { sign_order } = require("./routes/dinari_shares/sign_order.js");
+const { getWalletByAddress } = require("./routes/privy/getWallets");
+const {
+  create_new_payout,
+  get_payout_quote,
+} = require("./routes/onOffRamp/payOut");
 
-app.set('trust proxy', true);
+app.set("trust proxy", true);
 
 const allowedOrigins = [
-    "http://localhost:3000", // Development (local)
-    "https://d3ewm5gcazpqyv.cloudfront.net", // Staging (CloudFront)
-    "https://dev.myfye.com", // Staging (dev.myfye.com)
-    "https://d1voqwa9zncr8f.cloudfront.net", // Production (CloudFront)
-    "https://myfye.com", // Production (myfye.com)
-    "https://www.myfye.com", // Production (www.myfye.com)
-    "https://api.myfye.com", // API domain
-  ];
-  
-  // Add CORS middleware with stricter configuration
-  app.use(cors({
-      origin: function (origin, callback) {
-        // Allow requests without origin (e.g., Postman or server-side requests)
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-          callback(null, true);
-        } else {
-          console.log(`Blocked request from origin: ${origin}`);
-          callback(new Error("Not allowed by CORS"));
-        }
-      },
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-API-Key'],
-      credentials: true,
-      maxAge: 86400, // Cache preflight requests for 24 hours
-      exposedHeaders: ['Access-Control-Allow-Origin']
-  }));
+  "http://localhost:3000", // Development (local)
+  "https://d3ewm5gcazpqyv.cloudfront.net", // Staging (CloudFront)
+  "https://dev.myfye.com", // Staging (dev.myfye.com)
+  "https://d1voqwa9zncr8f.cloudfront.net", // Production (CloudFront)
+  "https://myfye.com", // Production (myfye.com)
+  "https://www.myfye.com", // Production (www.myfye.com)
+  "https://api.myfye.com", // API domain
+];
+
+// Add CORS middleware with stricter configuration
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests without origin (e.g., Postman or server-side requests)
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log(`Blocked request from origin: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-api-key", "X-API-Key"],
+    credentials: true,
+    maxAge: 86400, // Cache preflight requests for 24 hours
+    exposedHeaders: ["Access-Control-Allow-Origin"],
+  })
+);
 
 // Add explicit OPTIONS handling for preflight requests
-app.options('*', cors());
+app.options("*", cors());
 
 app.use(express.json());
 // Add middleware logging
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    console.log('Headers:', JSON.stringify(req.headers, null, 2));
-    console.log('Body:', JSON.stringify(req.body, null, 2));
-    next();
-  });
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log("Headers:", JSON.stringify(req.headers, null, 2));
+  console.log("Body:", JSON.stringify(req.body, null, 2));
+  next();
+});
 
 // Create different rate limiters for different endpoints
 const generalLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minutes
   max: 400, // Limit each IP requests per windowMs
-  message: { error: 'Too many requests from this IP, please try again later.' },
+  message: { error: "Too many requests from this IP, please try again later." },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
@@ -106,7 +139,9 @@ const generalLimiter = rateLimit({
 const authLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 20, // Limit each IP requests per windowMs
-  message: { error: 'Too many authentication attempts, please try again later.' },
+  message: {
+    error: "Too many authentication attempts, please try again later.",
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -115,7 +150,9 @@ const authLimiter = rateLimit({
 const sensitiveLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 12, // Limit each IP per windowMs
-  message: { error: 'Too many sensitive operations attempted, please try again later.' },
+  message: {
+    error: "Too many sensitive operations attempted, please try again later.",
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -123,33 +160,45 @@ const sensitiveLimiter = rateLimit({
 // IP blocking middleware with rate limiting
 const blockUnauthorizedIPs = (req, res, next) => {
   // Allow preflight OPTIONS requests without API key
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return next();
   }
-  const apiKey = req.headers['x-api-key'];
+  const apiKey = req.headers["x-api-key"];
   const ip = req.ip;
   const geo = geoip.lookup(ip);
-  
+
   // If no API key is provided, block the request immediately
   if (!apiKey) {
-    console.log(`Blocked request from IP: ${ip} (${geo?.country || 'Unknown Country'}, ${geo?.city || 'Unknown City'}) - No API key provided`);
-    return res.status(403).json({ 
-      error: 'Forbidden',
-      message: 'Missing API key'
+    console.log(
+      `Blocked request from IP: ${ip} (${geo?.country || "Unknown Country"}, ${
+        geo?.city || "Unknown City"
+      }) - No API key provided`
+    );
+    return res.status(403).json({
+      error: "Forbidden",
+      message: "Missing API key",
     });
   }
 
   // If API key is invalid, block the request
   if (apiKey !== process.env.CLIENT_SIDE_KEY) {
-    console.log(`Blocked request from IP: ${ip} (${geo?.country || 'Unknown Country'}, ${geo?.city || 'Unknown City'}) - Invalid API key`);
-    return res.status(403).json({ 
-      error: 'Forbidden',
-      message: 'Invalid API key'
+    console.log(
+      `Blocked request from IP: ${ip} (${geo?.country || "Unknown Country"}, ${
+        geo?.city || "Unknown City"
+      }) - Invalid API key`
+    );
+    return res.status(403).json({
+      error: "Forbidden",
+      message: "Invalid API key",
     });
   }
 
   // Log successful requests with geolocation
-  console.log(`Request from IP: ${ip} (${geo?.country || 'Unknown Country'}, ${geo?.city || 'Unknown City'})`);
+  console.log(
+    `Request from IP: ${ip} (${geo?.country || "Unknown Country"}, ${
+      geo?.city || "Unknown City"
+    })`
+  );
   next();
 };
 
@@ -159,39 +208,39 @@ app.use(generalLimiter);
 app.use(blockUnauthorizedIPs);
 
 // Add email service routes
-app.use('/api/email', emailService);
+app.use("/api/email", emailService);
 
 /* User management endpoints */
 // Apply stricter rate limiting to sensitive endpoints
-app.post('/create_user', sensitiveLimiter, async (req, res) => {
-    try {
-        const userData = req.body;
-        const result = await createUser(userData);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /create_user endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/create_user", sensitiveLimiter, async (req, res) => {
+  try {
+    const userData = req.body;
+    const result = await createUser(userData);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /create_user endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post('/create_user_kyc', sensitiveLimiter, async (req, res) => {
-    console.log("\n=== Create User KYC Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+app.post("/create_user_kyc", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Create User KYC Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
 
-    try {
-        const kycData = req.body;
-        const result = await createUserKYC(kycData);
-        console.log("KYC creation result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /create_user_kyc endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to create user KYC",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
+  try {
+    const kycData = req.body;
+    const result = await createUserKYC(kycData);
+    console.log("KYC creation result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /create_user_kyc endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to create user KYC",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 app.post("/get_user_by_email", authLimiter, async (req, res) => {
@@ -222,121 +271,121 @@ app.post("/get_user_by_privy_id", authLimiter, async (req, res) => {
   }
 });
 
-app.post('/update_evm_pub_key', sensitiveLimiter, async (req, res) => {
-    try {
-        const { privyUserId, evmPubKey } = req.body;
-        const result = await updateEvmPubKey(privyUserId, evmPubKey);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /update_evm_pub_key endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/update_evm_pub_key", sensitiveLimiter, async (req, res) => {
+  try {
+    const { privyUserId, evmPubKey } = req.body;
+    const result = await updateEvmPubKey(privyUserId, evmPubKey);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /update_evm_pub_key endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post('/update_solana_pub_key', sensitiveLimiter, async (req, res) => {
-    try {
-        const { privyUserId, solanaPubKey } = req.body;
-        const result = await updateSolanaPubKey(privyUserId, solanaPubKey);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /update_solana_pub_key endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/update_solana_pub_key", sensitiveLimiter, async (req, res) => {
+  try {
+    const { privyUserId, solanaPubKey } = req.body;
+    const result = await updateSolanaPubKey(privyUserId, solanaPubKey);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /update_solana_pub_key endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /* Swap transaction endpoints */
-app.post('/create_swap_transaction', generalLimiter, async (req, res) => {
-    try {
-        const swapData = req.body;
-        const result = await createSwapTransaction(swapData);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /create_swap_transaction endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/create_swap_transaction", generalLimiter, async (req, res) => {
+  try {
+    const swapData = req.body;
+    const result = await createSwapTransaction(swapData);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /create_swap_transaction endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post('/get_swap_transactions', generalLimiter, async (req, res) => {
-    try {
-        const { user_id } = req.body;
-        if (!user_id) {
-            return res.status(400).json({ error: 'User ID is required' });
-        }
-        const transactions = await getSwapTransactionsByUserId(user_id);
-        res.json(transactions);
-    } catch (error) {
-        console.error("Error in /get_swap_transactions endpoint:", error);
-        res.status(500).json({ error: error.message });
+app.post("/get_swap_transactions", generalLimiter, async (req, res) => {
+  try {
+    const { user_id } = req.body;
+    if (!user_id) {
+      return res.status(400).json({ error: "User ID is required" });
     }
+    const transactions = await getSwapTransactionsByUserId(user_id);
+    res.json(transactions);
+  } catch (error) {
+    console.error("Error in /get_swap_transactions endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post("/get_all_swap_transactions", generalLimiter, async (req, res) => {
-    console.log("\n=== Get All Swap Transactions Request Received ===");
+  console.log("\n=== Get All Swap Transactions Request Received ===");
 
-    try {
-        const result = await getAllSwapTransactions();
-        console.log(`Retrieved ${result.length} swap transactions`);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_all_swap_transactions endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to fetch swap transactions",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
+  try {
+    const result = await getAllSwapTransactions();
+    console.log(`Retrieved ${result.length} swap transactions`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_all_swap_transactions endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to fetch swap transactions",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 /* Pay transaction endpoints */
-app.post('/create_pay_transaction', generalLimiter, async (req, res) => {
-    try {
-        const payData = req.body;
-        const result = await createPayTransaction(payData);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /create_pay_transaction endpoint:", error);
-        res.status(500).json({ error: error.message });
-    }
+app.post("/create_pay_transaction", generalLimiter, async (req, res) => {
+  try {
+    const payData = req.body;
+    const result = await createPayTransaction(payData);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /create_pay_transaction endpoint:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post("/get_all_pay_transactions", generalLimiter, async (req, res) => {
-    console.log("\n=== Get All Pay Transactions Request Received ===");
+  console.log("\n=== Get All Pay Transactions Request Received ===");
 
-    try {
-        const result = await getAllPayTransactions();
-        console.log(`Retrieved ${result.length} pay transactions`);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_all_pay_transactions endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to fetch pay transactions",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
+  try {
+    const result = await getAllPayTransactions();
+    console.log(`Retrieved ${result.length} pay transactions`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_all_pay_transactions endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to fetch pay transactions",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 /* Transaction History endpoint */
 app.post("/get_transaction_history", generalLimiter, async (req, res) => {
-    console.log("\n=== Get Transaction History Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+  console.log("\n=== Get Transaction History Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
 
-    try {
-        const data = req.body;
-        const result = await transactionHistory(data);
-        console.log(`Retrieved transaction history for user: ${data.user_id}`);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_transaction_history endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to fetch transaction history",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
+  try {
+    const data = req.body;
+    const result = await transactionHistory(data);
+    console.log(`Retrieved transaction history for user: ${data.user_id}`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_transaction_history endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to fetch transaction history",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 /* Blind pay API */
@@ -381,12 +430,14 @@ app.post("/new_payin", async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error("Error in /new_payin endpoint:", error);
-    
+
     // Check if the error has a response with data containing a message
     if (error.response && error.response.data && error.response.data.message) {
       res.status(400).json({ error: error.response.data.message });
     } else {
-      res.status(500).json({ error: error.message || "Failed to create payin" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to create payin" });
     }
   }
 });
@@ -398,15 +449,18 @@ app.post("/add_bank_account", sensitiveLimiter, async (req, res) => {
   try {
     const data = req.body;
     const result = await create_new_bank_account(data);
-    console.log("Bank account creation result:", JSON.stringify(result, null, 2));
+    console.log(
+      "Bank account creation result:",
+      JSON.stringify(result, null, 2)
+    );
     res.json(result);
   } catch (error) {
     console.error("Error in /add_bank_account endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to create bank account",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -418,15 +472,18 @@ app.post("/get_bank_accounts", generalLimiter, async (req, res) => {
   try {
     const data = req.body;
     const result = await get_bank_accounts(data);
-    console.log("Bank accounts retrieval result:", JSON.stringify(result, null, 2));
+    console.log(
+      "Bank accounts retrieval result:",
+      JSON.stringify(result, null, 2)
+    );
     res.json(result);
   } catch (error) {
     console.error("Error in /get_bank_accounts endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to get bank accounts",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -438,15 +495,18 @@ app.post("/delete_bank_account", sensitiveLimiter, async (req, res) => {
   try {
     const data = req.body;
     const result = await delete_bank_account(data);
-    console.log("Bank account deletion result:", JSON.stringify(result, null, 2));
+    console.log(
+      "Bank account deletion result:",
+      JSON.stringify(result, null, 2)
+    );
     res.json(result);
   } catch (error) {
     console.error("Error in /delete_bank_account endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to delete bank account",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -456,15 +516,18 @@ app.post("/get_all_bank_accounts", generalLimiter, async (req, res) => {
 
   try {
     const result = await get_all_bank_accounts();
-    console.log("All bank accounts retrieval result:", JSON.stringify(result, null, 2));
+    console.log(
+      "All bank accounts retrieval result:",
+      JSON.stringify(result, null, 2)
+    );
     res.json(result);
   } catch (error) {
     console.error("Error in /get_all_bank_accounts endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to get all bank accounts",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -475,11 +538,17 @@ app.post("/create_solana_token_account", async (req, res) => {
 
   try {
     const { receiverPubKey, mintAddress, programId } = req.body;
-    
+
     // Log environment variable status (without exposing the actual key)
-    console.log(`SOL_PRIV_KEY is ${process.env.SOL_PRIV_KEY ? 'set' : 'not set'}`);
-    console.log(`SOL_PRIV_KEY length: ${process.env.SOL_PRIV_KEY ? process.env.SOL_PRIV_KEY.length : 0}`);
-    
+    console.log(
+      `SOL_PRIV_KEY is ${process.env.SOL_PRIV_KEY ? "set" : "not set"}`
+    );
+    console.log(
+      `SOL_PRIV_KEY length: ${
+        process.env.SOL_PRIV_KEY ? process.env.SOL_PRIV_KEY.length : 0
+      }`
+    );
+
     const result = await ensureTokenAccount({
       receiverPubKey,
       mintAddress,
@@ -493,10 +562,10 @@ app.post("/create_solana_token_account", async (req, res) => {
   } catch (error) {
     console.error("Error in /create_solana_token_account endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to create token account",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -513,10 +582,10 @@ app.post("/log_error", async (req, res) => {
   } catch (error) {
     console.error("Error in /log_error endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to log error",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -553,10 +622,10 @@ app.post("/create_contact", async (req, res) => {
   } catch (error) {
     console.error("Error in /create_contact endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to create contact",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -573,10 +642,10 @@ app.post("/get_contacts", async (req, res) => {
   } catch (error) {
     console.error("Error in /get_contacts endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to get contacts",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -593,10 +662,10 @@ app.post("/search_users", async (req, res) => {
   } catch (error) {
     console.error("Error in /search_users endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to search users",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -613,10 +682,10 @@ app.post("/get_top_contacts", async (req, res) => {
   } catch (error) {
     console.error("Error in /get_top_contacts endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to get top contacts",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -634,10 +703,10 @@ app.post("/sign_transaction", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /sign_transaction endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to sign transaction",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -649,15 +718,18 @@ app.post("/sign_versioned_transaction", sensitiveLimiter, async (req, res) => {
   try {
     const data = req.body;
     const result = await signVersionedTransaction(data);
-    console.log("Versioned transaction signing result:", JSON.stringify(result, null, 2));
+    console.log(
+      "Versioned transaction signing result:",
+      JSON.stringify(result, null, 2)
+    );
     res.json(result);
   } catch (error) {
     console.error("Error in /sign_versioned_transaction endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to sign versioned transaction",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -672,10 +744,10 @@ app.post("/get_error_logs", generalLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /get_error_logs endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to fetch error logs",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -690,10 +762,10 @@ app.post("/get_all_users", generalLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /get_all_users endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to fetch users",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -705,7 +777,7 @@ app.post("/delete_error_log", generalLimiter, async (req, res) => {
   try {
     const { error_log_id } = req.body;
     if (!error_log_id) {
-      return res.status(400).json({ error: 'Error log ID is required' });
+      return res.status(400).json({ error: "Error log ID is required" });
     }
     const result = await deleteErrorLog(error_log_id);
     console.log("Error log deletion result:", JSON.stringify(result, null, 2));
@@ -713,89 +785,89 @@ app.post("/delete_error_log", generalLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /delete_error_log endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to delete error log",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
 
 /* Recently Used Solana Addresses routes */
 app.post("/save_recently_used_addresses", generalLimiter, async (req, res) => {
-    console.log("\n=== Save Recently Used Addresses Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+  console.log("\n=== Save Recently Used Addresses Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
 
-    try {
-        const { user_id, addresses } = req.body;
-        if (!user_id || !addresses || !Array.isArray(addresses)) {
-            return res.status(400).json({ 
-                error: 'Invalid request. user_id and addresses array are required.' 
-            });
-        }
-        const result = await saveRecentlyUsedAddresses(user_id, addresses);
-        console.log("Save addresses result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /save_recently_used_addresses endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to save addresses",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
+  try {
+    const { user_id, addresses } = req.body;
+    if (!user_id || !addresses || !Array.isArray(addresses)) {
+      return res.status(400).json({
+        error: "Invalid request. user_id and addresses array are required.",
+      });
     }
+    const result = await saveRecentlyUsedAddresses(user_id, addresses);
+    console.log("Save addresses result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /save_recently_used_addresses endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to save addresses",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 app.post("/get_recently_used_addresses", generalLimiter, async (req, res) => {
-    console.log("\n=== Get Recently Used Addresses Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+  console.log("\n=== Get Recently Used Addresses Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
 
-    try {
-        const { user_id } = req.body;
-        if (!user_id) {
-            return res.status(400).json({ 
-                error: 'Invalid request. user_id is required.' 
-            });
-        }
-        const result = await getRecentlyUsedAddresses(user_id);
-        console.log("Get addresses result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_recently_used_addresses endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to get addresses",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
+  try {
+    const { user_id } = req.body;
+    if (!user_id) {
+      return res.status(400).json({
+        error: "Invalid request. user_id is required.",
+      });
     }
+    const result = await getRecentlyUsedAddresses(user_id);
+    console.log("Get addresses result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_recently_used_addresses endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to get addresses",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 app.post("/get_wallet_by_address", generalLimiter, async (req, res) => {
-    console.log("\n=== Get Wallet ID by Address Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+  console.log("\n=== Get Wallet ID by Address Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
 
-    try {
-        const { address } = req.body;
-        if (!address) {
-            return res.status(400).json({ 
-                error: 'Invalid request. address is required.' 
-            });
-        }
-
-        const result = await getWalletByAddress(address);
-        console.log("Get wallet ID result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_wallet_id_by_address endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to get wallet ID",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
+  try {
+    const { address } = req.body;
+    if (!address) {
+      return res.status(400).json({
+        error: "Invalid request. address is required.",
+      });
     }
+
+    const result = await getWalletByAddress(address);
+    console.log("Get wallet ID result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_wallet_id_by_address endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to get wallet ID",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 app.post("/send_email", async (req, res) => {
@@ -810,55 +882,55 @@ app.post("/send_email", async (req, res) => {
   } catch (error) {
     console.error("Error in /send_email endpoint:", error);
     console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to get addresses",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
+    res.status(500).json({
+      error: error.message || "Failed to get addresses",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 app.post("/get_all_kyc_users", generalLimiter, async (req, res) => {
-    console.log("\n=== Get All KYC Users Request Received ===");
+  console.log("\n=== Get All KYC Users Request Received ===");
 
-    try {
-        const result = await getAllKYCUsers();
-        console.log(`Retrieved ${result.length} KYC users`);
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /get_all_kyc_users endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to fetch KYC users",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
+  try {
+    const result = await getAllKYCUsers();
+    console.log(`Retrieved ${result.length} KYC users`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_all_kyc_users endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to fetch KYC users",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 app.post("/delete_kyc_user", sensitiveLimiter, async (req, res) => {
-    console.log("\n=== Delete KYC User Request Received ===");
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+  console.log("\n=== Delete KYC User Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
 
-    try {
-        const { user_id } = req.body;
-        if (!user_id) {
-            return res.status(400).json({ 
-                error: 'Invalid request. user_id is required.' 
-            });
-        }
-        const result = await deleteKYCUser(user_id);
-        console.log("KYC user deletion result:", JSON.stringify(result, null, 2));
-        res.json(result);
-    } catch (error) {
-        console.error("Error in /delete_kyc_user endpoint:", error);
-        console.error("Error stack:", error.stack);
-        res.status(500).json({ 
-            error: error.message || "Failed to delete KYC user",
-            details: error.toString(),
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
+  try {
+    const { user_id } = req.body;
+    if (!user_id) {
+      return res.status(400).json({
+        error: "Invalid request. user_id is required.",
+      });
     }
+    const result = await deleteKYCUser(user_id);
+    console.log("KYC user deletion result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_kyc_user endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({
+      error: error.message || "Failed to delete KYC user",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
 });
 
 app.get("/get_all_receivers", generalLimiter, async (req, res) => {
@@ -866,15 +938,17 @@ app.get("/get_all_receivers", generalLimiter, async (req, res) => {
 
   try {
     const result = await get_all_receivers();
-    console.log(`Retrieved ${result.length} receivers with their blockchain wallets`);
+    console.log(
+      `Retrieved ${result.length} receivers with their blockchain wallets`
+    );
     res.json(result);
   } catch (error) {
     console.error("Error in /get_all_receivers endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to fetch receivers",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -930,30 +1004,43 @@ app.post("/delete_receiver", sensitiveLimiter, async (req, res) => {
 });
 */
 
-app.post("/delete_blockchain_wallet_and_receiver", sensitiveLimiter, async (req, res) => {
-  console.log("\n=== Delete Blockchain Wallet and Receiver Request Received ===");
-  console.log("Request body:", JSON.stringify(req.body, null, 2));
+app.post(
+  "/delete_blockchain_wallet_and_receiver",
+  sensitiveLimiter,
+  async (req, res) => {
+    console.log(
+      "\n=== Delete Blockchain Wallet and Receiver Request Received ==="
+    );
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
 
-  try {
-    const { receiverId, walletId } = req.body;
-    if (!receiverId || !walletId) {
-      return res.status(400).json({ 
-        error: 'Invalid request. receiverId and walletId are required.' 
+    try {
+      const { receiverId, walletId } = req.body;
+      if (!receiverId || !walletId) {
+        return res.status(400).json({
+          error: "Invalid request. receiverId and walletId are required.",
+        });
+      }
+      const result = await delete_blockchain_wallet_and_receiver(
+        receiverId,
+        walletId
+      );
+      console.log("Deletion result:", JSON.stringify(result, null, 2));
+      res.json(result);
+    } catch (error) {
+      console.error(
+        "Error in /delete_blockchain_wallet_and_receiver endpoint:",
+        error
+      );
+      console.error("Error stack:", error.stack);
+      res.status(500).json({
+        error:
+          error.message || "Failed to delete blockchain wallet and receiver",
+        details: error.toString(),
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
       });
     }
-    const result = await delete_blockchain_wallet_and_receiver(receiverId, walletId);
-    console.log("Deletion result:", JSON.stringify(result, null, 2));
-    res.json(result);
-  } catch (error) {
-    console.error("Error in /delete_blockchain_wallet_and_receiver endpoint:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({ 
-      error: error.message || "Failed to delete blockchain wallet and receiver",
-      details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
   }
-});
+);
 
 app.post("/create_dinari_user", sensitiveLimiter, async (req, res) => {
   console.log("\n=== Create Dinari User Request Received ===");
@@ -962,15 +1049,18 @@ app.post("/create_dinari_user", sensitiveLimiter, async (req, res) => {
   try {
     const data = req.body;
     const result = await create_new_dinari_user(data);
-    console.log("Dinari user creation result:", JSON.stringify(result, null, 2));
+    console.log(
+      "Dinari user creation result:",
+      JSON.stringify(result, null, 2)
+    );
     res.json(result);
   } catch (error) {
     console.error("Error in /create_dinari_user endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to create Dinari user",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -981,10 +1071,11 @@ app.post("/link_dinari_wallet", sensitiveLimiter, async (req, res) => {
 
   try {
     const { user_id, account_id, signature, nonce, wallet_address } = req.body;
-    
+
     if (!user_id || !account_id || !signature || !nonce || !wallet_address) {
-      return res.status(400).json({ 
-        error: 'Invalid request. user_id, account_id, signature, nonce, and wallet_address are required.' 
+      return res.status(400).json({
+        error:
+          "Invalid request. user_id, account_id, signature, nonce, and wallet_address are required.",
       });
     }
 
@@ -993,7 +1084,7 @@ app.post("/link_dinari_wallet", sensitiveLimiter, async (req, res) => {
       account_id,
       signature,
       nonce,
-      wallet_address
+      wallet_address,
     });
 
     console.log("Wallet linking result:", JSON.stringify(result, null, 2));
@@ -1001,10 +1092,10 @@ app.post("/link_dinari_wallet", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /link_dinari_wallet endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to link wallet",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -1015,17 +1106,18 @@ app.post("/generate_dinari_nonce", sensitiveLimiter, async (req, res) => {
 
   try {
     const { user_id, account_id, wallet_address } = req.body;
-    
+
     if (!user_id || !account_id || !wallet_address) {
-      return res.status(400).json({ 
-        error: 'Invalid request. user_id, account_id, and wallet_address are required.' 
+      return res.status(400).json({
+        error:
+          "Invalid request. user_id, account_id, and wallet_address are required.",
       });
     }
 
     const result = await generate_nonce({
       user_id,
       account_id,
-      wallet_address
+      wallet_address,
     });
 
     console.log("Nonce generation result:", JSON.stringify(result, null, 2));
@@ -1033,10 +1125,10 @@ app.post("/generate_dinari_nonce", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /generate_dinari_nonce endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to generate nonce",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -1053,10 +1145,10 @@ app.post("/add_dinari_kyc", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /add_dinari_kyc endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to add KYC",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -1073,10 +1165,10 @@ app.post("/add_dinari_kyc_doc", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /add_dinari_kyc_doc endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to upload KYC document",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -1087,10 +1179,10 @@ app.post("/create_dinari_account", sensitiveLimiter, async (req, res) => {
 
   try {
     const { entity_id } = req.body;
-    
+
     if (!entity_id) {
-      return res.status(400).json({ 
-        error: 'Invalid request. entity_id is required.' 
+      return res.status(400).json({
+        error: "Invalid request. entity_id is required.",
       });
     }
 
@@ -1100,10 +1192,10 @@ app.post("/create_dinari_account", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /create_dinari_account endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to create account",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -1114,11 +1206,12 @@ app.post("/sign_dinari_nonce", sensitiveLimiter, async (req, res) => {
 
   try {
     const { nonce_message, message, nonce } = req.body;
-    
+
     // Check if we have the Dinari nonce response structure or just a message
     if (!nonce_message && (!message || !nonce)) {
-      return res.status(400).json({ 
-        error: 'Invalid request. Either nonce_message or both message and nonce are required.' 
+      return res.status(400).json({
+        error:
+          "Invalid request. Either nonce_message or both message and nonce are required.",
       });
     }
 
@@ -1128,10 +1221,10 @@ app.post("/sign_dinari_nonce", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /sign_dinari_nonce endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to sign nonce",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -1146,10 +1239,10 @@ app.post("/sign_dinari_order", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /sign_dinari_order endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to execute order",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -1166,7 +1259,9 @@ app.post("/payout_quote", async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error("Error in /payout_quote endpoint:", error);
-    res.status(500).json({ error: error.message || "Failed to get payout quote" });
+    res
+      .status(500)
+      .json({ error: error.message || "Failed to get payout quote" });
   }
 });
 
@@ -1176,10 +1271,10 @@ app.post("/get_wallet_id_by_address", sensitiveLimiter, async (req, res) => {
 
   try {
     const { address } = req.body;
-    
+
     if (!address) {
-      return res.status(400).json({ 
-        error: 'Address parameter is required' 
+      return res.status(400).json({
+        error: "Address parameter is required",
       });
     }
 
@@ -1189,10 +1284,10 @@ app.post("/get_wallet_id_by_address", sensitiveLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error in /get_wallet_id_by_address endpoint:", error);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || "Failed to get wallet ID by address",
       details: error.toString(),
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 });
@@ -1204,10 +1299,10 @@ app.listen(PORT, () => {
 */
 
 // Use process.env.PORT for production (Heroku, AWS, etc.), fall back to 3001 in development
-const PORT = process.env.PORT || 3001; 
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Backend server running at http://0.0.0.0:${PORT}`); 
+  console.log(`Backend server running at http://0.0.0.0:${PORT}`);
 });
 
 //http://44.242.228.55:3001
