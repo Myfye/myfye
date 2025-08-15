@@ -1,16 +1,17 @@
-import { AbstractedAsset, Asset, AssetsState } from "@/features/assets/types";
+import { Asset, AssetsState } from "@/features/assets/types";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
-  const parsed = parseFormattedAmount(amount);
-  return isNaN(parsed) ? "" : parsed.toString();
+  let parsed = parseFormattedAmount(amount);
+  parsed = Math.floor(parsed * 100) / 100;
+  return isNaN(parsed) ? "" : parsed.toLocaleString("en-EN");
 };
 
 export const updateFormattedAmount = (
   formattedAmount: string,
   input: string | number,
   replace?: boolean
-) => {
+): string => {
   // make sure input is a string
   input = input.toString();
 
@@ -19,9 +20,18 @@ export const updateFormattedAmount = (
   }
 
   if (input === "delete") {
-    if (formattedAmount === "0.") return "";
+    if (formattedAmount === "0.") return "0";
+    const [integer, decimal] = formattedAmount.split(".");
     const newAmount = formattedAmount.slice(0, -1);
-    return newAmount === "" ? "" : newAmount;
+    if (
+      decimal &&
+      (decimal[decimal.length - 1] === "0" ||
+        decimal[decimal.length - 2] === "0")
+    )
+      return newAmount;
+    let newStr = getFormattedNumberFromString(newAmount);
+    if (newStr === "") newStr = "0";
+    return newStr;
   }
 
   if (input === ".") {
@@ -31,59 +41,33 @@ export const updateFormattedAmount = (
       : formattedAmount + ".";
   }
 
-  if (input === "0" && formattedAmount === "") return "0";
-  if (formattedAmount === "0" && input !== ".") return input; // Replace leading zero with input
+  if (input === "0" && formattedAmount === "") return "0.";
+  if (formattedAmount === "0") return input; // Replace leading zero with input
 
-  return formattedAmount + input;
-};
-
-export const updateFormattedGhostAmount = (formattedGhostAmount: string) => {
-  switch (formattedGhostAmount.length) {
-    case 0:
-      return "0";
-    default:
-      return formattedGhostAmount;
+  const updatedAmount = getFormattedNumberFromString(formattedAmount + input);
+  const [integer, decimal] = updatedAmount.split(".");
+  if (decimal?.length >= 2) return integer + "." + `${decimal[0]}${decimal[1]}`;
+  if (input === "0" && formattedAmount.includes(".")) {
+    formattedAmount += "0";
+    const [_, decimal] = formattedAmount.split(".");
+    const [updatedAmountInteger, __] = updatedAmount.split(".");
+    return updatedAmountInteger + "." + decimal;
   }
+  return updatedAmount;
 };
 
 export const parseFormattedAmount = (formattedAmount: string) => {
-  if (!formattedAmount || formattedAmount === "") return NaN;
-  // Remove any commas but preserve the exact string representation
-  const cleanedAmount = formattedAmount.replace(/,/g, "");
-  // Use Number instead of parseFloat to maintain precision
-  return Number(cleanedAmount);
-};
-
-export const getExchangeRate = (
-  abstractedAssetId: AbstractedAsset["id"] | null,
-  assets: AssetsState
-) => {
-  if (!abstractedAssetId) throw new Error("Invalid asset id");
-  // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
-  const exchangeRateUSD = assets.abstractedAssetIds
-    .map((id) => assets.abstractedAssets[id])
-    .filter((asset) => asset.id === abstractedAssetId)
-    .map((asset) => {
-      const usdRateAsset = asset.assetIds[0];
-      const _asset = assets.assets[usdRateAsset];
-      return _asset.exchangeRateUSD;
-    })[0];
-  return exchangeRateUSD;
+  return parseFloat(formattedAmount.replace(/,/g, ""));
 };
 
 export const getUsdAmount = (
-  abstractedAssetId: AbstractedAsset["id"] | null,
+  assetId: Asset["id"] | null,
   assets: AssetsState,
   amount: number | null
 ) => {
   if (!amount) return 0;
-  if (!abstractedAssetId) {
-    console.error("invalid asset id");
-    return 0;
-  }
-  // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
-  const exchangeRateUSD = getExchangeRate(abstractedAssetId, assets);
-  return amount * exchangeRateUSD;
+  if (!assetId) throw new Error("Invalid asset id");
+  return amount * assets.assets[assetId].exchangeRateUSD;
 };
 
 export const formatUsdAmount = (amount: number | null) =>
@@ -97,4 +81,13 @@ export const formatUsdAmount = (amount: number | null) =>
 
 export const getAssetBalance = (assets: AssetsState, assetId: Asset["id"]) => {
   return assets.assets[assetId].balance;
+};
+
+export const updateFormattedGhostAmount = (formattedGhostAmount: string) => {
+  switch (formattedGhostAmount.length) {
+    case 0:
+      return "0";
+    default:
+      return formattedGhostAmount;
+  }
 };

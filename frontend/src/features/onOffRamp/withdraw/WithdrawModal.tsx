@@ -1,21 +1,21 @@
-import { useState } from "react";
 import { css } from "@emotion/react";
-import { Bank, Wallet } from "@phosphor-icons/react";
+import { BankIcon, WalletIcon } from "@phosphor-icons/react";
 import ModalButton from "../_components/ModalButton";
-import Modal, { ModalProps } from "@/shared/components/ui/modal/Modal";
-import { RootState } from "@/redux/store";
+import Modal from "@/shared/components/ui/modal/Modal";
 import { toggleModal } from "./withdrawSlice";
 import { toggleOverlay as toggleOnChainOverlay } from "./onChain/withdrawOnChainSlice";
 import { toggleOverlay as toggleOffChainOverlay } from "./offChain/withdrawOffChainSlice";
 import WithdrawOnChainOverlay from "./onChain/WithdrawOnChainOverlay";
 import WithdrawOffChainOverlay from "./offChain/WithdrawOffChainOverlay";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import WithdrawOffChainBankPickerOverlay from "./offChain/WithdrawOffChainBankPickerOverlay";
+import WithdrawOffChainBankInputOverlay from "./offChain/WithdrawOffChainBankInputOverlay";
+import WithdrawOffChainSelectAssetOverlay from "./offChain/WithdrawOffChainSelectAssetOverlay";
+import WithdrawProcessingTransactionOverlay from "./onChain/WithdrawOnChainProcessingTransactionOverlay";
 
 const WithdrawModal = () => {
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector(
-    (state: RootState) => state.withdraw.modal.isOpen
-  );
+  const isOpen = useAppSelector((state) => state.withdraw.modal.isOpen);
 
   return (
     <>
@@ -38,7 +38,7 @@ const WithdrawModal = () => {
         >
           <li>
             <ModalButton
-              icon={Wallet}
+              icon={WalletIcon}
               title="To wallet"
               description="Send money on chain"
               onPress={() => {
@@ -53,7 +53,7 @@ const WithdrawModal = () => {
           </li>
           <li>
             <ModalButton
-              icon={Bank}
+              icon={BankIcon}
               title="To bank account"
               description="Send money to bank account"
               onPress={() => {
@@ -72,6 +72,10 @@ const WithdrawModal = () => {
       <WithdrawOnChainOverlay zIndex={2000} />
       {/* Off Chain */}
       <WithdrawOffChainOverlay />
+      <WithdrawOffChainBankPickerOverlay />
+      <WithdrawOffChainBankInputOverlay />
+      <WithdrawOffChainSelectAssetOverlay zIndex={9999} />
+      <WithdrawProcessingTransactionOverlay />
     </>
   );
 };

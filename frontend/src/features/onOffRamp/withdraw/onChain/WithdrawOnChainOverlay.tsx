@@ -14,7 +14,10 @@ import {
   updatePresetAmount,
 } from "./withdrawOnChainSlice";
 import { ModalProps } from "@/shared/components/ui/modal/Modal";
-import { getFiatCurrencySymbol } from "@/shared/utils/currencyUtils";
+import {
+  formatAmountWithCurrency,
+  getFiatCurrencySymbol,
+} from "@/shared/utils/currencyUtils";
 import AssetSelectButton from "@/features/assets/AssetSelectButton";
 import WithdrawOnChainSelectAssetOverlay from "./WithdrawOnChainSelectAssetOverlay";
 import WithdrawOnChainAddressEntryOverlay from "./WithdrawOnChainAddressEntryOverlay";
@@ -23,6 +26,8 @@ import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 import { useAppSelector } from "@/redux/hooks";
 import WithdrawOnChainConfirmOverlay from "./WithdrawOnChainConfirmTransactionOverlay";
 import WithdrawOnChainProcessingTransactionOverlay from "./WithdrawOnChainProcessingTransactionOverlay";
+import AmountSelectScreen from "@/shared/components/ui/amount-select-screen/AmountSelectScreen";
+import { truncateSolanaAddress } from "@/shared/utils/solanaUtils";
 
 const WithdrawOnChainOverlay = ({
   ...restProps
@@ -69,111 +74,107 @@ const WithdrawOnChainOverlay = ({
         onOpenChange={(isOpen) => {
           dispatch(toggleOverlay({ type: "withdrawOnChain", isOpen }));
         }}
-        title="Enter send amount"
+        title="Withdraw crypto amount"
+        hideTitle
         zIndex={2000}
       >
-        <div
-          css={css`
-            display: grid;
-            grid-template-rows: 1fr auto auto auto;
-            gap: var(--size-200);
-            height: 100%;
-          `}
-        >
-          <section
-            css={css`
-              display: grid;
-              place-items: center;
-              padding-inline: var(--size-200);
-            `}
-          >
-            <AmountDisplay
-              amount={transaction.formattedAmount}
-              fiatCurrency={null}
-            />
-          </section>
-          <section
-            css={css`
-              display: grid;
-              place-items: center;
-              padding-inline: var(--size-200);
-              width: min(100%, 24rem);
-              margin-inline: auto;
-            `}
-          >
-            <AmountSelectorGroup
-              label="Select preset amount"
-              onChange={(amount) => {
-                dispatch(updatePresetAmount(amount as PresetAmountOption));
-                dispatch(
-                  updateAmount({
-                    input:
-                      asset && amount === "max"
-                        ? asset.balance
-                        : (amount as string),
-                    replace: true,
-                  })
-                );
-              }}
-              value={transaction.presetAmount}
-            >
-              <AmountSelector value="10">10</AmountSelector>
-              <AmountSelector value="50">50</AmountSelector>
-              <AmountSelector value="100">100</AmountSelector>
-              <AmountSelector value="max">MAX</AmountSelector>
-            </AmountSelectorGroup>
-          </section>
-          <section
-            css={css`
-              padding-inline: var(--size-250);
-            `}
-          >
-            <AssetSelectButton
-              balance={asset?.balance}
-              label={asset?.label}
-              icon={asset?.icon}
-              balanceType="token"
-              onPress={() => {
-                dispatch(toggleOverlay({ type: "selectAsset", isOpen: true }));
-              }}
-            />
-          </section>
-          <section
-            css={css`
-              padding-inline: var(--size-250);
-            `}
-          >
-            <NumberPad {...numberPadProps} />
-          </section>
-          <section
-            css={css`
-              padding-inline: var(--size-200);
-              padding-block-end: var(--size-200);
-            `}
-          >
-            <Button
-              expand
-              onPress={() => {
-                dispatch(toggleOverlay({ type: "addressEntry", isOpen: true }));
-              }}
-              // isDisabled={isAddressEntryDisabled}
-            >
-              Next
-            </Button>
-          </section>
-        </div>
+        <AmountSelectScreen
+          amountDisplayProps={{
+            amount: transaction.formattedAmount,
+            fee: transaction.fee,
+            fiatCurrency: asset?.fiatCurrency,
+          }}
+          numberPadProps={numberPadProps}
+          amountSelectorGroupProps={{
+            label: "Select preset amount",
+            onChange: (amount) => {
+              console.log(asset.balance);
+              dispatch(updatePresetAmount(amount as PresetAmountOption));
+              dispatch(
+                updateAmount({
+                  input:
+                    asset && amount === "max"
+                      ? asset.balance
+                      : (amount as string),
+                  replace: true,
+                })
+              );
+            },
+            value: transaction.presetAmount,
+          }}
+          amountSelectors={[
+            {
+              id: "1",
+              label: getFiatCurrencySymbol(asset.fiatCurrency) + "10",
+              value: "10",
+            },
+            {
+              id: "2",
+              label: getFiatCurrencySymbol(asset.fiatCurrency) + "50",
+              value: "50",
+            },
+            {
+              id: "3",
+              label: getFiatCurrencySymbol(asset?.fiatCurrency) + "100",
+              value: "100",
+            },
+            {
+              id: "4",
+              label: "MAX",
+              value: "max",
+            },
+          ]}
+          primaryAction={{
+            action: () => {
+              dispatch(toggleOverlay({ type: "selectAsset", isOpen: true }));
+            },
+            props: {
+              leftContent: {
+                title: "Withdraw",
+                subtitle: asset?.label,
+                titleSize: "medium",
+              },
+              rightContent: {
+                title: formatAmountWithCurrency(
+                  asset?.balance,
+                  asset.fiatCurrency
+                ),
+                subtitle: "Available",
+                titleWeight: "var(--fw-default)",
+                textAlign: "end",
+              },
+              icon: asset?.icon.content ?? "",
+            },
+          }}
+          secondaryAction={{
+            action: () => {
+              dispatch(toggleOverlay({ type: "addressEntry", isOpen: true }));
+            },
+            props: {
+              leftContent: {
+                title: "Deposit to",
+                subtitle: transaction.solAddress
+                  ? truncateSolanaAddress(transaction.solAddress)
+                  : "Enter a wallet address",
+              },
+              icon: "wallet",
+            },
+          }}
+          onSubmit={() => {
+            dispatch(
+              toggleOverlay({ type: "confirmTransaction", isOpen: true })
+            );
+          }}
+          submitLabel="Preview"
+          submitButtonProps={{
+            isDisabled: transaction.amount === 0 || !transaction.solAddress,
+          }}
+        />
       </Overlay>
       <WithdrawOnChainSelectAssetOverlay />
       <WithdrawOnChainAddressEntryOverlay />
       <WithdrawOnChainConfirmOverlay />
-      <WithdrawOnChainProcessingTransactionOverlay
-        isOpen={useAppSelector(
-          (state) => state.withdrawOnChain.overlays.processingTransaction.isOpen
-        )}
-        onOpenChange={(isOpen) => {
-          dispatch(toggleOverlay({ type: "processingTransaction", isOpen }));
-        }}
-      />
+      <WithdrawOnChainProcessingTransactionOverlay />
     </>
   );
 };

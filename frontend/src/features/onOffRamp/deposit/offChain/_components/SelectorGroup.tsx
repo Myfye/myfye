@@ -28,7 +28,6 @@ const SelectorGroup = ({
         css={css`
           display: flex;
           flex-direction: column;
-          gap: var(--controls-gap-small);
           margin-inline: auto;
         `}
       >

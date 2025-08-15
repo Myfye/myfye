@@ -12,31 +12,24 @@ interface WithdrawOffChainState {
   overlays: {
     withdrawOffChain: {
       isOpen: boolean;
-      zIndex: number;
     };
     bankPicker: {
       isOpen: boolean;
-      zIndex: number;
     };
     bankInput: {
       isOpen: boolean;
-      zIndex: number;
     };
     selectAsset: {
       isOpen: boolean;
-      zIndex: number;
     };
-    selectAmount: {
+    selectBank: {
       isOpen: boolean;
-      zIndex: number;
     };
     confirmTransaction: {
       isOpen: boolean;
-      zIndex: number;
     };
     processingTransaction: {
       isOpen: boolean;
-      zIndex: number;
     };
   };
 }
@@ -47,8 +40,7 @@ const initialState: WithdrawOffChainState = {
     status: "idle",
     amount: 0,
     formattedAmount: "0",
-    assetId: "usdc_sol",
-    solAddress: null,
+    abstractedAssetId: "us_dollar",
     fiatCurrency: "usd",
     fee: 0,
     presetAmount: null,
@@ -61,36 +53,49 @@ const initialState: WithdrawOffChainState = {
     },
     payout: {
       id: null,
+      blindPayQuotation: null,
+      commercialQuotation: null,
+      contract: {
+        abi: [{}],
+        address: null,
+        amount: null,
+        blindpayContractAddress: null,
+        functionName: "approve",
+        network: {
+          chainId: null,
+          name: null,
+        },
+      },
+      description: null,
+      expiresAt: null,
+      flatFee: null,
+      partnerFeeAmount: null,
+      receiverAmount: null,
+      receiverLocalAmount: null,
+      senderAmount: null,
     },
   },
   overlays: {
     withdrawOffChain: {
       isOpen: false,
-      zIndex: 2000,
     },
     bankPicker: {
       isOpen: false,
-      zIndex: 2001,
     },
     bankInput: {
       isOpen: false,
-      zIndex: 2002,
     },
-    selectAmount: {
+    selectBank: {
       isOpen: false,
-      zIndex: 2003,
     },
     selectAsset: {
       isOpen: false,
-      zIndex: 2003,
     },
     confirmTransaction: {
       isOpen: false,
-      zIndex: 2004,
     },
     processingTransaction: {
       isOpen: false,
-      zIndex: 2005,
     },
   },
 };
@@ -157,15 +162,15 @@ const withdrawOffChainSlice = createSlice({
         ...action.payload,
       };
     },
-    updateAssetId(state, action: PayloadAction<Asset["id"] | null>) {
-      state.transaction.assetId = action.payload;
+    updateAbstractedAssetId(state, action: PayloadAction<Asset["id"] | null>) {
+      state.transaction.abstractedAssetId = action.payload;
     },
     unmount: () => ({ ...initialState }),
   },
 });
 
 export const {
-  updateAssetId,
+  updateAbstractedAssetId,
   updatePresetAmount,
   updateBankInfo,
   toggleOverlay,

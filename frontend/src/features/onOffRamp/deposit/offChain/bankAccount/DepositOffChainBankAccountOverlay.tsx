@@ -1,11 +1,5 @@
-import { css } from "@emotion/react";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
-import Button from "@/shared/components/ui/button/Button";
 import DepositOffChainInstructionsOverlay from "./DepositOffChainBankAccountInstructionsOverlay";
-import NumberPad from "@/shared/components/ui/number-pad/NumberPad";
-import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSelectorGroup";
-import AmountSelector from "@/shared/components/ui/amount-selector/AmountSelector";
-import AmountDisplay from "@/shared/components/ui/amount-display/AmountDisplay";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   toggleModal,
@@ -16,11 +10,11 @@ import {
   updatePresetAmount,
 } from "../depositOffChainSlice";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
-import { CaretDown } from "@phosphor-icons/react";
 import { currencyMap } from "../_components/currencyMap";
 import SelectCurrencyModal from "../SelectCurrencyModal";
 import { useLazyCreatePayinQuery } from "../../depositApi";
 import toast from "react-hot-toast/headless";
+import AmountSelectScreen from "@/shared/components/ui/amount-select-screen/AmountSelectScreen";
 
 const DepositOffChainBankAccountOverlay = () => {
   const dispatch = useAppDispatch();
@@ -55,12 +49,18 @@ const DepositOffChainBankAccountOverlay = () => {
   });
 
   const currency = currencyMap.currencies[transaction.payin.currency];
-  const CurrencyIcon = currency.icon;
 
   const [payinTrigger, { isLoading }] = useLazyCreatePayinQuery();
 
   const handleNextPress = async () => {
     if (!transaction.amount) return;
+    if (!transaction.payin.currency) return;
+    console.log(
+      transaction.amount,
+      blindPayEvmWalletId,
+      transaction.payin.currency.toUpperCase(),
+      userEmail
+    );
     const { data, isError } = await payinTrigger({
       amount: transaction.amount,
       blindPayEvmWalletId: blindPayEvmWalletId,
@@ -94,157 +94,82 @@ const DepositOffChainBankAccountOverlay = () => {
         onOpenChange={(isOpen) => {
           dispatch(toggleOverlay({ type: "bankAccount", isOpen }));
         }}
-        title="Amount"
         zIndex={2000}
         onExit={() => {
           dispatch(unmount());
         }}
+        title="Deposit amount to bank account"
+        hideTitle
       >
-        <div
-          css={css`
-            display: grid;
-            grid-template-rows: 1fr auto;
-            gap: var(--size-200);
-            padding-block-end: var(--size-200);
-            height: 100cqh;
-          `}
-        >
-          <section>
-            <div
-              css={css`
-                display: grid;
-                height: 100%;
-                place-items: center;
-                isolation: isolate;
-                position: relative;
-              `}
-            >
-              <section
-                css={css`
-                  position: relative;
-                `}
-              >
-                <AmountDisplay
-                  amount={transaction.formattedAmount}
-                  fiatCurrency={transaction.payin.currency}
-                >
-                  {transaction.fee !== 0 && transaction.fee && (
-                    <div
-                      css={css`
-                        position: absolute;
-                        top: calc(100% + var(--size-100));
-                        width: 100cqw;
-                        text-align: center;
-                      `}
-                    >
-                      <span
-                        css={css`
-                          font-size: var(--fs-medium);
-                          color: var(--clr-text-weak);
-                          width: 100%;
-                        `}
-                      >
-                        +{" "}
-                        {new Intl.NumberFormat("en-En", {
-                          currency: transaction.payin.currency,
-                          style: "currency",
-                        }).format(transaction.fee)}{" "}
-                        fee
-                      </span>
-                    </div>
-                  )}
-                </AmountDisplay>
-              </section>
-            </div>
-          </section>
-          <div
-            css={css`
-              display: grid;
-              grid-template-rows: auto auto auto auto;
-              gap: var(--size-200);
-            `}
-          >
-            <section
-              css={css`
-                margin-inline: auto;
-              `}
-            >
-              <Button
-                color="neutral"
-                size="small"
-                iconRight={CaretDown}
-                onPress={() => {
-                  dispatch(
-                    toggleModal({ type: "selectCurrency", isOpen: true })
-                  );
-                }}
-              >
-                <CurrencyIcon width={20} height={20} />
-                {transaction.payin.currency?.toUpperCase()}
-              </Button>
-            </section>
-            <section
-              css={css`
-                padding-inline: var(--size-200);
-                margin-inline: auto;
-              `}
-            >
-              <AmountSelectorGroup
-                label="Select preset amount"
-                onChange={(presetAmount) => {
-                  dispatch(
-                    updatePresetAmount({
-                      presetAmount,
-                      transactionType: "bankAccount",
-                    })
-                  );
-                  dispatch(
-                    updateAmount({
-                      input: presetAmount ?? "0",
-                      replace: true,
-                      transactionType: "bankAccount",
-                    })
-                  );
-                }}
-              >
-                <AmountSelector value="500">
-                  ${transaction.payin.currency === "mxn" ? 500 : 250}
-                </AmountSelector>
-                <AmountSelector value="1000">
-                  ${transaction.payin.currency === "mxn" ? "1,000" : "500"}
-                </AmountSelector>
-                <AmountSelector value="5000">
-                  ${transaction.payin.currency === "mxn" ? "5,000" : "2,500"}
-                </AmountSelector>
-                <AmountSelector value="10000">
-                  ${transaction.payin.currency === "mxn" ? "10,000" : "5,000"}
-                </AmountSelector>
-              </AmountSelectorGroup>
-            </section>
-            <section
-              css={css`
-                padding-inline: var(--size-250);
-              `}
-            >
-              <NumberPad {...numberPadProps} />
-            </section>
-            <section
-              css={css`
-                padding-inline: var(--size-200);
-              `}
-            >
-              <Button
-                expand
-                variant="primary"
-                onPress={handleNextPress}
-                isLoading={isLoading}
-                isDisabled={transaction.amount === 0}
-              >
-                Next
-              </Button>
-            </section>
-          </div>
-        </div>
+        <AmountSelectScreen
+          amountDisplayProps={{
+            amount: transaction.formattedAmount,
+            fiatCurrency: transaction.payin.currency,
+            fee: transaction.fee,
+          }}
+          numberPadProps={numberPadProps}
+          amountSelectorGroupProps={{
+            label: "Select preset amount",
+            onChange: (presetAmount) => {
+              dispatch(
+                updatePresetAmount({
+                  presetAmount,
+                  transactionType: "bankAccount",
+                })
+              );
+              dispatch(
+                updateAmount({
+                  input: presetAmount ?? "0",
+                  replace: true,
+                  transactionType: "bankAccount",
+                })
+              );
+            },
+          }}
+          amountSelectors={[
+            {
+              id: "1",
+              label: "$500",
+              value: "500",
+            },
+            {
+              id: "2",
+              label: "$1,000",
+              value: "1000",
+            },
+            {
+              id: "3",
+              label: "$5,000",
+              value: "5000",
+            },
+            {
+              id: "4",
+              label: "$10,000",
+              value: "10000",
+            },
+          ]}
+          primaryAction={{
+            action: () => {
+              dispatch(toggleModal({ type: "selectCurrency", isOpen: true }));
+            },
+            props: {
+              leftContent: {
+                title: "Deposit",
+                subtitle:
+                  transaction.payin.currency === "mxn"
+                    ? "Mexican Peso"
+                    : "Brazilian Real",
+              },
+              icon: transaction.payin.currency === "mxn" ? "MXFlag" : "BRFlag",
+            },
+          }}
+          onSubmit={handleNextPress}
+          submitLabel={"Get instructions"}
+          submitButtonProps={{
+            isLoading,
+            isDisabled: transaction.amount === 0,
+          }}
+        />
       </Overlay>
       <DepositOffChainInstructionsOverlay />
       <SelectCurrencyModal />

@@ -1,19 +1,20 @@
 import Overlay from "@/shared/components/ui/overlay/Overlay";
-import { useDispatch } from "react-redux";
 import { useId } from "react";
-import TransactionConfirmationScreen from "@/shared/components/ui/transaction/confirmation/TransactionConfirmationScreen";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { toggleOverlay, unmountOverlays, updateTransactionStatus } from "./withdrawOnChainSlice";
+import { toggleOverlay, updateTransactionStatus } from "./withdrawOnChainSlice";
 import { selectAsset } from "@/features/assets/assetsSlice";
-import { toggleModal } from "../withdrawSlice";
 import { truncateSolanaAddress } from "@/shared/utils/solanaUtils";
 import toast from "react-hot-toast/headless";
 import { useSolanaWallets } from "@privy-io/react-auth/solana";
+import { tokenTransfer } from "@/functions/Transaction";
+import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";
+import TransactionConfirmationScreen from "@/shared/components/ui/transaction/confirmation/TransactionConfirmationScreen";
 
-const WithdrawOnChainConfirmOverlay = () => {
+const WithdrawOnChainPreviewTransactionOverlay = () => {
   const dispatch = useAppDispatch();
-  const { wallets } = useSolanaWallets();
-  const wallet = wallets[0];
+  const {
+    wallets: [wallet],
+  } = useSolanaWallets();
 
   const isOpen = useAppSelector(
     (state) => state.withdrawOnChain.overlays.confirmTransaction.isOpen
@@ -32,22 +33,24 @@ const WithdrawOnChainConfirmOverlay = () => {
   const headingId = useId();
 
   const handleConfirm = async () => {
+    if (!transaction.amount) throw new Error("Amount is required");
+    if (!transaction.assetId) throw new Error("Token is required");
+    if (!transaction.solAddress) throw new Error("Sol address is required");
+    if (!wallet) throw new Error("Wallet is required");
+    if (!solanaPubKey) throw new Error("Solana public key is required");
+
     try {
       // Close confirm overlay and open processing overlay
-      dispatch(toggleOverlay({ type: "confirmTransaction", isOpen: false }));
-      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
-      
+      dispatch((dispatch, getState) => {
+        dispatch(
+          toggleOverlay({ type: "processingTransaction", isOpen: true })
+        );
+        getState();
+        dispatch(updateTransactionStatus("idle"));
+        dispatch(toggleOverlay({ type: "confirmTransaction", isOpen: false }));
+      });
+
       // Update transaction status to idle (processing)
-      dispatch(updateTransactionStatus("idle"));
-      
-      // Import tokenTransfer function
-      const { tokenTransfer } = await import("@/functions/Transaction");
-      
-      if (!transaction.amount) throw new Error("Amount is required");
-      if (!transaction.assetId) throw new Error("Token is required");
-      if (!transaction.solAddress) throw new Error("Sol address is required");
-      if (!wallet) throw new Error("Wallet is required");
-      if (!solanaPubKey) throw new Error("Solana public key is required");
 
       let assetCode = "";
       if (transaction.assetId === "usdc_sol") {
@@ -56,8 +59,7 @@ const WithdrawOnChainConfirmOverlay = () => {
         assetCode = "eurcSol";
       }
 
-      const sendAmount = +transaction.amount;
-      const sendAmountMicro = sendAmount * 1000000;
+      const sendAmountMicro = transaction.amount * 1000000;
 
       const result = await tokenTransfer(
         solanaPubKey,
@@ -71,7 +73,10 @@ const WithdrawOnChainConfirmOverlay = () => {
         console.log("Transaction successful:", result.transactionId);
         dispatch(updateTransactionStatus("success"));
         toast.success(
-          `Sent ${transaction.formattedAmount} ${asset?.symbol} to ${truncateSolanaAddress(
+          `Sent ${formatAmountWithCurrency(
+            transaction.amount,
+            asset?.fiatCurrency
+          )} ${asset?.symbol} to ${truncateSolanaAddress(
             transaction.solAddress
           )}`
         );
@@ -81,11 +86,7 @@ const WithdrawOnChainConfirmOverlay = () => {
     } catch (error) {
       console.error("Withdrawal failed:", error);
       dispatch(updateTransactionStatus("fail"));
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Error sending money. Please try again"
-      );
+      toast.error("Error sending money. Please try again");
     }
   };
 
@@ -97,20 +98,11 @@ const WithdrawOnChainConfirmOverlay = () => {
           dispatch(toggleOverlay({ type: "confirmTransaction", isOpen }));
         }}
         zIndex={2003}
-        aria-labelledby={headingId}
+        title="Preview withdraw"
       >
         <TransactionConfirmationScreen
-          input={{
-            amount: transaction.amount ?? 0,
-            icon: asset?.icon.content,
-            label: asset?.label ?? "",
-            tokenSymbol: asset?.symbol ?? "",
-            fiatCurrency: "usd",
-          }}
-          output={{
-            icon: "wallet",
-            label: transaction.solAddress,
-          }}
+          inputIcon={asset?.icon.content}
+          outputIcon="wallet"
           onConfirm={handleConfirm}
           onCancel={() => {
             dispatch(
@@ -118,11 +110,12 @@ const WithdrawOnChainConfirmOverlay = () => {
             );
           }}
           headingId={headingId}
-          title="Confirm withdrawal"
+          title={`Withdraw ${transaction.amount} ${asset.symbol}`}
+          subtitle={`To ${truncateSolanaAddress(transaction.solAddress ?? "")}`}
         />
       </Overlay>
     </>
   );
 };
 
-export default WithdrawOnChainConfirmOverlay;
+export default WithdrawOnChainPreviewTransactionOverlay;
