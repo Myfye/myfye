@@ -7,6 +7,7 @@ const { getSumsubUser } = require('./getSumsubUser');
 const { processSumsubDataForBlindPay } = require('../kyc/sumsubBlindPay');
 const { convertSumsubToBlindpayCountryCode } = require('../kyc/countryCode');
 const { updateUserNames } = require('../userDb');
+const { updateUserKycStatus } = require('../kyc/kycStatus');
 
 // Verify webhook signature from Sumsub
 function verifyWebhookSignature(payload, signature, secret) {
@@ -66,20 +67,7 @@ async function processKYCStatusUpdate(applicantId, reviewResult, externalUserId 
   }
 }
 
-async function updateUserKycStatus(userId, newStatus) {
-  try {
-    const updateQuery = `
-      UPDATE users 
-      SET kyc_status = $1 
-      WHERE uid = $2
-    `;
-    await pool.query(updateQuery, [newStatus, userId]);
-    console.log(`Updated user KYC status to ${newStatus}`);
-  } catch (error) {
-    console.error(`Error updating user KYC status to ${newStatus}:`, error);
-    throw error;
-  }
-}
+
 
 // Trigger additional processes after KYC approval
 async function triggerSumsubApprovalProcesses(userId) {
