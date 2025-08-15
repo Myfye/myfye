@@ -307,7 +307,7 @@ async function update_receiver(receiverId, data) {
 
     console.log("Updating receiver...", receiverId);
     //console.log("   with data", data);
-    const response = await axios.post(
+    const response = await axios.put(
       `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/receivers/${receiverId}`,
       {
         type: "individual",
