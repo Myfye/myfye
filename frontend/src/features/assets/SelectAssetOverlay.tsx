@@ -131,6 +131,7 @@ const SelectAssetOverlay = ({
       onOpenChange={onOpenChange}
       zIndex={zIndex}
       initialFocus={searchRef}
+      direction="vertical"
     >
       <div
         css={css`
