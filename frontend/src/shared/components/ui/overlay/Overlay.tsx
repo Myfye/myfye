@@ -8,7 +8,7 @@ import { ReactNode, RefObject, useId, useRef } from "react";
 
 import { css } from "@emotion/react";
 
-import { CaretLeft as CaretLeftIcon } from "@phosphor-icons/react";
+import { CaretLeft as CaretLeftIcon, XIcon } from "@phosphor-icons/react";
 
 import Button from "@/shared/components/ui/button/Button";
 import Header from "@/shared/components/layout/nav/header/Header";
@@ -16,6 +16,7 @@ import Header from "@/shared/components/layout/nav/header/Header";
 import { createPortal } from "react-dom";
 import { useOverlay } from "./useOverlay";
 import Portal from "../portal/Portal";
+import { cn } from "cn-utility";
 
 const staticTransition = {
   duration: 0.5,
@@ -32,6 +33,8 @@ export interface OverlayProps extends HTMLMotionProps<"div"> {
   color?: string;
   onExit?: () => void;
   isBackDisabled?: boolean;
+  hideTitle?: boolean;
+  direction?: "vertical" | "horizontal";
 }
 
 export type LocalOverlayProps = Omit<OverlayProps, "isOpen" | "onOpenChange">;
@@ -45,11 +48,14 @@ const Overlay = ({
   initialFocus,
   color = "var(--clr-surface)",
   onExit,
+  hideTitle,
   isBackDisabled = false,
+  direction = "horizontal",
   ...restProps
 }: OverlayProps) => {
-  const w = window.innerWidth;
-  const x = useMotionValue(w);
+  const dim =
+    direction === "horizontal" ? window.innerWidth : window.innerHeight;
+  const transformAmount = useMotionValue(dim);
 
   const titleId = useId();
 
@@ -88,14 +94,30 @@ const Overlay = ({
                   z-index: 1;
                   background-color: ${color};
                 `}
-                initial={{ x: w }}
-                animate={{ x: 0 }}
-                exit={{ x: w }}
+                initial={{
+                  x: direction === "horizontal" ? dim : undefined,
+                  y: direction === "vertical" ? dim : undefined,
+                }}
+                animate={{
+                  x: direction === "horizontal" ? 0 : undefined,
+                  y: direction === "vertical" ? 0 : undefined,
+                }}
+                exit={{
+                  x: direction === "horizontal" ? dim : undefined,
+                  y: direction === "vertical" ? dim : undefined,
+                }}
                 transition={staticTransition}
                 style={{
-                  x,
-                  left: 0,
-                  paddingRight: window.screen.width,
+                  x: direction === "horizontal" ? transformAmount : undefined,
+                  y: direction === "vertical" ? transformAmount : undefined,
+                  left: direction === "horizontal" ? 0 : undefined,
+                  top: direction === "vertical" ? 0 : undefined,
+                  paddingRight:
+                    direction === "horizontal"
+                      ? window.screen.width
+                      : undefined,
+                  paddingBottom:
+                    direction === "vertical" ? window.screen.height : undefined,
                 }}
               >
                 <div
@@ -109,15 +131,18 @@ const Overlay = ({
                   `}
                 >
                   <Header color={color}>
-                    <Button
-                      iconOnly
-                      icon={CaretLeftIcon}
-                      onPress={() => onOpenChange && onOpenChange(false)}
-                      variant="transparent"
-                      isDisabled={isBackDisabled}
-                    />
+                    {direction === "horizontal" && (
+                      <Button
+                        iconOnly
+                        icon={CaretLeftIcon}
+                        onPress={() => onOpenChange && onOpenChange(false)}
+                        color="transparent"
+                        isDisabled={isBackDisabled}
+                      />
+                    )}
                     {title && (
                       <h1
+                        className={cn(hideTitle && "visually-hidden")}
                         id={titleId}
                         css={css`
                           font-weight: var(--fw-active);
@@ -131,6 +156,15 @@ const Overlay = ({
                       >
                         {title}
                       </h1>
+                    )}
+                    {direction === "vertical" && (
+                      <Button
+                        iconOnly
+                        icon={XIcon}
+                        onPress={() => onOpenChange && onOpenChange(false)}
+                        color="transparent"
+                        isDisabled={isBackDisabled}
+                      />
                     )}
                   </Header>
                   <main

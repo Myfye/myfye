@@ -1,5 +1,5 @@
 export const getFiatCurrencySymbol = (
-  fiatCurrency: "usd" | "euro" | "brl" | "mxn" | null | undefined
+  fiatCurrency: "usd" | "euro" | "brl" | "mxn" | "eur" | null | undefined
 ) => {
   if (!fiatCurrency) return null;
   switch (fiatCurrency) {
@@ -13,6 +13,9 @@ export const getFiatCurrencySymbol = (
       return "$";
     }
     case "euro": {
+      return "€";
+    }
+    case "eur": {
       return "€";
     }
     default: {

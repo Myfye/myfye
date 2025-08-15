@@ -1,10 +1,15 @@
-import { Wallet } from "@phosphor-icons/react/dist/ssr";
+import { WalletIcon as _WalletIcon } from "@phosphor-icons/react";
 import IconWrapper from "./IconWrapper";
+import { getIconSize, IconSize } from "./utils";
 
-const WalletIcon = ({ width = "2.75rem" }) => {
+interface WalletIconProps {
+  size?: IconSize;
+}
+const WalletIcon = ({ size = "medium" }: WalletIconProps) => {
+  const iconSize = getIconSize(size);
   return (
-    <IconWrapper width={width} backgroundColor="var(--clr-surface-lowered)">
-      <Wallet size={24} />
+    <IconWrapper backgroundColor="var(--clr-surface-lowered)" size={size}>
+      <_WalletIcon size={iconSize} />
     </IconWrapper>
   );
 };

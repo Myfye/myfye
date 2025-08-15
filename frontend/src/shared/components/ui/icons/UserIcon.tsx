@@ -1,10 +1,15 @@
 import IconWrapper from "./IconWrapper";
-import { User } from "@phosphor-icons/react";
+import { UserIcon as _UserIcon } from "@phosphor-icons/react";
+import { getIconSize, IconSize } from "./utils";
 
-const UserIcon = ({ width = "2.75rem" }) => {
+interface UserIconProps {
+  size?: IconSize;
+}
+const UserIcon = ({ size = "medium" }: UserIconProps) => {
+  const iconSize = getIconSize(size);
   return (
-    <IconWrapper width={width} backgroundColor="var(--clr-surface-lowered)">
-      <User size={24} />
+    <IconWrapper backgroundColor="var(--clr-surface-lowered)" size={size}>
+      <_UserIcon size={iconSize} />
     </IconWrapper>
   );
 };

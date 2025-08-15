@@ -1,29 +1,46 @@
 import { css } from "@emotion/react";
+import { IconCardProps } from "../../card/IconCard";
 import TransactionFlowIndicator from "./TransactionFlowIndicator";
-import TransactionSummaryItem, {
-  TransactionSummaryItemProps,
-} from "./TransactionSummaryItem";
 
 interface TransactionSummaryProps {
-  input: Omit<TransactionSummaryItemProps, "type">;
-  output: Omit<TransactionSummaryItemProps, "type">;
+  inputIcon: string;
+  outputIcon: string;
+  title: string;
+  subtitle: string;
 }
-const TransactionSummary = ({ input, output }: TransactionSummaryProps) => {
+const TransactionSummary = ({
+  inputIcon,
+  outputIcon,
+  title,
+  subtitle,
+}: TransactionSummaryProps) => {
   return (
-    <div
-      className="transaction-summary"
-      css={css`
-        display: flex;
-        flex-direction: column;
-        gap: var(--size-200);
-        background-color: var(--clr-surface-raised);
-        padding: var(--size-200);
-        border-radius: var(--border-radius-medium);
-      `}
-    >
-      <TransactionSummaryItem {...input} type="input" />
-      <TransactionFlowIndicator />
-      <TransactionSummaryItem {...output} type="output" />
+    <div className="transaction-summary" css={css``}>
+      <TransactionFlowIndicator inputIcon={inputIcon} outputIcon={outputIcon} />
+      <div
+        css={css`
+          margin-block-start: var(--size-200);
+        `}
+      >
+        <h2
+          className="heading-x-large"
+          css={css`
+            text-align: center;
+          `}
+        >
+          {title}
+        </h2>
+        <p
+          className="caption"
+          css={css`
+            color: var(--clr-text-weak);
+            margin-block-start: var(--size-100);
+            text-align: center;
+          `}
+        >
+          {subtitle}
+        </p>
+      </div>
     </div>
   );
 };

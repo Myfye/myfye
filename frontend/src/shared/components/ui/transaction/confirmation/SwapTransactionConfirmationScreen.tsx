@@ -1,18 +1,18 @@
 import { css } from "@emotion/react";
+import SwapTransactionSummary from "./SwapTransactionSummary";
+import { IconCardProps } from "../../card/IconCard";
 import ButtonGroup from "../../button/ButtonGroup";
 import ButtonGroupItem from "../../button/ButtonGroupItem";
-import TransactionSummary from "./TransactionSummary";
-import { IconCardProps } from "../../card/IconCard";
 import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";
 import TransactionTable from "./TransactionTable";
 
-interface TransactionConfirmationScreenProps {
+interface SwapTransactionConfirmationScreenProps {
   /** Heading ID for accessibility, since Overlay requires a heading ID if not using default title */
   headingId: string;
   /** Input props */
-  inputIcon: string;
+  input: IconCardProps;
   /** Output props */
-  outputIcon: string;
+  output: IconCardProps;
   /** Total fee for transaction */
   fee?: number;
   /** Confirm the transaction */
@@ -21,21 +21,20 @@ interface TransactionConfirmationScreenProps {
   onCancel?: () => void;
   /** Title */
   title: string;
-  subtitle: string;
   isLoading?: boolean;
   total?: number;
 }
-const TransactionConfirmationScreen = ({
-  inputIcon,
-  outputIcon,
+const SwapTransactionConfirmationScreen = ({
+  headingId,
+  input,
+  output,
   fee = 0,
   onCancel,
   onConfirm,
   isLoading = false,
   title,
-  subtitle,
   total = 0,
-}: TransactionConfirmationScreenProps) => {
+}: SwapTransactionConfirmationScreenProps) => {
   return (
     <div
       css={css`
@@ -46,16 +45,11 @@ const TransactionConfirmationScreen = ({
     >
       <section
         css={css`
-          padding-inline: var(--size-400);
           margin-block-start: var(--size-400);
+          padding-inline: var(--size-400);
         `}
       >
-        <TransactionSummary
-          inputIcon={inputIcon}
-          outputIcon={outputIcon}
-          title={title}
-          subtitle={subtitle}
-        />
+        <SwapTransactionSummary input={input} output={output} />
       </section>
       <section
         css={css`
@@ -113,4 +107,4 @@ const TransactionConfirmationScreen = ({
   );
 };
 
-export default TransactionConfirmationScreen;
+export default SwapTransactionConfirmationScreen;

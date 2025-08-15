@@ -4,9 +4,9 @@ import { AriaRadioGroupProps, useRadioGroup, VisuallyHidden } from "react-aria";
 import { useRadioGroupState } from "react-stately";
 import { AmountSelectContext } from "./AmountSelectContext";
 
-interface AmountSelectorGroupProps extends AriaRadioGroupProps {
+export interface AmountSelectorGroupProps extends AriaRadioGroupProps {
   expand?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const AmountSelectorGroup = ({

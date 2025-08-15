@@ -1,16 +1,27 @@
+import { css } from "@emotion/react";
 import IconWrapper from "./IconWrapper";
-import { User } from "@phosphor-icons/react";
+import { IconSize } from "./utils";
 
 interface AssetIconProps {
-  src?: string;
-  alt?: string;
-  width?: string;
+  icon: string;
+  size?: IconSize;
+  label?: string;
 }
-const AssetIcon = ({ src, alt, width = "2.75rem" }: AssetIconProps) => {
-  if (!src) throw new Error("No img source defined");
+const AssetIcon = ({ icon, label, size = "medium" }: AssetIconProps) => {
+  if (!icon) throw new Error("No icon defined");
   return (
-    <IconWrapper width={width}>
-      {src && <img src={src} alt={alt} />}
+    <IconWrapper size={size}>
+      {typeof icon === "string" && (
+        <img
+          src={icon}
+          alt={label ?? ""}
+          css={css`
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          `}
+        />
+      )}
     </IconWrapper>
   );
 };
