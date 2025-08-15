@@ -23,7 +23,7 @@ root.render(
         loginMethods: ["email"],
         appearance: {
           theme: "light",
-          primaryColor: "#447E26",
+          accentColor: "#117E3B",
           logo: "https://project-eli-lewitt.s3.us-west-2.amazonaws.com/logo512.png",
           walletChainType: "ethereum-and-solana",
         },
@@ -40,8 +40,9 @@ root.render(
         defaultChain: base,
         supportedChains: [base],
       }}
-      children={<Provider store={store} children={<App />}></Provider>}
-    ></PrivyProvider>
+    >
+      <Provider store={store} children={<App />}></Provider>
+    </PrivyProvider>
   </StrictMode>
 );
 
