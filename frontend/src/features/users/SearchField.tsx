@@ -6,17 +6,22 @@ import { AriaSearchFieldProps, useSearchField } from "react-aria";
 
 import { css } from "@emotion/react";
 
-interface UserSearchFieldProps extends AriaSearchFieldProps {
+interface SearchFieldProps extends AriaSearchFieldProps {
   label: string;
   ref?: RefObject<HTMLInputElement>;
+  paste?: boolean;
+  scan?: boolean;
+  onPaste?: () => void;
   onScanTogglerPress?: () => void;
 }
-const UserSearchField = ({
+const SearchField = ({
   label,
   onScanTogglerPress,
   ref,
+  paste = true,
+  scan = true,
   ...restProps
-}: UserSearchFieldProps) => {
+}: SearchFieldProps) => {
   const state = useSearchFieldState({
     label,
     ...restProps,
@@ -52,7 +57,6 @@ const UserSearchField = ({
       >
         <input
           {...inputProps}
-          placeholder="Name, phone number, email"
           ref={ref}
           css={css`
             font-size: 16px;
@@ -63,11 +67,11 @@ const UserSearchField = ({
             {...clearButtonProps}
             size="small"
             iconOnly
-            variant="transparent"
+            color="transparent"
           >
             <XIcon />
           </Button>
-        ) : (
+        ) : paste || scan ? (
           <menu
             css={css`
               display: flex;
@@ -102,10 +106,10 @@ const UserSearchField = ({
               />
             </li>
           </menu>
-        )}
+        ) : null}
       </div>
     </div>
   );
 };
 
-export default UserSearchField;
+export default SearchField;
