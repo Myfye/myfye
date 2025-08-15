@@ -63,7 +63,7 @@ async function processSumsubDataForBlindPay(parsedSumsubData) {
       id_doc_back_file: parsedSumsubData.id_doc_back_file
     };
     
-    console.log('Prepared BlindPay data:', JSON.stringify(blindPayData, null, 2));
+    // console.log('Prepared BlindPay data:', JSON.stringify(blindPayData, null, 2));
     
     let result;
     

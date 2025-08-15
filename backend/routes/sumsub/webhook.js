@@ -21,8 +21,10 @@ function verifyWebhookSignature(payload, signature, secret) {
     .update(payload)
     .digest('hex');
   
+  /*
   console.log('Expected signature:', expectedSignature);
   console.log('Signatures match:', signature === expectedSignature);
+  */
   
   return signature === expectedSignature;
 }
@@ -90,8 +92,8 @@ async function triggerSumsubApprovalProcesses(userId) {
     // parse the data from sumsubUserData and feed to blind pay
     const parsedData = await parseSumsubUserData(sumsubUserData);
 
-    console.log('Sumsub user data:', sumsubUserData);
-    console.log('Parsed data for BlindPay:', parsedData);
+    //console.log('Sumsub user data:', sumsubUserData);
+    console.log('Parsed sumsub data for BlindPay:', parsedData);
 
     // Call the new function to process Sumsub data for BlindPay
     
