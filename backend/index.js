@@ -1186,7 +1186,7 @@ app.post("/generate_sumsub_external_link", sensitiveLimiter, async (req, res) =>
 // Sumsub webhook endpoint (no rate limiting for webhooks)
 app.post("/webhooks/sumsub", async (req, res) => {
   console.log("\n=== Sumsub Webhook Received ===");
-  console.log("Headers:", JSON.stringify(req.headers, null, 2));
+  // console.log("Headers:", JSON.stringify(req.headers, null, 2));
   console.log("Body:", JSON.stringify(req.body, null, 2));
 
   try {
@@ -1205,7 +1205,7 @@ app.post("/webhooks/sumsub", async (req, res) => {
 // BlindPay webhook endpoint (no rate limiting for webhooks)
 app.post("/webhooks/blindpay", async (req, res) => {
   console.log("\n=== BlindPay Webhook Received ===");
-  console.log("Headers:", JSON.stringify(req.headers, null, 2));
+  // console.log("Headers:", JSON.stringify(req.headers, null, 2));
   console.log("Body:", JSON.stringify(req.body, null, 2));
 
   try {

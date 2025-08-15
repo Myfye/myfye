@@ -93,7 +93,7 @@ async function triggerSumsubApprovalProcesses(userId) {
     const parsedData = await parseSumsubUserData(sumsubUserData);
 
     //console.log('Sumsub user data:', sumsubUserData);
-    console.log('Parsed sumsub data for BlindPay:', parsedData);
+    //console.log('Parsed sumsub data for BlindPay:', parsedData);
 
     // Call the new function to process Sumsub data for BlindPay
     
