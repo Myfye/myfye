@@ -16,13 +16,15 @@ const {
     updateEvmPubKey, 
     updateSolanaPubKey, 
     getUserByPrivyId,
-    getAllUsers } = require('./routes/userDb');
+    getAllUsers,
+    deleteUserWithBlindPay } = require('./routes/userDb');
 const { createErrorLog, getErrorLogs, deleteErrorLog } = require('./routes/errorLog');
 const { 
     createContact, 
     getContacts, 
     searchUser, 
-    getTopContacts 
+    getTopContacts,
+    deleteContact 
 } = require('./routes/interUser');
 const { 
     createSwapTransaction, 
@@ -629,6 +631,26 @@ app.post("/get_top_contacts", async (req, res) => {
   }
 });
 
+app.post("/delete_contact", async (req, res) => {
+  console.log("\n=== Delete Contact Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    const result = await deleteContact(data);
+    console.log("Delete contact result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_contact endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to delete contact",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
 /* Transaction signing endpoints */
 app.post("/sign_transaction", sensitiveLimiter, async (req, res) => {
   console.log("\n=== Sign Transaction Request Received ===");
@@ -700,6 +722,30 @@ app.post("/get_all_users", generalLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to fetch users",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/delete_user", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Delete User Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { user_id } = req.body;
+    if (!user_id) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+    
+    const result = await deleteUserWithBlindPay(user_id);
+    console.log("User deletion result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /delete_user endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to delete user",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });

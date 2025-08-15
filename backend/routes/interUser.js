@@ -146,9 +146,39 @@ async function getTopContacts(data) {
     }
 }
 
+async function deleteContact(data) {
+    console.log("\n=== Delete Contact Request Received ===");
+    console.log("Contact data:", JSON.stringify(data, null, 2));
+
+    const { user_id, contact_id } = data;
+
+    if (!user_id || !contact_id) {
+        throw new Error('User ID and Contact ID are required');
+    }
+
+    const query = `
+        DELETE FROM user_contacts 
+        WHERE user_id = $1 AND contact_id = $2
+        RETURNING *
+    `;
+
+    try {
+        const result = await pool.query(query, [user_id, contact_id]);
+        if (result.rows.length === 0) {
+            return { message: 'Contact not found or already deleted' };
+        }
+        console.log("Contact deletion result:", JSON.stringify(result.rows[0], null, 2));
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error deleting contact:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     createContact,
     getContacts,
     searchUser,
-    getTopContacts
+    getTopContacts,
+    deleteContact
 };
