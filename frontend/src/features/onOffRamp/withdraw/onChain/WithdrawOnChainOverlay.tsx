@@ -45,14 +45,6 @@ const WithdrawOnChainOverlay = ({
     transaction.assetId ? selectAsset(state, transaction.assetId) : null
   );
 
-  // Balances
-  const eurcSolBalance = useAppSelector((state) =>
-    selectAssetBalance(state, "eurc_sol")
-  );
-  const usdcSolBalance = useAppSelector((state) =>
-    selectAssetBalance(state, "usdc_sol")
-  );
-
   const numberPadProps = useNumberPad({
     onStartDelete: (input) => {
       dispatch(updateAmount({ input }));
@@ -88,7 +80,6 @@ const WithdrawOnChainOverlay = ({
           amountSelectorGroupProps={{
             label: "Select preset amount",
             onChange: (amount) => {
-              console.log(asset.balance);
               dispatch(updatePresetAmount(amount as PresetAmountOption));
               dispatch(
                 updateAmount({
@@ -105,12 +96,12 @@ const WithdrawOnChainOverlay = ({
           amountSelectors={[
             {
               id: "1",
-              label: getFiatCurrencySymbol(asset.fiatCurrency) + "10",
+              label: getFiatCurrencySymbol(asset?.fiatCurrency) + "10",
               value: "10",
             },
             {
               id: "2",
-              label: getFiatCurrencySymbol(asset.fiatCurrency) + "50",
+              label: getFiatCurrencySymbol(asset?.fiatCurrency) + "50",
               value: "50",
             },
             {
@@ -167,7 +158,10 @@ const WithdrawOnChainOverlay = ({
           }}
           submitLabel="Preview"
           submitButtonProps={{
-            isDisabled: transaction.amount === 0 || !transaction.solAddress,
+            isDisabled:
+              transaction.amount === 0 ||
+              (transaction.amount ?? 0) > (asset?.balance ?? 0) ||
+              !transaction.solAddress,
           }}
         />
       </Overlay>
