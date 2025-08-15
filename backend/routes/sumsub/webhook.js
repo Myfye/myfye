@@ -5,6 +5,7 @@ const { saveTemporaryImage } = require('./tempImageStorage');
 const pool = require('../../db');
 const { getSumsubUser } = require('./getSumsubUser');
 const { processSumsubDataForBlindPay } = require('../kyc/sumsubBlindPay');
+const { convertSumsubToBlindpayCountryCode } = require('../kyc/countryCode');
 
 // Verify webhook signature from Sumsub
 function verifyWebhookSignature(payload, signature, secret) {
@@ -128,7 +129,7 @@ async function parseSumsubUserData(sumsubUserData) {
       date_of_birth: fixedInfo.dob || applicantData.info?.dob,
       email: applicantData.email || null, // Note: email might not be in the example data
       tax_id: fixedInfo.tin || null,
-      country: fixedInfo.country || applicantData.info?.country || primaryIdDoc.country,
+      country: convertSumsubToBlindpayCountryCode(fixedInfo.country || applicantData.info?.country || primaryIdDoc.country),
     };
 
     // Extract address information
@@ -136,13 +137,13 @@ async function parseSumsubUserData(sumsubUserData) {
       address_line_1: primaryAddress.street,
       city: primaryAddress.town,
       state_province_region: primaryAddress.state,
-      country: primaryAddress.country || personalInfo.country,
+      country: convertSumsubToBlindpayCountryCode(primaryAddress.country) || personalInfo.country,
       postal_code: primaryAddress.postCode,
     };
 
     // Extract ID document information
     const idDocInfo = {
-      id_doc_country: primaryIdDoc.country,
+      id_doc_country: convertSumsubToBlindpayCountryCode(primaryIdDoc.country),
       id_doc_type: primaryIdDoc.idDocType,
       id_doc_number: primaryIdDoc.number,
       id_doc_valid_until: primaryIdDoc.validUntil,
