@@ -305,8 +305,8 @@ async function update_receiver(receiverId, data) {
     // Format date_of_birth to ISO 8601 with UTC timezone
     const formattedDateOfBirth = new Date(data.date_of_birth).toISOString();
 
-    console.log("Updating receiver...");
-    console.log(data);
+    console.log("Updating receiver...", receiverId);
+    //console.log("   with data", data);
     const response = await axios.post(
       `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/receivers/${receiverId}`,
       {
