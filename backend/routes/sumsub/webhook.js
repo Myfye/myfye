@@ -6,6 +6,7 @@ const pool = require('../../db');
 const { getSumsubUser } = require('./getSumsubUser');
 const { processSumsubDataForBlindPay } = require('../kyc/sumsubBlindPay');
 const { convertSumsubToBlindpayCountryCode } = require('../kyc/countryCode');
+const { updateUserNames } = require('../userDb');
 
 // Verify webhook signature from Sumsub
 function verifyWebhookSignature(payload, signature, secret) {
@@ -96,8 +97,22 @@ async function triggerSumsubApprovalProcesses(userId) {
     //console.log('Parsed sumsub data for BlindPay:', parsedData);
 
     // Call the new function to process Sumsub data for BlindPay
-    
     const blindPayResult = await processSumsubDataForBlindPay(parsedData);
+
+    // save the user names
+    try {
+      const firstName = parsedData.personal_info.first_name;
+      const lastName = parsedData.personal_info.last_name;
+      
+      if (firstName && lastName) {
+        const updatedUser = await updateUserNames(userId, firstName, lastName);
+        console.log('Successfully updated user names:', { firstName, lastName, userId });
+      } else {
+        console.warn('Missing first name or last name for user:', userId, { firstName, lastName });
+      }
+    } catch (error) {
+      console.error('Error updating user names:', error);
+    }
 
     if (blindPayResult.success) {
       console.log('BlindPay processing completed successfully:', blindPayResult.message);
