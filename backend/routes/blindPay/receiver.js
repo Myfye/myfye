@@ -205,7 +205,7 @@ async function get_all_receivers() {
       })
     );
 
-    console.log("Receivers with wallets:", JSON.stringify(receiversWithWallets, null, 2));
+    // console.log("Receivers with wallets:", JSON.stringify(receiversWithWallets, null, 2));
     return receiversWithWallets;
   } catch (error) {
     console.error("Error in get_all_receivers:", error.response?.data || error.message);
