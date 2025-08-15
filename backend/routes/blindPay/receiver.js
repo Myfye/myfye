@@ -14,13 +14,13 @@ const {
 const { createErrorLog } = require('../errorLog');
 
 
-const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
-const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
-const NETWORK = 'base'
+//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
+//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+//const NETWORK = 'base'
 
-//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
-//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
-//const NETWORK = 'sepolia'
+const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
+const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+const NETWORK = 'sepolia'
 
 async function create_new_on_ramp_path(data) {
   console.log("On-ramp called!");
@@ -291,9 +291,11 @@ async function get_receiver(receiverId) {
 
   try {
     const { data } = await axios.request(options);
-    console.log(data);
+    console.log('Receiver data:', data);
+    return data;
   } catch (error) {
-    console.error(error);
+    console.error('Error getting receiver:', error);
+    return null;
   }
 }
 

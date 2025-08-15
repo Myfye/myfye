@@ -4,6 +4,7 @@ const { getDocumentImages } = require('./getDocumentImages');
 const { saveTemporaryImage } = require('./tempImageStorage');
 const pool = require('../../db');
 const { getSumsubUser } = require('./getSumsubUser');
+const { processSumsubDataForBlindPay } = require('../kyc/sumsubBlindPay');
 
 // Verify webhook signature from Sumsub
 function verifyWebhookSignature(payload, signature, secret) {
@@ -90,6 +91,16 @@ async function triggerSumsubApprovalProcesses(userId) {
 
     console.log('Sumsub user data:', sumsubUserData);
     console.log('Parsed data for BlindPay:', parsedData);
+
+    // Call the new function to process Sumsub data for BlindPay
+    
+    const blindPayResult = await processSumsubDataForBlindPay(parsedData);
+
+    if (blindPayResult.success) {
+      console.log('BlindPay processing completed successfully:', blindPayResult.message);
+    } else {
+      console.error('BlindPay processing failed:', blindPayResult.error);
+    }
 
   } catch (error) {
     console.error('Error in post-approval processes:', error);
