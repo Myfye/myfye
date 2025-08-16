@@ -229,7 +229,6 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
       throw new Error(`Buy abstractedAssetId is null`);
     }
 
-    // TODO update this to a service file
     swap({
       wallet,
       assets,

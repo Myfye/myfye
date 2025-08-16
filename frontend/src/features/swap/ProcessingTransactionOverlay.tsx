@@ -84,7 +84,7 @@ const ProcessingTransactionOverlay = () => {
       onOpenChange={(isOpen) => {
         toggleOverlay({ type: "processingTransaction", isOpen });
       }}
-      zIndex={4000}
+      zIndex={9999 + 3}
     >
       <TransactionProcessScreen
         title={title}
