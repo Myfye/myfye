@@ -24,8 +24,8 @@ const DepositModal = () => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector((state) => state.deposit.modal.isOpen);
   const height = useMotionValue(DEFAULT_HEIGHT);
-  const currentUserKYCVerified = useAppSelector(
-    (state) => state.userWalletData.currentUserKYCVerified
+  const currentUserKYCStatus = useAppSelector(
+    (state) => state.userWalletData.currentUserKYCStatus
   );
 
   const [isOnChainDepositOpen, setOnChainDepositOpen] = useState(false);

@@ -55,6 +55,12 @@ const { generateExternalLink } = require('./routes/sumsub/generateExternalLink')
 const { serveTempImage } = require('./routes/sumsub/serveTempImage');
 const { handleSumsubWebhook } = require('./routes/sumsub/webhook');
 const { handleBlindPayWebhook } = require('./routes/blindPay/webhook');
+const { 
+    updateUserKycStatus, 
+    updateUserKycStatusByBlindPayId,
+    getUserKycStatus,
+    getUserKycStatusByBlindPayId 
+} = require('./routes/kyc/kycStatus');
 
 app.set('trust proxy', true);
 
@@ -252,6 +258,103 @@ app.post('/update_solana_pub_key', sensitiveLimiter, async (req, res) => {
     } catch (error) {
         console.error("Error in /update_solana_pub_key endpoint:", error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+/* KYC status endpoints */
+app.post('/get_user_kyc_status', generalLimiter, async (req, res) => {
+    console.log("\n=== Get User KYC Status Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { user_id } = req.body;
+        if (!user_id) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+        
+        const result = await getUserKycStatus(user_id);
+        console.log("KYC status result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_user_kyc_status endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to get user KYC status",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+app.post('/get_user_kyc_status_by_blindpay_id', generalLimiter, async (req, res) => {
+    console.log("\n=== Get User KYC Status by BlindPay ID Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { blind_pay_receiver_id } = req.body;
+        if (!blind_pay_receiver_id) {
+            return res.status(400).json({ error: 'BlindPay receiver ID is required' });
+        }
+        
+        const result = await getUserKycStatusByBlindPayId(blind_pay_receiver_id);
+        console.log("KYC status result:", JSON.stringify(result, null, 2));
+        res.json(result);
+    } catch (error) {
+        console.error("Error in /get_user_kyc_status_by_blindpay_id endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to get user KYC status by BlindPay ID",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+app.post('/update_user_kyc_status', sensitiveLimiter, async (req, res) => {
+    console.log("\n=== Update User KYC Status Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { user_id, new_status } = req.body;
+        if (!user_id || !new_status) {
+            return res.status(400).json({ error: 'User ID and new status are required' });
+        }
+        
+        const result = await updateUserKycStatus(user_id, new_status);
+        console.log("KYC status update result:", JSON.stringify(result, null, 2));
+        res.json({ success: result });
+    } catch (error) {
+        console.error("Error in /update_user_kyc_status endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to update user KYC status",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
+    }
+});
+
+app.post('/update_user_kyc_status_by_blindpay_id', sensitiveLimiter, async (req, res) => {
+    console.log("\n=== Update User KYC Status by BlindPay ID Request Received ===");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    try {
+        const { blind_pay_receiver_id, new_status } = req.body;
+        if (!blind_pay_receiver_id || !new_status) {
+            return res.status(400).json({ error: 'BlindPay receiver ID and new status are required' });
+        }
+        
+        const result = await updateUserKycStatusByBlindPayId(blind_pay_receiver_id, new_status);
+        console.log("KYC status update result:", JSON.stringify(result, null, 2));
+        res.json({ success: result });
+    } catch (error) {
+        console.error("Error in /update_user_kyc_status_by_blindpay_id endpoint:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            error: error.message || "Failed to update user KYC status by BlindPay ID",
+            details: error.toString(),
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 

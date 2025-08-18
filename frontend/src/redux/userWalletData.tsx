@@ -19,7 +19,7 @@ export interface UserWalletDataState {
   usdcEthBalance: number;
   usdtEthBalance: number;
   busdEthBalance: number;
-  currentUserKYCVerified: boolean;
+  currentUserKYCStatus: string | null;
   swapWithdrawTransactionStatus: string;
   swapDepositTransactionStatus: string;
   swapFXTransactionStatus: string;
@@ -75,7 +75,7 @@ const initialUserWalletData: UserWalletDataState = {
   usdcEthBalance: 0,
   usdtEthBalance: 0,
   busdEthBalance: 0,
-  currentUserKYCVerified: false, // true for Development, false for Deployment
+  currentUserKYCStatus: null, // null for no KYC status
   currentUserFirstName: "",
   currentUserLastName: "",
   currentUserEmail: "",
@@ -166,8 +166,8 @@ export const userWalletDataSlice = createSlice({
     setbusdEthValue: (state, action: PayloadAction<number>) => {
       state.busdEthBalance = action.payload;
     },
-    setCurrentUserKYCVerified: (state, action: PayloadAction<boolean>) => {
-      state.currentUserKYCVerified = action.payload;
+    setCurrentUserKYCStatus: (state, action: PayloadAction<string | null>) => {
+      state.currentUserKYCStatus = action.payload;
     },
 
     setCurrentUserID: (state, action: PayloadAction<string>) => {
@@ -328,7 +328,7 @@ export const {
   setusdcEthValue,
   setusdtEthValue,
   setbusdEthValue,
-  setCurrentUserKYCVerified,
+  setCurrentUserKYCStatus,
   setcurrentUserFirstName,
   setcurrentUserLastName,
   setcurrentUserEmail,

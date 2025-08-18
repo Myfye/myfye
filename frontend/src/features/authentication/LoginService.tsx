@@ -1,6 +1,6 @@
 import {
   setRecentlyUsedSolanaAddresses,
-  setCurrentUserKYCVerified,
+  setCurrentUserKYCStatus,
   setcurrentUserEmail,
   setSolanaPubKey,
   setEvmPubKey,
@@ -173,8 +173,8 @@ const HandleUserLogIn = async (
       const dbUser = await getUser(user.email.address, user.id); // user.id is privyUserId
       if (dbUser && dbUser.uid) {
         dispatch(setCurrentUserID(dbUser.uid));
-        console.log("dbUser.KYCverified", dbUser.kyc_verified);
-        dispatch(setCurrentUserKYCVerified(dbUser.kyc_verified));
+        console.log("dbUser.kyc_status", dbUser.kyc_status);
+        dispatch(setCurrentUserKYCStatus(dbUser.kyc_status));
         dispatch(setBlindPayEvmWalletId(dbUser.blind_pay_evm_wallet_id));
         dispatch(setBlindPayReceiverId(dbUser.blind_pay_receiver_id));
 
@@ -218,7 +218,6 @@ const HandleUserLogIn = async (
     updateExchangeRateUSD({ assetId: "usdt_sol", exchangeRateUSD: 1 });
     updateExchangeRateUSD({ assetId: "usdc_base", exchangeRateUSD: 1 });
 
-    await getUserData(user.wallet.address, dispatch);
     await getPriceQuotes(dispatch);
 
     return { success: true };
@@ -255,25 +254,5 @@ const checkMFAState = async (user: any, dispatch: Function) => {
   dispatch(setMFAStatus(""));
 };
 
-export const getUserData = async (
-  pubKey: string,
-  dispatch: Function
-): Promise<boolean> => {
-  const db = getFirestore();
-  const pubKeyDocRef = doc(db, "pubKeys", pubKey);
-
-  const docSnapshot = await getDoc(pubKeyDocRef);
-  const data = docSnapshot.data();
-
-  if (data) {
-    if (data.recentlyUsedAddresses) {
-      dispatch(setRecentlyUsedSolanaAddresses(data.recentlyUsedAddresses));
-    }
-    if (data.KYCverified) {
-      dispatch(setCurrentUserKYCVerified(data.KYCverified));
-    }
-  }
-  return true;
-};
 
 export { HandleUserLogIn };

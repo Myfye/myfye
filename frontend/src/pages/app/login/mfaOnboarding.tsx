@@ -41,8 +41,8 @@ function MFAOnboarding() {
   const selectedLanguageCode = useSelector(
     (state: RootState) => state.userWalletData.selectedLanguageCode
   );
-  const KYCVerifired = useSelector(
-    (state: RootState) => state.userWalletData.currentUserKYCVerified
+  const KYCStatus = useSelector(
+    (state: RootState) => state.userWalletData.currentUserKYCStatus
   );
   const dispatch = useDispatch();
 

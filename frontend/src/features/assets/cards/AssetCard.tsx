@@ -63,25 +63,11 @@ const AssetCard = ({
   const formattedBalance = formatBalance(balance, fiatCurrency);
 
   const dispatch = useDispatch();
-  const currentUserKYCVerified = useSelector(
-    (state: RootState) => state.userWalletData.currentUserKYCVerified
+  const currentUserKYCStatus = useSelector(
+    (state: RootState) => state.userWalletData.currentUserKYCStatus
   );
 
   const handleSwapClick = () => {
-    /*
-    if (!currentUserKYCVerified) {
-      console.log("opening KYC modal");
-      dispatch(toggleKYCModal({ isOpen: true }));
-    } else {
-      console.log("opening swap modal");
-      dispatch(
-        toggleSwapModal({
-          isOpen: true,
-          abstractedAssetId: id,
-        })
-      );
-    }
-      */
 
     console.log("opening swap modal");
     dispatch(
@@ -93,7 +79,7 @@ const AssetCard = ({
   };
 
   const handleReceiveClick = () => {
-    if (!currentUserKYCVerified) {
+    if (currentUserKYCStatus !== "APPROVED") {
       console.log("opening KYC modal");
       dispatch(toggleKYCModal({ isOpen: true }));
     } else {
