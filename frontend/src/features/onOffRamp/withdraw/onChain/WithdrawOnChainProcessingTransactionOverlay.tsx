@@ -47,7 +47,7 @@ const WithdrawProcessingTransactionOverlay = () => {
     transaction.assetId ? selectAsset(state, transaction.assetId) : null
   );
 
-  const title = getTitle(transaction.status, transaction.amount, asset.symbol);
+  const title = getTitle(transaction.status, transaction.amount, asset?.symbol);
   const subtitle = getSubtitle(
     transaction.status,
     transaction.solAddress ?? ""

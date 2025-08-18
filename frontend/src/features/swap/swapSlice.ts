@@ -5,7 +5,7 @@ import {
   updateFormattedAmount,
   parseFormattedAmount,
 } from "./utils";
-import { AbstractedAsset, Asset, AssetsState } from "../assets/types";
+import { Asset, AssetsState } from "../assets/types";
 import {
   SwapTransaction,
   SwapTransactionStatus,
@@ -46,8 +46,8 @@ const initialState: SwapState = {
     processingTransaction: { isOpen: false },
   },
   transaction: {
-    buy: { amount: null, formattedAmount: "", abstractedAssetId: null },
-    sell: { amount: null, formattedAmount: "", abstractedAssetId: null },
+    buy: { amount: null, formattedAmount: "", assetId: null },
+    sell: { amount: null, formattedAmount: "", assetId: null },
     exchangeRate: null,
     fee: null,
     status: "idle",
@@ -66,13 +66,13 @@ const swapSlice = createSlice({
       state,
       action: PayloadAction<{
         isOpen: boolean;
-        abstractedAssetId?: AbstractedAsset["id"];
+        assetId?: Asset["id"];
       }>
     ) {
       state.modal.isOpen = action.payload.isOpen;
-      if (action.payload?.abstractedAssetId)
-        state.transaction.sell.abstractedAssetId =
-          action.payload.abstractedAssetId;
+      if (action.payload?.assetId)
+        state.transaction.sell.assetId =
+          action.payload.assetId;
     },
     toggleOverlay(
       state,
@@ -128,28 +128,28 @@ const swapSlice = createSlice({
         true
       );
     },
-    updateAbstractedAssetId(
+    updateAssetId(
       state,
       action: PayloadAction<{
         transactionType: SwapTransactionType;
-        abstractedAssetId: AbstractedAsset["id"] | null;
+        aassetId: Asset["id"] | null;
       }>
     ) {
-      state.transaction[action.payload.transactionType].abstractedAssetId =
-        action.payload.abstractedAssetId;
+      state.transaction[action.payload.transactionType].assetId =
+        action.payload.assetId;
     },
     updateExchangeRate(
       state,
       action: PayloadAction<{
         assets: AssetsState;
-        buyAbstractedAssetId: Asset["id"] | null;
-        sellAbstractedAssetId: Asset["id"] | null;
+        buyAssetId: Asset["id"] | null;
+        sellAssetId: Asset["id"] | null;
       }>
     ) {
       state.transaction.exchangeRate = calculateExchangeRate({
         assets: action.payload.assets,
-        buyAbstractedAssetId: action.payload.buyAbstractedAssetId,
-        sellAbstractedAssetId: action.payload.sellAbstractedAssetId,
+        buyAssetId: action.payload.buyAssetId,
+        sellAssetId: action.payload.sellAssetId,
       });
 
       if (!state.transaction.sell.amount || !state.transaction.exchangeRate) {
@@ -204,7 +204,7 @@ export const {
   toggleOverlay,
   updateAmount,
   updateExchangeRate,
-  updateAbstractedAssetId,
+  updateAssetId,
   unmount,
   updateStatus,
   updateId,

@@ -40,7 +40,7 @@ const initialState: WithdrawOffChainState = {
     status: "idle",
     amount: 0,
     formattedAmount: "0",
-    abstractedAssetId: "us_dollar",
+    assetId: "us_dollar",
     fiatCurrency: "usd",
     fee: 0,
     presetAmount: null,
@@ -162,15 +162,15 @@ const withdrawOffChainSlice = createSlice({
         ...action.payload,
       };
     },
-    updateAbstractedAssetId(state, action: PayloadAction<Asset["id"] | null>) {
-      state.transaction.abstractedAssetId = action.payload;
+    updateAssetId(state, action: PayloadAction<Asset["id"] | null>) {
+      state.transaction.assetId = action.payload;
     },
     unmount: () => ({ ...initialState }),
   },
 });
 
 export const {
-  updateAbstractedAssetId,
+  updateAssetId,
   updatePresetAmount,
   updateBankInfo,
   toggleOverlay,

@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import Overlay, { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
-import { AbstractedAsset, AbstractedAssetSection } from "../assets/types";
+import { Asset, AssetSection } from "../assets/types";
 import AssetCardListSelect from "./cards/AssetCardListSelect";
 import SearchField from "@/shared/components/ui/search/SearchField";
 import { useEffect, useRef, useState } from "react";
@@ -8,9 +8,9 @@ import fuzzysort from "fuzzysort";
 import { cn } from "cn-utility";
 
 interface SelectAssetOverlayProps extends OverlayProps {
-  abstractedAssetSections: AbstractedAssetSection[];
-  onAssetSelect: (abstractedAssetId: AbstractedAsset["id"]) => void;
-  selectedAbstractedAssetId: AbstractedAsset["id"] | null;
+  assetSections: assetSection[];
+  onAssetSelect: (assetId: Asset["id"]) => void;
+  selectedAssetId: Asset["id"] | null;
   disableSearch?: boolean;
   assetCardListSelectOptions?: {
     showBalance?: boolean;
@@ -20,13 +20,13 @@ interface SelectAssetOverlayProps extends OverlayProps {
 }
 
 const filterSections = (
-  sections: AbstractedAssetSection[],
+  sections: assetSection[],
   searchValue: string
 ) => {
   if (searchValue === "") return sections;
 
   const allAssets = sections.flatMap((section) =>
-    section.abstractedAssets.map((asset) => ({
+    section.assets.map((asset) => ({
       ...asset,
       _sectionId: section.id, // Tag each asset with the sectionId
     }))
@@ -38,26 +38,26 @@ const filterSections = (
     threshold: 0.5,
   });
 
-  const abstractedAssetMap = new Map<string, AbstractedAsset[]>();
+  const assetMap = new Map<string, Asset[]>();
 
   results.forEach(({ obj }) => {
-    // remove sectionId to reveal original Abstracted Asset
+    // remove sectionId to reveal original Asset
     const { _sectionId, ...strippedObj } = obj;
 
     // if the map doesn't have a sectionId, put it there
-    if (!abstractedAssetMap.has(_sectionId)) {
-      abstractedAssetMap.set(_sectionId, []);
+    if (!assetMap.has(_sectionId)) {
+      assetMap.set(_sectionId, []);
     }
 
     // push the object to that sectionId key
-    abstractedAssetMap.get(_sectionId)?.push(strippedObj);
+    assetMap.get(_sectionId)?.push(strippedObj);
   });
 
   return sections
     .map((section) => {
-      const abstractedAssets = abstractedAssetMap.get(section.id);
-      if (!abstractedAssets) return null;
-      return { ...section, abstractedAssets };
+      const assets = assetMap.get(section.id);
+      if (!assets) return null;
+      return { ...section, assets };
     })
     .filter((asset) => !!asset);
 };
@@ -65,9 +65,9 @@ const filterSections = (
 const SelectAssetOverlay = ({
   isOpen,
   onOpenChange,
-  abstractedAssetSections,
+  assetSections,
   onAssetSelect,
-  selectedAbstractedAssetId,
+  selectedAssetId,
   zIndex = 1000,
   disableSearch = false,
   assetCardListSelectOptions,
@@ -75,13 +75,13 @@ const SelectAssetOverlay = ({
 }: SelectAssetOverlayProps) => {
   const [searchValue, setSearchValue] = useState("");
   const [filteredSections, setFilteredSections] = useState(
-    abstractedAssetSections
+    assetSections
   );
   const searchRef = useRef<HTMLInputElement>(null!);
 
   useEffect(() => {
-    setFilteredSections(filterSections(abstractedAssetSections, searchValue));
-  }, [searchValue, setFilteredSections, abstractedAssetSections]);
+    setFilteredSections(filterSections(assetSections, searchValue));
+  }, [searchValue, setFilteredSections, assetSections]);
 
   const getResultsUI = () => {
     if (filteredSections.length === 0)
@@ -115,9 +115,9 @@ const SelectAssetOverlay = ({
         </h2>
         <AssetCardListSelect
           {...assetCardListSelectOptions}
-          assets={section.abstractedAssets}
+          assets={section.assets}
           onAssetSelect={onAssetSelect}
-          selectedAsset={selectedAbstractedAssetId}
+          selectedAsset={selectedAssetId}
         />
       </section>
     ));

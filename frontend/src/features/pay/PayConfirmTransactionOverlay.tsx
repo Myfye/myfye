@@ -50,7 +50,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
     if (!transaction.amount) return;
     if (!transaction.user) return;
-    if (!transaction.abstractedAssetId) return;
+    if (!transaction.assetId) return;
 
     // First open the processing overlay
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
@@ -59,11 +59,11 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     // next, go through transaction
-    const sellAbstractedAsset =
-      assets.abstractedAssets[transaction.abstractedAssetId];
+    const sellAsset =
+      assets.Assets[transaction.AssetId];
 
-    // Get all assets associated with this abstracted asset
-    const associatedAssets = sellAbstractedAsset.assetIds.map(
+    // Get all assets associated with this asset
+    const associatedAssets = sellAsset.assetIds.map(
       (assetId) => assets.assets[assetId]
     );
 
@@ -81,15 +81,15 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
     let assetCode = "";
 
-    if (transaction.abstractedAssetId === "us_dollar_yield") {
+    if (transaction.assetId === "us_dollar_yield") {
       assetCode = "usdySol";
-    } else if (transaction.abstractedAssetId === "us_dollar") {
+    } else if (transaction.assetId === "us_dollar") {
       assetCode = "usdcSol";
-    } else if (transaction.abstractedAssetId === "sol") {
+    } else if (transaction.assetId === "sol") {
       assetCode = "sol";
-    } else if (transaction.abstractedAssetId === "euro") {
+    } else if (transaction.assetId === "euro") {
       assetCode = "eurcSol";
-    } else if (transaction.abstractedAssetId === "btc") {
+    } else if (transaction.assetId === "btc") {
       assetCode = "btcSol";
     }
 
@@ -127,21 +127,21 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
           logError("Failed to send email:", "pay", error);
         }
         // update amounts
-        if (transaction.abstractedAssetId === "us_dollar_yield") {
+        if (transaction.assetId === "us_dollar_yield") {
           setusdcSolValue(
             userWalletData.usdySolBalance -
               transaction.amount / userWalletData.priceOfUSDYinUSDC
           );
-        } else if (transaction.abstractedAssetId === "us_dollar") {
+        } else if (transaction.assetId === "us_dollar") {
           setusdcSolValue(userWalletData.usdcSolBalance - transaction.amount);
-        } else if (transaction.abstractedAssetId === "sol") {
+        } else if (transaction.assetId === "sol") {
           // cash only sends
-        } else if (transaction.abstractedAssetId === "euro") {
+        } else if (transaction.assetId === "euro") {
           setusdcSolValue(
             userWalletData.eurcSolBalance -
               transaction.amount / userWalletData.priceOfEURCinUSDC
           );
-        } else if (transaction.abstractedAssetId === "btc") {
+        } else if (transaction.assetId === "btc") {
           // cash only sends
         }
 

@@ -2,13 +2,13 @@ import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
   toggleOverlay,
-  updateAbstractedAssetId,
+  updateAssetId,
   updateAmount,
 } from "./sendSlice";
-import { AbstractedAsset, AbstractedAssetSection } from "../assets/types";
+import { Asset, AssetSection } from "../assets/types";
 import {
-  selectAbstractedAssetsWithBalanceByDashboard,
-  selectAbstractedAssetWithBalance,
+  selectAssetsWithBalanceByDashboard,
+  selectAssetWithBalance,
 } from "../assets/assetsSlice";
 import SelectAssetOverlay from "../assets/SelectAssetOverlay";
 
@@ -16,14 +16,14 @@ const SendSelectAssetOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const cashAssets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByDashboard(state, "cash")
+    selectAssetsWithBalanceByDashboard(state, "cash")
   );
 
-  const abstractedAssetSections: AbstractedAssetSection[] = [
+  const assetSections: assetSection[] = [
     {
       id: "cash",
       label: "Cash",
-      abstractedAssets: cashAssets,
+      assets: cashAssets,
     },
   ];
 
@@ -31,13 +31,13 @@ const SendSelectAssetOverlay = ({ zIndex = 1000 }) => {
     (state: RootState) => state.send.overlays.selectAsset.isOpen
   );
 
-  const selectedAbstractedAssetId = useSelector(
-    (state: RootState) => state.send.transaction.abstractedAssetId
+  const selectedAssetId = useSelector(
+    (state: RootState) => state.send.transaction.assetId
   );
 
   const asset = useSelector((state: RootState) =>
-    selectedAbstractedAssetId
-      ? selectAbstractedAssetWithBalance(state, selectedAbstractedAssetId)
+    selectedAssetId
+      ? selectAssetWithBalance(state, selectedAssetId)
       : null
   );
 
@@ -52,10 +52,10 @@ const SendSelectAssetOverlay = ({ zIndex = 1000 }) => {
     );
   };
 
-  const handleAssetSelect = (abstractedAssetId: AbstractedAsset["id"]) => {
+  const handleAssetSelect = (assetId: Asset["id"]) => {
     dispatch(
-      updateAbstractedAssetId({
-        abstractedAssetId: abstractedAssetId,
+      updateAssetId({
+        assetId: assetId,
       })
     );
     if (asset && transaction.presetAmount === "max") {
@@ -77,8 +77,8 @@ const SendSelectAssetOverlay = ({ zIndex = 1000 }) => {
         isOpen={isOpen}
         onOpenChange={handleOpen}
         onAssetSelect={handleAssetSelect}
-        abstractedAssetSections={abstractedAssetSections}
-        selectedAbstractedAssetId={selectedAbstractedAssetId}
+        assetSections={assetSections}
+        selectedAssetId={selectedAssetId}
       />
     </>
   );

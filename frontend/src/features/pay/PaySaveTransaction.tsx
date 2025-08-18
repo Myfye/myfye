@@ -32,7 +32,7 @@ export async function savePayTransaction(
       receiver_phone_number: null,
       receiver_email: transaction.user.email,
       receiver_public_key: transaction.user.solana_pub_key,
-      currency: transaction.abstractedAssetId,
+      currency: transaction.assetId,
       transaction_hash: transactionId,
       transaction_status: "success",
     }),

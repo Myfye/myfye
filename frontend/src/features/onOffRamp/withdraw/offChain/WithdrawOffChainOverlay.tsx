@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
-import { selectAbstractedAssetWithBalance } from "@/features/assets/assetsSlice";
+import { selectAssetWithBalance } from "@/features/assets/assetsSlice";
 import {
   toggleOverlay,
   updateAmount,
@@ -34,8 +34,8 @@ const WithdrawOffChainOverlay = () => {
   );
 
   const asset = useAppSelector((state) =>
-    transaction.abstractedAssetId
-      ? selectAbstractedAssetWithBalance(state, transaction.abstractedAssetId)
+    transaction.assetId
+      ? selectAssetWithBalance(state, transaction.assetId)
       : null
   );
 
@@ -135,7 +135,7 @@ const WithdrawOffChainOverlay = () => {
                 titleSize: "medium",
               },
               rightContent: {
-                title: formatAmountWithCurrency(asset.balance),
+                title: formatAmountWithCurrency(asset?.balance),
                 subtitle: "Available",
                 titleWeight: "var(--fw-default)",
                 textAlign: "end",

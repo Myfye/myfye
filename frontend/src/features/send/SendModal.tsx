@@ -70,8 +70,8 @@ const SendModal = () => {
   };
 
   const checkIfInvalidSwapTransaction = () => {
-    if (!transaction.abstractedAssetId) {
-      console.warn("No abstracted asset id available");
+    if (!transaction.assetId) {
+      console.warn("No asset id available");
       return true;
     }
     if (transaction.amount === 0 || transaction.amount === null) {
@@ -79,13 +79,13 @@ const SendModal = () => {
       return true;
     }
 
-    // Find the specific asset ID that corresponds to the abstracted asset ID
-    const sellAbstractedAsset =
-      assets.abstractedAssets[transaction.abstractedAssetId];
-    if (!sellAbstractedAsset) return true;
+    // Find the specific asset ID that corresponds to the asset ID
+    const sellAsset =
+      assets.assets[transaction.assetId];
+    if (!sellAsset) return true;
 
-    // Loop through assets to make sure that user has assets within an abstracted asset
-    const totalBalance = sellAbstractedAsset.assetIds
+    // Loop through assets to make sure that user has assets within an asset
+    const totalBalance = sellAsset.assetIds
       .map((assetId) => assets.assets[assetId])
       .reduce((acc, val) => acc + val.balance * val.exchangeRateUSD, 0);
     // Now check the balance using the specific asset ID

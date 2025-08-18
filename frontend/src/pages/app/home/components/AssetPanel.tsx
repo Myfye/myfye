@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { AbstractedAsset } from "@/features/assets/types";
+import { Asset } from "@/features/assets/types";
 import Balance from "@/shared/components/ui/balance/Balance";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
 
@@ -8,7 +8,7 @@ const AssetPanel = ({
   assets,
 }: {
   balance: number;
-  assets: AbstractedAsset[];
+  assets: Asset[];
 }) => (
   <div
     className="panel-inner"

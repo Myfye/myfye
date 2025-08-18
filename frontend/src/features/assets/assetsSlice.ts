@@ -1,5 +1,5 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { AbstractedAsset, Asset, AssetGroup, AssetsState } from "./types";
+import { Asset, AssetGroup, AssetsState } from "./types";
 import { RootState } from "@/redux/store";
 import { getAssetsBalanceUSDByGroup, getAssetsByGroup } from "./utils";
 
@@ -83,75 +83,6 @@ import SPYIcon from "@/assets/icons/assets/stocks/S&P.png";
 
 const initialState: AssetsState = {
   assetIds: [
-    //SPY, Tesla, Coin, Hood, and Apple
-    // Stocks
-    "AAPL_sol",
-    //"MSFT_sol",
-    //"AMZN_sol",
-    //"GOOGL_sol",
-    "NVDA_sol",
-    "TSLA_sol",
-    //"NFLX_sol",
-    //"KO_sol",
-    //"WMT_sol",
-    //"JPM_sol",
-    "SPY_sol",
-    //"LLY_sol",
-    //"AVGO_sol",
-    //"JNJ_sol",
-    //"V_sol",
-    //"UNH_sol",
-    //"XOM_sol",
-    //"MA_sol",
-    //"PG_sol",
-    //"HD_sol",
-    //"CVX_sol",
-    //"MRK_sol",
-    //"PFE_sol",
-    //"ABT_sol",
-    //"ABBV_sol",
-    //"ACN_sol",
-    //"AZN_sol",
-    //"BAC_sol",
-    //"BRK.B_sol",
-    //"CSCO_sol",
-    "COIN_sol",
-    //"CMCSA_sol",
-    //"CRWD_sol",
-    //"DHR_sol",
-    //"GS_sol",
-    //"HON_sol",
-    //"IBM_sol",
-    //"INTC_sol",
-    //"LIN_sol",
-    //"MRVL_sol",
-    //"MCD_sol",
-    //"MDT_sol",
-    //"NDAQ_sol",
-    //"NVO_sol",
-    //"ORCL_sol",
-    //"PLTR_sol",
-    //"PM_sol",
-    //"HOOD_sol",
-    //"CRM_sol",
-    //"TMO_sol",
-    //"MSTR_sol",
-    //"GME_sol",
-    // Crypto
-    "btc_sol",
-    "sol",
-    "xrp_sol",
-    "doge_sol",
-    "sui_sol",
-    // Cash
-    "usdt_sol",
-    "usdc_sol",
-    "usdc_base",
-    "eurc_sol",
-    // Earn
-    "usdy_sol",
-  ],
-  abstractedAssetIds: [
     // Stocks
     "AAPL",
     //"MSFT",
@@ -206,27 +137,29 @@ const initialState: AssetsState = {
     //"MSTR",
     //"GME",
     // Crypto
-    "btc",
-    "sol",
-    "xrp",
-    "doge",
-    "sui",
+    "BTC",
+    "SOL",
+    "XRP",
+    "DOGE",
+    "SUI",
     // Cash
-    "us_dollar",
-    "euro",
+    "USD",
+    "EUR",
     // Earn
-    "us_dollar_yield",
+    "USDY",
   ],
   groupIds: ["stocks", "earn", "cash", "crypto"],
   dashboardIds: ["stocks", "cash", "crypto"],
   assets: {
     // Stocks
-    AAPL_sol: {
-      id: "AAPL_sol",
+    AAPL: {
+      id: "AAPL",
       label: "Apple, Inc.",
       symbol: "AAPL",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
-      abstractedAssetId: "AAPL",
       dashboardId: "stocks",
       groupId: "stocks",
       balance: 0,
@@ -239,12 +172,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    /*
-    "AMZN_sol": {
-      id: "AMZN_sol",
+    "AMZN": {
+      id: "AMZN",
       label: "Amazon.com Inc.",
       symbol: "AMZN",
-      abstractedAssetId: "AMZN",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xs3eBt7uRfJX8QUs4suhyU8p2M6DoUDrJyWBa8LLZsg",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -258,11 +192,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "GOOGL_sol": {
-      id: "GOOGL_sol",
+    "GOOGL": {
+      id: "GOOGL",
       label: "Alphabet Inc.",
       symbol: "GOOGL",
-      abstractedAssetId: "GOOGL",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -276,15 +212,16 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    */
-    NVDA_sol: {
-      id: "NVDA_sol",
+    NVDA: {
+      id: "NVDA",
       label: "NVIDIA Corporation",
       symbol: "NVDA",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
-      abstractedAssetId: "NVDA",
       balance: 0,
       exchangeRateUSD: 0,
       icon: {
@@ -295,11 +232,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    TSLA_sol: {
-      id: "TSLA_sol",
+    TSLA: {
+      id: "TSLA",
       label: "Tesla, Inc.",
       symbol: "TSLA",
-      abstractedAssetId: "TSLA",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -313,11 +252,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    SPY_sol: {
-      id: "SPY_sol",
+    SPY: {
+      id: "SPY",
       label: "S&P 500 ETF",
       symbol: "SPY",
-      abstractedAssetId: "SPY",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -331,15 +272,16 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    /*
-    "MSFT_sol": {
-      id: "MSFT_sol",
+    "MSFT": {
+      id: "MSFT",
       label: "Microsoft Corporation",
       symbol: "MSFT",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XspzcW1PRtgf6Wj92HCiZdjzKCyFekVD8P5Ueh3dRMX",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
-      abstractedAssetId: "MSFT",
       balance: 0,
       exchangeRateUSD: 0,
       icon: {
@@ -350,13 +292,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    */
-    /*
-    "NFLX_sol": {
-      id: "NFLX_sol",
+    "NFLX": {
+      id: "NFLX",
       label: "Netflix, Inc.",
       symbol: "NFLX",
-      abstractedAssetId: "NFLX",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsEH7wWfJJu2ZT3UCFeVfALnVA6CP5ur7Ee11KmzVpL",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       groupId: "stocks",
 
@@ -371,11 +313,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "KO_sol": {
-      id: "KO_sol",
+    "KO": {
+      id: "KO",
       label: "Coca-Cola Company",
       symbol: "KO",
-      abstractedAssetId: "KO",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsaBXg8dU5cPM6ehmVctMkVqoiRG2ZjMo1cyBJ3AykQ",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       groupId: "stocks",
       dashboardId: "stocks",
@@ -389,11 +333,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "WMT_sol": {
-      id: "WMT_sol",
+    "WMT": {
+      id: "WMT",
       label: "Walmart Inc.",
       symbol: "WMT",
-      abstractedAssetId: "WMT",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xs151QeqTCiuKtinzfRATnUESM2xTU6V9Wy8Vy538ci",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -407,11 +353,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "JPM_sol": {
-      id: "JPM_sol",
+    "JPM": {
+      id: "JPM",
       label: "JPMorgan Chase & Co.",
       symbol: "JPM",
-      abstractedAssetId: "JPM",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsMAqkcKsUewDrzVkait4e5u4y8REgtyS7jWgCpLV2C",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -425,13 +373,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    */
-    /*
-    "LLY_sol": {
-      id: "LLY_sol",
+    "LLY": {
+      id: "LLY",
       label: "Eli Lilly and Company",
       symbol: "LLY",
-      abstractedAssetId: "LLY",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xsnuv4omNoHozR6EEW5mXkw8Nrny5rB3jVfLqi6gKMH",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -445,11 +393,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "AVGO_sol": {
-      id: "AVGO_sol",
+    "AVGO": {
+      id: "AVGO",
       label: "Broadcom Inc.",
       symbol: "AVGO",
-      abstractedAssetId: "AVGO",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsgSaSvNSqLTtFuyWPBhK9196Xb9Bbdyjj4fH3cPJGo",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -463,11 +413,11 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "JNJ_sol": {
-      id: "JNJ_sol",
+    "JNJ": {
+      id: "JNJ",
       label: "Johnson & Johnson",
       symbol: "JNJ",
-      abstractedAssetId: "JNJ",
+      mintAddress: "XsGVi5eo1Dh2zUpic4qACcjuWGjNv8GCt3dm5XcX6Dn",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -481,11 +431,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "V_sol": {
-      id: "V_sol",
+    "V": {
+      id: "V",
       label: "Visa Inc.",
       symbol: "V",
-      abstractedAssetId: "V",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsqgsbXwWogGJsNcVZ3TyVouy2MbTkfCFhCGGGcQZ2p",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -499,11 +451,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "UNH_sol": {
-      id: "UNH_sol",
+    "UNH": {
+      id: "UNH",
       label: "UnitedHealth Group Incorporated",
       symbol: "UNH",
-      abstractedAssetId: "UNH",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XszvaiXGPwvk2nwb3o9C1CX4K6zH8sez11E6uyup6fe",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -517,11 +471,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "XOM_sol": {
-      id: "XOM_sol",
+    "XOM": {
+      id: "XOM",
       label: "Exxon Mobil Corporation",
       symbol: "XOM",
-      abstractedAssetId: "XOM",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsaHND8sHyfMfsWPj6kSdd5VwvCayZvjYgKmmcNL5qh",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -535,11 +491,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MA_sol": {
-      id: "MA_sol",
+    "MA": {
+      id: "MA",
       label: "Mastercard Incorporated",
       symbol: "MA",
-      abstractedAssetId: "MA",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsApJFV9MAktqnAc6jqzsHVujxkGm9xcSUffaBoYLKC",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -553,11 +511,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "PG_sol": {
-      id: "PG_sol",
+    "PG": {
+      id: "PG",
       label: "The Procter & Gamble Company",
       symbol: "PG",
-      abstractedAssetId: "PG",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsYdjDjNUygZ7yGKfQaB6TxLh2gC6RRjzLtLAGJrhzV",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -571,11 +531,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "HD_sol": {
-      id: "HD_sol",
+    "HD": {
+      id: "HD",
       label: "The Home Depot, Inc.",
       symbol: "HD",
-      abstractedAssetId: "HD",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XszjVtyhowGjSC5odCqBpW1CtXXwXjYokymrk7fGKD3",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -589,11 +551,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CVX_sol": {
-      id: "CVX_sol",
+    "CVX": {
+      id: "CVX",
       label: "Chevron Corporation",
       symbol: "CVX",
-      abstractedAssetId: "CVX",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsNNMt7WTNA2sV3jrb1NNfNgapxRF5i4i6GcnTRRHts",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -607,11 +571,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MRK_sol": {
-      id: "MRK_sol",
+    "MRK": {
+      id: "MRK",
       label: "Merck & Co., Inc.",
       symbol: "MRK",
-      abstractedAssetId: "MRK",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsnQnU7AdbRZYe2akqqpibDdXjkieGFfSkbkjX1Sd1X",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -625,11 +591,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "PFE_sol": {
-      id: "PFE_sol",
+    "PFE": {
+      id: "PFE",
       label: "Pfizer Inc.",
       symbol: "PFE",
-      abstractedAssetId: "PFE",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsAtbqkAP1HJxy7hFDeq7ok6yM43DQ9mQ1Rh861X8rw",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -643,11 +611,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "ABT_sol": {
-      id: "ABT_sol",
+    "ABT": {
+      id: "ABT",
       label: "Abbott Laboratories",
       symbol: "ABT",
-      abstractedAssetId: "ABT",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsHtf5RpxsQ7jeJ9ivNewouZKJHbPxhPoEy6yYvULr7",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -661,11 +631,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "ABBV_sol": {
-      id: "ABBV_sol",
+    "ABBV": {
+      id: "ABBV",
       label: "AbbVie Inc.",
       symbol: "ABBV",
-      abstractedAssetId: "ABBV",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XswbinNKyPmzTa5CskMbCPvMW6G5CMnZXZEeQSSQoie",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -679,11 +651,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "ACN_sol": {
-      id: "ACN_sol",
+    "ACN": {
+      id: "ACN",
       label: "Accenture plc",
       symbol: "ACN",
-      abstractedAssetId: "ACN",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xs5UJzmCRQ8DWZjskExdSQDnbE6iLkRu2jjrRAB1JSU",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -697,11 +671,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "AZN_sol": {
-      id: "AZN_sol",
+    "AZN": {
+      id: "AZN",
       label: "AstraZeneca PLC",
       symbol: "AZN",
-      abstractedAssetId: "AZN",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xs3ZFkPYT2BN7qBMqf1j1bfTeTm1rFzEFSsQ1z3wAKU",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -715,11 +691,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "BAC_sol": {
-      id: "BAC_sol",
+    "BAC": {
+      id: "BAC",
       label: "Bank of America Corporation",
       symbol: "BAC",
-      abstractedAssetId: "BAC",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XswsQk4duEQmCbGzfqUUWYmi7pV7xpJ9eEmLHXCaEQP",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -733,11 +711,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "BRK.B_sol": {
-      id: "BRK.B_sol",
+    "BRK.B": {
+      id: "BRK.B",
       label: "Berkshire Hathaway Inc.",
       symbol: "BRK.B",
-      abstractedAssetId: "BRK.B",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xs6B6zawENwAbWVi7w92rjazLuAr5Az59qgWKcNb45x",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -751,11 +731,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CSCO_sol": {
-      id: "CSCO_sol",
+    "CSCO": {
+      id: "CSCO",
       label: "Cisco Systems, Inc.",
       symbol: "CSCO",
-      abstractedAssetId: "CSCO",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xsr3pdLQyXvDJBFgpR5nexCEZwXvigb8wbPYp4YoNFf",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -769,12 +751,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    */
-    COIN_sol: {
-      id: "COIN_sol",
+    COIN: {
+      id: "COIN",
       label: "Coinbase Global, Inc.",
       symbol: "COIN",
-      abstractedAssetId: "COIN",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -788,12 +771,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    /*
-    "CMCSA_sol": {
-      id: "CMCSA_sol",
+    "CMCSA": {
+      id: "CMCSA",
       label: "Comcast Corporation",
       symbol: "CMCSA",
-      abstractedAssetId: "CMCSA",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsvKCaNsxg2GN8jjUmq71qukMJr7Q1c5R2Mk9P8kcS8",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -807,11 +791,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CRWD_sol": {
-      id: "CRWD_sol",
+    "CRWD": {
+      id: "CRWD",
       label: "CrowdStrike Holdings, Inc.",
       symbol: "CRWD",
-      abstractedAssetId: "CRWD",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xs7xXqkcK7K8urEqGg52SECi79dRp2cEKKuYjUePYDw",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -825,11 +811,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "DHR_sol": {
-      id: "DHR_sol",
+    "DHR": {
+      id: "DHR",
       label: "Danaher Corporation",
       symbol: "DHR",
-      abstractedAssetId: "DHR",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xseo8tgCZfkHxWS9xbFYeKFyMSbWEvZGFV1Gh53GtCV",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -843,11 +831,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "GS_sol": {
-      id: "GS_sol",
+    "GS": {
+      id: "GS",
       label: "The Goldman Sachs Group, Inc.",
       symbol: "GS",
-      abstractedAssetId: "GS",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsgaUyp4jd1fNBCxgtTKkW64xnnhQcvgaxzsbAq5ZD1",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -861,11 +851,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "HON_sol": {
-      id: "HON_sol",
+    "HON": {
+      id: "HON",
       label: "Honeywell International Inc.",
       symbol: "HON",
-      abstractedAssetId: "HON",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsRbLZthfABAPAfumWNEJhPyiKDW6TvDVeAeW7oKqA2",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -879,11 +871,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "IBM_sol": {
-      id: "IBM_sol",
+    "IBM": {
+      id: "IBM",
       label: "International Business Machines Corporation",
       symbol: "IBM",
-      abstractedAssetId: "IBM",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XspwhyYPdWVM8XBHZnpS9hgyag9MKjLRyE3tVfmCbSr",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -897,11 +891,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "INTC_sol": {
-      id: "INTC_sol",
+    "INTC": {
+      id: "INTC",
       label: "Intel Corporation",
       symbol: "INTC",
-      abstractedAssetId: "INTC",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XshPgPdXFRWB8tP1j82rebb2Q9rPgGX37RuqzohmArM",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -915,11 +911,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "LIN_sol": {
-      id: "LIN_sol",
+    "LIN": {
+      id: "LIN",
       label: "Linde plc",
       symbol: "LIN",
-      abstractedAssetId: "LIN",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsSr8anD1hkvNMu8XQiVcmiaTP7XGvYu7Q58LdmtE8Z",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -933,11 +931,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MRVL_sol": {
-      id: "MRVL_sol",
+    "MRVL": {
+      id: "MRVL",
       label: "Marvell Technology, Inc.",
       symbol: "MRVL",
-      abstractedAssetId: "MRVL",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsuxRGDzbLjnJ72v74b7p9VY6N66uYgTCyfwwRjVCJA",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -951,11 +951,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MCD_sol": {
-      id: "MCD_sol",
+    "MCD": {
+      id: "MCD",
       label: "McDonald's Corporation",
       symbol: "MCD",
-      abstractedAssetId: "MCD",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsqE9cRRpzxcGKDXj1BJ7Xmg4GRhZoyY1KpmGSxAWT2",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -969,11 +971,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MDT_sol": {
-      id: "MDT_sol",
+    "MDT": {
+      id: "MDT",
       label: "Medtronic plc",
       symbol: "MDT",
-      abstractedAssetId: "MDT",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsDgw22qRLTv5Uwuzn6T63cW69exG41T6gwQhEK22u2",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -987,11 +991,12 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "NDAQ_sol": {
-      id: "NDAQ_sol",
+    "NDAQ": {
+      id: "NDAQ",
       label: "Nasdaq, Inc.",
       symbol: "NDAQ",
-      abstractedAssetId: "NDAQ",
+      mintAddress: "XsnQnU7AdbRZYe2akqqpibDdXjkieGFfSkbkjX1Sd1X",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1005,11 +1010,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "NVO_sol": {
-      id: "NVO_sol",
+    "NVO": {
+      id: "NVO",
       label: "Novo Nordisk A/S",
       symbol: "NVO",
-      abstractedAssetId: "NVO",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsfAzPzYrYjd4Dpa9BU3cusBsvWfVB9gBcyGC87S57n",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1023,11 +1030,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "ORCL_sol": {
-      id: "ORCL_sol",
+    "ORCL": {
+      id: "ORCL",
       label: "Oracle Corporation",
       symbol: "ORCL",
-      abstractedAssetId: "ORCL",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsjFwUPiLofddX5cWFHW35GCbXcSu1BCUGfxoQAQjeL",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1041,11 +1050,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "PLTR_sol": {
-      id: "PLTR_sol",
+    "PLTR": {
+      id: "PLTR",
       label: "Palantir Technologies Inc.",
       symbol: "PLTR",
-      abstractedAssetId: "PLTR",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsoBhf2ufR8fTyNSjqfU71DYGaE6Z3SUGAidpzriAA4",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1059,11 +1070,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "PM_sol": {
-      id: "PM_sol",
+    "PM": {
+      id: "PM",
       label: "Philip Morris International Inc.",
       symbol: "PM",
-      abstractedAssetId: "PM",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xsba6tUnSjDae2VcopDB6FGGDaxRrewFCDa5hKn5vT3",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1077,11 +1090,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "HOOD_sol": {
-      id: "HOOD_sol",
+    "HOOD": {
+      id: "HOOD",
       label: "Robinhood Markets, Inc.",
       symbol: "HOOD",
-      abstractedAssetId: "HOOD",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsvNBAYkrDRNhA7wPHQfX3ZUXZyZLdnCQDfHZ56bzpg",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1095,11 +1110,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CRM_sol": {
-      id: "CRM_sol",
+    "CRM": {
+      id: "CRM",
       label: "Salesforce, Inc.",
       symbol: "CRM",
-      abstractedAssetId: "CRM",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsczbcQ3zfcgAEt9qHQES8pxKAVG5rujPSHQEXi4kaN",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1113,11 +1130,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "TMO_sol": {
-      id: "TMO_sol",
+    "TMO": {
+      id: "TMO",
       label: "Thermo Fisher Scientific Inc.",
       symbol: "TMO",
-      abstractedAssetId: "TMO",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xs8drBWy3Sd5QY3aifG9kt9KFs2K3PGZmx7jWrsrk57",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1131,13 +1150,14 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MSTR_sol": {
-      id: "MSTR_sol",
+    "MSTR": {
+      id: "MSTR",
       label: "MicroStrategy, Inc.",
       symbol: "MSTR",
-      abstractedAssetId: "MSTR",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "XsP7xzNPvEHS1m6qfanPUGjNmdnmsLKEoNAnHjdxxyZ",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       fiatCurrency: "usd",
-
       dashboardId: "stocks",
       groupId: "stocks",
       balance: 0,
@@ -1150,11 +1170,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "GME_sol": {
-      id: "GME_sol",
+    "GME": {
+      id: "GME",
       label: "GameStop Corp. Class A, Inc.",
       symbol: "GME",
-      abstractedAssetId: "GME",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "Xsf9mBktVB9BSU5kf4nHxPq5hCBJ2j2ui3ecFGxPRGc",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -1168,13 +1190,14 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    */
     // Crypto
-    btc_sol: {
-      id: "btc_sol",
+    BTC: {
+      id: "BTC",
       label: "Bitcoin",
-      abstractedAssetId: "btc",
-      symbol: "CBBTC",
+      symbol: "BTC",
+      color: "orange",
+      mintAddress: "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1188,11 +1211,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    sol: {
-      id: "sol",
+    SOL: {
+      id: "SOL",
       label: "Solana",
-      abstractedAssetId: "sol",
       symbol: "SOL",
+      color: "var(--clr-purple-400)",
+      mintAddress: "So11111111111111111111111111111111111111112",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1206,11 +1231,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    xrp_sol: {
-      id: "xrp_sol",
+    XRP: {
+      id: "XRP",
       label: "Ripple",
-      abstractedAssetId: "xrp",
       symbol: "XRP",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1224,11 +1251,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    doge_sol: {
-      id: "doge_sol",
+    DOGE: {
+      id: "DOGE",
       label: "Dogecoin",
-      abstractedAssetId: "doge",
       symbol: "DOGE",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1242,11 +1271,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    sui_sol: {
-      id: "sui_sol",
+    SUI: {
+      id: "SUI",
       label: "Sui",
-      abstractedAssetId: "sui",
       symbol: "SUI",
+      color: "var(--clr-surface-lowered)",
+      mintAddress: "756wWVqA9tpZpxqNxCiJYSCGWi3gD2NXfwKHh4YsYJg9",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1262,72 +1293,40 @@ const initialState: AssetsState = {
     },
 
     // Cash
-    usdt_sol: {
-      id: "usdt_sol",
-      label: "USDT",
-      abstractedAssetId: "us_dollar",
-      symbol: "USDT",
-      dashboardId: "cash",
-      fiatCurrency: "usd",
-      groupId: "cash",
-      balance: 0,
-      exchangeRateUSD: 1,
-      icon: {
-        content: usdcIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    usdc_sol: {
-      id: "usdc_sol",
-      label: "USDC",
-      abstractedAssetId: "us_dollar",
-      symbol: "USDC",
-      dashboardId: "cash",
-      fiatCurrency: "usd",
-      groupId: "cash",
-      balance: 0,
-      exchangeRateUSD: 1,
-      icon: {
-        content: usdcIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    usdc_base: {
-      id: "usdc_base",
+    USD: {
+      id: "USD",
       label: "US Dollar",
-      abstractedAssetId: "us_dollar",
-      symbol: "USDC",
+      symbol: "USD",
+      color: "var(--clr-green-400)",
+      mintAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       dashboardId: "cash",
       fiatCurrency: "usd",
       groupId: "cash",
       balance: 0,
       exchangeRateUSD: 1,
       icon: {
-        content: usdcIcon,
+        content: usDollarIcon,
         type: "svg",
       },
       overlay: {
         isOpen: false,
       },
     },
-    eurc_sol: {
-      id: "eurc_sol",
-      label: "EURC",
-      abstractedAssetId: "euro",
-      symbol: "EURC",
+    EUR: {
+      id: "EUR",
+      label: "Euro",
+      symbol: "EUR",
+      color: "var(--clr-blue-400)",
+      mintAddress: "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       dashboardId: "cash",
       fiatCurrency: "eur",
       groupId: "cash",
       balance: 0,
       exchangeRateUSD: 0,
       icon: {
-        content: eurcIcon,
+        content: euroIcon,
         type: "svg",
       },
       overlay: {
@@ -1335,11 +1334,13 @@ const initialState: AssetsState = {
       },
     },
     // Earn
-    usdy_sol: {
-      id: "usdy_sol",
+    USDY: {
+      id: "USDY",
       label: "US Dollar Yield",
-      abstractedAssetId: "us_dollar_yield",
       symbol: "USDY",
+      color: "var(--clr-purple-400)",
+      mintAddress: "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       dashboardId: "cash",
       fiatCurrency: "usd",
       groupId: "earn",
@@ -1380,1051 +1381,17 @@ const initialState: AssetsState = {
       overlay: { isOpen: false },
     },
   },
-  abstractedAssets: {
-    // Stocks
-    AAPL: {
-      id: "AAPL",
-      assetIds: ["AAPL_sol"],
-      label: "Apple, Inc.",
-      symbol: "AAPL",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      dashboardId: "stocks",
-      groupId: "stocks",
-      icon: {
-        content: AAPLIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    /*
-    MSFT: {
-      id: "MSFT",
-      assetIds: ["MSFT_sol"],
-      label: "Microsoft Corporation",
-      symbol: "MSFT",
-      color: "var(--clr-surface-lowered)",
-      dashboardId: "stocks",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      icon: {
-        content: MSFTIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    */
-    /*
-    AMZN: {
-      id: "AMZN",
-      assetIds: ["AMZN_sol"],
-      label: "Amazon.com, Inc.",
-      symbol: "AMZN",
-      fiatCurrency: "usd",
-      color: "var(--clr-surface-lowered)",
-
-      dashboardId: "stocks",
-      groupId: "stocks",
-      icon: {
-        content: AMZNIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    GOOGL: {
-      id: "GOOGL",
-      assetIds: ["GOOGL_sol"],
-      label: "Alphabet, inc.",
-      symbol: "GOOGL",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: GOOGLIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    */
-    NVDA: {
-      id: "NVDA",
-      assetIds: ["NVDA_sol"],
-      label: "NVIDIA Corporation",
-      symbol: "NVDA",
-      color: "var(--clr-surface-lowered)",
-      dashboardId: "stocks",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      icon: {
-        content: NvidiaIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    TSLA: {
-      id: "TSLA",
-      assetIds: ["TSLA_sol"],
-      label: "Tesla, Inc.",
-      symbol: "TSLA",
-      dashboardId: "stocks",
-      fiatCurrency: "usd",
-      color: "var(--clr-surface-lowered)",
-      groupId: "stocks",
-      icon: {
-        content: TSLAIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    /*
-    NFLX: {
-      id: "NFLX",
-      assetIds: ["NFLX_sol"],
-      label: "Netflix, Inc.",
-      symbol: "NFLX",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: NFLXIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    KO: {
-      id: "KO",
-      assetIds: ["KO_sol"],
-      label: "Coca-Cola Company",
-      symbol: "KO",
-      fiatCurrency: "usd",
-      color: "var(--clr-surface-lowered)",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: KOIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    JPM: {
-      id: "JPM",
-      assetIds: ["JPM_sol"],
-      label: "JPMorgan Chase & Co.",
-      symbol: "JPM",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: ChaseIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    WMT: {
-      id: "WMT",
-      assetIds: ["WMT_sol"],
-      label: "Walmart Inc.",
-      symbol: "WMT",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: WalmartIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    */
-    SPY: {
-      id: "SPY",
-      assetIds: ["SPY_sol"],
-      label: "S&P 500",
-      symbol: "SPY",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: SPYIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    /*
-    LLY: {
-      id: "LLY",
-      assetIds: ["LLY_sol"],
-      label: "Eli Lilly and Company",
-      symbol: "LLY",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: EliLillyIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    AVGO: {
-      id: "AVGO",
-      assetIds: ["AVGO_sol"],
-      label: "Broadcom Inc.",
-      symbol: "AVGO",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: BroadcomIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    JNJ: {
-      id: "JNJ",
-      assetIds: ["JNJ_sol"],
-      label: "Johnson & Johnson",
-      symbol: "JNJ",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: JohnsonJohnsonIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    V: {
-      id: "V",
-      assetIds: ["V_sol"],
-      label: "Visa Inc.",
-      symbol: "V",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: VisaIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    UNH: {
-      id: "UNH",
-      assetIds: ["UNH_sol"],
-      label: "UnitedHealth Group Incorporated",
-      symbol: "UNH",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: UnitedHealthIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    XOM: {
-      id: "XOM",
-      assetIds: ["XOM_sol"],
-      label: "Exxon Mobil Corporation",
-      symbol: "XOM",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: ExxonMobilIcon,
-        type: "png",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    MA: {
-      id: "MA",
-      assetIds: ["MA_sol"],
-      label: "Mastercard Incorporated",
-      symbol: "MA",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: MastercardIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    PG: {
-      id: "PG",
-      assetIds: ["PG_sol"],
-      label: "The Procter & Gamble Company",
-      symbol: "PG",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: ProcterGambleIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    HD: {
-      id: "HD",
-      assetIds: ["HD_sol"],
-      label: "The Home Depot, Inc.",
-      symbol: "HD",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: HomeDepotIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    CVX: {
-      id: "CVX",
-      assetIds: ["CVX_sol"],
-      label: "Chevron Corporation",
-      symbol: "CVX",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: ChevronIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    MRK: {
-      id: "MRK",
-      assetIds: ["MRK_sol"],
-      label: "Merck & Co., Inc.",
-      symbol: "MRK",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: MerckIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    PFE: {
-      id: "PFE",
-      assetIds: ["PFE_sol"],
-      label: "Pfizer Inc.",
-      symbol: "PFE",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: PfizerIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    ABT: {
-      id: "ABT",
-      assetIds: ["ABT_sol"],
-      label: "Abbott Laboratories",
-      symbol: "ABT",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: AbbottIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    ABBV: {
-      id: "ABBV",
-      assetIds: ["ABBV_sol"],
-      label: "AbbVie Inc.",
-      symbol: "ABBV",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: AbbVieIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    ACN: {
-      id: "ACN",
-      assetIds: ["ACN_sol"],
-      label: "Accenture plc",
-      symbol: "ACN",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: AccentureIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    AZN: {
-      id: "AZN",
-      assetIds: ["AZN_sol"],
-      label: "AstraZeneca PLC",
-      symbol: "AZN",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: AstraZenecaIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    BAC: {
-      id: "BAC",
-      assetIds: ["BAC_sol"],
-      label: "Bank of America Corporation",
-      symbol: "BAC",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: BankOfAmericaIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    "BRK.B": {
-      id: "BRK.B",
-      assetIds: ["BRK.B_sol"],
-      label: "Berkshire Hathaway Inc.",
-      symbol: "BRK.B",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: BerkshireHathawayIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    CSCO: {
-      id: "CSCO",
-      assetIds: ["CSCO_sol"],
-      label: "Cisco Systems, Inc.",
-      symbol: "CSCO",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: CiscoIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    */
-    COIN: {
-      id: "COIN",
-      assetIds: ["COIN_sol"],
-      label: "Coinbase Global, Inc.",
-      symbol: "COIN",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: CoinbaseIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    /*
-    CMCSA: {
-      id: "CMCSA",
-      assetIds: ["CMCSA_sol"],
-      label: "Comcast Corporation",
-      symbol: "CMCSA",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: ComcastIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    CRWD: {
-      id: "CRWD",
-      assetIds: ["CRWD_sol"],
-      label: "CrowdStrike Holdings, Inc.",
-      symbol: "CRWD",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: CorwdStrikeIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    DHR: {
-      id: "DHR",
-      assetIds: ["DHR_sol"],
-      label: "Danaher Corporation",
-      symbol: "DHR",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: DanaherIcon,
-        type: "png",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    GS: {
-      id: "GS",
-      assetIds: ["GS_sol"],
-      label: "The Goldman Sachs Group, Inc.",
-      symbol: "GS",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: GoldmanSachsIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    HON: {
-      id: "HON",
-      assetIds: ["HON_sol"],
-      label: "Honeywell International Inc.",
-      symbol: "HON",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: HoneywellIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    IBM: {
-      id: "IBM",
-      assetIds: ["IBM_sol"],
-      label: "International Business Machines Corporation",
-      symbol: "IBM",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: IBMIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    INTC: {
-      id: "INTC",
-      assetIds: ["INTC_sol"],
-      label: "Intel Corporation",
-      symbol: "INTC",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: IntelIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    LIN: {
-      id: "LIN",
-      assetIds: ["LIN_sol"],
-      label: "Linde plc",
-      symbol: "LIN",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: LindeIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    MRVL: {
-      id: "MRVL",
-      assetIds: ["MRVL_sol"],
-      label: "Marvell Technology, Inc.",
-      symbol: "MRVL",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: MarvellIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    MCD: {
-      id: "MCD",
-      assetIds: ["MCD_sol"],
-      label: "McDonald's Corporation",
-      symbol: "MCD",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: McDonaldsIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    MDT: {
-      id: "MDT",
-      assetIds: ["MDT_sol"],
-      label: "Medtronic plc",
-      symbol: "MDT",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: MedtronicIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    NDAQ: {
-      id: "NDAQ",
-      assetIds: ["NDAQ_sol"],
-      label: "Nasdaq, Inc.",
-      symbol: "NDAQ",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: NasdaqIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    NVO: {
-      id: "NVO",
-      assetIds: ["NVO_sol"],
-      label: "Novo Nordisk A/S",
-      symbol: "NVO",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: NovoNordiskIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    ORCL: {
-      id: "ORCL",
-      assetIds: ["ORCL_sol"],
-      label: "Oracle Corporation",
-      symbol: "ORCL",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: OracleIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    PLTR: {
-      id: "PLTR",
-      assetIds: ["PLTR_sol"],
-      label: "Palantir Technologies Inc.",
-      symbol: "PLTR",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: PalantirIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    PM: {
-      id: "PM",
-      assetIds: ["PM_sol"],
-      label: "Philip Morris International Inc.",
-      symbol: "PM",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: PhilipMorrisIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    HOOD: {
-      id: "HOOD",
-      assetIds: ["HOOD_sol"],
-      label: "Robinhood Markets, Inc.",
-      symbol: "HOOD",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: RobinhoodIcon,
-        type: "png",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    CRM: {
-      id: "CRM",
-      assetIds: ["CRM_sol"],
-      label: "Salesforce, Inc.",
-      symbol: "CRM",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: SalesforceIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    TMO: {
-      id: "TMO",
-      assetIds: ["TMO_sol"],
-      label: "Thermo Fisher Scientific Inc.",
-      symbol: "TMO",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      dashboardId: "stocks",
-      icon: {
-        content: ThermoFisherIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-
-    MSTR: {
-      id: "MSTR",
-      assetIds: ["MSTR_sol"],
-      label: "MicroStrategy, Inc.",
-      symbol: "MSTR",
-      color: "var(--clr-surface-lowered)",
-      fiatCurrency: "usd",
-
-      dashboardId: "stocks",
-      groupId: "stocks",
-      icon: {
-        content: MSTRIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    GME: {
-      id: "GME",
-      assetIds: ["GME_sol"],
-      label: "GameStop Corp. Class A, Inc.",
-      symbol: "GME",
-      dashboardId: "stocks",
-      fiatCurrency: "usd",
-      groupId: "stocks",
-      color: "var(--clr-surface-lowered)",
-      icon: {
-        content: GMEIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    */
-    us_dollar: {
-      id: "us_dollar",
-      label: "US Dollar",
-      symbol: "USD",
-      dashboardId: "cash",
-      fiatCurrency: "usd",
-      groupId: "cash",
-      color: "var(--clr-green-400)",
-      assetIds: ["usdc_sol", "usdt_sol", "usdc_base"],
-      icon: {
-        content: usDollarIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    us_dollar_yield: {
-      id: "us_dollar_yield",
-      label: "US Dollar Yield",
-      assetIds: ["usdy_sol"],
-      symbol: "USD",
-      dashboardId: "cash",
-      fiatCurrency: "usd",
-      groupId: "earn",
-      color: "var(--clr-purple-400)",
-      icon: {
-        content: usDollarYieldIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    euro: {
-      id: "euro",
-      label: "Euro",
-      assetIds: ["eurc_sol"],
-      symbol: "EUR",
-      dashboardId: "cash",
-      fiatCurrency: "eur",
-      groupId: "cash",
-      color: "var(--clr-blue-400)",
-      icon: {
-        content: euroIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    sol: {
-      id: "sol",
-      label: "Solana",
-      assetIds: ["sol"],
-      symbol: "SOL",
-      dashboardId: "crypto",
-      fiatCurrency: "usd",
-      groupId: "crypto",
-      color: "var(--clr-purple-400)",
-      icon: {
-        content: solIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    btc: {
-      id: "btc",
-      label: "Bitcoin",
-      assetIds: ["btc_sol"],
-      symbol: "BTC",
-      dashboardId: "crypto",
-      fiatCurrency: "usd",
-      groupId: "crypto",
-      color: "orange",
-      icon: {
-        content: btcIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    xrp: {
-      id: "xrp",
-      label: "Ripple",
-      assetIds: ["xrp_sol"],
-      symbol: "XRP",
-      dashboardId: "crypto",
-      fiatCurrency: "usd",
-      groupId: "crypto",
-      color: "var(--clr-surface-lowered)",
-      icon: {
-        content: xrpIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    doge: {
-      id: "doge",
-      label: "Dogecoin",
-      assetIds: ["doge_sol"],
-      symbol: "DOGE",
-      dashboardId: "crypto",
-      fiatCurrency: "usd",
-      groupId: "crypto",
-      color: "var(--clr-surface-lowered)",
-      icon: {
-        content: dogeIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-    sui: {
-      id: "sui",
-      label: "Sui",
-      assetIds: ["sui_sol"],
-      symbol: "SUI",
-      dashboardId: "crypto",
-      fiatCurrency: "usd",
-      groupId: "crypto",
-      color: "var(--clr-surface-lowered)",
-      icon: {
-        content: suiIcon,
-        type: "svg",
-      },
-      overlay: {
-        isOpen: false,
-      },
-    },
-  },
 };
 
+/*
 export const selectAsset = (state: RootState, asset: string) =>
   state.assets.assets[asset];
+*/
 export const selectAssetId = (_: RootState, assetId: Asset["id"]) => assetId;
-export const selectAbstractedAsset = (
+export const selectAsset = (
   state: RootState,
-  abstractedAssetId: AbstractedAsset["id"]
-) => state.assets.abstractedAssets[abstractedAssetId];
+  assetId: Asset["id"]
+) => state.assets.assets[assetId];
 export const selectAssets = (state: RootState) => state.assets;
 export const selectAssetGroupId = (_: RootState, groupId: AssetGroup["id"]) =>
   groupId;
@@ -2432,10 +1399,12 @@ export const selectAssetDashboardId = (
   _: RootState,
   dashboardId: Asset["dashboardId"]
 ) => dashboardId;
-export const selectAbstractedAssetId = (
+/*
+export const selectAssetId = (
   _: RootState,
-  abstractedAssetId: Asset["abstractedAssetId"]
-) => abstractedAssetId;
+  assetId: Asset["assetId"]
+) => assetId;
+ */
 
 export const selectAssetsArray = createSelector([selectAssets], (assets) =>
   assets.assetIds.map((assetId) => assets.assets[assetId])
@@ -2526,40 +1495,17 @@ export const selectAssetsBalanceUSD = createSelector(
     return result;
   }
 );
-
-export const selectAbstractedAssetsWithBalance = createSelector(
+/*
+export const selectAssetsBalanceUSD = createSelector(
   [selectAssets],
   (assets) => {
     // find assets
-    const abstractedAssetsArr = assets.abstractedAssetIds.map((id) => {
-      return assets.abstractedAssets[id];
+    const assetsArr = assets.assetIds.map((id) => {
+      return assets.assets[id];
     });
-    return abstractedAssetsArr.map((abstractedAsset) => {
+    const balanceArr = assetsArr.map((asset) => {
       // get assets
-      const filteredAssets = abstractedAsset.assetIds.map(
-        (id) => assets.assets[id]
-      );
-      const balance = filteredAssets.reduce((acc, val) => acc + val.balance, 0);
-      let balanceUSD = filteredAssets.reduce(
-        (acc, val) => acc + val.balance * val.exchangeRateUSD,
-        0
-      );
-      balanceUSD = Math.floor(balanceUSD * 100) / 100;
-      return { ...abstractedAsset, balance, balanceUSD };
-    });
-  }
-);
-
-export const selectAbstractedAssetsBalanceUSD = createSelector(
-  [selectAssets],
-  (assets) => {
-    // find assets
-    const abstractedAssetsArr = assets.abstractedAssetIds.map((id) => {
-      return assets.abstractedAssets[id];
-    });
-    const balanceArr = abstractedAssetsArr.map((abstractedAsset) => {
-      // get assets
-      const mappedAssets = abstractedAsset.assetIds.map(
+      const mappedAssets = asset.assetIds.map(
         (id) => assets.assets[id]
       );
       const balance = mappedAssets.reduce(
@@ -2571,25 +1517,70 @@ export const selectAbstractedAssetsBalanceUSD = createSelector(
     return balanceArr.reduce((acc, val) => acc + val, 0);
   }
 );
+*/
 
-export const selectAbstractedAssetWithBalance = createSelector(
-  [selectAbstractedAssetsWithBalance, selectAbstractedAssetId],
-  (abstractedAssetsWithBalance, abstractedAssetId) => {
+/*
+export const selectAssetsWithBalance = createSelector(
+  [selectAssets],
+  (assets) => {
     // find assets
-    const [result] = abstractedAssetsWithBalance.filter(
-      (asset) => asset.id === abstractedAssetId
+    const assetsArr = assets.assetIds.map((id) => {
+      return assets.assets[id];
+    });
+    return assetsArr.map((asset) => {
+      // get assets
+      const filteredAssets = asset.assetIds.map(
+        (id) => assets.assets[id]
+      );
+      const balance = filteredAssets.reduce((acc, val) => acc + val.balance, 0);
+      let balanceUSD = filteredAssets.reduce(
+        (acc, val) => acc + val.balance * val.exchangeRateUSD,
+        0
+      );
+      balanceUSD = Math.floor(balanceUSD * 100) / 100;
+      return { ...asset, balance, balanceUSD };
+    });
+  }
+);
+*/
+
+
+export const selectAssetsWithBalance = createSelector(
+  [selectAssets],
+  (assets) => {
+    // find assets
+    const assetsArr = assets.assetIds.map((id) => {
+      return assets.assets[id];
+    });
+    return assetsArr.map((asset) => {
+      // Each asset has its own balance and exchange rate
+      const balance = asset.balance || 0;
+      let balanceUSD = balance * (asset.exchangeRateUSD || 0);
+      balanceUSD = Math.floor(balanceUSD * 100) / 100;
+      return { ...asset, balance, balanceUSD };
+    });
+  }
+);
+
+export const selectAssetWithBalance = createSelector(
+  [selectAssetsWithBalance, selectAssetId],
+  (assetsWithBalance, assetId) => {
+    // find assets
+    const [result] = assetsWithBalance.filter(
+      (asset) => asset.id === assetId
     );
     return result;
   }
 );
 
-export const selectAbstractedAssetBalanceUSD = createSelector(
-  [selectAssets, selectAbstractedAssetId],
+/*
+export const selectAssetBalanceUSD = createSelector(
+  [selectAssets, selectAssetId],
   (assets, assetId) => {
     // find assets
-    const abstractedAsset = assets.abstractedAssets[assetId];
+    const asset = assets.assets[assetId];
     // get assets
-    const mappedAssets = abstractedAsset.assetIds.map(
+    const mappedAssets = asset.assetIds.map(
       (id) => assets.assets[id]
     );
 
@@ -2600,30 +1591,36 @@ export const selectAbstractedAssetBalanceUSD = createSelector(
     return Math.floor(balance * 100) / 100;
   }
 );
+*/
 
-export const selectAbstractedAssetsWithBalanceByGroup = createSelector(
-  [selectAbstractedAssetsWithBalance, selectAssetGroupId],
-  (abstractedAssetsWithBalance, groupId) => {
+export const selectAssetBalanceUSD = createSelector(
+  [selectAsset],
+  (asset) => {
+    if (!asset) {
+      console.error(`selectAssetBalanceUSD - ERROR: assetId ${assetId} is not found in assets.assets`);
+    }
+    return Math.floor(asset.balance * asset.exchangeRateUSD * 100) / 100;
+  }
+);
+
+export const selectAssetsWithBalanceByGroup = createSelector(
+  [selectAssetsWithBalance, selectAssetGroupId],
+  (assetsWithBalance, groupId) => {
     // find assets
-    return abstractedAssetsWithBalance.filter(
+    return assetsWithBalance.filter(
       (asset) => asset.groupId === groupId
     );
   }
 );
 
-export const selectAbstractedAssetsWithBalanceByDashboard = createSelector(
-  [selectAbstractedAssetsWithBalance, selectAssetDashboardId],
-  (abstractedAssetsWithBalance, dashboardId) => {
+export const selectAssetsWithBalanceByDashboard = createSelector(
+  [selectAssetsWithBalance, selectAssetDashboardId],
+  (assetsWithBalance, dashboardId) => {
     // find assets
-    return abstractedAssetsWithBalance.filter(
+    return assetsWithBalance.filter(
       (asset) => asset.dashboardId === dashboardId
     );
   }
-);
-
-export const selectAssetBalanceUSD = createSelector(
-  [selectAsset],
-  (asset) => Math.floor(asset.balance * asset.exchangeRateUSD * 100) / 100
 );
 
 export const selectAssetBalance = createSelector(
@@ -2635,6 +1632,43 @@ export const selectAssetBalance = createSelector(
     return result.balance;
   }
 );
+
+// New selector to get asset ID from mint address
+export const selectAssetIdFromMintAddress = createSelector(
+  [selectAssets],
+  (assets) => (mintAddress: string) => {
+    const asset = Object.values(assets.assets).find(
+      (asset) => asset.mintAddress === mintAddress
+    );
+    return asset ? asset.id : null;
+  }
+);
+
+// New selector to get asset ticker/symbol from mint address
+export const selectAssetTickerFromMintAddress = createSelector(
+  [selectAssets],
+  (assets) => (mintAddress: string) => {
+    const asset = Object.values(assets.assets).find(
+      (asset) => asset.mintAddress === mintAddress
+    );
+    return asset ? asset.symbol : null;
+  }
+);
+
+// New selector to get mint address from asset ID
+export const selectMintAddress = createSelector(
+  [selectAssets],
+  (assets) => (assetId: string) => {
+    const asset = assets.assets[assetId];
+    return asset ? asset.mintAddress : null;
+  }
+);
+
+// Simple utility function to get mint address from asset ID (doesn't require Redux state)
+export const getMintAddress = (assetId: string): string | null => {
+  const asset = initialState.assets[assetId];
+  return asset ? asset.mintAddress : null;
+};
 
 export const assetsSlice = createSlice({
   name: "assets",

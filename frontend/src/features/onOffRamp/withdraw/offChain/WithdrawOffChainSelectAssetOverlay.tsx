@@ -1,8 +1,8 @@
 import store, { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectAbstractedAsset,
-  selectAbstractedAssetsWithBalanceByGroup,
+  selectAsset,
+  selectAssetsWithBalanceByGroup,
   selectAsset,
 } from "@/features/assets/assetsSlice";
 import SelectAssetOverlay from "@/features/assets/SelectAssetOverlay";
@@ -19,16 +19,16 @@ const WithdrawOffChainSelectAssetOverlay = ({ ...restProps }: OverlayProps) => {
   );
 
   const asset = useAppSelector((state) =>
-    state.withdrawOffChain.transaction.abstractedAssetId
-      ? selectAbstractedAsset(
+    state.withdrawOffChain.transaction.assetId
+      ? selectAsset(
           state,
-          state.withdrawOffChain.transaction.abstractedAssetId
+          state.withdrawOffChain.transaction.assetId
         )
       : null
   );
 
   const cashAssets = useAppSelector((state) =>
-    selectAbstractedAssetsWithBalanceByGroup(state, "cash")
+    selectAssetsWithBalanceByGroup(state, "cash")
   );
 
   return (
@@ -49,13 +49,13 @@ const WithdrawOffChainSelectAssetOverlay = ({ ...restProps }: OverlayProps) => {
           store.dispatch(updateAmountDisplay(assetId));
         }}
         // @ts-ignore
-        selectedAbstractedAssetId={asset?.id}
-        abstractedAssetSections={[
+        selectedAssetId={asset?.id}
+        assetSections={[
           // @ts-ignore
           {
             id: "cash",
             label: "",
-            abstractedAssets: cashAssets,
+            assets: cashAssets,
           },
         ]}
         assetCardListSelectOptions={{ showCurrencySymbol: true }}

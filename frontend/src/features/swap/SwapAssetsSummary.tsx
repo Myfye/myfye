@@ -4,22 +4,22 @@ import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { formatUsdAmount, getUsdAmount } from "./utils";
-import { AbstractedAsset, Asset } from "../assets/types";
-import { selectAbstractedAsset } from "../assets/assetsSlice";
+import { Asset } from "../assets/types";
+import { selectAsset } from "../assets/assetsSlice";
 
 const SwapAsset = ({
-  abstractedAssetId,
+  assetId,
   amount,
 }: {
-  abstractedAssetId: AbstractedAsset["id"] | null;
+  assetId: Asset["id"] | null;
   amount: number | null;
 }) => {
   const assets = useSelector((state: RootState) => state.assets);
 
-  const abstractedAsset = useSelector((state: RootState) =>
-    abstractedAssetId === null
+  const asset = useSelector((state: RootState) =>
+    assetId === null
       ? null
-      : selectAbstractedAsset(state, abstractedAssetId)
+      : selectAsset(state, amountssetId)
   );
 
   // let usdBalance = 0;
@@ -33,7 +33,7 @@ const SwapAsset = ({
   //   type = "usdc_sol";
   // }
 
-  const usdAmount = getUsdAmount(abstractedAssetId, assets, amount);
+  const usdAmount = getUsdAmount(assetId, assets, amount);
 
   const formattedUsdAmount = formatUsdAmount(usdAmount);
 
@@ -59,9 +59,9 @@ const SwapAsset = ({
             overflow: hidden;
           `}
         >
-          <img src={abstractedAsset?.icon.content} alt="" />
+          <img src={asset?.icon.content} alt="" />
         </div>
-        <p className="heading-small">{abstractedAsset?.label}</p>
+        <p className="heading-small">{asset?.label}</p>
       </div>
       <div
         css={css`
@@ -77,7 +77,7 @@ const SwapAsset = ({
             color: var(--clr-text-weaker);
           `}
         >
-          {amount} {abstractedAsset?.symbol}
+          {amount} {asset?.symbol}
         </p>
       </div>
     </div>
@@ -101,7 +101,7 @@ const SwapAssetsSummary = () => {
     >
       <section className="sell-coin">
         <SwapAsset
-          abstractedAssetId={transaction.sell.abstractedAssetId}
+          assetId={transaction.sell.assetId}
           amount={transaction.sell.amount}
         />
       </section>
@@ -115,7 +115,7 @@ const SwapAssetsSummary = () => {
       </section>
       <section className="buy-coin">
         <SwapAsset
-          abstractedAssetId={transaction.buy.abstractedAssetId}
+          assetId={transaction.buy.assetId}
           amount={transaction.buy.amount}
         />
       </section>

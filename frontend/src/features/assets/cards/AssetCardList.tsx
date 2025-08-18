@@ -2,7 +2,7 @@ import AssetCard from "./AssetCard";
 
 import { css } from "@emotion/react";
 
-import { AbstractedAsset } from "../types";
+import { Asset } from "../types";
 
 const AssetCardList = ({
   assets,
@@ -12,9 +12,9 @@ const AssetCardList = ({
   showBalanceUSD = true,
   showCurrencySymbol = true,
 }: {
-  assets: AbstractedAsset[];
+  assets: Asset[];
   showOptions?: boolean;
-  onAssetSelect?: (asset: AbstractedAsset) => void;
+  onAssetSelect?: (asset: Asset) => void;
   showBalance?: boolean;
   showBalanceUSD?: boolean;
   showCurrencySymbol?: boolean;
@@ -36,7 +36,7 @@ const AssetCardList = ({
           // @ts-ignore update types to include balanceUSD TODO
           // Sort acscending -> descending
           .sort((a, b) => b.balanceUSD - a.balanceUSD)
-          .map((asset: AbstractedAsset, i: number) => (
+          .map((asset: Asset, i: number) => (
             <li
               key={`asset-card-${i}`}
               className="coin-card-wrapper"

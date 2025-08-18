@@ -1,5 +1,4 @@
-import { updateExchangeRateUSD } from "../features/assets/assetsSlice.ts";
-import mintAddress from "./MintAddress.tsx";
+import { updateExchangeRateUSD, getMintAddress } from "../features/assets/assetsSlice.ts";
 
 // Reusable function to get swap quotes from Jupiter API
 const getSwapQuote = async (
@@ -29,12 +28,12 @@ const getUSDYPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("usdy_sol"));
+    const quote = await getSwapQuote(getMintAddress("USDY"));
     const priceInUSD = quote.outAmount / 1000000;
     console.log("QUOTE USDY price quote", priceInUSD)
     dispatch(
       updateExchangeRateUSD({
-        assetId: "usdy_sol",
+        assetId: "USDY",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -49,11 +48,11 @@ const getUSDYPriceQuote = async (
 const getBTCPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
-  const quote = await getSwapQuote(mintAddress("btc_sol"));
+      const quote = await getSwapQuote(getMintAddress("BTC"));
   const priceInUSD = quote.outAmount / 10000;
   dispatch(
     updateExchangeRateUSD({
-      assetId: "btc_sol",
+      assetId: "BTC",
       exchangeRateUSD: priceInUSD,
     })
   );
@@ -64,12 +63,12 @@ const getBTCPriceQuote = async (
 const getXRPPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
-  const quote = await getSwapQuote(mintAddress("xrp_sol"));
+      const quote = await getSwapQuote(getMintAddress("XRP"));
   const priceInUSD = quote.outAmount / 1000;
   console.log("XRP priceInUSD", priceInUSD);
   dispatch(
     updateExchangeRateUSD({
-      assetId: "xrp_sol",
+      assetId: "XRP",
       exchangeRateUSD: priceInUSD,
     })
   );
@@ -81,12 +80,12 @@ const getXRPPriceQuote = async (
 const getSUIPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
-  const quote = await getSwapQuote(mintAddress("sui_sol"));
+      const quote = await getSwapQuote(getMintAddress("SUI"));
   const priceInUSD = quote.outAmount / 1000;
   console.log("SUI priceInUSD", priceInUSD);
   dispatch(
     updateExchangeRateUSD({
-      assetId: "sui_sol",
+      assetId: "SUI",
       exchangeRateUSD: priceInUSD,
     })
   );
@@ -98,12 +97,12 @@ const getSUIPriceQuote = async (
 const getDOGEPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
-  const quote = await getSwapQuote(mintAddress("doge_sol"));
+      const quote = await getSwapQuote(getMintAddress("DOGE"));
   const priceInUSD = quote.outAmount / 1000;
   console.log("DOGE priceInUSD", priceInUSD);
   dispatch(
     updateExchangeRateUSD({
-      assetId: "doge_sol",
+      assetId: "DOGE",
       exchangeRateUSD: priceInUSD,
     })
   );
@@ -115,11 +114,11 @@ const getDOGEPriceQuote = async (
 const getEURCPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
-  const quote = await getSwapQuote(mintAddress("eurc_sol"));
+      const quote = await getSwapQuote(getMintAddress("EURC"));
   const priceInUSD = quote.outAmount / 1000000;
   dispatch(
     updateExchangeRateUSD({
-      assetId: "eurc_sol",
+      assetId: "EURC",
       exchangeRateUSD: priceInUSD,
     })
   );
@@ -131,12 +130,12 @@ const getSOLPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   console.log("getting SOLANA price quote");
-  const quote = await getSwapQuote(mintAddress("sol"), 1_000_000_000); // wSOL wrapped solana
+    const quote = await getSwapQuote(getMintAddress("SOL"), 1_000_000_000); // wSOL wrapped solana
   const priceInUSD = quote.outAmount / 1000000;
   console.log("SOLANA priceInUSD", priceInUSD);
   dispatch(
     updateExchangeRateUSD({
-      assetId: "sol",
+      assetId: "SOL",
       exchangeRateUSD: priceInUSD,
     })
   );
@@ -149,12 +148,12 @@ const getAAPLPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("AAPL"));
+    const quote = await getSwapQuote(getMintAddress("AAPL"));
     const priceInUSD = quote.outAmount / 10000;
     console.log("AAPL price quote", priceInUSD)
     dispatch(
       updateExchangeRateUSD({
-        assetId: "AAPL_sol",
+        assetId: "AAPL",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -170,11 +169,11 @@ const getABTPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("ABT"));
+    const quote = await getSwapQuote(getMintAddress("ABT"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "ABT_sol",
+        assetId: "ABT",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -190,11 +189,11 @@ const getABBVPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("ABBV"));
+    const quote = await getSwapQuote(getMintAddress("ABBV"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "ABBV_sol",
+        assetId: "ABBV",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -210,11 +209,11 @@ const getACNPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("ACN"));
+    const quote = await getSwapQuote(getMintAddress("ACN"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "ACN_sol",
+        assetId: "ACN",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -230,7 +229,7 @@ const getGOOGLPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("GOOGL"));
+    const quote = await getSwapQuote(getMintAddress("GOOGL"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
@@ -250,7 +249,7 @@ const getAMZNPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("AMZN"));
+    const quote = await getSwapQuote(getMintAddress("AMZN"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
@@ -270,11 +269,11 @@ const getAMBRPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("AMBR"));
+    const quote = await getSwapQuote(getMintAddress("AMBR"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "AMBR_sol",
+        assetId: "AMBR",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -290,11 +289,11 @@ const getAPPPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("APP"));
+    const quote = await getSwapQuote(getMintAddress("APP"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "APP_sol",
+        assetId: "APP",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -310,11 +309,11 @@ const getAZNPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("AZN"));
+    const quote = await getSwapQuote(getMintAddress("AZN"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "AZN_sol",
+        assetId: "AZN",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -330,11 +329,11 @@ const getBACPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("BAC"));
+    const quote = await getSwapQuote(getMintAddress("BAC"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "BAC_sol",
+        assetId: "BAC",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -350,11 +349,11 @@ const getBRKPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("BRK"));
+    const quote = await getSwapQuote(getMintAddress("BRK"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "BRK_sol",
+        assetId: "BRK",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -370,11 +369,11 @@ const getAVGOPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("AVGO"));
+    const quote = await getSwapQuote(getMintAddress("AVGO"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "AVGO_sol",
+        assetId: "AVGO",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -390,11 +389,11 @@ const getCVXPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("CVX"));
+    const quote = await getSwapQuote(getMintAddress("CVX"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "CVX_sol",
+        assetId: "CVX",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -410,11 +409,11 @@ const getCRCLPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("CRCL"));
+    const quote = await getSwapQuote(getMintAddress("CRCL"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "CRCL_sol",
+        assetId: "CRCL",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -430,11 +429,11 @@ const getCSCOPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("CSCO"));
+    const quote = await getSwapQuote(getMintAddress("CSCO"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "CSCO_sol",
+        assetId: "CSCO",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -450,11 +449,11 @@ const getKOPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("KO"));
+    const quote = await getSwapQuote(getMintAddress("KO"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "KO_sol",
+        assetId: "KO",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -470,11 +469,11 @@ const getCOINPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("COIN"));
+    const quote = await getSwapQuote(getMintAddress("COIN"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "COIN_sol",
+        assetId: "COIN",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -490,11 +489,11 @@ const getCMCSAPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("CMCSA"));
+    const quote = await getSwapQuote(getMintAddress("CMCSA"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "CMCSA_sol",
+        assetId: "CMCSA",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -510,11 +509,11 @@ const getCRWDPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("CRWD"));
+    const quote = await getSwapQuote(getMintAddress("CRWD"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "CRWD_sol",
+        assetId: "CRWD",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -530,11 +529,11 @@ const getDHRPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("DHR"));
+    const quote = await getSwapQuote(getMintAddress("DHR"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "DHR_sol",
+        assetId: "DHR",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -550,11 +549,11 @@ const getDFDVPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("DFDV"));
+    const quote = await getSwapQuote(getMintAddress("DFDV"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "DFDV_sol",
+        assetId: "DFDV",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -570,11 +569,11 @@ const getLLYPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("LLY"));
+    const quote = await getSwapQuote(getMintAddress("LLY"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "LLY_sol",
+        assetId: "LLY",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -590,11 +589,11 @@ const getXOMPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("XOM"));
+    const quote = await getSwapQuote(getMintAddress("XOM"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "XOM_sol",
+        assetId: "XOM",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -610,11 +609,11 @@ const getGMEPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("GME"));
+    const quote = await getSwapQuote(getMintAddress("GME"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "GME_sol",
+        assetId: "GME",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -630,11 +629,11 @@ const getGLDPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("GLD"));
+    const quote = await getSwapQuote(getMintAddress("GLD"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "GLD_sol",
+        assetId: "GLD",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -650,11 +649,11 @@ const getGSPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("GS"));
+    const quote = await getSwapQuote(getMintAddress("GS"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "GS_sol",
+        assetId: "GS",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -670,11 +669,11 @@ const getHDPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("HD"));
+    const quote = await getSwapQuote(getMintAddress("HD"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "HD_sol",
+        assetId: "HD",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -690,11 +689,11 @@ const getHONPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("HON"));
+    const quote = await getSwapQuote(getMintAddress("HON"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "HON_sol",
+        assetId: "HON",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -710,11 +709,11 @@ const getINTCPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("INTC"));
+    const quote = await getSwapQuote(getMintAddress("INTC"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "INTC_sol",
+        assetId: "INTC",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -730,11 +729,11 @@ const getIBMPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("IBM"));
+    const quote = await getSwapQuote(getMintAddress("IBM"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "IBM_sol",
+        assetId: "IBM",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -750,11 +749,11 @@ const getJNJPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("JNJ"));
+    const quote = await getSwapQuote(getMintAddress("JNJ"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "JNJ_sol",
+        assetId: "JNJ",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -770,11 +769,11 @@ const getJPMPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("JPM"));
+    const quote = await getSwapQuote(getMintAddress("JPM"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "JPM_sol",
+        assetId: "JPM",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -790,11 +789,11 @@ const getLINPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("LIN"));
+    const quote = await getSwapQuote(getMintAddress("LIN"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "LIN_sol",
+        assetId: "LIN",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -810,11 +809,11 @@ const getMRVLPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("MRVL"));
+    const quote = await getSwapQuote(getMintAddress("MRVL"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "MRVL_sol",
+        assetId: "MRVL",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -830,11 +829,11 @@ const getMAPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("MA"));
+    const quote = await getSwapQuote(getMintAddress("MA"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "MA_sol",
+        assetId: "MA",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -850,11 +849,11 @@ const getMCDPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("MCD"));
+    const quote = await getSwapQuote(getMintAddress("MCD"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "MCD_sol",
+        assetId: "MCD",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -870,11 +869,11 @@ const getMDTPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("MDT"));
+    const quote = await getSwapQuote(getMintAddress("MDT"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "MDT_sol",
+        assetId: "MDT",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -890,11 +889,11 @@ const getMRKPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("MRK"));
+    const quote = await getSwapQuote(getMintAddress("MRK"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "MRK_sol",
+        assetId: "MRK",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -910,11 +909,11 @@ const getMETAPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("META"));
+    const quote = await getSwapQuote(getMintAddress("META"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "META_sol",
+        assetId: "META",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -930,11 +929,11 @@ const getMSFTPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("MSFT"));
+    const quote = await getSwapQuote(getMintAddress("MSFT"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "MSFT_sol",
+        assetId: "MSFT",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -950,11 +949,11 @@ const getMSTRPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("MSTR"));
+    const quote = await getSwapQuote(getMintAddress("MSTR"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "MSTR_sol",
+        assetId: "MSTR",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -970,11 +969,11 @@ const getQQQPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("QQQ"));
+    const quote = await getSwapQuote(getMintAddress("QQQ"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "QQQ_sol",
+        assetId: "QQQ",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -990,11 +989,11 @@ const getNFLXPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("NFLX"));
+    const quote = await getSwapQuote(getMintAddress("NFLX"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "NFLX_sol",
+        assetId: "NFLX",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1010,11 +1009,11 @@ const getNVOPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("NVO"));
+    const quote = await getSwapQuote(getMintAddress("NVO"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "NVO_sol",
+        assetId: "NVO",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1030,11 +1029,11 @@ const getNVDAPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("NVDA"));
+    const quote = await getSwapQuote(getMintAddress("NVDA"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "NVDA_sol",
+        assetId: "NVDA",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1050,11 +1049,11 @@ const getORCLPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("ORCL"));
+    const quote = await getSwapQuote(getMintAddress("ORCL"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "ORCL_sol",
+        assetId: "ORCL",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1070,11 +1069,11 @@ const getPLTRPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("PLTR"));
+    const quote = await getSwapQuote(getMintAddress("PLTR"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "PLTR_sol",
+        assetId: "PLTR",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1090,11 +1089,11 @@ const getPEPPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("PEP"));
+    const quote = await getSwapQuote(getMintAddress("PEP"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "PEP_sol",
+        assetId: "PEP",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1110,11 +1109,11 @@ const getPFEPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("PFE"));
+    const quote = await getSwapQuote(getMintAddress("PFE"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "PFE_sol",
+        assetId: "PFE",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1130,11 +1129,11 @@ const getPMPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("PM"));
+    const quote = await getSwapQuote(getMintAddress("PM"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "PM_sol",
+        assetId: "PM",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1150,11 +1149,11 @@ const getPGPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("PG"));
+    const quote = await getSwapQuote(getMintAddress("PG"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "PG_sol",
+        assetId: "PG",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1170,11 +1169,11 @@ const getHOODPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("HOOD"));
+    const quote = await getSwapQuote(getMintAddress("HOOD"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "HOOD_sol",
+        assetId: "HOOD",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1190,11 +1189,11 @@ const getCRMPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("CRM"));
+    const quote = await getSwapQuote(getMintAddress("CRM"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "CRM_sol",
+        assetId: "CRM",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1210,11 +1209,11 @@ const getSPYPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("SPY"));
+    const quote = await getSwapQuote(getMintAddress("SPY"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "SPY_sol",
+        assetId: "SPY",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1230,11 +1229,11 @@ const getTSLAPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("TSLA"));
+    const quote = await getSwapQuote(getMintAddress("TSLA"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "TSLA_sol",
+        assetId: "TSLA",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1250,11 +1249,11 @@ const getTMOPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("TMO"));
+    const quote = await getSwapQuote(getMintAddress("TMO"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "TMO_sol",
+        assetId: "TMO",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1270,11 +1269,11 @@ const getTQQQPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("TQQQ"));
+    const quote = await getSwapQuote(getMintAddress("TQQQ"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "TQQQ_sol",
+        assetId: "TQQQ",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1290,11 +1289,11 @@ const getUNHPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("UNH"));
+    const quote = await getSwapQuote(getMintAddress("UNH"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "UNH_sol",
+        assetId: "UNH",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1310,11 +1309,11 @@ const getVTIPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("VTI"));
+    const quote = await getSwapQuote(getMintAddress("VTI"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "VTI_sol",
+        assetId: "VTI",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1330,11 +1329,11 @@ const getVPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("V"));
+    const quote = await getSwapQuote(getMintAddress("V"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "V_sol",
+        assetId: "V",
         exchangeRateUSD: priceInUSD,
       })
     );
@@ -1350,11 +1349,11 @@ const getWMTPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-    const quote = await getSwapQuote(mintAddress("WMT"));
+    const quote = await getSwapQuote(getMintAddress("WMT"));
     const priceInUSD = quote.outAmount / 10000;
     dispatch(
       updateExchangeRateUSD({
-        assetId: "WMT_sol",
+        assetId: "WMT",
         exchangeRateUSD: priceInUSD,
       })
     );

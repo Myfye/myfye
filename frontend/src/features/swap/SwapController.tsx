@@ -17,21 +17,21 @@ import {
 } from "./swapSlice";
 import Button from "@/shared/components/ui/button/Button";
 import TextFit from "@/shared/components/ui/TextFit";
-import { AbstractedAsset } from "../assets/types";
+import { Asset } from "../assets/types";
 import {
-  selectAbstractedAsset,
-  selectAbstractedAssetWithBalance,
+  selectAsset,
+  selectAssetWithBalance,
 } from "../assets/assetsSlice";
 import { SwapTransactionType } from "./types";
 
 const AssetSelectButton = ({
-  abstractedAssetId,
+  assetId,
   ...restProps
 }: {
-  abstractedAssetId: AbstractedAsset["id"] | null;
+  assetId: Asset["id"] | null;
 }) => {
   const asset = useSelector((state: RootState) =>
-    abstractedAssetId ? selectAbstractedAsset(state, abstractedAssetId) : null
+    assetId ? selectAsset(state, assetId) : null
   );
 
   return (
@@ -85,7 +85,7 @@ const AssetSelectButton = ({
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          max-width: ${abstractedAssetId ? "8ch" : "auto"};
+          max-width: ${assetId ? "8ch" : "auto"};
         `}
       >
         {asset ? asset.label : "Select coin"}
@@ -96,22 +96,22 @@ const AssetSelectButton = ({
 };
 
 const MaxAmountButton = ({
-  abstractedAssetId,
+  assetId,
 }: {
-  abstractedAssetId: AbstractedAsset["id"] | null;
+  assetId: AAsset["id"] | null;
 }) => {
   const dispatch = useDispatch();
 
   const asset = useSelector((state: RootState) =>
-    abstractedAssetId
-      ? selectAbstractedAssetWithBalance(state, abstractedAssetId)
+    assetId
+      ? selectAssetWithBalance(state, assetId)
       : null
   );
 
   return (
     <>
       <Button
-        isDisabled={abstractedAssetId === null}
+        isDisabled={assetId === null}
         size="x-small"
         color="neutral"
         onPress={() => {
@@ -158,12 +158,12 @@ const SwapControl = ({
   transactionType,
   onSelectAsset,
   formattedAmount,
-  abstractedAssetId,
+  assetId,
 }: {
   transactionType: SwapTransactionType;
   onSelectAsset: () => void;
   formattedAmount: string;
-  abstractedAssetId: AbstractedAsset["id"] | null;
+  assetId: Asset["id"] | null;
 }) => {
   // Formatted Amount
   const formattedAmountArr = formattedAmount.split("");
@@ -178,7 +178,7 @@ const SwapControl = ({
 
   const assets = useSelector((state: RootState) => state.assets);
 
-  const usdAmount = getUsdAmount(abstractedAssetId, assets, amount);
+  const usdAmount = getUsdAmount(assetId, assets, amount);
 
   const formattedUsdAmount = formatUsdAmount(usdAmount);
 
@@ -280,13 +280,13 @@ const SwapControl = ({
       >
         <li>
           <AssetSelectButton
-            abstractedAssetId={abstractedAssetId}
+            assetId={assetId}
             onPress={onSelectAsset}
           />
         </li>
         <li>
           {transactionType === "sell" && (
-            <MaxAmountButton abstractedAssetId={abstractedAssetId} />
+            <MaxAmountButton assetId={assetId} />
           )}
         </li>
       </menu>
@@ -312,7 +312,7 @@ const SwapController = () => {
     >
       <SwapControl
         transactionType="sell"
-        abstractedAssetId={transaction.sell.abstractedAssetId}
+        assetId={transaction.sell.assetId}
         formattedAmount={transaction.sell.formattedAmount}
         onSelectAsset={() => {
           dispatch(
@@ -330,8 +330,8 @@ const SwapController = () => {
           // After switching currencies, update the exchange rate with the new buy/sell pair
           dispatch(
             updateExchangeRate({
-              buyAbstractedAssetId: transaction.sell.abstractedAssetId, // After switch, current sell becomes buy
-              sellAbstractedAssetId: transaction.buy.abstractedAssetId, // After switch, current buy becomes sell
+              buyAssetId: transaction.sell.assetId, // After switch, current sell becomes buy
+              sellAssetId: transaction.buy.assetId, // After switch, current buy becomes sell
               assets: assets,
             })
           );
@@ -352,7 +352,7 @@ const SwapController = () => {
       </div>
       <SwapControl
         transactionType="buy"
-        abstractedAssetId={transaction.buy.abstractedAssetId}
+        assetId={transaction.buy.assetId}
         formattedAmount={transaction.buy.formattedAmount}
         onSelectAsset={() => {
           dispatch(

@@ -12,7 +12,7 @@ import {
   http,
   parseAbi,
 } from "viem";
-import { selectAbstractedAsset } from "@/features/assets/assetsSlice";
+import { selectAsset } from "@/features/assets/assetsSlice";
 import { useSignTransaction, useWallets } from "@privy-io/react-auth";
 import { base } from "viem/chains";
 import { useLazyGetBaseRelayerQuery } from "@/features/base_relayer/baseRelayerApi";
@@ -30,8 +30,8 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
   );
 
   const asset = useAppSelector((state) =>
-    transaction.abstractedAssetId
-      ? selectAbstractedAsset(state, transaction.abstractedAssetId)
+    transaction.assetId
+      ? selectAsset(state, transaction.assetId)
       : null
   );
 

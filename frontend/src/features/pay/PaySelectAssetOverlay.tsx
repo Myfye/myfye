@@ -2,13 +2,13 @@ import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
   toggleOverlay,
-  updateAbstractedAssetId,
+  updateAssetId,
   updateAmount,
 } from "./paySlice";
-import { AbstractedAsset, AbstractedAssetSection } from "../assets/types";
+import { Asset, AssetSection } from "../assets/types";
 import {
-  selectAbstractedAssetsWithBalanceByDashboard,
-  selectAbstractedAssetWithBalance,
+  selectAssetsWithBalanceByDashboard,
+  selectAssetWithBalance,
 } from "../assets/assetsSlice";
 import SelectAssetOverlay from "../assets/SelectAssetOverlay";
 
@@ -16,26 +16,26 @@ const PaySelectAssetOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const cashAssets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByDashboard(state, "cash")
+    selectAssetsWithBalanceByDashboard(state, "cash")
   );
 
-  const assetSections: AbstractedAssetSection[] = [
-    { id: "cash", label: "Cash", abstractedAssets: cashAssets },
+  const assetSections: AssetSection[] = [
+    { id: "cash", label: "Cash", assets: cashAssets },
   ];
 
   const isOpen = useSelector(
     (state: RootState) => state.pay.overlays.selectAsset.isOpen
   );
 
-  const selectedAbstractedAssetId = useSelector(
-    (state: RootState) => state.pay.transaction.abstractedAssetId
+  const selectedAssetId = useSelector(
+    (state: RootState) => state.pay.transaction.aAssetId
   );
 
   const asset = useSelector((state: RootState) =>
-    state.pay.transaction.abstractedAssetId
-      ? selectAbstractedAssetWithBalance(
+    state.pay.transaction.assetId
+      ? selectAssetWithBalance(
           state,
-          state.pay.transaction.abstractedAssetId
+          state.pay.transaction.assetId
         )
       : null
   );
@@ -51,10 +51,10 @@ const PaySelectAssetOverlay = ({ zIndex = 1000 }) => {
     );
   };
 
-  const handleAssetSelect = (abstractedAssetId: AbstractedAsset["id"]) => {
+  const handleAssetSelect = (assetId: Asset["id"]) => {
     dispatch(
-      updateAbstractedAssetId({
-        abstractedAssetId: abstractedAssetId,
+      updateAssetId({
+        assetId: assetId,
       })
     );
     // update this
@@ -75,8 +75,8 @@ const PaySelectAssetOverlay = ({ zIndex = 1000 }) => {
         isOpen={isOpen}
         onOpenChange={handleOpen}
         onAssetSelect={handleAssetSelect}
-        abstractedAssetSections={assetSections}
-        selectedAbstractedAssetId={selectedAbstractedAssetId}
+        assetSections={assetSections}
+        selectedAssetId={selectedAssetId}
       />
     </>
   );

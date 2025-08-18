@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import {
-  selectAbstractedAsset,
+  selectAsset,
   selectAsset,
   selectAssetBalance,
 } from "@/features/assets/assetsSlice";
@@ -36,7 +36,7 @@ const WthdrawOffChainSelectAmountOverlay = () => {
 
   const asset = useSelector((state: RootState) =>
     transaction.assetId
-      ? selectAbstractedAsset(state, transaction.assetId)
+      ? selectAsset(state, transaction.assetId)
       : null
   );
 

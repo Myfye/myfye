@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import { useSelector } from 'react-redux';
-import { assetTicker, assetId, assetId2 } from '../../../functions/MintAddress';
+import { selectAssetIdFromMintAddress, selectAssetTickerFromMintAddress } from '../../../features/assets/assetsSlice';
 import { RootState } from '@/redux/store';
 
 interface Transaction {
@@ -20,6 +20,8 @@ interface ActivityListProps {
 
 const ActivityList: React.FC<ActivityListProps> = ({ transactions }) => {
   const assets = useSelector((state: RootState) => state.assets.assets);
+  const getAssetIdFromMintAddress = useSelector(selectAssetIdFromMintAddress);
+  const getAssetTickerFromMintAddress = useSelector(selectAssetTickerFromMintAddress);
 
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
@@ -40,7 +42,7 @@ const ActivityList: React.FC<ActivityListProps> = ({ transactions }) => {
       return 0;
     }
     
-    const assetIdFromMint = assetId2(mintAddress);
+    const assetIdFromMint = getAssetIdFromMintAddress(mintAddress);
     console.log('assetId result:', assetIdFromMint);
     
     if (!assetIdFromMint || !assets[assetIdFromMint]) {
@@ -124,21 +126,21 @@ const ActivityList: React.FC<ActivityListProps> = ({ transactions }) => {
     switch (type) {
       case 'swap':
         if (transaction && transaction.input_mint && transaction.output_mint) {
-          // Truncate mint addresses to make them readable
-          const inputMint = assetTicker(transaction.input_mint);
-          const outputMint = assetTicker(transaction.output_mint);
+          // Get asset tickers from mint addresses
+          const inputMint = getAssetTickerFromMintAddress(transaction.input_mint);
+          const outputMint = getAssetTickerFromMintAddress(transaction.output_mint);
           return `Swap ${inputMint} → ${outputMint}`;
         }
         return 'Swap';
       case 'deposit':
         if (transaction && transaction.input_mint) {
-          const inputMint = assetTicker(transaction.input_mint);
+          const inputMint = getAssetTickerFromMintAddress(transaction.input_mint);
           return `Deposit ${inputMint}`;
         }
         return 'Deposit';
       case 'withdraw':
         if (transaction && transaction.output_mint) {
-          const outputMint = assetTicker(transaction.output_mint);
+          const outputMint = getAssetTickerFromMintAddress(transaction.output_mint);
           return `Withdraw ${outputMint}`;
         }
         return 'Withdraw';

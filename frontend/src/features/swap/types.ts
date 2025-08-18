@@ -1,4 +1,4 @@
-import { AbstractedAsset, Asset } from "../assets/types";
+import { Asset } from "../assets/types";
 
 export type SwapTransactionType = "buy" | "sell";
 
@@ -8,14 +8,14 @@ export interface SwapTransaction {
   buy: {
     amount: number | null;
     formattedAmount: string;
-    abstractedAssetId: AbstractedAsset["id"] | null;
+    assetId: Asset["id"] | null;
     assetId?: string;
     chain?: string;
   };
   sell: {
     amount: number | null;
     formattedAmount: string;
-    abstractedAssetId: AbstractedAsset["id"] | null;
+    aassetId: Asset["id"] | null;
     assetId?: string;
     chain?: string;
   };

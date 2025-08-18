@@ -1,4 +1,4 @@
-import { AbstractedAsset } from "@/features/assets/types";
+import { Asset } from "@/features/assets/types";
 import { Address } from "viem";
 
 export interface WithdrawOffChainTransaction {
@@ -6,7 +6,7 @@ export interface WithdrawOffChainTransaction {
   status: "idle" | "success" | "fail";
   amount: number | null;
   formattedAmount: string;
-  abstractedAssetId: AbstractedAsset["id"] | null;
+  assetId: Asset["id"] | null;
   fiatCurrency: "usd" | "euro";
   fee: number;
   presetAmount: string | null;

@@ -4,8 +4,8 @@ import { CaretRight } from "@phosphor-icons/react";
 import { useDispatch, useSelector } from "react-redux";
 import AssetIcon from "../assets/AssetIcon";
 import { toggleOverlay, updateAmount, updatePresetAmount } from "./paySlice";
-import { selectAbstractedAssetWithBalance } from "../assets/assetsSlice";
-import { AbstractedAsset } from "../assets/types";
+import { selectAssetWithBalance } from "../assets/assetsSlice";
+import { Asset } from "../assets/types";
 import { PresetAmountOption } from "./pay.types";
 import { updateFormattedGhostAmount } from "./utils";
 import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSelectorGroup";
@@ -21,13 +21,13 @@ const PayController = () => {
     (state: RootState) => state.pay.transaction.formattedAmount
   );
 
-  const abstractedAssetId = useSelector(
-    (state: RootState) => state.pay.transaction.abstractedAssetId
+  const aassetId = useSelector(
+    (state: RootState) => state.pay.transaction.assetId
   );
 
   const asset = useSelector((state: RootState) =>
-    abstractedAssetId
-      ? selectAbstractedAssetWithBalance(state, abstractedAssetId)
+    assetId
+      ? selectAssetWithBalance(state, assetId)
       : null
   );
 

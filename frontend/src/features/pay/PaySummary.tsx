@@ -3,30 +3,30 @@ import { useEffect } from "react";
 import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { formatUsdAmount, getUsdAmount } from "./utils";
-import { AbstractedAsset } from "../assets/types";
-import { selectAbstractedAsset } from "../assets/assetsSlice";
+import { Asset } from "../assets/types";
+import { selectAsset } from "../assets/assetsSlice";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { User } from "../users/users.types";
 import { RootState } from "@/redux/store";
 
 const AssetSection = ({
-  abstractedAssetId,
+  assetId,
   amount,
 }: {
-  abstractedAssetId: AbstractedAsset["id"] | null;
+  assetId: Asset["id"] | null;
   amount: number | null;
 }) => {
   const assets = useSelector((state: RootState) => state.assets);
 
-  const abstractedAsset = useSelector((state: RootState) =>
-    abstractedAssetId === null
+  const asset = useSelector((state: RootState) =>
+    assetId === null
       ? null
-      : selectAbstractedAsset(state, abstractedAssetId)
+      : selectAsset(state, assetId)
   );
 
   // To do: there is a bug with conversions.
   // Instead of converting we are just returning the native amount
-  // const usdAmount = getUsdAmount(abstractedAssetId, assets, amount);
+  // const usdAmount = getUsdAmount(assetId, assets, amount);
 
   const transaction = useSelector((state: RootState) => state.pay.transaction);
 
@@ -58,9 +58,9 @@ const AssetSection = ({
             overflow: hidden;
           `}
         >
-          <img src={abstractedAsset?.icon.content} alt="" />
+          <img src={asset?.icon.content} alt="" />
         </div>
-        <p className="heading-small">{abstractedAsset?.label}</p>
+        <p className="heading-small">{asset?.label}</p>
       </div>
       <div
         css={css`
@@ -125,7 +125,7 @@ const PaySummary = () => {
       <section>
         {transaction.type === "send" ? (
           <AssetSection
-            abstractedAssetId={transaction.abstractedAssetId}
+            assetId={transaction.assetId}
             amount={transaction.amount}
           />
         ) : (
@@ -144,7 +144,7 @@ const PaySummary = () => {
         {transaction.type === "send" ? (
           <UserSection user={transaction.user}></UserSection>
         ) : (
-          <AssetSection abstractedAssetId={"us_dollar_yield"} amount={0} />
+          <AssetSection assetId={"us_dollar_yield"} amount={0} />
         )}
       </section>
     </div>

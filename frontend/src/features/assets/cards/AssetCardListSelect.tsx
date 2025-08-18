@@ -12,7 +12,7 @@ import {
   RadioGroupState,
   useRadioGroupState,
 } from "react-stately";
-import { AbstractedAsset } from "../types";
+import { Asset } from "../types";
 import AssetCard from "./AssetCard";
 import { motion } from "motion/react";
 
@@ -110,10 +110,10 @@ const AssetCardListSelect = ({
   showBalanceUSD = true,
   showCurrencySymbol = true,
 }: {
-  assets: AbstractedAsset[];
-  selectedAsset?: AbstractedAsset["id"] | null;
+  assets: Asset[];
+  selectedAsset?: Asset["id"] | null;
   showOptions?: boolean;
-  onAssetSelect?: (abstractedAssetId: AbstractedAsset["id"]) => void;
+  onAssetSelect?: (assetId: Asset["id"]) => void;
   showBalance?: boolean;
   showBalanceUSD?: boolean;
   showCurrencySymbol?: boolean;
@@ -125,7 +125,7 @@ const AssetCardListSelect = ({
       value={selectedAsset}
       onChange={onAssetSelect}
     >
-      {assets.map((asset: AbstractedAsset, i: number) => (
+      {assets.map((asset: Asset, i: number) => (
         <AssetCardRadio key={`asset-card-${i}`} value={asset.id}>
           <AssetCard
             id={asset.id}

@@ -7,7 +7,7 @@ import LineChart from "@/shared/components/ui/line-chart/LineChart";
 import { useState } from "react";
 import { Key } from "react-aria";
 import {
-  selectAbstractedAssetsWithBalanceByGroup,
+  selectAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
   toggleGroupOverlay,
 } from "../../../../features/assets/assetsSlice";
@@ -31,7 +31,7 @@ const StocksOverlay = () => {
   };
 
   const assets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByGroup(state, "stocks")
+    selectAssetsWithBalanceByGroup(state, "stocks")
   );
 
   const balanceUSD = useSelector((state: RootState) =>

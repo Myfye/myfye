@@ -1,6 +1,6 @@
 import { AriaButtonProps } from "react-aria";
 import { Button } from "react-aria-components";
-import { AbstractedAsset, Asset } from "./types";
+import { Asset } from "./types";
 import { css } from "@emotion/react";
 import AssetIcon from "./AssetIcon";
 import { CaretRight } from "@phosphor-icons/react";

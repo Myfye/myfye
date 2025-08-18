@@ -44,10 +44,10 @@ const WithdrawOnChainSelectAssetOverlay = ({ ...restProps }: OverlayProps) => {
           store.dispatch(updateAmountDisplay(assetId));
         }}
         // @ts-ignore
-        selectedAbstractedAssetId={asset?.id}
-        abstractedAssetSections={[
+        selectedAssetId={asset?.id}
+        assetSections={[
           // @ts-ignore
-          { id: "cash", label: "", abstractedAssets: [usdcAsset, eurcAsset] },
+          { id: "cash", label: "", assets: [usdcAsset, eurcAsset] },
         ]}
         assetCardListSelectOptions={{ showCurrencySymbol: false }}
         zIndex={2001}

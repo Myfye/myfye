@@ -2,11 +2,11 @@ import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
   toggleOverlay,
-  updateAbstractedAssetId,
+  updateAssetId,
   updateExchangeRate,
 } from "./swapSlice";
-import { AbstractedAsset } from "../assets/types";
-import { selectAbstractedAssetsWithBalanceByDashboard } from "../assets/assetsSlice";
+import { Asset } from "../assets/types";
+import { selectAssetsWithBalanceByDashboard } from "../assets/assetsSlice";
 import ensureTokenAccount from "../../functions/ensureTokenAccount";
 import mintAddress from "../../functions/MintAddress";
 import SelectAssetOverlay from "../assets/SelectAssetOverlay";
@@ -15,15 +15,15 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
 
   const cashAssets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByDashboard(state, "cash")
+    selectAssetsWithBalanceByDashboard(state, "cash")
   );
 
   const cryptoAssets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByDashboard(state, "crypto")
+    selectAssetsWithBalanceByDashboard(state, "crypto")
   );
 
   const stocksAssets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByDashboard(state, "stocks")
+    selectAssetsWithBalanceByDashboard(state, "stocks")
   );
 
   const isOpen = useSelector(
@@ -42,35 +42,35 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
 
   const transaction = useSelector((state: RootState) => state.swap.transaction);
 
-  const onAssetSelect = (abstractedAssetId: AbstractedAsset["id"]) => {
+  const onAssetSelect = (assetId: Asset["id"]) => {
     console.log(
       "Selecting asset:",
-      abstractedAssetId,
+      assetId,
       "for transaction type:",
       transactionType
     );
     // to do: ensure token account
     if (transactionType === "buy") {
-      console.log("Ensuring token account for ", abstractedAssetId);
+      console.log("Ensuring token account for ", assetId);
       // TODO: if it is a stock no not ensure token account
-      ensureTokenAccountForSwap(abstractedAssetId);
+      ensureTokenAccountForSwap(assetId);
     }
     dispatch(
-      updateAbstractedAssetId({
+      updateAssetId({
         transactionType: transactionType,
-        abstractedAssetId: abstractedAssetId,
+        assetId: assetId,
       })
     );
     dispatch(
       updateExchangeRate({
-        buyAbstractedAssetId:
+        buyAssetId:
           transactionType === "buy"
-            ? abstractedAssetId
-            : transaction.buy.abstractedAssetId,
-        sellAbstractedAssetId:
+            ? assetId
+            : transaction.buy.assetId,
+        sellAssetId:
           transactionType === "sell"
-            ? abstractedAssetId
-            : transaction.sell.abstractedAssetId,
+            ? assetId
+            : transaction.sell.assetId,
         assets: assets,
       })
     );
@@ -84,19 +84,19 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
   };
 
   const ensureTokenAccountForSwap = (
-    abstractedAssetId: AbstractedAsset["id"]
+    assetId: Asset["id"]
   ) => {
     console.log(
       "Ensuring token account for ",
-      abstractedAssetId,
+      assetId,
       "solanaPubKey",
       solanaPubKey
     );
 
     try {
-      const output_mint = mintAddress(abstractedAssetId);
+      const output_mint = mintAddress(assetId);
 
-      switch (abstractedAssetId) {
+      switch (assetId) {
         case "us_dollar":
           console.log("Ensuring token account for USDC");
           break;
@@ -144,11 +144,11 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
             })
           );
         }}
-        selectedAbstractedAssetId={null}
-        abstractedAssetSections={[
-          { id: "cash", label: "Cash", abstractedAssets: cashAssets },
-          { id: "crypto", label: "Crypto", abstractedAssets: cryptoAssets },
-          { id: "stocks", label: "Stocks", abstractedAssets: stocksAssets },
+        selectedAssetId={null}
+        assetSections={[
+          { id: "cash", label: "Cash", assets: cashAssets },
+          { id: "crypto", label: "Crypto", assets: cryptoAssets },
+          { id: "stocks", label: "Stocks", assets: stocksAssets },
         ]}
         onAssetSelect={onAssetSelect}
         zIndex={zIndex}

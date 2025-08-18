@@ -15,7 +15,7 @@ import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 import { useAppSelector } from "@/redux/hooks";
 import TransactionProcessScreen from "@/shared/components/ui/processing-transaction-screen/TransactionProcessScreen";
 import { TransactionStatus } from "@/shared/components/ui/processing-transaction-screen/TransactionProcessStatus";
-import { selectAbstractedAsset } from "../assets/assetsSlice";
+import { selectAsset } from "../assets/assetsSlice";
 
 const getTitle = (status: TransactionStatus) => {
   switch (status) {
@@ -32,7 +32,7 @@ const getTitle = (status: TransactionStatus) => {
 };
 
 const getSubtitle = (
-  abstractedAssetId: string,
+  assetId: string,
   assetSymbol: string,
   amount: number,
   status: TransactionStatus
@@ -44,7 +44,7 @@ const getSubtitle = (
     case "fail": {
       // Check if the selling asset is SOL or WSOL
       const isSellingSolana =
-        abstractedAssetId === "sol" || abstractedAssetId === "w_sol";
+        assetId === "sol" || assetId === "w_sol";
 
       return isSellingSolana
         ? "Error processing swap. Try selling less Solana to pay for the blockchain fee."
@@ -65,14 +65,14 @@ const ProcessingTransactionOverlay = () => {
   const transaction = useAppSelector((state) => state.swap.transaction);
 
   const asset = useAppSelector((state) =>
-    transaction.buy.abstractedAssetId
-      ? selectAbstractedAsset(state, transaction.buy.abstractedAssetId)
+    transaction.buy.assetId
+      ? selectAsset(state, transaction.buy.assetId)
       : null
   );
 
   const title = getTitle(transaction.status);
   const subtitle = getSubtitle(
-    transaction.buy.abstractedAssetId,
+    transaction.buy.assetId,
     asset?.symbol,
     transaction.buy.amount,
     transaction.status

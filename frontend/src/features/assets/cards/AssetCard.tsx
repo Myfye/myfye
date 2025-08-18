@@ -3,7 +3,7 @@ import AssetIcon from "../AssetIcon";
 import { HTMLAttributes, RefObject, useState } from "react";
 
 import { formatBalance } from "../utils";
-import { AbstractedAsset, Asset } from "../types";
+import { Asset } from "../types";
 import { useSelector } from "react-redux";
 
 import {
@@ -28,14 +28,14 @@ import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 import { RootState } from "@/redux/store";
 
 interface AssetCardProps extends HTMLAttributes<HTMLDivElement> {
-  id: AbstractedAsset["id"];
-  title: AbstractedAsset["label"];
+  id: Asset["id"];
+  title: Asset["label"];
   fiatCurrency: Asset["fiatCurrency"];
-  symbol: AbstractedAsset["symbol"];
-  groupId?: AbstractedAsset["groupId"];
+  symbol: Asset["symbol"];
+  groupId?: Asset["groupId"];
   balance: number;
   ref?: RefObject<HTMLButtonElement>;
-  icon: AbstractedAsset["icon"];
+  icon: Asset["icon"];
   showOptions?: boolean;
   showBalance?: boolean;
   showCurrencySymbol?: boolean;
@@ -73,7 +73,7 @@ const AssetCard = ({
     dispatch(
       toggleSwapModal({
         isOpen: true,
-        abstractedAssetId: id,
+        assetId: id,
       })
     );
   };
@@ -227,7 +227,7 @@ const AssetCard = ({
                   `}
                   onAction={() =>
                     dispatch(
-                      toggleSendModal({ isOpen: true, abstractedAssetId: id })
+                      toggleSendModal({ isOpen: true, assetId: id })
                     )
                   }
                 >

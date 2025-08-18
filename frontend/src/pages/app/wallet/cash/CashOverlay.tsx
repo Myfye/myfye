@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
 import {
-  selectAbstractedAssetBalanceUSD,
-  selectAbstractedAssetsWithBalanceByGroup,
+  selectAssetBalanceUSD,
+  selectAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
   toggleGroupOverlay,
 } from "../../../../features/assets/assetsSlice";
@@ -27,15 +27,15 @@ const CashOverlay = () => {
   };
 
   const assets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByGroup(state, "cash")
+    selectAssetsWithBalanceByGroup(state, "cash")
   );
 
   const usdBalance = useSelector((state: RootState) =>
-    selectAbstractedAssetBalanceUSD(state, "us_dollar")
+    selectAssetBalanceUSD(state, "USD")
   );
 
   const euroBalanceUSD = useSelector((state: RootState) =>
-    selectAbstractedAssetBalanceUSD(state, "euro")
+    selectAssetBalanceUSD(state, "EUR")
   );
 
   const balanceUSD = useSelector((state: RootState) =>

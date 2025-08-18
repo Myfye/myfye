@@ -4,8 +4,8 @@ import { CaretRight } from "@phosphor-icons/react";
 import { useDispatch, useSelector } from "react-redux";
 import AssetIcon from "../assets/AssetIcon";
 import { toggleOverlay, updateAmount, updatePresetAmount } from "./sendSlice";
-import { selectAbstractedAssetWithBalance } from "../assets/assetsSlice";
-import { AbstractedAsset } from "../assets/types";
+import { selectAssetWithBalance } from "../assets/assetsSlice";
+import { Asset } from "../assets/types";
 import {
   useFocusRing,
   useRadio,
@@ -21,15 +21,15 @@ import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSe
 import AmountDisplay from "@/shared/components/ui/amount-display/AmountDisplay";
 
 const AssetSelectButton = ({
-  abstractedAssetId,
+  assetId,
   ...restProps
 }: {
-  abstractedAssetId: AbstractedAsset["id"] | null;
+  AssetId: asset["id"] | null;
 }) => {
   const dispatch = useDispatch();
   const asset = useSelector((state: RootState) =>
-    abstractedAssetId
-      ? selectAbstractedAssetWithBalance(state, abstractedAssetId)
+    AssetId
+      ? selectAssetWithBalance(state, assetId)
       : null
   );
 
@@ -171,13 +171,13 @@ const SendController = () => {
     (state: RootState) => state.send.transaction.formattedAmount
   );
 
-  const abstractedAssetId = useSelector(
-    (state: RootState) => state.send.transaction.abstractedAssetId
+  const assetId = useSelector(
+    (state: RootState) => state.send.transaction.assetId
   );
 
   const asset = useSelector((state: RootState) =>
-    abstractedAssetId
-      ? selectAbstractedAssetWithBalance(state, abstractedAssetId)
+    assetId
+      ? selectAssetWithBalance(state, assetId)
       : null
   );
 
@@ -230,7 +230,7 @@ const SendController = () => {
           padding-inline: var(--size-250);
         `}
       >
-        <AssetSelectButton abstractedAssetId={abstractedAssetId} />
+        <AssetSelectButton assetId={assetId} />
       </section>
     </div>
   );

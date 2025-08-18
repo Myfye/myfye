@@ -128,7 +128,7 @@ const WithdrawOnChainOverlay = ({
               rightContent: {
                 title: formatAmountWithCurrency(
                   asset?.balance,
-                  asset.fiatCurrency
+                  asset?.fiatCurrency
                 ),
                 subtitle: "Available",
                 titleWeight: "var(--fw-default)",

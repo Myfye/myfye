@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AbstractedAsset } from "../assets/types";
+import { Asset } from "../assets/types";
 import { parseFormattedAmount, updateFormattedAmount } from "./utils";
 import {
   PayTransaction,
@@ -33,7 +33,7 @@ const initialState: PayState = {
     status: "idle",
     amount: 0,
     formattedAmount: "0",
-    abstractedAssetId: "us_dollar",
+    assetId: "us_dollar",
     user: null,
     fiatCurrency: "usd",
     fee: 0,
@@ -115,13 +115,13 @@ const paySlice = createSlice({
         ? (state.transaction.amount = null)
         : (state.transaction.amount = parsedFormattedSellAmount);
     },
-    updateAbstractedAssetId(
+    updateAssetId(
       state,
       action: PayloadAction<{
-        abstractedAssetId: AbstractedAsset["id"] | null;
+        assetId: asset["id"] | null;
       }>
     ) {
-      state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
+      state.transaction.assetId = action.payload.assetId;
     },
     updateUser(state, action: PayloadAction<User | null>) {
       state.transaction.user = action.payload;
@@ -131,7 +131,7 @@ const paySlice = createSlice({
 });
 
 export const {
-  updateAbstractedAssetId,
+  updateAssetId,
   updateTransactionType,
   toggleOverlay,
   updateAmount,

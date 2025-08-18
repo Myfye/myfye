@@ -32,47 +32,22 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     (state: any) => state.userWalletData.solanaPubKey
   );
 
-  // const assets = useSelector((state: RootState) => state.assets);
-
-  // const getAssetId = (abstractedAssetId: AbstractedAsset["id"] | null) => {
-  //   switch (abstractedAssetId) {
-  //     case "us_dollar_yield": {
-  //       return "usdy_sol";
-  //     }
-  //     case "us_dollar": {
-  //       return "usdc_sol";
-  //     }
-  //     case "sol": {
-  //       return "sol";
-  //     }
-  //     case "btc": {
-  //       return "btc_sol";
-  //     }
-  //     case "euro": {
-  //       return "eurc_sol";
-  //     }
-  //     default: {
-  //       throw new Error("Could not find abstracted Asset Id");
-  //     }
-  //   }
-  // };
-
   const handleTransactionSubmit = async () => {
     if (!transaction.amount) return;
     if (!transaction.user) return;
-    if (!transaction.abstractedAssetId) return;
+    if (!transaction.assetId) return;
 
     // toggle overlay
     dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
 
     // next, go through transaction
 
-    const sellAbstractedAsset =
-      assets.abstractedAssets[transaction.abstractedAssetId];
-    if (!sellAbstractedAsset) return;
+    const sellAsset =
+      assets.assets[transaction.assetId];
+    if (!sellAsset) return;
 
-    // Get all assets associated with this abstracted asset
-    const associatedAssets = sellAbstractedAsset.assetIds.map(
+    // Get all assets associated with this asset
+    const associatedAssets = sellAsset.assetIds.map(
       (assetId) => assets.assets[assetId]
     );
 
@@ -89,15 +64,15 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     const sendAmountMicro = sendAmount * 1000000;
 
     let assetCode = "";
-    if (transaction.abstractedAssetId === "us_dollar_yield") {
+    if (transaction.assetId === "us_dollar_yield") {
       assetCode = "usdySol";
-    } else if (transaction.abstractedAssetId === "us_dollar") {
+    } else if (transaction.assetId === "us_dollar") {
       assetCode = "usdcSol";
-    } else if (transaction.abstractedAssetId === "sol") {
+    } else if (transaction.assetId === "sol") {
       assetCode = "sol";
-    } else if (transaction.abstractedAssetId === "euro") {
+    } else if (transaction.assetId === "euro") {
       assetCode = "eurcSol";
-    } else if (transaction.abstractedAssetId === "btc") {
+    } else if (transaction.assetId === "btc") {
       assetCode = "btcSol";
     }
 

@@ -27,7 +27,7 @@ const DepositOffChainPrivyOverlay = () => {
 
   // Get Solana price from assets slice
   const solanaPriceUSD = useAppSelector(
-    (state) => state.assets.assets.sol.exchangeRateUSD
+    (state) => state.assets.assets.SOL.exchangeRateUSD
   );
 
   const solanaPubKey = useAppSelector(

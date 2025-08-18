@@ -1,4 +1,4 @@
-import { AbstractedAsset, Asset, AssetsState } from "../assets/types";
+import { Asset, AssetsState } from "../assets/types";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {
@@ -55,14 +55,14 @@ export const parseFormattedAmount = (formattedAmount: string) => {
 };
 
 export const getExchangeRate = (
-  abstractedAssetId: AbstractedAsset["id"] | null,
+  assetId: Asset["id"] | null,
   assets: AssetsState
 ) => {
-  if (!abstractedAssetId) throw new Error("Invalid asset id");
+  if (!assetId) throw new Error("Invalid asset id");
   // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
-  const exchangeRateUSD = assets.abstractedAssetIds
-    .map((id) => assets.abstractedAssets[id])
-    .filter((asset) => asset.id === abstractedAssetId)
+  const exchangeRateUSD = assets.assetIds
+    .map((id) => assets.assets[id])
+    .filter((asset) => asset.id === assetId)
     .map((asset) => {
       const usdRateAsset = asset.assetIds[0];
       const _asset = assets.assets[usdRateAsset];
@@ -72,17 +72,17 @@ export const getExchangeRate = (
 };
 
 export const getUsdAmount = (
-  abstractedAssetId: AbstractedAsset["id"] | null,
+  assetId: asset["id"] | null,
   assets: AssetsState,
   amount: number | null
 ) => {
   if (!amount) return 0;
-  if (!abstractedAssetId) {
+  if (!assetId) {
     console.error("invalid asset id");
     return 0;
   }
   // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
-  const exchangeRateUSD = getExchangeRate(abstractedAssetId, assets);
+  const exchangeRateUSD = getExchangeRate(assetId, assets);
   return amount * exchangeRateUSD;
 };
 
@@ -101,17 +101,17 @@ export const getAssetBalance = (assets: AssetsState, assetId: Asset["id"]) => {
 
 export const calculateExchangeRate = ({
   assets,
-  buyAbstractedAssetId,
-  sellAbstractedAssetId,
+  buyAssetId,
+  sellAssetId,
 }: {
   assets: AssetsState;
-  buyAbstractedAssetId: AbstractedAsset["id"] | null;
-  sellAbstractedAssetId: AbstractedAsset["id"] | null;
+  buyAssetId: Asset["id"] | null;
+  sellAssetId: Asset["id"] | null;
 }) => {
-  if (!buyAbstractedAssetId || !sellAbstractedAssetId) return null;
+  if (!buyAAssetId || !sellAssetId) return null;
 
-  const buyExchangeRate = getExchangeRate(buyAbstractedAssetId, assets);
-  const sellExchangeRate = getExchangeRate(sellAbstractedAssetId, assets);
+  const buyExchangeRate = getExchangeRate(buyAssetId, assets);
+  const sellExchangeRate = getExchangeRate(sellAssetId, assets);
 
   return sellExchangeRate / buyExchangeRate;
 };

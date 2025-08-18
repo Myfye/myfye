@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
 import { RootState } from "@/redux/store";
 import {
-  selectAbstractedAssetBalanceUSD,
-  selectAbstractedAssetsWithBalanceByGroup,
+  selectAssetBalanceUSD,
+  selectAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
   toggleGroupOverlay,
 } from "../../../../features/assets/assetsSlice";
@@ -28,18 +28,18 @@ const CryptoOverlay = () => {
   };
 
   const assets = useSelector((state: RootState) =>
-    selectAbstractedAssetsWithBalanceByGroup(state, "crypto")
+    selectAssetsWithBalanceByGroup(state, "crypto")
   );
 
   const balanceUSD = useSelector((state: RootState) =>
     selectAssetsBalanceUSDByGroup(state, "crypto")
   );
   const btcBalanceUSD = useSelector((state: RootState) =>
-    selectAbstractedAssetBalanceUSD(state, "btc")
+    selectAssetBalanceUSD(state, "BTC")
   );
 
   const solBalanceUSD = useSelector((state: RootState) =>
-    selectAbstractedAssetBalanceUSD(state, "sol")
+    selectAssetBalanceUSD(state, "SOL")
   );
 
   const pieChartData = (() => {

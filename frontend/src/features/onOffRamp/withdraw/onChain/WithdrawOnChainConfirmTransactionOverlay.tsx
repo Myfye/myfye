@@ -110,7 +110,7 @@ const WithdrawOnChainPreviewTransactionOverlay = () => {
             );
           }}
           headingId={headingId}
-          title={`Withdraw ${transaction.amount} ${asset.symbol}`}
+          title={`Withdraw ${transaction.amount} ${asset?.symbol}`}
           subtitle={`To ${truncateSolanaAddress(transaction.solAddress ?? "")}`}
         />
       </Overlay>

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { updateFormattedAmount, parseFormattedAmount } from "./utils";
-import { AbstractedAsset } from "@/features/assets/types";
+import { Asset } from "@/features/assets/types";
 import { PresetAmountOption, SendTransaction } from "./types";
 import { User } from "../users/users.types";
 
@@ -42,7 +42,7 @@ const initialState: SendState = {
     user: null,
     amount: null,
     formattedAmount: "0",
-    abstractedAssetId: null,
+    assetId: null,
     fee: null,
     status: "idle",
     presetAmount: null,
@@ -58,12 +58,12 @@ const sendSlice = createSlice({
       state,
       action: PayloadAction<{
         isOpen: boolean;
-        abstractedAssetId?: AbstractedAsset["id"];
+        assetId?: Asset["id"];
       }>
     ) {
       state.modal.isOpen = action.payload.isOpen;
-      if (action.payload?.abstractedAssetId)
-        state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
+      if (action.payload?.assetId)
+        state.transaction.assetId = action.payload.assetId;
     },
     toggleOverlay: (
       state,
@@ -85,8 +85,8 @@ const sendSlice = createSlice({
         initialState.transaction.formattedAmount;
       state.transaction.presetAmount = initialState.transaction.presetAmount;
       state.transaction.user = initialState.transaction.user;
-      state.transaction.abstractedAssetId =
-        initialState.transaction.abstractedAssetId;
+      state.transaction.assetId =
+        initialState.transaction.assetId;
     },
     updatePresetAmount: (state, action: PayloadAction<PresetAmountOption>) => {
       state.transaction.presetAmount = action.payload;
@@ -114,13 +114,13 @@ const sendSlice = createSlice({
         ? (state.transaction.amount = null)
         : (state.transaction.amount = parsedFormattedSellAmount);
     },
-    updateAbstractedAssetId(
+    updateAssetId(
       state,
       action: PayloadAction<{
-        abstractedAssetId: AbstractedAsset["id"] | null;
+        assetId: Asset["id"] | null;
       }>
     ) {
-      state.transaction.abstractedAssetId = action.payload.abstractedAssetId;
+      state.transaction.assetId = action.payload.assetId;
     },
     updateUser(state, action: PayloadAction<User | null>) {
       state.transaction.user = action.payload;
@@ -134,7 +134,7 @@ export const {
   toggleOverlay,
   updateAmount,
   unmount,
-  updateAbstractedAssetId,
+  updateAssetId,
   updatePresetAmount,
   updateUser,
   unmountOverlays,
