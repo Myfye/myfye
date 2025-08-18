@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserWalletDataState {
   wallet: any;
+  embeddedWallet: any;
+  walletClient: any;
   currentUserID: string;
   currentUserFirstName: string;
   currentUserLastName: string;
@@ -62,6 +64,8 @@ export interface UserWalletDataState {
 }
 
 const initialUserWalletData: UserWalletDataState = {
+  embeddedWallet: null,
+  walletClient: null,
   solanaPubKey: "",
   evmPubKey: "",
   solBalance: 0,
@@ -124,6 +128,12 @@ export const userWalletDataSlice = createSlice({
   name: "userWalletData",
   initialState: initialUserWalletData,
   reducers: {
+    setEmbeddedWallet: (state, action: PayloadAction<any>) => {
+      state.embeddedWallet = action.payload;
+    },
+    setWalletClient: (state, action: PayloadAction<any>) => {
+      state.walletClient = action.payload;
+    },
     setSolanaPubKey: (state, action: PayloadAction<any>) => {
       state.solanaPubKey = action.payload;
     },
@@ -314,6 +324,8 @@ export const userWalletDataSlice = createSlice({
 });
 
 export const {
+  setEmbeddedWallet,
+  setWalletClient,
   setSolanaPubKey,
   setEvmPubKey,
   settotalInvestingValue,

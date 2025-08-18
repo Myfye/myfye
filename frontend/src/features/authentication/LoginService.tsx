@@ -164,8 +164,10 @@ export const updateUserSolanaPubKey = async (
 const HandleUserLogIn = async (
   user: any,
   dispatch: Function,
-  wallets: any
+  wallets: any,
+  executeTransfer: Function, // Add executeTransfer as a parameter
 ): Promise<{ success: boolean }> => {
+
   dispatch(setcurrentUserEmail(user.email.address));
   dispatch(setPrivyUserId(user.id));
   if (user) {
@@ -178,21 +180,26 @@ const HandleUserLogIn = async (
         dispatch(setBlindPayEvmWalletId(dbUser.blind_pay_evm_wallet_id));
         dispatch(setBlindPayReceiverId(dbUser.blind_pay_receiver_id));
 
-        //getUSDCBalanceOnBase(dbUser.evm_pub_key, dbUser.solana_pub_key);
-        console.log(
-          "BRIDGING USDC BASE AMOUNT to SOLANA AMOUNT evm and solana keys",
-          dbUser.evm_pub_key,
-          dbUser.solana_pub_key
-        );
-        console.log("BRIDGING running bridgeFromBaseToSolana", wallets);
+        /*
+        const usdcBaseBalance = await getUSDCBalanceOnBase(dbUser.evm_pub_key, dbUser.solana_pub_key);
 
-        if (user.wallet && dbUser.solana_pub_key) {
-          bridgeFromBaseToSolana(
-            0.01,
-            dbUser.evm_pub_key,
+        console.log('BRIDGING uusdcBaseBalance', usdcBaseBalance)
+        console.log('BRIDGING executeTransfer', executeTransfer)
+
+        if (dbUser.solana_pub_key) {
+          //bridgeFromBaseToSolana(0.01, dbUser.evm_pub_key, dbUser.solana_pub_key);
+          console.log('BRIDGING running executeTransfer', wallets)
+          await executeTransfer(
+            SupportedChainId.BASE_SEPOLIA,
+            SupportedChainId.SOLANA_DEVNET,
+            "0.01",
+            "fast",
             dbUser.solana_pub_key
           );
+        } else {
+          console.log('BRIDGING no solana pub key found')
         }
+        */
       }
     } catch (error) {
       console.error("Error handling user:", error);

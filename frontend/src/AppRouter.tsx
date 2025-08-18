@@ -7,8 +7,10 @@ import {
   usePrivy,
   useLoginWithPasskey,
   useMfaEnrollment,
-  useWallets,
+  getEmbeddedConnectedWallet,
+  useWallets
 } from "@privy-io/react-auth";
+import { createWalletClient, custom } from 'viem';
 import { HandleUserLogIn } from "./features/authentication/LoginService.tsx";
 import logo from "@/assets/logo/myfye_logo_white.svg";
 import loginScreen from "@/assets/login/login_screen.webp";
@@ -30,24 +32,65 @@ import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWallets.tsx";
 import MFAOnboarding from "./pages/app/login/mfaOnboarding.tsx";
-import Button from "./shared/components/ui/button/Button.tsx";
-import { useAppSelector } from "./redux/hooks.tsx";
+import { setEmbeddedWallet, setWalletClient } from "./redux/userWalletData.tsx"; 
+import { useCrossChainTransfer } from "./functions/bridge/use-cross-chain-transfer.ts";
+import { getUSDCBalanceOnBase } from "./functions/checkForEVMDeposit.ts";
+import {
+  SupportedChainId,
+  SUPPORTED_CHAINS,
+  CHAIN_TO_CHAIN_NAME,
+} from "./functions/bridge/chains.ts";
+import { evmAddressToBytes32 } from "./functions/bridge/solana-utils.ts";
+import { base } from "viem/chains";
+import Button from "@/shared/components/ui/button/Button.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
 
   const { wallets } = useWallets();
+  const firstNameUI = useSelector(
+    (state: RootState) => state.userWalletData.currentUserFirstName
+  );
+  const userPassKeyState = useSelector(
+    (state: RootState) => state.userWalletData.passKeyState
+  );
+  const selectedLanguageCode = useSelector(
+    (state: RootState) => state.userWalletData.selectedLanguageCode
+  );
+  const KYCVerifired = useSelector(
+    (state: RootState) => state.userWalletData.currentUserKYCVerified
+  );
+  const evmPubKey = useSelector(
+    (state: RootState) => state.userWalletData.evmPubKey
+  );
+  const solanaPubKey = useSelector(
+    (state: RootState) => state.userWalletData.solanaPubKey
+  );
+  const embeddedWallet = useSelector(
+    (state: RootState) => state.userWalletData.embeddedWallet
+  );
+
+  const walletClient = useSelector(
+    (state: RootState) => state.userWalletData.walletClient
+  );
+  const users = useSelector((state: RootState) => state.userWalletData.users);
   const dispatch = useDispatch();
+
+  // Move the hook call here at the component level
+  const { executeTransfer } = useCrossChainTransfer(embeddedWallet, walletClient);
 
   const [userDataLoaded, setUserDataLoaded] = useState(false); // To do: get user data
 
-  const { user, ready, authenticated, login, logout } = usePrivy();
+  const { user, ready, authenticated, login, linkPasskey } = usePrivy();
+  const { state, loginWithPasskey } = useLoginWithPasskey();
 
-  const mfaStatus = useAppSelector((state) => state.userWalletData.mfaStatus);
+  const mfaStatus = useSelector(
+    (state: RootState) => state.userWalletData.mfaStatus
+  );
 
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
-  2;
+
   useEffect(() => {
     console.log("MFA status", mfaStatus);
   }, [mfaStatus]);
@@ -55,11 +98,34 @@ function WebAppInner() {
   useEffect(() => {
     const handleLogin = async () => {
       if (authenticated && user) {
+
         console.log("BRIDGING in AppRouter wallets:", wallets);
 
         try {
-          console.log("calling HandleUserLogin");
+          console.log("calling HandleUserLogin"); 
           // TODO: calling this twice, we should call it once
+          await HandleUserLogIn(
+            user,
+            dispatch,
+            wallets
+          );
+
+          // Set embedded wallet
+          const wallet = getEmbeddedConnectedWallet(wallets);
+          if (wallet) {
+            const provider = await wallet.getEthereumProvider();
+            const client = createWalletClient({
+              account: wallet.address,
+              chain: base, // Use the Base chain object
+              transport: custom(provider),
+            });
+            
+            dispatch(setWalletClient(client));
+            dispatch(setEmbeddedWallet(wallet));
+          }
+      
+
+
           await HandleUserLogIn(user, dispatch, wallets);
           setUserDataLoaded(true);
         } catch (error) {
@@ -69,6 +135,30 @@ function WebAppInner() {
     };
     handleLogin();
   }, [authenticated, user]);
+
+  useEffect(() => {
+    const listenForUSDCBase = async () => {
+      const usdcBaseBalance = await getUSDCBalanceOnBase(evmPubKey, solanaPubKey);
+
+      console.log('BRIDGING uusdcBaseBalance', usdcBaseBalance)
+      console.log('BRIDGING executeTransfer', executeTransfer)
+
+      
+      if (solanaPubKey && walletClient && embeddedWallet) {
+        
+        await executeTransfer(
+          SupportedChainId.BASE,
+          SupportedChainId.SOLANA_MAINNET,
+          "0.05",
+          "fast",
+          solanaPubKey
+        );
+      } else {
+        console.log('BRIDGING no solana pub key found')
+      }
+      }
+      listenForUSDCBase();
+  }, [solanaPubKey, evmPubKey, walletClient, embeddedWallet]);
 
   if (!authenticated) {
     return (

@@ -7,3 +7,5 @@ export const SERVER_PUBLIC_KEY = import.meta.env.VITE_REACT_APP_SERVER_SOLANA_PU
 export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY;
 export const DINARI_API_KEY = import.meta.env.VITE_REACT_APP_DINARI_API_KEY;
 export const DINARI_API_SECRET = import.meta.env.VITE_REACT_APP_DINARI_API_KEY_SECRET;
+export const BICONOMY_API_KEY = import.meta.env.VITE_REACT_APP_BICONOMY_API_KEY;
+export const BICONOMY_ID = import.meta.env.VITE_REACT_APP_BICONOMY_ID;
