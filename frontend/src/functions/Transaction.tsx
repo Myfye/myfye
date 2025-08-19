@@ -73,18 +73,11 @@ export const tokenTransfer = async (
 
     let mintAddress: string;
     let programId: string = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
-    if (currencySelected === "usdcSol") {
+    if (currencySelected === "USD") {
       mintAddress = USDC_MINT_ADDRESS;
-    } else if (currencySelected === "usdtSol") {
-      mintAddress = USDT_MINT_ADDRESS;
-    } else if (currencySelected === "usdySol") {
-      mintAddress = USDY_MINT_ADDRESS;
-    } else if (currencySelected === "eurcSol") {
+    } else if (currencySelected === "EUR") {
       mintAddress = EURC_MINT_ADDRESS;
-    } else if (currencySelected === "pyusdSol") {
-      mintAddress = PYUSD_MINT_ADDRESS;
-      programId = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
-    }
+    } 
 
     const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
     const connection = new Connection(RPC);

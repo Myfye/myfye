@@ -111,14 +111,14 @@ const getDOGEPriceQuote = async (
   return true;
 };
 
-const getEURCPriceQuote = async (
+const getEURPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
-      const quote = await getSwapQuote(getMintAddress("EURC"));
+      const quote = await getSwapQuote(getMintAddress("EUR"));
   const priceInUSD = quote.outAmount / 1000000;
   dispatch(
     updateExchangeRateUSD({
-      assetId: "EURC",
+      assetId: "EUR",
       exchangeRateUSD: priceInUSD,
     })
   );
@@ -1373,7 +1373,7 @@ export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
       // Crypto & Cash assets
       getUSDYPriceQuote(dispatch),
       getBTCPriceQuote(dispatch),
-      getEURCPriceQuote(dispatch),
+      getEURPriceQuote(dispatch),
       getSOLPriceQuote(dispatch),
       getXRPPriceQuote(dispatch),
       getSUIPriceQuote(dispatch),

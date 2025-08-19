@@ -2,11 +2,11 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../env";
 import { updateBalance } from "@/features/assets/assetsSlice";
 import {
-  USDC_MINT_ADDRESS,
+  USD_MINT_ADDRESS,
   USDT_MINT_ADDRESS,
   USDY_MINT_ADDRESS,
   PYUSD_MINT_ADDRESS,
-  EURC_MINT_ADDRESS,
+  EUR_MINT_ADDRESS,
   BTC_MINT_ADDRESS,
   WSOL_MINT_ADDRESS,
   XRP_MINT_ADDRESS,
@@ -83,117 +83,69 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
     ]);
 
     // dispatch(setpyusdSolValue(Number(tokenBalances.pyusd)));
-    dispatch(
-      updateBalance({
-        assetId: "usdc_sol",
-        balance: Number(tokenBalances.usdc),
-      })
-    );
-    dispatch(
-      updateBalance({
-        assetId: "usdt_sol",
-        balance: Number(tokenBalances.usdt),
-      })
-    );
-    dispatch(
-      updateBalance({
-        assetId: "usdy_sol",
-        balance: Number(tokenBalances.usdy),
-      })
-    );
-
-    console.log("eurc balance", tokenBalances.eurc);
-    dispatch(
-      updateBalance({
-        assetId: "eurc_sol",
-        balance: Number(tokenBalances.eurc),
-      })
-    );
-    dispatch(
-      updateBalance({ assetId: "btc_sol", balance: Number(tokenBalances.btc) })
-    );
-    dispatch(
-      updateBalance({ 
-        assetId: "xrp_sol", 
-        balance: Number(tokenBalances.xrp) 
-      })
-    );
-    dispatch(
-      updateBalance({ 
-        assetId: "sui_sol", 
-        balance: Number(tokenBalances.sui) 
-      })
-    );
-    dispatch(
-      updateBalance({ 
-        assetId: "doge_sol", 
-        balance: Number(tokenBalances.doge) 
-      })
-    );
-    dispatch(
-      updateBalance({ 
-        assetId: "sol", 
-        balance: Number(solanaBalance) 
-      })
-    );
-
-    console.log("AAPL balance", tokenBalances.aapl)
-    console.log("NVDA balance", tokenBalances.nvda)
-    // Add stock asset dispatches
-    dispatch(updateBalance({ assetId: "AAPL_sol", balance: Number(tokenBalances.aapl) }));
-    //dispatch(updateBalance({ assetId: "MSFT_sol", balance: Number(tokenBalances.msft) }));
-    dispatch(updateBalance({ assetId: "NVDA_sol", balance: Number(tokenBalances.nvda) }));
-    dispatch(updateBalance({ assetId: "SPY_sol", balance: Number(tokenBalances.spy) }));
-    dispatch(updateBalance({ assetId: "COIN_sol", balance: Number(tokenBalances.coin) }));
-    dispatch(updateBalance({ assetId: "TSLA_sol", balance: Number(tokenBalances.tsla) }));
+    dispatch(updateBalance({assetId: "USD", balance: Number(tokenBalances.usdc) }));
+    dispatch(updateBalance({assetId: "USDY", balance: Number(tokenBalances.usdy) }));
+    dispatch(updateBalance({assetId: "EUR",balance: Number(tokenBalances.eurc)}) );
+    dispatch(updateBalance({ assetId: "BTC", balance: Number(tokenBalances.btc) }));
+    dispatch(updateBalance({ assetId: "XRP", balance: Number(tokenBalances.xrp) }));
+    dispatch(updateBalance({ assetId: "SUI", balance: Number(tokenBalances.sui) }));
+    dispatch(updateBalance({ assetId: "DOGE", balance: Number(tokenBalances.doge) }));
+    dispatch(updateBalance({ assetId: "SOL", balance: Number(solanaBalance) }));
+    /* Stocks */
+    dispatch(updateBalance({ assetId: "AAPL", balance: Number(tokenBalances.aapl) }));
+    //dispatch(updateBalance({ assetId: "MSFT", balance: Number(tokenBalances.msft) }));
+    dispatch(updateBalance({ assetId: "NVDA", balance: Number(tokenBalances.nvda) }));
+    dispatch(updateBalance({ assetId: "SPY", balance: Number(tokenBalances.spy) }));
+    dispatch(updateBalance({ assetId: "COIN", balance: Number(tokenBalances.coin) }));
+    dispatch(updateBalance({ assetId: "TSLA", balance: Number(tokenBalances.tsla) }));
     /*
-    dispatch(updateBalance({ assetId: "NFLX_sol", balance: Number(tokenBalances.nflx) }));
-    dispatch(updateBalance({ assetId: "KO_sol", balance: Number(tokenBalances.ko) }));
-    dispatch(updateBalance({ assetId: "WMT_sol", balance: Number(tokenBalances.wmt) }));
-    dispatch(updateBalance({ assetId: "JPM_sol", balance: Number(tokenBalances.jpm) }));
-    dispatch(updateBalance({ assetId: "AVGO_sol", balance: Number(tokenBalances.avgo) }));
-    dispatch(updateBalance({ assetId: "JNJ_sol", balance: Number(tokenBalances.jnj) }));
-    dispatch(updateBalance({ assetId: "V_sol", balance: Number(tokenBalances.v) }));
-    dispatch(updateBalance({ assetId: "UNH_sol", balance: Number(tokenBalances.unh) }));
-    dispatch(updateBalance({ assetId: "XOM_sol", balance: Number(tokenBalances.xom) }));
-    dispatch(updateBalance({ assetId: "MA_sol", balance: Number(tokenBalances.ma) }));
-    dispatch(updateBalance({ assetId: "PG_sol", balance: Number(tokenBalances.pg) }));
-    dispatch(updateBalance({ assetId: "HD_sol", balance: Number(tokenBalances.hd) }));
-    dispatch(updateBalance({ assetId: "CVX_sol", balance: Number(tokenBalances.cvx) }));
-    dispatch(updateBalance({ assetId: "MRK_sol", balance: Number(tokenBalances.mrk) }));
-    dispatch(updateBalance({ assetId: "PFE_sol", balance: Number(tokenBalances.pfe) }));
-    dispatch(updateBalance({ assetId: "ABT_sol", balance: Number(tokenBalances.abt) }));
-    dispatch(updateBalance({ assetId: "ABBV_sol", balance: Number(tokenBalances.abbv) }));
-    dispatch(updateBalance({ assetId: "ACN_sol", balance: Number(tokenBalances.acn) }));
-    dispatch(updateBalance({ assetId: "AZN_sol", balance: Number(tokenBalances.azn) }));
-    dispatch(updateBalance({ assetId: "BAC_sol", balance: Number(tokenBalances.bac) }));
-    dispatch(updateBalance({ assetId: "BRK_sol", balance: Number(tokenBalances.brk) }));
-    dispatch(updateBalance({ assetId: "CSCO_sol", balance: Number(tokenBalances.csco) }));
-    dispatch(updateBalance({ assetId: "CMCSA_sol", balance: Number(tokenBalances.cmcsa) }));
-    dispatch(updateBalance({ assetId: "CRWD_sol", balance: Number(tokenBalances.crwd) }));
-    dispatch(updateBalance({ assetId: "DHR_sol", balance: Number(tokenBalances.dhr) }));
-    dispatch(updateBalance({ assetId: "GS_sol", balance: Number(tokenBalances.gs) }));
-    dispatch(updateBalance({ assetId: "HON_sol", balance: Number(tokenBalances.hon) }));
-    dispatch(updateBalance({ assetId: "IBM_sol", balance: Number(tokenBalances.ibm) }));
-    dispatch(updateBalance({ assetId: "INTC_sol", balance: Number(tokenBalances.intc) }));
-    dispatch(updateBalance({ assetId: "LIN_sol", balance: Number(tokenBalances.lin) }));
-    dispatch(updateBalance({ assetId: "MRVL_sol", balance: Number(tokenBalances.mrvl) }));
-    dispatch(updateBalance({ assetId: "MCD_sol", balance: Number(tokenBalances.mcd) }));
-    dispatch(updateBalance({ assetId: "MDT_sol", balance: Number(tokenBalances.mdt) }));
-    dispatch(updateBalance({ assetId: "NVO_sol", balance: Number(tokenBalances.nvo) }));
-    dispatch(updateBalance({ assetId: "ORCL_sol", balance: Number(tokenBalances.orcl) }));
-    dispatch(updateBalance({ assetId: "PLTR_sol", balance: Number(tokenBalances.pltr) }));
-    dispatch(updateBalance({ assetId: "PM_sol", balance: Number(tokenBalances.pm) }));
-    dispatch(updateBalance({ assetId: "HOOD_sol", balance: Number(tokenBalances.hood) }));
-    dispatch(updateBalance({ assetId: "CRM_sol", balance: Number(tokenBalances.crm) }));
-    dispatch(updateBalance({ assetId: "TMO_sol", balance: Number(tokenBalances.tmo) }));
-    dispatch(updateBalance({ assetId: "GOOGL_sol", balance: Number(tokenBalances.googl) }));
-    dispatch(updateBalance({ assetId: "AMZN_sol", balance: Number(tokenBalances.amzn) }));
-    dispatch(updateBalance({ assetId: "MSTR_sol", balance: Number(tokenBalances.mstr) }));
-    dispatch(updateBalance({ assetId: "GME_sol", balance: Number(tokenBalances.gme) }));
+    dispatch(updateBalance({ assetId: "NFLX", balance: Number(tokenBalances.nflx) }));
+    dispatch(updateBalance({ assetId: "KO", balance: Number(tokenBalances.ko) }));
+    dispatch(updateBalance({ assetId: "WMT", balance: Number(tokenBalances.wmt) }));
+    dispatch(updateBalance({ assetId: "JPM", balance: Number(tokenBalances.jpm) }));
+    dispatch(updateBalance({ assetId: "AVGO", balance: Number(tokenBalances.avgo) }));
+    dispatch(updateBalance({ assetId: "JNJ", balance: Number(tokenBalances.jnj) }));
+    dispatch(updateBalance({ assetId: "V", balance: Number(tokenBalances.v) }));
+    dispatch(updateBalance({ assetId: "UNH", balance: Number(tokenBalances.unh) }));
+    dispatch(updateBalance({ assetId: "XOM", balance: Number(tokenBalances.xom) }));
+    dispatch(updateBalance({ assetId: "MA", balance: Number(tokenBalances.ma) }));
+    dispatch(updateBalance({ assetId: "PG", balance: Number(tokenBalances.pg) }));
+    dispatch(updateBalance({ assetId: "HD", balance: Number(tokenBalances.hd) }));
+    dispatch(updateBalance({ assetId: "CVX", balance: Number(tokenBalances.cvx) }));
+    dispatch(updateBalance({ assetId: "MRK", balance: Number(tokenBalances.mrk) }));
+    dispatch(updateBalance({ assetId: "PFE", balance: Number(tokenBalances.pfe) }));
+    dispatch(updateBalance({ assetId: "ABT", balance: Number(tokenBalances.abt) }));
+    dispatch(updateBalance({ assetId: "ABBV", balance: Number(tokenBalances.abbv) }));
+    dispatch(updateBalance({ assetId: "ACN", balance: Number(tokenBalances.acn) }));
+    dispatch(updateBalance({ assetId: "AZN", balance: Number(tokenBalances.azn) }));
+    dispatch(updateBalance({ assetId: "BAC", balance: Number(tokenBalances.bac) }));
+    dispatch(updateBalance({ assetId: "BRK", balance: Number(tokenBalances.brk) }));
+    dispatch(updateBalance({ assetId: "CSCO", balance: Number(tokenBalances.csco) }));
+    dispatch(updateBalance({ assetId: "CMCSA", balance: Number(tokenBalances.cmcsa) }));
+    dispatch(updateBalance({ assetId: "CRWD", balance: Number(tokenBalances.crwd) }));
+    dispatch(updateBalance({ assetId: "DHR", balance: Number(tokenBalances.dhr) }));
+    dispatch(updateBalance({ assetId: "GS", balance: Number(tokenBalances.gs) }));
+    dispatch(updateBalance({ assetId: "HON", balance: Number(tokenBalances.hon) }));
+    dispatch(updateBalance({ assetId: "IBM", balance: Number(tokenBalances.ibm) }));
+    dispatch(updateBalance({ assetId: "INTC", balance: Number(tokenBalances.intc) }));
+    dispatch(updateBalance({ assetId: "LIN", balance: Number(tokenBalances.lin) }));
+    dispatch(updateBalance({ assetId: "MRVL", balance: Number(tokenBalances.mrvl) }));
+    dispatch(updateBalance({ assetId: "MCD", balance: Number(tokenBalances.mcd) }));
+    dispatch(updateBalance({ assetId: "MDT", balance: Number(tokenBalances.mdt) }));
+    dispatch(updateBalance({ assetId: "NVO", balance: Number(tokenBalances.nvo) }));
+    dispatch(updateBalance({ assetId: "ORCL", balance: Number(tokenBalances.orcl) }));
+    dispatch(updateBalance({ assetId: "PLTR", balance: Number(tokenBalances.pltr) }));
+    dispatch(updateBalance({ assetId: "PM", balance: Number(tokenBalances.pm) }));
+    dispatch(updateBalance({ assetId: "HOOD", balance: Number(tokenBalances.hood) }));
+    dispatch(updateBalance({ assetId: "CRM", balance: Number(tokenBalances.crm) }));
+    dispatch(updateBalance({ assetId: "TMO", balance: Number(tokenBalances.tmo) }));
+    dispatch(updateBalance({ assetId: "GOOGL", balance: Number(tokenBalances.googl) }));
+    dispatch(updateBalance({ assetId: "AMZN", balance: Number(tokenBalances.amzn) }));
+    dispatch(updateBalance({ assetId: "MSTR", balance: Number(tokenBalances.mstr) }));
+    dispatch(updateBalance({ assetId: "GME", balance: Number(tokenBalances.gme) }));
     */
   } catch (e) {
-    console.error("Error fetching user balances");
+    console.error("Error fetching user balances", e);
     return false;
   }
 };
@@ -353,8 +305,8 @@ export const TokenBalances = async (
       const amount = account.account.data.parsed.info.tokenAmount.uiAmount;
       
       // Debug logging for specific tokens
-      if (mintAddress === USDC_MINT_ADDRESS) {
-        console.log(`Found USDC: ${amount}`);
+      if (mintAddress === USD_MINT_ADDRESS) {
+        console.log(`Found USD: ${amount}`);
         balances.usdc = amount;
       }
       if (mintAddress === USDT_MINT_ADDRESS) {
@@ -369,8 +321,8 @@ export const TokenBalances = async (
         console.log(`Found PYUSD: ${amount}`);
         balances.pyusd = amount;
       }
-      if (mintAddress === EURC_MINT_ADDRESS) {
-        console.log(`Found EURC: ${amount}`);
+      if (mintAddress === EUR_MINT_ADDRESS) {
+        console.log(`Found EUR: ${amount}`);
         balances.eurc = amount;
       }
       if (mintAddress === BTC_MINT_ADDRESS) {

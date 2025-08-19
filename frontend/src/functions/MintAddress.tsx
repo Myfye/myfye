@@ -1,9 +1,9 @@
 // Swapping pairs
-export const USDC_MINT_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+export const USD_MINT_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 export const USDT_MINT_ADDRESS = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
 export const USDY_MINT_ADDRESS = "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6";
 export const PYUSD_MINT_ADDRESS = "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo";
-export const EURC_MINT_ADDRESS = "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr";
+export const EUR_MINT_ADDRESS = "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr";
 export const BTC_MINT_ADDRESS = "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij";
 export const WSOL_MINT_ADDRESS = "So11111111111111111111111111111111111111112";
 export const XRP_MINT_ADDRESS = "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT";
@@ -72,12 +72,12 @@ export const V_MINT_ADDRESS = "XsqgsbXwWogGJsNcVZ3TyVouy2MbTkfCFhCGGGcQZ2p";
 export const WMT_MINT_ADDRESS = "Xs151QeqTCiuKtinzfRATnUESM2xTU6V9Wy8Vy538ci";
 
 function mintAddress(currencyCode: String): String {
-  let mintAddress = USDC_MINT_ADDRESS;
+  let mintAddress = USD_MINT_ADDRESS;
   
   switch (currencyCode) {
-    case "USDC":
     case "USD":
-      mintAddress = USDC_MINT_ADDRESS;
+    case "USD":
+      mintAddress = USD_MINT_ADDRESS;
       break;
     case "USDT":
       mintAddress = USDT_MINT_ADDRESS;
@@ -88,9 +88,9 @@ function mintAddress(currencyCode: String): String {
     case "PYUSD":
       mintAddress = PYUSD_MINT_ADDRESS;
       break;
-    case "EURC":
+    case "EUR":
     case "euro":
-      mintAddress = EURC_MINT_ADDRESS;
+      mintAddress = EUR_MINT_ADDRESS;
       break;
     case "BTC":
     case "btc":
@@ -298,7 +298,7 @@ function mintAddress(currencyCode: String): String {
       mintAddress = WMT_MINT_ADDRESS;
       break;
     default:
-      mintAddress = USDC_MINT_ADDRESS;
+      mintAddress = USD_MINT_ADDRESS;
       break;
   }
   
@@ -309,11 +309,11 @@ export function assetId(mintAddress: string): string {
   // Map of mint addresses to asset IDs (matching the action map keys)
   const mintToAssetMap: Record<string, string> = {
     "So11111111111111111111111111111111111111112": "SOL",
-    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "USDC",
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "USD",
     "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": "USDT",
     "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6": "USDY",
     "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo": "PYUSD",
-    "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr": "EURC",
+    "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr": "EUR",
     "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij": "BTC",
     "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT": "XRP",
     "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn": "DOGE",

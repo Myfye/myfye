@@ -9,6 +9,7 @@ import { useSolanaWallets } from "@privy-io/react-auth/solana";
 import { tokenTransfer } from "@/functions/Transaction";
 import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";
 import TransactionConfirmationScreen from "@/shared/components/ui/transaction/confirmation/TransactionConfirmationScreen";
+import { saveSolAddress } from "@/functions/RecentSolAddress";
 
 const WithdrawOnChainPreviewTransactionOverlay = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +20,9 @@ const WithdrawOnChainPreviewTransactionOverlay = () => {
   const isOpen = useAppSelector(
     (state) => state.withdrawOnChain.overlays.confirmTransaction.isOpen
   );
-
+  const user_id = useAppSelector(
+    (state) => state.userWalletData.currentUserID
+  );
   const transaction = useAppSelector(
     (state) => state.withdrawOnChain.transaction
   );
@@ -53,10 +56,10 @@ const WithdrawOnChainPreviewTransactionOverlay = () => {
       // Update transaction status to idle (processing)
 
       let assetCode = "";
-      if (transaction.assetId === "usdc_sol") {
-        assetCode = "usdcSol";
-      } else if (transaction.assetId === "eurc_sol") {
-        assetCode = "eurcSol";
+      if (transaction.assetId === "USD") {
+        assetCode = "USD";
+      } else if (transaction.assetId === "EUR") {
+        assetCode = "EUR";
       }
 
       const sendAmountMicro = transaction.amount * 1000000;
@@ -80,6 +83,19 @@ const WithdrawOnChainPreviewTransactionOverlay = () => {
             transaction.solAddress
           )}`
         );
+        
+        // Save the recently used Solana address
+        try {
+          console.log("Saving recently used Solana address:", {
+            user_id,
+            solanaPubKey,
+            address: transaction.solAddress
+          });
+          await saveSolAddress(user_id, transaction.solAddress);
+          console.log("Successfully saved recently used Solana address");
+        } catch (error) {
+          console.error("Failed to save recently used Solana address:", error);
+        }
       } else {
         throw new Error(result.error || "Transaction failed");
       }

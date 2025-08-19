@@ -35,7 +35,7 @@ const initialState: WithdrawOnChainState = {
     status: "idle",
     amount: 0,
     formattedAmount: "0",
-    assetId: "usdc_sol",
+    assetId: "USD",
     solAddress: null,
     fiatCurrency: "usd",
     fee: 0,

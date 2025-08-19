@@ -1,6 +1,7 @@
 import HeadlessOverlay from "@/shared/components/ui/overlay/HeadlessOverlay";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { toggleOverlay, unmountOverlays } from "./withdrawOnChainSlice";
+import { toggleOverlay, unmountOverlays, unmount } from "./withdrawOnChainSlice";
+import { toggleModal } from "../withdrawSlice";
 import TransactionProcessScreen from "@/shared/components/ui/processing-transaction-screen/TransactionProcessScreen";
 import { TransactionStatus } from "@/shared/components/ui/processing-transaction-screen/TransactionProcessStatus";
 import { selectAsset } from "@/features/assets/assetsSlice";
@@ -65,6 +66,13 @@ const WithdrawProcessingTransactionOverlay = () => {
         status={transaction.status}
         title={title}
         subtitle={subtitle}
+        onClose={() => {
+          // Close the main withdraw modal
+          dispatch(toggleModal(false));
+          // Close all other overlays and reset state
+          dispatch(unmountOverlays());
+          dispatch(unmount());
+        }}
       />
     </HeadlessOverlay>
   );

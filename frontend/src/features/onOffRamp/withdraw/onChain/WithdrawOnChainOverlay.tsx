@@ -80,6 +80,10 @@ const WithdrawOnChainOverlay = ({
           amountSelectorGroupProps={{
             label: "Select preset amount",
             onChange: (amount) => {
+              console.log("onChange called with amount:", amount);
+              console.log("asset:", asset);
+              console.log("amount === 'max':", amount === "max");
+              console.log("asset.balance:", asset?.balance);
               dispatch(updatePresetAmount(amount as PresetAmountOption));
               dispatch(
                 updateAmount({

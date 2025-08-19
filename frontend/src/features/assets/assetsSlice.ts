@@ -1667,6 +1667,10 @@ export const selectMintAddress = createSelector(
 // Simple utility function to get mint address from asset ID (doesn't require Redux state)
 export const getMintAddress = (assetId: string): string | null => {
   const asset = initialState.assets[assetId];
+  if (!asset) {
+    console.error(`getMintAddress - ERROR: assetId ${assetId} is not found in initialState.assets`);
+    console.error(`getMintAddress - Available assets:`, Object.keys(initialState.assets));
+  }
   return asset ? asset.mintAddress : null;
 };
 
