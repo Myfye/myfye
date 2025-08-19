@@ -1382,7 +1382,7 @@ export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
       getNVDAPriceQuote(dispatch),
       getAAPLPriceQuote(dispatch),
       //getAMZNPriceQuote(dispatch),
-      //getGOOGLPriceQuote(dispatch),
+      getGOOGLPriceQuote(dispatch),
       //getMSFTPriceQuote(dispatch),
       //getNFLXPriceQuote(dispatch),
       //getKOPriceQuote(dispatch),

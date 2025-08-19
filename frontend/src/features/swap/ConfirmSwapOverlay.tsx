@@ -52,6 +52,14 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
       transaction,
     });
 
+    /*
+    dispatch(
+      toggleOverlay({
+        type: "confirmSwap",
+        isOpen: false,
+      })
+    );
+    */
     dispatch(
       toggleOverlay({
         type: "processingTransaction",

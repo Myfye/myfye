@@ -87,7 +87,7 @@ const initialState: AssetsState = {
     "AAPL",
     //"MSFT",
     //"AMZN",
-    //"GOOGL",
+    "GOOGL",
     "NVDA",
     "TSLA",
     //"NFLX",

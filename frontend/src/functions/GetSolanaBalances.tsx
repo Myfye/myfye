@@ -91,6 +91,7 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
     dispatch(updateBalance({ assetId: "SUI", balance: Number(tokenBalances.sui) }));
     dispatch(updateBalance({ assetId: "DOGE", balance: Number(tokenBalances.doge) }));
     dispatch(updateBalance({ assetId: "SOL", balance: Number(solanaBalance) }));
+    dispatch(updateBalance({ assetId: "GOOGL", balance: Number(tokenBalances.googl) }));
     /* Stocks */
     dispatch(updateBalance({ assetId: "AAPL", balance: Number(tokenBalances.aapl) }));
     //dispatch(updateBalance({ assetId: "MSFT", balance: Number(tokenBalances.msft) }));
@@ -139,7 +140,6 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
     dispatch(updateBalance({ assetId: "HOOD", balance: Number(tokenBalances.hood) }));
     dispatch(updateBalance({ assetId: "CRM", balance: Number(tokenBalances.crm) }));
     dispatch(updateBalance({ assetId: "TMO", balance: Number(tokenBalances.tmo) }));
-    dispatch(updateBalance({ assetId: "GOOGL", balance: Number(tokenBalances.googl) }));
     dispatch(updateBalance({ assetId: "AMZN", balance: Number(tokenBalances.amzn) }));
     dispatch(updateBalance({ assetId: "MSTR", balance: Number(tokenBalances.mstr) }));
     dispatch(updateBalance({ assetId: "GME", balance: Number(tokenBalances.gme) }));
