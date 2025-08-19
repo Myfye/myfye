@@ -78,20 +78,8 @@ const TransactionConfirmationScreen = ({
           margin-block-start: auto;
         `}
       >
-        <div
-          css={css`
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          `}
-        >
-          <span className="heading-medium" css={css``}>
-            Total
-          </span>
-          <span className="heading-large">
-            {formatAmountWithCurrency(total, "usd")}
-          </span>
-        </div>
+
+
       </section>
       <section
         css={css`

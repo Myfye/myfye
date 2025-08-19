@@ -25,6 +25,7 @@ export const solanaApi = createApi({
       { userId: string; addresses: string[] }
     >({
       query: ({ userId, addresses }) => {
+        console.log("saveRecentlyUsedAddresses API call - userId:", userId, "addresses:", addresses);
         return {
           url: `/save_recently_used_addresses`,
           method: "POST",
@@ -34,12 +35,17 @@ export const solanaApi = createApi({
           },
         };
       },
+      transformResponse: (response) => {
+        console.log("saveRecentlyUsedAddresses API response:", response);
+        return response;
+      },
     }),
     getRecentlyUsedAddresses: build.query<
       RecentlyUsedAddressesResponse,
       string
     >({
       query: (userId) => {
+        console.log("getRecentlyUsedAddresses API call - userId:", userId);
         return {
           url: `/get_recently_used_addresses`,
           method: "POST",
@@ -47,6 +53,10 @@ export const solanaApi = createApi({
             user_id: userId,
           },
         };
+      },
+      transformResponse: (response: RecentlyUsedAddressesResponse) => {
+        console.log("getRecentlyUsedAddresses API response:", response);
+        return response;
       },
     }),
   }),

@@ -21,7 +21,7 @@ const PayController = () => {
     (state: RootState) => state.pay.transaction.formattedAmount
   );
 
-  const aassetId = useSelector(
+  const assetId = useSelector(
     (state: RootState) => state.pay.transaction.assetId
   );
 

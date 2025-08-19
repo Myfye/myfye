@@ -14,6 +14,7 @@ export interface Asset {
   symbol: string;
   mintAddress: string;
   tokenProgram: string;
+  decimals: number;
   fiatCurrency: FiatCurrency;
   color: string;
   dashboardId: "cash" | "stocks" | "crypto";

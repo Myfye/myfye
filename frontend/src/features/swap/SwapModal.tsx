@@ -94,10 +94,8 @@ const SwapModal = () => {
       assets.assets[transaction.sell.assetId];
     if (!sellAsset) return true;
 
-    // Loop through assets to make sure that user has assets within an asset
-    const totalBalance = sellAsset.assetIds
-      .map((assetId) => assets.assets[assetId])
-      .reduce((acc, val) => acc + val.balance, 0);
+    // Check the balance of the sell asset directly
+    const totalBalance = sellAsset.balance;
     // Now check the balance using the specific asset ID
     if (totalBalance < transaction.sell.amount) return true;
     return false;
