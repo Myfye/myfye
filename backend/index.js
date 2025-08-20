@@ -505,6 +505,27 @@ app.post("/new_payin", async (req, res) => {
   }
 });
 
+  app.post("/create_payout", async (req, res) => {
+    console.log("\n=== New Pay-In Request Received ===");
+
+    try {
+      const data = req.body;
+      // Call the pay-out quote service
+      const result = await create_new_payout(data);
+      console.log("Pay-out result:", JSON.stringify(result, null, 2));
+      res.json(result);
+    } catch (error) {
+      console.error("Error in /create_payout endpoint:", error);
+
+      // Check if the error has a response with data containing a message
+      if (error.response && error.response.data && error.response.data.message) {
+        res.status(400).json({ error: error.response.data.message });
+      } else {
+        res.status(500).json({ error: error.message || "Failed to create payout" });
+      }
+    }
+});
+
 app.post("/add_bank_account", sensitiveLimiter, async (req, res) => {
   console.log("\n=== Add Bank Account Request Received ===");
   console.log("Request body:", JSON.stringify(req.body, null, 2));
