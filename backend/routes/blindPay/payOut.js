@@ -1,68 +1,110 @@
-require("dotenv").config();
 const axios = require("axios");
+const { getUserByEmail } = require("../../userDb");
+const { emailService } = require("../emailService");
 
-//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
-//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
-//const TOKEN = 'USDC'
-//const NETWORK = 'base'
+const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
+const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+const TOKEN = 'USDC';
+const NETWORK = 'base';
 
-const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
-const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
-const TOKEN = 'USDB'
-const NETWORK = 'sepolia'
-
-async function create_new_payout(data) {
-
-  /*
-  curl --request POST \
-  --url https://api.blindpay.com/v1/instances/(instance ID)/quotes \
-  --header 'Authorization: Bearer YOUR_SECRET_TOKEN' \
-  --header 'Content-Type: application/json' \
-  --data '{
-  "bank_account_id": "ba_000000000000",
-  "currency_type": "sender",
-  "cover_fees": false,
-  "request_amount": 1000,
-  "network": "sepolia",
-  "token": "USDC"
-}'
-*/
-
-
-}
-
-async function get_payout_quote(data) {
-  // BlindPay API endpoint for payout quotes
-  const url = `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/quotes`;
+async function create_new_payout({ email, bank_account_id, amount, currency }) {
   try {
-    const response = await axios.post(
-      url,
+    const user = await getUserByEmail(email);
+    if (!user || !user.blind_pay_evm_wallet_id) {
+      return {
+        success: false,
+        error: "User not registered or missing wallet_id",
+      };
+    }
+
+    const quote = await get_payout_quote({
+      email,
+      bank_account_id,
+      amount,
+      currency,
+      wallet_id: user.blind_pay_evm_wallet_id,
+    });
+
+    const payoutRes = await axios.post(
+      `https://api.blindpay.xyz/instances/${BLIND_PAY_INSTANCE_ID}/payouts/evm`,
       {
-        bank_account_id: data.bank_account_id,
-        currency_type: 'sender',
-        cover_fees: false,
-        request_amount: data.request_amount, // should be in cents
-        network: NETWORK, // default to prod
-        token: TOKEN,
+        quote_id: quote.id,
       },
       {
-        headers: {
-          'Authorization': `Bearer ${BLIND_PAY_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
+        headers: { Authorization: `Bearer ${BLIND_PAY_API_KEY}` },
       }
     );
-    console.log("response:", response.data);
-    return response.data;
+
+    await send_withdraw_email({
+      email,
+      amount,
+      currency,
+      payout: payoutRes.data,
+    });
+
+    return { success: true, payout: payoutRes.data };
   } catch (error) {
-    if (error.response && error.response.data) {
-      return { error: error.response.data.error || error.response.data.message || 'BlindPay error' };
-    }
-    return { error: error.message || 'Unknown error from BlindPay' };
+    console.error("[create_new_payout] Error:", error);
+    return {
+      success: false,
+      error: error.response?.data || error.message,
+    };
   }
 }
 
-// Export functions for use in other modules
+async function get_payout_quote({ email, bank_account_id, amount, currency, wallet_id }) {
+  const quoteRes = await axios.post(
+    `https://api.blindpay.xyz/instances/${BLIND_PAY_INSTANCE_ID}/quotes`,
+    {
+      currency_type: "sender",
+      request_amount: amount.toString(),
+      token: TOKEN,
+      network: NETWORK,
+      wallet_id: wallet_id,
+      bank_account_id: bank_account_id,
+    },
+    {
+      headers: { Authorization: `Bearer ${BLIND_PAY_API_KEY}` },
+    }
+  );
+  return quoteRes.data;
+}
+
+async function send_withdraw_email({ email, amount, currency, payout }) {
+  const emailTemplateID = 'd-xxxxxxxxxxxxxxxxxxxx'; // Replace with actual template ID
+
+  let subject = `Withdrawal Initiated`;
+  let instructionLines = [];
+
+  if (currency === "MXN") {
+    subject = "Retiro Iniciado";
+    instructionLines.push(`Cantidad: ${amount} ${currency}`);
+    instructionLines.push(`Beneficiario: BlindPay, Inc.`);
+    instructionLines.push(`Este retiro será procesado en breve.`);
+  } else if (currency === "BRL") {
+    subject = "Retirada Iniciada";
+    instructionLines.push(`Quantia: ${amount} ${currency}`);
+    instructionLines.push(`Beneficiário: BlindPay, Inc.`);
+    instructionLines.push(`Esta retirada será processada em breve.`);
+  } else {
+    instructionLines.push(`Amount: ${amount} ${currency}`);
+    instructionLines.push(`Beneficiary: BlindPay, Inc.`);
+    instructionLines.push(`This withdrawal will be processed shortly.`);
+  }
+
+  try {
+    await emailService({
+      templateId: emailTemplateID,
+      emailAddress: email,
+      subject,
+      instructionLines
+    });
+    console.log("Withdraw email sent successfully");
+  } catch (err) {
+    console.error("Error sending withdraw email:", err);
+  }
+}
+
 module.exports = {
   create_new_payout,
   get_payout_quote,
