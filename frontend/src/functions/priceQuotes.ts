@@ -1,4 +1,5 @@
 import { updateExchangeRateUSD, getMintAddress } from "../features/assets/assetsSlice.ts";
+import { ALPHA_VANTAGE_API_KEY } from '../env';
 
 // Reusable function to get swap quotes from Jupiter API
 const getSwapQuote = async (
@@ -1365,19 +1366,105 @@ const getWMTPriceQuote = async (
   }
 };
 
+// Earn assets price quote functions
+const getCETESPriceQuote = async (
+  dispatch: Function
+): Promise<boolean> => {
+  try {
+    const quote = await getSwapQuote(getMintAddress("CETES"));
+    const priceInUSD = quote.outAmount / 1000000;
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "CETES",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+    console.log('QUOTE CETES price quote', priceInUSD)
+    return true;
+  } catch (error) {
+    console.error('QUOTE ERROR getting CETES price quote:', error)
+    return false;
+  }
+};
+
+const getEUROBPriceQuote = async (
+  dispatch: Function
+): Promise<boolean> => {
+  try {
+    const quote = await getSwapQuote(getMintAddress("EUROB"));
+    const priceInUSD = quote.outAmount / 1000000;
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "EUROB",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+    console.log('QUOTE EUROB price quote', priceInUSD)
+    return true;
+  } catch (error) {
+    console.error('QUOTE ERROR getting EUROB price quote:', error)
+    return false;
+  }
+};
+
+const getGILTSPriceQuote = async (
+  dispatch: Function
+): Promise<boolean> => {
+  try {
+    const quote = await getSwapQuote(getMintAddress("GILTS"));
+    const priceInUSD = quote.outAmount / 1000000;
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "GILTS",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+    console.log('QUOTE GILTS price quote', priceInUSD)
+    return true;
+  } catch (error) {
+    console.error('QUOTE ERROR getting GILTS price quote:', error)
+    return false;
+  }
+};
+
+const getTESOUROPriceQuote = async (
+  dispatch: Function
+): Promise<boolean> => {
+  try {
+    const quote = await getSwapQuote(getMintAddress("TESOURO"));
+    const priceInUSD = quote.outAmount / 1000000;
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "TESOURO",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+    console.log('QUOTE TESOURO price quote', priceInUSD)
+    return true;
+  } catch (error) {
+    console.error('QUOTE ERROR getting TESOURO price quote:', error)
+    return false;
+  }
+};
+
 // Export function that calls all price quotes with Promise.all
 export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
   console.log('QUOTE GETTING PRICE QUOTES')
   try {
     await Promise.all([
       // Crypto & Cash assets
-      getUSDYPriceQuote(dispatch),
       getBTCPriceQuote(dispatch),
       getEURPriceQuote(dispatch),
       getSOLPriceQuote(dispatch),
       getXRPPriceQuote(dispatch),
       getSUIPriceQuote(dispatch),
       getDOGEPriceQuote(dispatch),
+      // Earn assets
+      getUSDYPriceQuote(dispatch),
+      getCETESPriceQuote(dispatch),
+      //getEUROBPriceQuote(dispatch),
+      //getGILTSPriceQuote(dispatch),
+      //getTESOUROPriceQuote(dispatch),
       // Stock assets
       getNVDAPriceQuote(dispatch),
       getAAPLPriceQuote(dispatch),
