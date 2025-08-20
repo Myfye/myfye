@@ -613,7 +613,7 @@ export const withdrawApi = createApi({
     createPayout: build.query<CreatePayoutResponse, CreatePayoutQuery>({
       query: ({ bankAccountId, amount }) => {
         return {
-          url: `/payout_quote`,
+          url: `/create_payout`,
           method: "POST",
           mode: "cors",
           credentials: "include",
