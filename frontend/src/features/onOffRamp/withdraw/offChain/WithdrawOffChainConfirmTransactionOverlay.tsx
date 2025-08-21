@@ -90,6 +90,13 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
       });
 
       if (isSuccess && data) {
+        // Check the actual success status from the API response
+        if (data.success === false) {
+          console.error("❌ Payout creation failed:", data.error);
+          toast.error(data.error?.message || "Failed to create payout");
+          return;
+        }
+        
         console.log("✅ Payout created successfully:", data);
         console.log("Payout ID:", data.id);
         console.log("Blindpay quotation:", data.blindpay_quotation);
@@ -104,6 +111,7 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
         console.log("Receiver local amount:", data.receiverLocalAmount);
       } else if (isError) {
         console.error("❌ Error creating payout:", error);
+        toast.error("Failed to create payout. Please try again.");
       }
     } catch (error) {
       console.error("❌ Exception in getPayout:", error);

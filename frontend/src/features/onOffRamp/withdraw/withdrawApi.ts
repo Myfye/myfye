@@ -627,6 +627,20 @@ export const withdrawApi = createApi({
           },
         };
       },
+      transformResponse: (response: any) => {
+        console.log('🔍 withdrawApi - createPayout transformResponse called with:', response);
+        
+        // Check if the response indicates an error
+        if (response && response.success === false) {
+          console.log('❌ withdrawApi - Response indicates failure:', response);
+          // Don't throw here, let the error handling in the component deal with it
+          // This allows us to access the detailed error information
+          return response;
+        }
+        
+        console.log('✅ withdrawApi - Response indicates success:', response);
+        return response;
+      },
     }),
     addBankAccount: build.query<AddBankAccountResponse, AddBankAccountQuery>({
       query: ({
