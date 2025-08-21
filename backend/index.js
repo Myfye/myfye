@@ -506,7 +506,7 @@ app.post("/new_payin", async (req, res) => {
 });
 
   app.post("/create_payout", async (req, res) => {
-    console.log("\n=== New Pay-In Request Received ===");
+    console.log("\n=== New Pay-Out Request Received ===");
 
     try {
       const data = req.body;

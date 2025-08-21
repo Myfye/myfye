@@ -12,14 +12,20 @@ const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
 const TOKEN = 'USDB'
 const NETWORK = 'base_sepolia';
 
-async function create_new_payout({ user_id, bank_account_id, amount, currency }) {
+async function create_new_payout({ data }) {
   try {
+
+    const user_id = data.user_id;
+    const bank_account_id = data.bank_account_id;
+    const amount = data.amount;
+    const currency = data.currency;
+
     const user = await getUserById(user_id);
 
     console.log("User:", user);
-    console.log("User ID:", user_id);
-    console.log("Bank Account ID:", bank_account_id);
+    console.log("User ID:", bank_account_id);
     console.log("Amount:", amount);
+    console.log("currency:", currency);
 
     if (!user || !user.blind_pay_evm_wallet_id) {
       return {
@@ -33,6 +39,8 @@ async function create_new_payout({ user_id, bank_account_id, amount, currency })
       amount,
       wallet_id: user.blind_pay_evm_wallet_id,
     });
+
+    console.log("Quote:", quote);
 
     const payoutRes = await axios.post(
       `https://api.blindpay.com/instances/${BLIND_PAY_INSTANCE_ID}/payouts/evm`,
