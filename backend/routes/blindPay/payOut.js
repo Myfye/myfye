@@ -37,6 +37,8 @@ async function create_new_payout(data) {
 
     const user = await getUserById(user_id);
 
+    const sender_wallet_address = data.evm_pub_key;
+
     console.log("User:", user);
     console.log("Amount:", amount);
     console.log("currency:", currency);
@@ -62,7 +64,7 @@ async function create_new_payout(data) {
         `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/payouts/evm`,
         {
           quote_id: quote.id,
-          sender_wallet_address: user.blind_pay_evm_wallet_id,
+          sender_wallet_address: sender_wallet_address,
         },
         {
           headers: { 
