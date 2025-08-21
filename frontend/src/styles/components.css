@@ -64,6 +64,15 @@
         --_border-color-active: var(--clr-primary-active);
         --_color-active: var(--clr-text-on-primary);
       }
+      &[data-color="blue"] {
+        --_background-color: #0056CC;
+        --_border-color: #0056CC;
+        --_color: var(--clr-text-on-primary);
+
+        --_background-color-active: #004499;
+        --_border-color-active: #004499;
+        --_color-active: var(--clr-text-on-primary);
+      }
       &[data-color="neutral"] {
         --_background-color: var(--clr-surface-raised);
         --_border-color: var(--clr-neutral-300);

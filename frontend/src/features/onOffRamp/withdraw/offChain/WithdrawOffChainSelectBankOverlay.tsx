@@ -3,7 +3,15 @@ import { useDispatch } from "react-redux";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useGetUserBankAccountsQuery } from "@/features/users/usersApi";
-import { toggleOverlay, updateBankInfo } from "./withdrawOffChainSlice.ts";
+import { 
+  toggleOverlay, 
+  updateBankInfo, 
+  setBankAccountsLoading, 
+  setBankAccountsError, 
+  setBankAccounts,
+  clearBankAccounts
+} from "./withdrawOffChainSlice.ts";
+import { BankAccountResponse } from "./withdrawOffChain.types";
 import NoBankScreen from "./_components/NoBankScreen.tsx";
 import { useAppSelector } from "@/redux/hooks.tsx";
 import RingLoader from "@/shared/components/ui/loading/spinners/RingLoader.tsx";
@@ -11,6 +19,7 @@ import { PlusIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { Button as AriaButton } from "react-aria-components";
 import IconCard from "@/shared/components/ui/card/IconCard.tsx";
 import truncateBankAccountNumber from "@/shared/utils/bankUtils.ts";
+import { useEffect } from "react";
 
 const WithdrawOffChainSelectBankOverlay = () => {
   const dispatch = useDispatch();
@@ -44,15 +53,96 @@ const WithdrawOffChainSelectBankOverlay = () => {
     direction: "vertical",
   };
 
+  // Get bank accounts from Redux state
+  const bankAccounts = useAppSelector((state) => state.withdrawOffChain.bankAccounts);
+  
+  // Use RTK Query to fetch bank accounts and sync with Redux state
   const {
     isError,
     isLoading,
     isSuccess,
     data: bankAccountsData,
     refetch,
-  } = useGetUserBankAccountsQuery(userId);
+    error,
+  } = useGetUserBankAccountsQuery(userId, {
+    skip: bankAccounts.data.length > 0, // Skip if we already have data
+  });
 
-  if (isError || !bankAccountsData || !bankAccountsData?.success) {
+  // Sync RTK Query data with Redux state
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(setBankAccountsLoading(true));
+    } else if (isError) {
+      dispatch(setBankAccountsLoading(false));
+      dispatch(setBankAccountsError(true));
+    } else if (isSuccess && bankAccountsData) {
+      console.log('Processing bank accounts data:', bankAccountsData);
+      console.log('Data type:', typeof bankAccountsData);
+      console.log('Is array:', Array.isArray(bankAccountsData));
+      
+      // Handle the response structure - it should have success, data, and message
+      let accountsArray: BankAccountResponse[] = [];
+      
+      if (bankAccountsData && typeof bankAccountsData === 'object' && 'success' in bankAccountsData) {
+        if (bankAccountsData.success && bankAccountsData.data) {
+          accountsArray = Array.isArray(bankAccountsData.data) ? bankAccountsData.data : [];
+        }
+      }
+      
+      console.log('Processed accounts array:', accountsArray);
+      
+      // Debug each account to see the structure
+      accountsArray.forEach((account, index) => {
+        console.log(`Account ${index}:`, account);
+      });
+      
+      // Transform the data to match our BankAccount interface
+      const transformedData = accountsArray
+        .filter((account: BankAccountResponse) => {
+          const hasValidData = account.id && account.name && account.spei_clabe;
+          if (!hasValidData) {
+            console.log('Filtering out account with invalid data:', account);
+          }
+          return hasValidData;
+        })
+        .map((account: BankAccountResponse) => ({
+          id: account.id,
+          name: account.name,
+          beneficiary_name: account.beneficiary_name,
+          spei_institution_code: account.spei_institution_code,
+          spei_clabe: account.spei_clabe,
+        }));
+      
+      console.log('Transformed data:', transformedData);
+      dispatch(setBankAccounts(transformedData));
+    }
+  }, [isLoading, isError, isSuccess, bankAccountsData, dispatch]);
+
+  // Clear bank accounts when component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(clearBankAccounts());
+    };
+  }, [dispatch]);
+
+  // Log state for debugging
+  console.log('WithdrawOffChainSelectBankOverlay State:', {
+    reduxBankAccounts: bankAccounts,
+    rtkQueryState: { isError, isLoading, isSuccess },
+    rtkQueryData: bankAccountsData,
+    userId,
+    bankAccountsCount: bankAccounts.data.length,
+  });
+
+  if (bankAccounts.isError) {
+    // Log detailed error information for debugging
+    console.error('WithdrawOffChainSelectBankOverlay Error Details:', {
+      reduxError: bankAccounts.isError,
+      rtkQueryError: isError,
+      userId,
+      bankAccountsData,
+    });
+
     return (
       <>
         <Overlay {...overlayProps}>
@@ -103,7 +193,11 @@ const WithdrawOffChainSelectBankOverlay = () => {
                   again.
                 </p>
               </div>
-              <Button onPress={() => refetch()} isLoading={isLoading} expand>
+              <Button onPress={() => {
+                dispatch(setBankAccountsLoading(true));
+                dispatch(setBankAccountsError(false));
+                refetch();
+              }} isLoading={bankAccounts.isLoading} expand>
                 Retry
               </Button>
             </section>
@@ -113,7 +207,7 @@ const WithdrawOffChainSelectBankOverlay = () => {
     );
   }
 
-  if (isLoading) {
+  if (bankAccounts.isLoading) {
     return (
       <>
         <Overlay {...overlayProps}>
@@ -131,7 +225,7 @@ const WithdrawOffChainSelectBankOverlay = () => {
     );
   }
 
-  if (isSuccess && bankAccountsData.length === 0) {
+  if (bankAccounts.data.length === 0) {
     return (
       <>
         <Overlay {...overlayProps}>
@@ -162,23 +256,22 @@ const WithdrawOffChainSelectBankOverlay = () => {
             `}
           >
             <menu>
-              {bankAccountsData.map((account) => {
+              {bankAccounts.data.map((account) => {
                 return (
-                  <li key={account.bank_account_id}>
+                  <li key={account.id}>
                     <AriaButton
                       css={css`
                         width: 100%;
                       `}
                       onPress={() => {
+                        console.log(account);
                         dispatch(
                           updateBankInfo({
-                            id: account.bank_account_id,
-                            accountName: account.blind_pay_details?.name,
-                            beneficiaryName:
-                              account.blind_pay_details?.beneficiary_name,
-                            code: account.blind_pay_details
-                              ?.spei_institution_code,
-                            speiClabe: account.blind_pay_details?.spei_clabe,
+                            id: account.id,
+                            accountName: account.name,
+                            beneficiaryName: account.beneficiary_name,
+                            code: account.spei_institution_code,
+                            speiClabe: account.spei_clabe,
                           })
                         );
                         dispatch(
@@ -189,9 +282,9 @@ const WithdrawOffChainSelectBankOverlay = () => {
                       <IconCard
                         icon="bank_neutral"
                         leftContent={{
-                          title: account.blind_pay_details?.name ?? "",
+                          title: account.name,
                           subtitle: truncateBankAccountNumber(
-                            account.blind_pay_details?.spei_clabe ?? ""
+                            account.spei_clabe
                           ),
                         }}
                       />

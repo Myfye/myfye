@@ -46,35 +46,15 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       assets.assets[transaction.assetId];
     if (!sellAsset) return;
 
-    // Get all assets associated with this asset
-    const associatedAssets = sellAsset.assetIds.map(
-      (assetId) => assets.assets[assetId]
-    );
-
-    // Calculate the total balance in USD
-    const totalBalance = associatedAssets.reduce(
-      (total, asset) => total + asset.balance,
-      0
-    );
+    // Calculate the total balance in USD for the selected asset
+    const totalBalance = sellAsset.balance * sellAsset.exchangeRateUSD;
 
     // Fix: Ensure sendAmount is capped at the totalBalance
     const sendAmount =
       transaction.amount > totalBalance ? totalBalance : transaction.amount;
 
-    const sendAmountMicro = sendAmount * 1000000;
+    const sendAmountMicro = sendAmount * Math.pow(10, sellAsset.decimals);
 
-    let assetCode = "";
-    if (transaction.assetId === "us_dollar_yield") {
-      assetCode = "usdySol";
-    } else if (transaction.assetId === "us_dollar") {
-      assetCode = "usdcSol";
-    } else if (transaction.assetId === "sol") {
-      assetCode = "sol";
-    } else if (transaction.assetId === "euro") {
-      assetCode = "eurcSol";
-    } else if (transaction.assetId === "btc") {
-      assetCode = "btcSol";
-    }
 
     console.log("sendAmount", sendAmount);
     console.log("transaction:", transaction);
@@ -84,7 +64,6 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       transaction.user.solana_pub_key
     );
     console.log("transaction.amount:", transaction.amount);
-    console.log("assetCode", assetCode);
     console.log("wallet:", wallet);
     console.log("totalBalance:", totalBalance); // Add this log to verify the total balance
 
@@ -92,7 +71,7 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       solanaPubKey,
       transaction.user.solana_pub_key,
       sendAmountMicro, // Use sendAmount instead of transaction.amount
-      assetCode,
+      transaction.assetId,
       wallet
     );
 
@@ -107,7 +86,12 @@ const SendConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       // TODO save transaction to db
 
       // TODO update user balance
-      // TODO update suer interface
+      const currentBalance = sellAsset.balance;
+      const newBalance = currentBalance - sendAmount;
+      dispatch(updateBalance({ 
+        assetId: transaction.assetId, 
+        balance: newBalance 
+      }));
     } else {
       console.error("Transaction failed:", result.error);
       toast.error(`Error sending money. Please try again`);

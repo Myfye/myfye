@@ -1,15 +1,19 @@
 const axios = require("axios");
-const { getUserByEmail } = require("../../userDb");
+const { getUserByEmail, getUserById } = require("../userDb");
 const { emailService } = require("../emailService");
 
-const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
-const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
-const TOKEN = 'USDC';
-const NETWORK = 'base';
+//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
+//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+//const TOKEN = 'USDC';
+//const NETWORK = 'base';
 
-async function create_new_payout({ email, bank_account_id, amount, currency }) {
+const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
+const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+const TOKEN = 'USDB'
+
+async function create_new_payout({ userId, bank_account_id, amount, currency }) {
   try {
-    const user = await getUserByEmail(email);
+    const user = await getUserById(userId);
     if (!user || !user.blind_pay_evm_wallet_id) {
       return {
         success: false,
@@ -18,10 +22,8 @@ async function create_new_payout({ email, bank_account_id, amount, currency }) {
     }
 
     const quote = await get_payout_quote({
-      email,
       bank_account_id,
       amount,
-      currency,
       wallet_id: user.blind_pay_evm_wallet_id,
     });
 
@@ -36,7 +38,7 @@ async function create_new_payout({ email, bank_account_id, amount, currency }) {
     );
 
     await send_withdraw_email({
-      email,
+      email: user.email,
       amount,
       currency,
       payout: payoutRes.data,
@@ -52,7 +54,7 @@ async function create_new_payout({ email, bank_account_id, amount, currency }) {
   }
 }
 
-async function get_payout_quote({ email, bank_account_id, amount, currency, wallet_id }) {
+async function get_payout_quote({ bank_account_id, amount, wallet_id }) {
   const quoteRes = await axios.post(
     `https://api.blindpay.xyz/instances/${BLIND_PAY_INSTANCE_ID}/quotes`,
     {

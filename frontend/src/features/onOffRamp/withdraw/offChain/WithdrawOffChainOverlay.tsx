@@ -42,6 +42,7 @@ const WithdrawOffChainOverlay = () => {
 
   const [triggerCreatePayout, { isLoading }] = useLazyCreatePayoutQuery();
 
+  /*
     const approvalData = encodeFunctionData({
               abi: [
                 {
@@ -85,7 +86,9 @@ const WithdrawOffChainOverlay = () => {
       return toast.error("Error creating payout. Please try again.");
 
     dispatch(toggleOverlay({ type: "confirmTransaction", isOpen: true }));
+    
   };
+  */
 
   const numberPadProps = useNumberPad({
     onStartDelete: (input) => {
@@ -190,7 +193,6 @@ const WithdrawOffChainOverlay = () => {
             },
           }}
           onSubmit={async () => {
-            handleWithdraw();
             dispatch(
               toggleOverlay({ type: "confirmTransaction", isOpen: true })
             );

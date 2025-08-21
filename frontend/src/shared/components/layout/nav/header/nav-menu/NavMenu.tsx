@@ -9,7 +9,8 @@ import {
   PaperPlaneTilt,
 } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector } from "@/redux/hooks";
 
 import { css } from "@emotion/react";
 import { usePrivy } from "@privy-io/react-auth";
@@ -18,13 +19,20 @@ import { RootState } from "@/redux/store";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 import { createPortal } from "react-dom";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 
 const NavMenu = () => {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const currentUserEmail = useSelector(
     (state: RootState) => state.userWalletData.currentUserEmail
   );
   const walletData = useSelector((state: RootState) => state.userWalletData);
+
+  const currentUserKYCStatus = useAppSelector(
+    (state) => state.userWalletData.currentUserKYCStatus
+  );
+  
   const name =
     walletData.currentUserFirstName + walletData.currentUserLastName
       ? " " + walletData.currentUserLastName
@@ -46,6 +54,11 @@ const NavMenu = () => {
     if (!disableLogout) {
       logout();
     }
+  };
+
+  const handleVerifyKYC = () => {
+    dispatch(toggleKYCModal({ isOpen: true }));
+    closeMenu(); // Close the nav menu when opening KYC modal
   };
 
   // Function to truncate long email addresses
@@ -203,13 +216,16 @@ const NavMenu = () => {
                       `}
                     >
                       <ButtonGroup direction="vertical" expand>
-                        <ButtonGroupItem
-                          variant="primary"
-                          expand
-                          icon={ShieldCheck}
-                        >
-                          Verify KYC
-                        </ButtonGroupItem>
+                        {currentUserKYCStatus !== 'APPROVED' && (
+                          <ButtonGroupItem
+                            variant="primary"
+                            expand
+                            icon={ShieldCheck}
+                            onPress={handleVerifyKYC}
+                          >
+                            Verify KYC
+                          </ButtonGroupItem>
+                        )}
                         <ButtonGroupItem
                           onPress={signOut}
                           variant="secondary"

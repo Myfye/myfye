@@ -66,8 +66,10 @@ export const getUsdAmount = (
   amount: number | null
 ) => {
   if (!amount) return 0;
-  if (!assetId) throw new Error("Invalid asset id");
-  return amount * assets.assets[assetId].exchangeRateUSD;
+  if (!assetId) return 0;
+  const asset = assets.assets[assetId];
+  if (!asset) return 0;
+  return amount * asset.exchangeRateUSD;
 };
 
 export const formatUsdAmount = (amount: number | null) =>

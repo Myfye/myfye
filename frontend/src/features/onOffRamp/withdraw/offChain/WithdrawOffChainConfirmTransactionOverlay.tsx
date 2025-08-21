@@ -16,6 +16,7 @@ import { selectAsset } from "@/features/assets/assetsSlice";
 import { useSignTransaction, useWallets } from "@privy-io/react-auth";
 import { base } from "viem/chains";
 import { useLazyGetBaseRelayerQuery } from "@/features/base_relayer/baseRelayerApi";
+import { useLazyCreatePayoutQuery } from "../withdrawApi";
 import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";
 import truncateBankAccountNumber from "@/shared/utils/bankUtils";
 
@@ -44,8 +45,64 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
   const headingId = useId();
 
   const [triggerBaseRelayer, { isLoading }] = useLazyGetBaseRelayerQuery();
+  const [triggerCreatePayout, { isLoading: isPayoutLoading }] = useLazyCreatePayoutQuery();
+
+  const getPayout = async () => {
+    console.log("Getting payout for transaction:", transaction);
+    
+    if (!transaction.bankInfo.id) {
+      console.error("No bank account ID found in transaction");
+      return;
+    }
+
+    if (!transaction.amount) {
+      console.error("No amount found in transaction");
+      return;
+    }
+
+    try {
+      console.log("Calling createPayout with:", {
+        bankAccountId: transaction.bankInfo.id,
+        amount: transaction.amount
+      });
+
+      const { data, isSuccess, isError, error } = await triggerCreatePayout({
+        bankAccountId: transaction.bankInfo.id,
+        amount: transaction.amount
+      });
+
+      console.log("CreatePayout response:", {
+        isSuccess,
+        isError,
+        data,
+        error
+      });
+
+      if (isSuccess && data) {
+        console.log("✅ Payout created successfully:", data);
+        console.log("Payout ID:", data.id);
+        console.log("Blindpay quotation:", data.blindpay_quotation);
+        console.log("Commercial quotation:", data.commercial_quotation);
+        console.log("Receiver amount:", data.receiver_amount);
+        console.log("Sender amount:", data.sender_amount);
+        console.log("Contract details:", data.contract);
+        console.log("Expires at:", new Date(data.expires_at * 1000).toISOString());
+        console.log("Description:", data.description);
+        console.log("Flat fee:", data.flatFee);
+        console.log("Partner fee amount:", data.partnerFeeAmount);
+        console.log("Receiver local amount:", data.receiverLocalAmount);
+      } else if (isError) {
+        console.error("❌ Error creating payout:", error);
+      }
+    } catch (error) {
+      console.error("❌ Exception in getPayout:", error);
+    }
+  };
 
   const handleConfirm = async () => {
+    // Get payout first
+    await getPayout();
+    
     if (!wallet) {
       throw new Error("No EVM wallet available");
     }

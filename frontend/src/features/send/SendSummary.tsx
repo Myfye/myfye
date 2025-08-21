@@ -24,6 +24,12 @@ const AssetSection = ({
       : selectAsset(state, assetId)
   );
 
+  // Debug logging
+  console.log("AssetSection - assetId:", assetId);
+  console.log("AssetSection - asset:", asset);
+  console.log("AssetSection - amount:", amount);
+  console.log("AssetSection - assets:", assets);
+
   const usdAmount = getUsdAmount(assetId, assets, amount);
 
   const formattedUsdAmount = formatUsdAmount(usdAmount);
@@ -102,6 +108,12 @@ const UserSection = ({ user }: { user: User }) => {
 
 const SendSummary = () => {
   const transaction = useSelector((state: RootState) => state.send.transaction);
+  
+  // Debug logging
+  console.log("SendSummary - transaction:", transaction);
+  console.log("SendSummary - assetId:", transaction.assetId);
+  console.log("SendSummary - amount:", transaction.amount);
+  
   return (
     <div
       className="swap-coin-status"
@@ -115,7 +127,7 @@ const SendSummary = () => {
       `}
     >
       <section>
-        <AssetSection assetId={"us_dollar_yield"} amount={0} />
+        <AssetSection assetId={transaction.assetId} amount={transaction.amount} />
       </section>
       <section
         className="icon-wrapper"

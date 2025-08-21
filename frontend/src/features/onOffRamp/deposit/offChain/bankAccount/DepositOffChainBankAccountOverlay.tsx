@@ -15,6 +15,7 @@ import SelectCurrencyModal from "../SelectCurrencyModal";
 import { useLazyCreatePayinQuery } from "../../depositApi";
 import toast from "react-hot-toast/headless";
 import AmountSelectScreen from "@/shared/components/ui/amount-select-screen/AmountSelectScreen";
+import { useState } from "react";
 
 const DepositOffChainBankAccountOverlay = () => {
   const dispatch = useAppDispatch();
@@ -50,9 +51,14 @@ const DepositOffChainBankAccountOverlay = () => {
 
   const currency = currencyMap.currencies[transaction.payin.currency];
 
-  const [payinTrigger, { isLoading }] = useLazyCreatePayinQuery();
+  const [payinTrigger] = useLazyCreatePayinQuery();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleNextPress = async () => {
+    if (isSubmitting) return; // Prevent multiple submissions
+    
+    setIsSubmitting(true);
+    try {
     if (!transaction.amount) return;
     if (!transaction.payin.currency) return;
     console.log(
@@ -61,14 +67,24 @@ const DepositOffChainBankAccountOverlay = () => {
       transaction.payin.currency.toUpperCase(),
       userEmail
     );
-    const { data, isError } = await payinTrigger({
+    const { data, isError, error } = await payinTrigger({
       amount: transaction.amount,
       blindPayEvmWalletId: blindPayEvmWalletId,
       currency: transaction.payin.currency.toUpperCase(),
       email: userEmail,
     });
-    if (isError || !data)
-      return toast.error("Error creating Payin. Please try again");
+    if (isError || !data) {
+      console.error("Payin creation error:", error);
+      console.error("Error response:", error?.data);
+      console.error("Error status:", error?.status);
+      
+      // Use the actual error message from the API if available
+      const errorMessage = typeof error?.data === 'string' 
+        ? error.data 
+        : "Error creating Payin. Please try again";
+      toast.error(errorMessage);
+      return;
+    }
     dispatch(
       updatePayin({
         currency: data?.currency.toLowerCase(),
@@ -85,6 +101,9 @@ const DepositOffChainBankAccountOverlay = () => {
       })
     );
     dispatch(toggleOverlay({ type: "bankAccountInstructions", isOpen: true }));
+  } finally {
+    setIsSubmitting(false);
+  }
   };
 
   return (
@@ -166,7 +185,7 @@ const DepositOffChainBankAccountOverlay = () => {
           onSubmit={handleNextPress}
           submitLabel={"Get instructions"}
           submitButtonProps={{
-            isLoading,
+            isLoading: isSubmitting,
             isDisabled: transaction.amount === 0,
           }}
         />

@@ -12,11 +12,14 @@ import WithdrawOffChainBankPickerOverlay from "./offChain/WithdrawOffChainBankPi
 import WithdrawOffChainBankInputOverlay from "./offChain/WithdrawOffChainBankInputOverlay";
 import WithdrawOffChainSelectAssetOverlay from "./offChain/WithdrawOffChainSelectAssetOverlay";
 import WithdrawProcessingTransactionOverlay from "./onChain/WithdrawOnChainProcessingTransactionOverlay";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 
 const WithdrawModal = () => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector((state) => state.withdraw.modal.isOpen);
-
+  const currentUserKYCStatus = useAppSelector(
+    (state) => state.userWalletData.currentUserKYCStatus
+  );
   return (
     <>
       <Modal
@@ -57,12 +60,16 @@ const WithdrawModal = () => {
               title="To bank account"
               description="Send money to bank account"
               onPress={() => {
-                dispatch(
-                  toggleOffChainOverlay({
-                    type: "withdrawOffChain",
-                    isOpen: true,
-                  })
-                );
+                if (currentUserKYCStatus !== 'APPROVED') {
+                  return dispatch(toggleKYCModal({ isOpen: true }));
+                } else {
+                  dispatch(
+                    toggleOffChainOverlay({
+                      type: "withdrawOffChain",
+                      isOpen: true,
+                    })
+                  );
+                }
               }}
             />
           </li>

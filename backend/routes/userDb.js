@@ -74,6 +74,17 @@ async function getUserByPrivyId(privyId) {
   }
 }
 
+async function getUserById(userId) {
+  const query = "SELECT * FROM users WHERE uid = $1";
+  try {
+    const result = await pool.query(query, [userId]);
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error("Error getting user by ID:", error);
+    throw error;
+  }
+}
+
 // Add a function to update Blind Pay IDs
 async function updateBlindPayIds(
   email,
@@ -403,6 +414,7 @@ module.exports = {
   updateEvmPubKey,
   updateSolanaPubKey,
   getUserByPrivyId,
+  getUserById,
   getAllUsers,
   updateBlindPayReceiverId,
   updateBlindPayEvmWalletId,
