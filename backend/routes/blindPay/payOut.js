@@ -45,12 +45,7 @@ async function create_new_payout({ user_id, bank_account_id, amount, currency })
       }
     );
 
-    await send_withdraw_email({
-      email: user.email,
-      amount,
-      currency,
-      payout: payoutRes.data,
-    });
+    // to do sned withdraw email
 
     return { success: true, payout: payoutRes.data };
   } catch (error) {
