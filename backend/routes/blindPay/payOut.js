@@ -38,7 +38,6 @@ async function create_new_payout(data) {
     const user = await getUserById(user_id);
 
     console.log("User:", user);
-    console.log("User ID:", bank_account_id);
     console.log("Amount:", amount);
     console.log("currency:", currency);
 
@@ -52,20 +51,33 @@ async function create_new_payout(data) {
     const quote = await get_payout_quote({
       bank_account_id,
       amount,
-      wallet_id: user.blind_pay_evm_wallet_id,
+      wallet_id: user.blind_pay_evm_wallet_id, // Keep for logging purposes
     });
 
     console.log("Quote:", quote);
 
-    const payoutRes = await axios.post(
-      `https://api.blindpay.com/instances/${BLIND_PAY_INSTANCE_ID}/payouts/evm`,
-      {
-        quote_id: quote.id,
-      },
-      {
-        headers: { Authorization: `Bearer ${BLIND_PAY_API_KEY}` },
-      }
-    );
+    let payoutRes;
+    try {
+      payoutRes = await axios.post(
+        `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/payouts/evm`,
+        {
+          quote_id: quote.id,
+          sender_wallet_address: user.blind_pay_evm_wallet_id,
+        },
+        {
+          headers: { 
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${BLIND_PAY_API_KEY}` 
+          },
+        }
+      );
+      console.log("Payout API response:", payoutRes.data);
+    } catch (error) {
+      console.error("[payout API] Error:", error);
+      console.error("[payout API] Error response:", error.response?.data);
+      console.error("[payout API] Error status:", error.response?.status);
+      throw error;
+    }
 
     // to do sned withdraw email
     send_withdraw_email({
@@ -78,6 +90,8 @@ async function create_new_payout(data) {
     return { success: true, payout: payoutRes.data };
   } catch (error) {
     console.error("[create_new_payout] Error:", error);
+    console.error("[create_new_payout] Error response:", error.response?.data);
+    console.error("[create_new_payout] Error status:", error.response?.status);
     return {
       success: false,
       error: error.response?.data || error.message,
@@ -88,27 +102,38 @@ async function create_new_payout(data) {
 async function get_payout_quote({ bank_account_id, amount, wallet_id }) {
   console.log("get_payout_quote called with:", { bank_account_id, amount, wallet_id });
 
-  if (!bank_account_id || !amount || !wallet_id) {
-    throw new Error("Missing required fields: bank_account_id, amount, or wallet_id");
+  if (!bank_account_id || !amount) {
+    throw new Error("Missing required fields: bank_account_id or amount");
   }
 
   const request_amount = amount * 100;
 
-  const quoteRes = await axios.post(
-    `https://api.blindpay.com/instances/${BLIND_PAY_INSTANCE_ID}/quotes`,
-    {
-      currency_type: "sender",
-      request_amount: request_amount,
-      token: TOKEN,
-      network: NETWORK,
-      wallet_id: wallet_id,
-      bank_account_id: bank_account_id,
-    },
-    {
-      headers: { Authorization: `Bearer ${BLIND_PAY_API_KEY}` },
-    }
-  );
-  return quoteRes.data;
+  try {
+    const quoteRes = await axios.post(
+      `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/quotes`,
+      {
+        bank_account_id: bank_account_id,
+        currency_type: "sender",
+        cover_fees: true,
+        request_amount: request_amount,
+        network: NETWORK,
+        token: TOKEN,
+      },
+      {
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${BLIND_PAY_API_KEY}` 
+        },
+      }
+    );
+    console.log("Quote API response:", quoteRes.data);
+    return quoteRes.data;
+  } catch (error) {
+    console.error("[get_payout_quote] Error:", error);
+    console.error("[get_payout_quote] Error response:", error.response?.data);
+    console.error("[get_payout_quote] Error status:", error.response?.status);
+    throw error;
+  }
 }
 
 async function send_withdraw_email({ email, amount, currency, payout }) {
