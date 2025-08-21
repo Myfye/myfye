@@ -35,7 +35,7 @@ async function create_new_payout({ user_id, bank_account_id, amount, currency })
     });
 
     const payoutRes = await axios.post(
-      `https://api.blindpay.xyz/instances/${BLIND_PAY_INSTANCE_ID}/payouts/evm`,
+      `https://api.blindpay.com/instances/${BLIND_PAY_INSTANCE_ID}/payouts/evm`,
       {
         quote_id: quote.id,
       },

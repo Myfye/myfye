@@ -66,7 +66,7 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
 
     try {
       // Get currency from asset or use default
-      const currency = asset?.fiatCurrency?.toUpperCase() || "MXN";
+      const currency = "MXN";
       
       console.log("Calling createPayout with:", {
         userId: user_id,
