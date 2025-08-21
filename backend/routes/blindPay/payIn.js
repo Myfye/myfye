@@ -2,13 +2,13 @@ require("dotenv").config();
 const axios = require("axios");
 const { emailService } = require("../emailService");
 
-//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
-//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
-//const TOKEN = 'USDC'
+const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
+const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+const TOKEN = 'USDC'
 
-const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
-const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
-const TOKEN = 'USDB'
+//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
+//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+//const TOKEN = 'USDB'
 
 async function create_new_payin(data) {
 
