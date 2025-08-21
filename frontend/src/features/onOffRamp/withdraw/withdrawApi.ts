@@ -26,6 +26,7 @@ interface CreatePayoutResponse {
 }
 
 interface CreatePayoutQuery {
+  userId: string;
   bankAccountId: string;
   amount: number;
 }
@@ -611,13 +612,14 @@ export const withdrawApi = createApi({
   }),
   endpoints: (build) => ({
     createPayout: build.query<CreatePayoutResponse, CreatePayoutQuery>({
-      query: ({ bankAccountId, amount }) => {
+      query: ({ userId, bankAccountId, amount }) => {
         return {
           url: `/create_payout`,
           method: "POST",
           mode: "cors",
           credentials: "include",
           body: {
+            user_id: userId,
             bank_account_id: bankAccountId,
             currency_type: "sender",
             cover_fees: false,

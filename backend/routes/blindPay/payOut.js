@@ -5,15 +5,23 @@ const { emailService } = require("../emailService");
 //const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
 //const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
 //const TOKEN = 'USDC';
-//const NETWORK = 'base';
 
 const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
 const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
 const TOKEN = 'USDB'
 
-async function create_new_payout({ userId, bank_account_id, amount, currency }) {
+const NETWORK = 'base';
+
+async function create_new_payout({ user_id, bank_account_id, amount, currency }) {
   try {
-    const user = await getUserById(userId);
+    const user = await getUserById(user_id);
+
+    console.log("User:", user);
+    console.log("User ID:", user_id);
+    console.log("Bank Account ID:", bank_account_id);
+    console.log("Amount:", amount);
+    console.log("Currency:", currency);
+
     if (!user || !user.blind_pay_evm_wallet_id) {
       return {
         success: false,

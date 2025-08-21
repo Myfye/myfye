@@ -29,7 +29,10 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
   const transaction = useAppSelector(
     (state) => state.withdrawOffChain.transaction
   );
-
+  const user_id = useAppSelector(
+    (state) => state.userWalletData.currentUserID
+  );
+  
   const asset = useAppSelector((state) =>
     transaction.assetId
       ? selectAsset(state, transaction.assetId)
@@ -49,6 +52,7 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
 
   const getPayout = async () => {
     console.log("Getting payout for transaction:", transaction);
+    console.log("User ID:", user_id);
     
     if (!transaction.bankInfo.id) {
       console.error("No bank account ID found in transaction");
@@ -62,11 +66,13 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
 
     try {
       console.log("Calling createPayout with:", {
+        userId: user_id,
         bankAccountId: transaction.bankInfo.id,
         amount: transaction.amount
       });
 
       const { data, isSuccess, isError, error } = await triggerCreatePayout({
+        userId: user_id,
         bankAccountId: transaction.bankInfo.id,
         amount: transaction.amount
       });
