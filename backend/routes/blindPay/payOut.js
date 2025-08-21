@@ -82,9 +82,8 @@ async function create_new_payout(data) {
       );
       console.log("Payout API response:", payoutRes.data);
     } catch (error) {
-      console.error("[payout API] Error:", error);
-      console.error("[payout API] Error response:", error.response?.data);
       console.error("[payout API] Error status:", error.response?.status);
+      console.error("[payout API] Error response:", error.response?.data);
       throw error;
     }
 
@@ -98,9 +97,8 @@ async function create_new_payout(data) {
 
     return { success: true, payout: payoutRes.data };
   } catch (error) {
-    console.error("[create_new_payout] Error:", error);
-    console.error("[create_new_payout] Error response:", error.response?.data);
     console.error("[create_new_payout] Error status:", error.response?.status);
+    console.error("[create_new_payout] Error response:", error.response?.data);
     return {
       success: false,
       error: error.response?.data || error.message,
@@ -115,7 +113,7 @@ async function get_payout_quote({ bank_account_id, amount, wallet_id }) {
     throw new Error("Missing required fields: bank_account_id or amount");
   }
 
-  const request_amount = amount * 100;
+  const request_amount = Math.round(amount * 100);
 
   try {
     const quoteRes = await axios.post(
@@ -138,9 +136,8 @@ async function get_payout_quote({ bank_account_id, amount, wallet_id }) {
     console.log("Quote API response:", quoteRes.data);
     return quoteRes.data;
   } catch (error) {
-    console.error("[get_payout_quote] Error:", error);
-    console.error("[get_payout_quote] Error response:", error.response?.data);
     console.error("[get_payout_quote] Error status:", error.response?.status);
+    console.error("[get_payout_quote] Error response:", error.response?.data);
     throw error;
   }
 }
