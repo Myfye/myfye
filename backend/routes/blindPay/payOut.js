@@ -20,7 +20,6 @@ async function create_new_payout({ user_id, bank_account_id, amount, currency })
     console.log("User ID:", user_id);
     console.log("Bank Account ID:", bank_account_id);
     console.log("Amount:", amount);
-    console.log("Currency:", currency);
 
     if (!user || !user.blind_pay_evm_wallet_id) {
       return {
@@ -46,6 +45,7 @@ async function create_new_payout({ user_id, bank_account_id, amount, currency })
     );
 
     // to do sned withdraw email
+    send_withdraw_email(user.email, amount, "MXN", payoutRes.data);
 
     return { success: true, payout: payoutRes.data };
   } catch (error) {
@@ -58,11 +58,14 @@ async function create_new_payout({ user_id, bank_account_id, amount, currency })
 }
 
 async function get_payout_quote({ bank_account_id, amount, wallet_id }) {
+
+  const request_amount = amount * 100;
+
   const quoteRes = await axios.post(
     `https://api.blindpay.xyz/instances/${BLIND_PAY_INSTANCE_ID}/quotes`,
     {
       currency_type: "sender",
-      request_amount: amount.toString(),
+      request_amount: request_amount,
       token: TOKEN,
       network: NETWORK,
       wallet_id: wallet_id,

@@ -65,16 +65,21 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
     }
 
     try {
+      // Get currency from asset or use default
+      const currency = asset?.fiatCurrency?.toUpperCase() || "MXN";
+      
       console.log("Calling createPayout with:", {
         userId: user_id,
         bankAccountId: transaction.bankInfo.id,
-        amount: transaction.amount
+        amount: transaction.amount,
+        currency: currency
       });
 
       const { data, isSuccess, isError, error } = await triggerCreatePayout({
         userId: user_id,
         bankAccountId: transaction.bankInfo.id,
-        amount: transaction.amount
+        amount: transaction.amount,
+        currency: currency
       });
 
       console.log("CreatePayout response:", {
