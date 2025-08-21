@@ -5,12 +5,12 @@ const { emailService } = require("../emailService");
 //const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
 //const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
 //const TOKEN = 'USDC';
+//const NETWORK = 'base';
 
 const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
 const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
 const TOKEN = 'USDB'
-
-const NETWORK = 'base';
+const NETWORK = 'base_sepolia';
 
 async function create_new_payout({ user_id, bank_account_id, amount, currency }) {
   try {
