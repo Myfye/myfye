@@ -37,7 +37,7 @@ async function create_new_payout(data) {
 
     const user = await getUserById(user_id);
 
-    const sender_wallet_address = data.evm_pub_key;
+    const sender_wallet_address = user.evm_pub_key;
 
     console.log("User:", user);
     console.log("Amount:", amount);
