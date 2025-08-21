@@ -62,7 +62,7 @@ async function get_payout_quote({ bank_account_id, amount, wallet_id }) {
   const request_amount = amount * 100;
 
   const quoteRes = await axios.post(
-    `https://api.blindpay.xyz/instances/${BLIND_PAY_INSTANCE_ID}/quotes`,
+    `https://api.blindpay.com/instances/${BLIND_PAY_INSTANCE_ID}/quotes`,
     {
       currency_type: "sender",
       request_amount: request_amount,
