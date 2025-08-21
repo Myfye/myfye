@@ -40,6 +40,7 @@ async function create_new_payout(data) {
     const sender_wallet_address = user.evm_pub_key;
 
     console.log("User:", user);
+    console.log("Sender wallet address:", sender_wallet_address);
     console.log("Amount:", amount);
     console.log("currency:", currency);
 
@@ -60,6 +61,12 @@ async function create_new_payout(data) {
 
     let payoutRes;
     try {
+      const payoutPayload = {
+        quote_id: quote.id,
+        sender_wallet_address: sender_wallet_address,
+      };
+      console.log("Payout API payload:", payoutPayload);
+      
       payoutRes = await axios.post(
         `https://api.blindpay.com/v1/instances/${BLIND_PAY_INSTANCE_ID}/payouts/evm`,
         {
