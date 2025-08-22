@@ -51,7 +51,7 @@ const getSubtitle = (
         : "Error processing swap. Please try again.";
     }
     default: {
-      return `${assetSymbol} will be deposited into your wallet once the transaction is complete.`;
+      return `Please wait. ${assetSymbol} will be deposited into your wallet once the transaction is complete.`;
     }
   }
 };

@@ -8,7 +8,7 @@ import {
 import { Asset } from "../assets/types";
 import { selectAssetsWithBalanceByDashboard } from "../assets/assetsSlice";
 import ensureTokenAccount from "../../functions/ensureTokenAccount";
-import mintAddress from "../../functions/MintAddress";
+import { getMintAddress } from "../assets/assetsSlice";
 import SelectAssetOverlay from "../assets/SelectAssetOverlay";
 
 const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
@@ -94,7 +94,7 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
     );
 
     try {
-      const output_mint = mintAddress(assetId);
+      const output_mint = getMintAddress(assetId);
 
       switch (assetId) {
         case "us_dollar":

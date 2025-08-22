@@ -1841,6 +1841,42 @@ export const getTokenProgramAddressFromMintAddress = (mintAddress: string): stri
   return asset ? asset.tokenProgram : null;
 };
 
+// utility function to get all assets with their mint addresses and token programs
+export const getAllAssetsWithMintAddresses = () => {
+  return Object.values(initialState.assets).map(asset => ({
+    id: asset.id,
+    symbol: asset.symbol,
+    mintAddress: asset.mintAddress,
+    tokenProgram: asset.tokenProgram,
+    decimals: asset.decimals
+  }));
+};
+
+// utility function to create a map of mint address to asset ID
+export const getMintAddressToAssetIdMap = () => {
+  const map: Record<string, string> = {};
+  Object.values(initialState.assets).forEach(asset => {
+    map[asset.mintAddress] = asset.id;
+  });
+  return map;
+};
+
+// utility function to create a map of asset ID to mint address
+export const getAssetIdToMintAddressMap = () => {
+  const map: Record<string, string> = {};
+  Object.values(initialState.assets).forEach(asset => {
+    map[asset.id] = asset.mintAddress;
+  });
+  return map;
+};
+
+// utility function to get assets by token program
+export const getAssetsByTokenProgram = (tokenProgram: string) => {
+  return Object.values(initialState.assets).filter(
+    asset => asset.tokenProgram === tokenProgram
+  );
+};
+
 export const assetsSlice = createSlice({
   name: "assets",
   initialState: initialState,

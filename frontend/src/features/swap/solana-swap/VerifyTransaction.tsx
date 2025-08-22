@@ -9,7 +9,6 @@ import { saveNewSwapTransaction } from "@/functions/SaveNewTransaction.tsx";
 import { SwapTransaction } from "../types.ts";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
 import { useSelector } from "react-redux";
-import { assetId } from "@/functions/MintAddress.tsx";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);

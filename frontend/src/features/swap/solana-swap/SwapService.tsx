@@ -12,6 +12,7 @@ import { ConnectedSolanaWallet } from "@privy-io/react-auth";
 import { Asset, AssetsState } from "@/features/assets/types.ts";
 import { logError } from "../../../functions/LogError.tsx";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
+import toast from "react-hot-toast/headless";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -161,6 +162,7 @@ async function getSwapQuote(
     };
   } catch (error) {
     console.error("Error in getSwapQuote:", error);
+    parseErrorAndDisplayToast(error);
     const errorLogMessage = "Error getting the swap quote" + `Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
     const errorStackTrace = `${error} Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
 
@@ -168,6 +170,31 @@ async function getSwapQuote(
     logError(errorLogMessage, "swap", errorStackTrace);
     throw error; // rethrow the error if you want to handle it in the calling function
   }
+}
+
+const parseErrorAndDisplayToast = (error: any) => {
+  let errorCode = 'Unknown error';
+  
+  // Check if error has errorCode property (from our custom error object)
+  if (error.errorCode) {
+    errorCode = error.errorCode;
+  }
+  // Check if error.message contains Jupiter API error response
+  else if (error.message && error.message.includes('Jupiter API error:')) {
+    try {
+      // Extract the JSON part from the error message
+      const jsonStart = error.message.indexOf('{');
+      const jsonEnd = error.message.lastIndexOf('}') + 1;
+      const jsonString = error.message.substring(jsonStart, jsonEnd);
+      const errorData = JSON.parse(jsonString);
+      
+      errorCode = errorData.errorCode || errorCode;
+    } catch (parseError) {
+      console.error('Failed to parse Jupiter API error:', parseError);
+    }
+  }
+  
+  toast.error(`Blockchain error: ${errorCode}`);
 }
 
 {
