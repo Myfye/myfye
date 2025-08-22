@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { User } from "@/features/users/users.types";
 
 export interface UserWalletDataState {
   wallet: any;

@@ -2,6 +2,7 @@ import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { Asset, AssetGroup, AssetsState } from "./types";
 import { RootState } from "@/redux/store";
 import { getAssetsBalanceUSDByGroup, getAssetsByGroup } from "./utils";
+import { USDT_MINT_ADDRESS, PYUSD_MINT_ADDRESS } from "@/functions/MintAddress";
 
 import btcIcon from "@/assets/icons/assets/crypto/Bitcoin.svg";
 import solIcon from "@/assets/icons/assets/crypto/Solana.svg";
@@ -79,6 +80,7 @@ import MSTRIcon from "@/assets/icons/assets/stocks/MicroStrategy, Inc..svg";
 import KOIcon from "@/assets/icons/assets/stocks/The Coca-Cola Company.svg";
 import GMEIcon from "@/assets/icons/assets/stocks/Gamestop Corp. Class A, Inc..svg";
 import SPYIcon from "@/assets/icons/assets/stocks/S&P.png";
+
 
 //import SQIcon from "@/assets/icons/assets/stocks/Block, Inc..svg";
 //import DISIcon from "@/assets/icons/assets/stocks/Walt Disney Company.svg";
@@ -1823,8 +1825,16 @@ export const selectMintAddress = createSelector(
 export const getMintAddress = (assetId: string): string | null => {
   const asset = initialState.assets[assetId];
   if (!asset) {
-    console.error(`getMintAddress - ERROR: assetId ${assetId} is not found in initialState.assets`);
-    console.error(`getMintAddress - Available assets:`, Object.keys(initialState.assets));
+
+    // Special cases
+    if (assetId == "USDT") {
+      return USDT_MINT_ADDRESS;
+    } else if (assetId == "PYUSD") {
+      return PYUSD_MINT_ADDRESS;
+    } else {
+      console.error(`getMintAddress - ERROR: assetId ${assetId} is not found in initialState.assets`);
+    }
+    
   }
   return asset ? asset.mintAddress : null;
 };
@@ -1835,8 +1845,16 @@ export const getTokenProgramAddressFromMintAddress = (mintAddress: string): stri
     (asset) => asset.mintAddress === mintAddress
   );
   if (!asset) {
-    console.error(`getTokenProgramAddress - ERROR: mintAddress ${mintAddress} is not found in initialState.assets`);
-    console.error(`getTokenProgramAddress - Available mint addresses:`, Object.values(initialState.assets).map(a => a.mintAddress));
+
+    // Special cases
+    if (mintAddress == "USDT") {
+      return "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    } else if (mintAddress == "PYUSD") {
+      return "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
+    } else {
+      console.error(`getTokenProgramAddress - ERROR: mintAddress ${mintAddress} is not found in initialState.assets`);
+    }
+    
   }
   return asset ? asset.tokenProgram : null;
 };

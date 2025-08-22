@@ -48,6 +48,27 @@ async function verifyTransaction(
             "Transaction details:",
             JSON.stringify(transaction, null, 2)
           );
+
+
+          console.log("transaction", transaction);
+          console.log("update status to success");
+
+
+          // Hacked together special cases for PYUSD and USDT
+          if ((transaction.sell.assetId === "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo") ||
+          (transaction.sell.assetId === "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB")) {
+            const balance = assets.assets["USD"].balance;
+
+            console.log("DETECT ALT USD Incrementing USDC balance", balance, "by", transaction.buy.amount);
+            dispatch(
+              updateBalance({
+                assetId: "USD",
+                balance: balance + transaction.buy.amount,
+              })
+            );
+          } 
+
+                    
           saveTransaction(
             transaction, 
             transactionId, 

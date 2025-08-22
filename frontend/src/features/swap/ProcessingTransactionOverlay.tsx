@@ -39,7 +39,10 @@ const getSubtitle = (
 ) => {
   switch (status) {
     case "success": {
-      return `${amount} ${assetSymbol} has been deposited into your wallet.`;
+      if (amount === null) {
+        return `${assetSymbol} is now available to trade.`;
+      }
+      return `${amount} ${assetSymbol} received!`;
     }
     case "fail": {
       // Check if the selling asset is SOL or WSOL
@@ -51,7 +54,7 @@ const getSubtitle = (
         : "Error processing swap. Please try again.";
     }
     default: {
-      return `Please wait. ${assetSymbol} will be deposited into your wallet once the transaction is complete.`;
+      return `Please wait. ${assetSymbol} will appear in your wallet once the transaction is complete.`;
     }
   }
 };

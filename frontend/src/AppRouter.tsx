@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { Buffer } from "buffer";
 import "./styles/components.css";
 import {
@@ -29,6 +30,7 @@ import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import KYCOverlay from "@/features/compliance/KYCOverlay.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
+import AltUSDModal, { useAltUSDModal } from "@/features/onOffRamp/deposit/onChain/altUSD/detectAltUSD.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWallets.tsx";
 import MFAOnboarding from "./pages/app/login/mfaOnboarding.tsx";
@@ -284,6 +286,7 @@ function WebAppInner() {
         <WithdrawModal />
         <QRCodeModal />
         <SwapModal />
+        <AltUSDModal />
         <KYCOverlay zIndex={99999} />
         <PrivyUseSolanaWallets />
         <Toaster />

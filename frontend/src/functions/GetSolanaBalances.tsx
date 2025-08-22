@@ -1,11 +1,13 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../env";
 import { updateBalance, getMintAddressToAssetIdMap } from "@/features/assets/assetsSlice";
+import { USDT_MINT_ADDRESS, PYUSD_MINT_ADDRESS } from "./MintAddress";
+import { setUSDTBalance, setPYUSDBalance, setModalOpen, testAction } from "@/features/onOffRamp/deposit/onChain/altUSD/altUSDSlice";
 
 const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
   try {
     const [tokenBalances, solanaBalance] = await Promise.all([
-      TokenBalances(pubKey),
+      TokenBalances(pubKey, dispatch),
       SolanaBalance(pubKey),
     ]);
 
@@ -25,7 +27,8 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
 };
 
 export const TokenBalances = async (
-  address: string
+  address: string,
+  dispatch?: Function
 ): Promise<{
   success: boolean;
   [assetId: string]: number | boolean;
@@ -66,6 +69,20 @@ export const TokenBalances = async (
       for (const account of accounts) {
         const mintAddress = account.account.data.parsed.info.mint;
         const amount = account.account.data.parsed.info.tokenAmount.uiAmount;
+        
+        // Special case logging for USDT and PYUSD
+        if (mintAddress === USDT_MINT_ADDRESS && accountType === "SPL") {
+          console.log(`DETECT ALT USD USDT balance found! ${amount}`);
+          // Update Redux state for USDT balance
+          dispatch(setUSDTBalance(amount));
+          // Modal will auto-open in the slice if balance > 0.01
+        }
+        if (mintAddress === PYUSD_MINT_ADDRESS && accountType === "Token-2022") {
+          console.log(`DETECT ALT USD PYUSD balance found! ${amount}`);
+          // Update Redux state for PYUSD balance
+          dispatch(setPYUSDBalance(amount));
+          // Modal will auto-open in the slice if balance > 0.01
+        }
         
         // Find the asset ID for this mint address
         const assetId = mintAddressToAssetId[mintAddress];
