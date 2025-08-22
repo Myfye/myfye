@@ -29,7 +29,6 @@ const getStockPrice = async (
   dispatch: Function
 ): Promise<boolean> => {
   try {
-      console.log("STOCKS - getting stock prices")
   const response = await fetch(`${MYFYE_BACKEND}/stock-prices`, {
     method: 'GET',
     mode: 'cors',
@@ -48,11 +47,9 @@ const getStockPrice = async (
 
     const result = await response.json();
 
-    console.log("STOCKS - result", result)
 
     // Map through the stock data and dispatch exchange rates
     if (result.success && result.data && Array.isArray(result.data)) {
-      console.log("STOCKS - Processing", result.data.length, "stocks");
       result.data.forEach((stock: any) => {
         if (stock.symbol && stock.price) {
           // Handle special case: API returns "BRK-B" but assetsSlice uses "BRK.B"
@@ -61,7 +58,6 @@ const getStockPrice = async (
             assetId = "BRK.B";
           }
 
-          console.log("STOCKS - Dispatching", assetId, "with price", stock.price);
           
           try {
             dispatch(
@@ -76,7 +72,7 @@ const getStockPrice = async (
           }
         }
       });
-      console.log("STOCKS - Successfully processed all stocks");
+      
     } else {
       console.error("STOCKS - Invalid response format:", result);
     }
@@ -95,14 +91,13 @@ const getUSDYPriceQuote = async (
   try {
     const quote = await getSwapQuote(getMintAddress("USDY"));
     const priceInUSD = quote.outAmount / 1000000;
-    console.log("QUOTE USDY price quote", priceInUSD)
     dispatch(
       updateExchangeRateUSD({
         assetId: "USDY",
         exchangeRateUSD: priceInUSD,
       })
     );
-    console.log('QUOTE USDY price quote', priceInUSD)
+    
     return true;
   } catch (error) {
     console.error('QUOTE ERROR getting USDY price quote:', error)
@@ -116,7 +111,7 @@ const getCETESPriceQuote = async (
   try {
     const quote = await getSwapQuote(getMintAddress("CETES"));
     const priceInUSD = quote.outAmount / 1000000;
-    console.log("QUOTE CETES price quote", priceInUSD)
+    
     dispatch(
       updateExchangeRateUSD({
         assetId: "CETES",
@@ -150,15 +145,14 @@ const getXRPPriceQuote = async (
 ): Promise<boolean> => {
       const quote = await getSwapQuote(getMintAddress("XRP"));
   const priceInUSD = quote.outAmount / 1000;
-  console.log("XRP priceInUSD", priceInUSD);
+  
   dispatch(
     updateExchangeRateUSD({
       assetId: "XRP",
       exchangeRateUSD: priceInUSD,
     })
   );
-
-  console.log("XRP quote response:", quote);
+  
   return true;
 };
 
@@ -167,7 +161,7 @@ const getSUIPriceQuote = async (
 ): Promise<boolean> => {
       const quote = await getSwapQuote(getMintAddress("SUI"));
   const priceInUSD = quote.outAmount / 1000;
-  console.log("SUI priceInUSD", priceInUSD);
+  
   dispatch(
     updateExchangeRateUSD({
       assetId: "SUI",
@@ -184,7 +178,7 @@ const getDOGEPriceQuote = async (
 ): Promise<boolean> => {
       const quote = await getSwapQuote(getMintAddress("DOGE"));
   const priceInUSD = quote.outAmount / 1000;
-  console.log("DOGE priceInUSD", priceInUSD);
+  
   dispatch(
     updateExchangeRateUSD({
       assetId: "DOGE",
@@ -192,7 +186,6 @@ const getDOGEPriceQuote = async (
     })
   );
 
-  console.log("DOGE quote response:", quote);
   return true;
 };
 
@@ -214,10 +207,10 @@ const getEURPriceQuote = async (
 const getSOLPriceQuote = async (
   dispatch: Function
 ): Promise<boolean> => {
-  console.log("getting SOLANA price quote");
+  
     const quote = await getSwapQuote(getMintAddress("SOL"), 1_000_000_000); // wSOL wrapped solana
   const priceInUSD = quote.outAmount / 1000000;
-  console.log("SOLANA priceInUSD", priceInUSD);
+  
   dispatch(
     updateExchangeRateUSD({
       assetId: "SOL",
@@ -233,7 +226,7 @@ const getSOLPriceQuote = async (
 
 // Export function that calls all price quotes with Promise.all
 export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
-  console.log('QUOTE GETTING PRICE QUOTES')
+  
   try {
     await Promise.all([
       // Crypto & Cash assets
@@ -252,7 +245,7 @@ export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
       // Stock assets
       getStockPrice(dispatch)
     ]);
-    console.log('QUOTE ALL PRICE QUOTES COMPLETED SUCCESSFULLY')
+    
   } catch (error) {
     console.error('QUOTE ERROR GETTING PRICE QUOTES:', error)
   }
