@@ -61,6 +61,13 @@ const {
     getUserKycStatus,
     getUserKycStatusByBlindPayId 
 } = require('./routes/kyc/kycStatus');
+const { 
+    getAllStockPrices,
+    getStockPriceBySymbol,
+    triggerStockPriceUpdate,
+    initializeStockPriceSystem,
+    clearAllStockPrices
+} = require('./routes/stockPrice');
 
 app.set('trust proxy', true);
 
@@ -1392,6 +1399,80 @@ app.post("/webhooks/blindpay", async (req, res) => {
   }
 });
 
+// Stock Price Routes
+app.get("/stock-prices", generalLimiter, async (req, res) => {
+  console.log("\n=== Get All Stock Prices Request Received ===");
+
+  try {
+    const result = await getAllStockPrices();
+    console.log("Stock prices result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /api/stock-prices endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get stock prices",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.get("/stock-prices/:symbol", generalLimiter, async (req, res) => {
+  console.log("\n=== Get Stock Price by Symbol Request Received ===");
+  console.log("Symbol:", req.params.symbol);
+
+  try {
+    const result = await getStockPriceBySymbol(req.params.symbol);
+    console.log("Stock price result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /api/stock-prices/:symbol endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get stock price",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/stock-prices/update", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Trigger Stock Price Update Request Received ===");
+
+  try {
+    const result = await triggerStockPriceUpdate();
+    console.log("Stock price update result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /api/stock-prices/update endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to update stock prices",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.delete("/stock-prices/clear", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Clear All Stock Prices Request Received ===");
+
+  try {
+    const result = await clearAllStockPrices();
+    console.log("Stock prices clear result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /api/stock-prices/clear endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to clear stock prices",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
 /*
 app.listen(PORT, () => {
     console.log(`Backend server running at http://localhost:${PORT}`);
@@ -1400,6 +1481,13 @@ app.listen(PORT, () => {
 
 // Use process.env.PORT for production (Heroku, AWS, etc.), fall back to 3001 in development
 const PORT = process.env.PORT || 3001; 
+
+// Initialize stock price system
+initializeStockPriceSystem().then(() => {
+  console.log('Stock price system initialized');
+}).catch(error => {
+  console.error('Failed to initialize stock price system:', error);
+});
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Backend server running at http://0.0.0.0:${PORT}`); 
