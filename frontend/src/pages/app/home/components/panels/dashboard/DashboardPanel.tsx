@@ -131,13 +131,21 @@ const DashboardPanel = ({}) => {
         >
           <div
             css={css`
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
+              padding-inline: var(--size-200);
+              padding-block: var(--size-400);
+              border-radius: var(--border-radius-medium);
+              background-color: var(--clr-surface-raised);
+              width: 100%;
             `}
           >
-            <h2 className="heading-large">Get started by depositing funds</h2>
+            <h2
+              className="heading-large"
+              css={css`
+                text-align: center;
+              `}
+            >
+              Get started by depositing funds
+            </h2>
             <Button
               expand
               onPress={() => {

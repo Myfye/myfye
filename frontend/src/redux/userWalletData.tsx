@@ -56,8 +56,6 @@ export interface UserWalletDataState {
   showContactPopup: boolean;
   selectedLanguageCode: string;
   depositWithdrawProductType: string;
-  mfaStatus: string;
-  privySolanaWalletReady: boolean;
   users: User[];
   blindPayEvmWalletId: string;
   blindPayReceiverId: string;
@@ -119,8 +117,6 @@ const initialUserWalletData: UserWalletDataState = {
   currentUserID: "",
   privyUserId: "",
   depositWithdrawProductType: "Earn",
-  mfaStatus: "",
-  privySolanaWalletReady: false,
   users: [],
 };
 
@@ -305,21 +301,15 @@ export const userWalletDataSlice = createSlice({
     setDepositWithdrawProductType: (state, action: PayloadAction<string>) => {
       state.depositWithdrawProductType = action.payload;
     },
-    setMFAStatus: (state, action: PayloadAction<string>) => {
-      state.mfaStatus = action.payload;
+    setUsers: (state, action: PayloadAction<User[]>) => {
+      state.users = action.payload;
     },
-    setPrivySolanaWalletReady: (state, action: PayloadAction<boolean>) => {
-      state.privySolanaWalletReady = action.payload;
+    setBlindPayEvmWalletId: (state, action: PayloadAction<string>) => {
+      state.blindPayEvmWalletId = action.payload;
     },
-      setUsers: (state, action: PayloadAction<User[]>) => {
-        state.users = action.payload;
-      },
-      setBlindPayEvmWalletId: (state, action: PayloadAction<string>) => {
-        state.blindPayEvmWalletId = action.payload;
-      },
-      setBlindPayReceiverId: (state, action: PayloadAction<string>) => {
-        state.blindPayReceiverId = action.payload;
-      },
+    setBlindPayReceiverId: (state, action: PayloadAction<string>) => {
+      state.blindPayReceiverId = action.payload;
+    },
   },
 });
 
@@ -379,8 +369,6 @@ export const {
   setCurrentUserID,
   setPrivyUserId,
   setDepositWithdrawProductType,
-  setMFAStatus,
-  setPrivySolanaWalletReady,
   setUsers,
   setBlindPayEvmWalletId,
   setBlindPayReceiverId,

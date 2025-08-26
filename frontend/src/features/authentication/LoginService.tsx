@@ -4,7 +4,6 @@ import {
   setcurrentUserEmail,
   setSolanaPubKey,
   setEvmPubKey,
-  setMFAStatus,
   setCurrentUserID,
   setPrivyUserId,
   setUsers,
@@ -13,7 +12,11 @@ import {
 } from "../../redux/userWalletData.tsx";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import { PublicKey, Connection } from "@solana/web3.js";
-import { useLoginWithPasskey } from "@privy-io/react-auth";
+import {
+  ConnectedWallet,
+  useLoginWithPasskey,
+  User,
+} from "@privy-io/react-auth";
 import { useSelector } from "react-redux";
 import {
   getFunctions,
@@ -25,6 +28,8 @@ import { getUSDCBalanceOnBase } from "../../functions/checkForEVMDeposit.ts";
 import { bridgeFromBaseToSolana } from "../../functions/bridge.ts";
 import { getPriceQuotes } from "../../functions/priceQuotes.ts";
 import { updateExchangeRateUSD } from "../../features/assets/assetsSlice.ts";
+import { setStatus as setMFAStatus } from "../mfa/mfaSlice.ts";
+import { Dispatch } from "redux";
 
 const userCreationInProgress = new Set();
 
@@ -162,17 +167,16 @@ export const updateUserSolanaPubKey = async (
 };
 
 const HandleUserLogIn = async (
-  user: any,
-  dispatch: Function,
-  wallets: any,
-  executeTransfer: Function, // Add executeTransfer as a parameter
+  user: User,
+  dispatch: Dispatch,
+  wallets: ConnectedWallet[],
+  executeTransfer: Function // Add executeTransfer as a parameter
 ): Promise<{ success: boolean }> => {
-
-  dispatch(setcurrentUserEmail(user.email.address));
+  dispatch(setcurrentUserEmail(user?.email.address));
   dispatch(setPrivyUserId(user.id));
   if (user) {
     try {
-      const dbUser = await getUser(user.email.address, user.id); // user.id is privyUserId
+      const dbUser = await getUser(user?.email.address, user.id); // user.id is privyUserId
       if (dbUser && dbUser.uid) {
         dispatch(setCurrentUserID(dbUser.uid));
         console.log("dbUser.kyc_status", dbUser.kyc_status);
@@ -234,7 +238,7 @@ const HandleUserLogIn = async (
   }
 };
 
-const checkMFAState = async (user: any, dispatch: Function) => {
+const checkMFAState = async (user: User, dispatch: Dispatch) => {
   if (!user) return;
 
   // Check mfaMethods if they exist
@@ -251,15 +255,22 @@ const checkMFAState = async (user: any, dispatch: Function) => {
   if (user.linkedAccounts && Array.isArray(user.linkedAccounts)) {
     for (const linkedAccount of user.linkedAccounts) {
       if (linkedAccount.type === "passkey") {
-        dispatch(setMFAStatus("createdPasskey"));
+        dispatch(setMFAStatus("created_passkey"));
         return;
       }
     }
   }
 
-  // If no MFA is found, set empty status
-  dispatch(setMFAStatus(""));
-};
+  if (user.wallet) {
+    if (user.wallet.recoveryMethod === "user-passcode") {
+      dispatch(setMFAStatus("created_password"));
+      return;
+    }
+    return dispatch(setMFAStatus("created_wallet"));
+  }
 
+  // If no MFA is found, set empty status
+  dispatch(setMFAStatus(null));
+};
 
 export { HandleUserLogIn };
