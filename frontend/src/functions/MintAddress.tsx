@@ -2,7 +2,8 @@
 export const USD_MINT_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 export const USDT_MINT_ADDRESS = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
 export const USDY_MINT_ADDRESS = "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6";
-export const PYUSD_MINT_ADDRESS = "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo";
+export const PYUSD_MINT_ADDRESS =
+  "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo";
 export const EUR_MINT_ADDRESS = "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr";
 export const BTC_MINT_ADDRESS = "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij";
 export const WSOL_MINT_ADDRESS = "So11111111111111111111111111111111111111112";
@@ -73,9 +74,8 @@ export const WMT_MINT_ADDRESS = "Xs151QeqTCiuKtinzfRATnUESM2xTU6V9Wy8Vy538ci";
 
 function mintAddress(currencyCode: String): String {
   let mintAddress = USD_MINT_ADDRESS;
-  
+
   switch (currencyCode) {
-    case "USD":
     case "USD":
       mintAddress = USD_MINT_ADDRESS;
       break;
@@ -301,84 +301,84 @@ function mintAddress(currencyCode: String): String {
       mintAddress = USD_MINT_ADDRESS;
       break;
   }
-  
+
   return mintAddress;
 }
 
 export function assetId(mintAddress: string): string {
   // Map of mint addresses to asset IDs (matching the action map keys)
   const mintToAssetMap: Record<string, string> = {
-    "So11111111111111111111111111111111111111112": "SOL",
-    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "USD",
-    "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": "USDT",
-    "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6": "USDY",
+    So11111111111111111111111111111111111111112: "SOL",
+    EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: "USD",
+    Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB: "USDT",
+    A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6: "USDY",
     "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo": "PYUSD",
-    "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr": "EUR",
-    "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij": "BTC",
+    HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr: "EUR",
+    cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij: "BTC",
     "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT": "XRP",
-    "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn": "DOGE",
+    BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn: "DOGE",
     "756wWVqA9tpZpxqNxCiJYSCGWi3gD2NXfwKHh4YsYJg9": "SUI",
-    "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp": "AAPL",
-    "XsHtf5RpxsQ7jeJ9ivNewouZKJHbPxhPoEy6yYvULr7": "ABT",
-    "XswbinNKyPmzTa5CskMbCPvMW6G5CMnZXZEeQSSQoie": "ABBV",
-    "Xs5UJzmCRQ8DWZjskExdSQDnbE6iLkRu2jjrRAB1JSU": "ACN",
-    "XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN": "GOOGL",
-    "Xs3eBt7uRfJX8QUs4suhyU8p2M6DoUDrJyWBa8LLZsg": "AMZN",
-    "XsaQTCgebC2KPbf27KUhdv5JFvHhQ4GDAPURwrEhAzb": "AMBR",
-    "XsPdAVBi8Zc1xvv53k4JcMrQaEDTgkGqKYeh7AYgPHV": "APP",
-    "Xs3ZFkPYT2BN7qBMqf1j1bfTeTm1rFzEFSsQ1z3wAKU": "AZN",
-    "XswsQk4duEQmCbGzfqUUWYmi7pV7xpJ9eEmLHXCaEQP": "BAC",
-    "Xs6B6zawENwAbWVi7w92rjazLuAr5Az59qgWKcNb45x": "BRK",
-    "XsgSaSvNSqLTtFuyWPBhK9196Xb9Bbdyjj4fH3cPJGo": "AVGO",
-    "XsNNMt7WTNA2sV3jrb1NNfNgapxRF5i4i6GcnTRRHts": "CVX",
-    "XsueG8BtpquVJX9LVLLEGuViXUungE6WmK5YZ3p3bd1": "CRCL",
-    "Xsr3pdLQyXvDJBFgpR5nexCEZwXvigb8wbPYp4YoNFf": "CSCO",
-    "XsaBXg8dU5cPM6ehmVctMkVqoiRG2ZjMo1cyBJ3AykQ": "KO",
-    "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu": "COIN",
-    "XsvKCaNsxg2GN8jjUmq71qukMJr7Q1c5R2Mk9P8kcS8": "CMCSA",
-    "Xs7xXqkcK7K8urEqGg52SECi79dRp2cEKKuYjUePYDw": "CRWD",
-    "Xseo8tgCZfkHxWS9xbFYeKFyMSbWEvZGFV1Gh53GtCV": "DHR",
-    "Xs2yquAgsHByNzx68WJC55WHjHBvG9JsMB7CWjTLyPy": "DFDV",
-    "Xsnuv4omNoHozR6EEW5mXkw8Nrny5rB3jVfLqi6gKMH": "LLY",
-    "XsaHND8sHyfMfsWPj6kSdd5VwvCayZvjYgKmmcNL5qh": "XOM",
-    "Xsf9mBktVB9BSU5kf4nHxPq5hCBJ2j2ui3ecFGxPRGc": "GME",
-    "Xsv9hRk1z5ystj9MhnA7Lq4vjSsLwzL2nxrwmwtD3re": "GLD",
-    "XsgaUyp4jd1fNBCxgtTKkW64xnnhQcvgaxzsbAq5ZD1": "GS",
-    "XszjVtyhowGjSC5odCqBpW1CtXXwXjYokymrk7fGKD3": "HD",
-    "XsRbLZthfABAPAfumWNEJhPyiKDW6TvDVeAeW7oKqA2": "HON",
-    "XshPgPdXFRWB8tP1j82rebb2Q9rPgGX37RuqzohmArM": "INTC",
-    "XspwhyYPdWVM8XBHZnpS9hgyag9MKjLRyE3tVfmCbSr": "IBM",
-    "XsGVi5eo1Dh2zUpic4qACcjuWGjNv8GCt3dm5XcX6Dn": "JNJ",
-    "XsMAqkcKsUewDrzVkait4e5u4y8REgtyS7jWgCpLV2C": "JPM",
-    "XsSr8anD1hkvNMu8XQiVcmiaTP7XGvYu7Q58LdmtE8Z": "LIN",
-    "XsuxRGDzbLjnJ72v74b7p9VY6N66uYgTCyfwwRjVCJA": "MRVL",
-    "XsApJFV9MAktqnAc6jqzsHVujxkGm9xcSUffaBoYLKC": "MA",
-    "XsqE9cRRpzxcGKDXj1BJ7Xmg4GRhZoyY1KpmGSxAWT2": "MCD",
-    "XsDgw22qRLTv5Uwuzn6T63cW69exG41T6gwQhEK22u2": "MDT",
-    "XsnQnU7AdbRZYe2akqqpibDdXjkieGFfSkbkjX1Sd1X": "MRK",
-    "Xsa62P5mvPszXL1krVUnU5ar38bBSVcWAB6fmPCo5Zu": "META",
-    "XspzcW1PRtgf6Wj92HCiZdjzKCyFekVD8P5Ueh3dRMX": "MSFT",
-    "XsP7xzNPvEHS1m6qfanPUGjNmdnmsLKEoNAnHjdxxyZ": "MSTR",
-    "Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ": "QQQ",
-    "XsEH7wWfJJu2ZT3UCFeVfALnVA6CP5ur7Ee11KmzVpL": "NFLX",
-    "XsfAzPzYrYjd4Dpa9BU3cusBsvWfVB9gBcyGC87S57n": "NVO",
-    "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh": "NVDA",
-    "XsjFwUPiLofddX5cWFHW35GCbXcSu1BCUGfxoQAQjeL": "ORCL",
-    "XsoBhf2ufR8fTyNSjqfU71DYGaE6Z3SUGAidpzriAA4": "PLTR",
-    "Xsv99frTRUeornyvCfvhnDesQDWuvns1M852Pez91vF": "PEP",
-    "XsAtbqkAP1HJxy7hFDeq7ok6yM43DQ9mQ1Rh861X8rw": "PFE",
-    "Xsba6tUnSjDae2VcopDB6FGGDaxRrewFCDa5hKn5vT3": "PM",
-    "XsYdjDjNUygZ7yGKfQaB6TxLh2gC6RRjzLtLAGJrhzV": "PG",
-    "XsvNBAYkrDRNhA7wPHQfX3ZUXZyZLdnCQDfHZ56bzpg": "HOOD",
-    "XsczbcQ3zfcgAEt9qHQES8pxKAVG5rujPSHQEXi4kaN": "CRM",
-    "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W": "SPY",
-    "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB": "TSLA",
-    "Xs8drBWy3Sd5QY3aifG9kt9KFs2K3PGZmx7jWrsrk57": "TMO",
-    "XsjQP3iMAaQ3kQScQKthQpx9ALRbjKAjQtHg6TFomoc": "TQQQ",
-    "XszvaiXGPwvk2nwb3o9C1CX4K6zH8sez11E6uyup6fe": "UNH",
-    "XsssYEQjzxBCFgvYFFNuhJFBeHNdLWYeUSP8F45cDr9": "VTI",
-    "XsqgsbXwWogGJsNcVZ3TyVouy2MbTkfCFhCGGGcQZ2p": "V",
-    "Xs151QeqTCiuKtinzfRATnUESM2xTU6V9Wy8Vy538ci": "WMT"
+    XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp: "AAPL",
+    XsHtf5RpxsQ7jeJ9ivNewouZKJHbPxhPoEy6yYvULr7: "ABT",
+    XswbinNKyPmzTa5CskMbCPvMW6G5CMnZXZEeQSSQoie: "ABBV",
+    Xs5UJzmCRQ8DWZjskExdSQDnbE6iLkRu2jjrRAB1JSU: "ACN",
+    XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN: "GOOGL",
+    Xs3eBt7uRfJX8QUs4suhyU8p2M6DoUDrJyWBa8LLZsg: "AMZN",
+    XsaQTCgebC2KPbf27KUhdv5JFvHhQ4GDAPURwrEhAzb: "AMBR",
+    XsPdAVBi8Zc1xvv53k4JcMrQaEDTgkGqKYeh7AYgPHV: "APP",
+    Xs3ZFkPYT2BN7qBMqf1j1bfTeTm1rFzEFSsQ1z3wAKU: "AZN",
+    XswsQk4duEQmCbGzfqUUWYmi7pV7xpJ9eEmLHXCaEQP: "BAC",
+    Xs6B6zawENwAbWVi7w92rjazLuAr5Az59qgWKcNb45x: "BRK",
+    XsgSaSvNSqLTtFuyWPBhK9196Xb9Bbdyjj4fH3cPJGo: "AVGO",
+    XsNNMt7WTNA2sV3jrb1NNfNgapxRF5i4i6GcnTRRHts: "CVX",
+    XsueG8BtpquVJX9LVLLEGuViXUungE6WmK5YZ3p3bd1: "CRCL",
+    Xsr3pdLQyXvDJBFgpR5nexCEZwXvigb8wbPYp4YoNFf: "CSCO",
+    XsaBXg8dU5cPM6ehmVctMkVqoiRG2ZjMo1cyBJ3AykQ: "KO",
+    Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu: "COIN",
+    XsvKCaNsxg2GN8jjUmq71qukMJr7Q1c5R2Mk9P8kcS8: "CMCSA",
+    Xs7xXqkcK7K8urEqGg52SECi79dRp2cEKKuYjUePYDw: "CRWD",
+    Xseo8tgCZfkHxWS9xbFYeKFyMSbWEvZGFV1Gh53GtCV: "DHR",
+    Xs2yquAgsHByNzx68WJC55WHjHBvG9JsMB7CWjTLyPy: "DFDV",
+    Xsnuv4omNoHozR6EEW5mXkw8Nrny5rB3jVfLqi6gKMH: "LLY",
+    XsaHND8sHyfMfsWPj6kSdd5VwvCayZvjYgKmmcNL5qh: "XOM",
+    Xsf9mBktVB9BSU5kf4nHxPq5hCBJ2j2ui3ecFGxPRGc: "GME",
+    Xsv9hRk1z5ystj9MhnA7Lq4vjSsLwzL2nxrwmwtD3re: "GLD",
+    XsgaUyp4jd1fNBCxgtTKkW64xnnhQcvgaxzsbAq5ZD1: "GS",
+    XszjVtyhowGjSC5odCqBpW1CtXXwXjYokymrk7fGKD3: "HD",
+    XsRbLZthfABAPAfumWNEJhPyiKDW6TvDVeAeW7oKqA2: "HON",
+    XshPgPdXFRWB8tP1j82rebb2Q9rPgGX37RuqzohmArM: "INTC",
+    XspwhyYPdWVM8XBHZnpS9hgyag9MKjLRyE3tVfmCbSr: "IBM",
+    XsGVi5eo1Dh2zUpic4qACcjuWGjNv8GCt3dm5XcX6Dn: "JNJ",
+    XsMAqkcKsUewDrzVkait4e5u4y8REgtyS7jWgCpLV2C: "JPM",
+    XsSr8anD1hkvNMu8XQiVcmiaTP7XGvYu7Q58LdmtE8Z: "LIN",
+    XsuxRGDzbLjnJ72v74b7p9VY6N66uYgTCyfwwRjVCJA: "MRVL",
+    XsApJFV9MAktqnAc6jqzsHVujxkGm9xcSUffaBoYLKC: "MA",
+    XsqE9cRRpzxcGKDXj1BJ7Xmg4GRhZoyY1KpmGSxAWT2: "MCD",
+    XsDgw22qRLTv5Uwuzn6T63cW69exG41T6gwQhEK22u2: "MDT",
+    XsnQnU7AdbRZYe2akqqpibDdXjkieGFfSkbkjX1Sd1X: "MRK",
+    Xsa62P5mvPszXL1krVUnU5ar38bBSVcWAB6fmPCo5Zu: "META",
+    XspzcW1PRtgf6Wj92HCiZdjzKCyFekVD8P5Ueh3dRMX: "MSFT",
+    XsP7xzNPvEHS1m6qfanPUGjNmdnmsLKEoNAnHjdxxyZ: "MSTR",
+    Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ: "QQQ",
+    XsEH7wWfJJu2ZT3UCFeVfALnVA6CP5ur7Ee11KmzVpL: "NFLX",
+    XsfAzPzYrYjd4Dpa9BU3cusBsvWfVB9gBcyGC87S57n: "NVO",
+    Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh: "NVDA",
+    XsjFwUPiLofddX5cWFHW35GCbXcSu1BCUGfxoQAQjeL: "ORCL",
+    XsoBhf2ufR8fTyNSjqfU71DYGaE6Z3SUGAidpzriAA4: "PLTR",
+    Xsv99frTRUeornyvCfvhnDesQDWuvns1M852Pez91vF: "PEP",
+    XsAtbqkAP1HJxy7hFDeq7ok6yM43DQ9mQ1Rh861X8rw: "PFE",
+    Xsba6tUnSjDae2VcopDB6FGGDaxRrewFCDa5hKn5vT3: "PM",
+    XsYdjDjNUygZ7yGKfQaB6TxLh2gC6RRjzLtLAGJrhzV: "PG",
+    XsvNBAYkrDRNhA7wPHQfX3ZUXZyZLdnCQDfHZ56bzpg: "HOOD",
+    XsczbcQ3zfcgAEt9qHQES8pxKAVG5rujPSHQEXi4kaN: "CRM",
+    XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W: "SPY",
+    XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB: "TSLA",
+    Xs8drBWy3Sd5QY3aifG9kt9KFs2K3PGZmx7jWrsrk57: "TMO",
+    XsjQP3iMAaQ3kQScQKthQpx9ALRbjKAjQtHg6TFomoc: "TQQQ",
+    XszvaiXGPwvk2nwb3o9C1CX4K6zH8sez11E6uyup6fe: "UNH",
+    XsssYEQjzxBCFgvYFFNuhJFBeHNdLWYeUSP8F45cDr9: "VTI",
+    XsqgsbXwWogGJsNcVZ3TyVouy2MbTkfCFhCGGGcQZ2p: "V",
+    Xs151QeqTCiuKtinzfRATnUESM2xTU6V9Wy8Vy538ci: "WMT",
   };
 
   const mappedId = mintToAssetMap[mintAddress];
@@ -388,6 +388,5 @@ export function assetId(mintAddress: string): string {
   }
   return mappedId;
 }
-
 
 export default mintAddress;
