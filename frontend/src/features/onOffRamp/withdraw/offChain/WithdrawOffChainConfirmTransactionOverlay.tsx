@@ -16,6 +16,7 @@ import { selectAsset } from "@/features/assets/assetsSlice";
 import { useSignTransaction, useWallets } from "@privy-io/react-auth";
 import { base } from "viem/chains";
 import { useLazyGetBaseRelayerQuery } from "@/features/base_relayer/baseRelayerApi";
+import { useLazyCreatePayoutQuery } from "../withdrawApi";
 import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";
 import truncateBankAccountNumber from "@/shared/utils/bankUtils";
 
@@ -28,7 +29,10 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
   const transaction = useAppSelector(
     (state) => state.withdrawOffChain.transaction
   );
-
+  const user_id = useAppSelector(
+    (state) => state.userWalletData.currentUserID
+  );
+  
   const asset = useAppSelector((state) =>
     transaction.assetId
       ? selectAsset(state, transaction.assetId)
@@ -44,8 +48,80 @@ const WithdrawOffChainConfirmTransactionOverlay = () => {
   const headingId = useId();
 
   const [triggerBaseRelayer, { isLoading }] = useLazyGetBaseRelayerQuery();
+  const [triggerCreatePayout, { isLoading: isPayoutLoading }] = useLazyCreatePayoutQuery();
+
+  const getPayout = async () => {
+    console.log("Getting payout for transaction:", transaction);
+    console.log("User ID:", user_id);
+    
+    if (!transaction.bankInfo.id) {
+      console.error("No bank account ID found in transaction");
+      return;
+    }
+
+    if (!transaction.amount) {
+      console.error("No amount found in transaction");
+      return;
+    }
+
+    try {
+      // Get currency from asset or use default
+      const currency = "MXN";
+      
+      console.log("Calling createPayout with:", {
+        userId: user_id,
+        bankAccountId: transaction.bankInfo.id,
+        amount: transaction.amount,
+        currency: currency
+      });
+
+      const { data, isSuccess, isError, error } = await triggerCreatePayout({
+        userId: user_id,
+        bankAccountId: transaction.bankInfo.id,
+        amount: transaction.amount,
+        currency: currency
+      });
+
+      console.log("CreatePayout response:", {
+        isSuccess,
+        isError,
+        data,
+        error
+      });
+
+      if (isSuccess && data) {
+        // Check the actual success status from the API response
+        if (data.success === false) {
+          console.error("❌ Payout creation failed:", data.error);
+          toast.error(data.error?.message || "Failed to create payout");
+          return;
+        }
+        
+        console.log("✅ Payout created successfully:", data);
+        console.log("Payout ID:", data.id);
+        console.log("Blindpay quotation:", data.blindpay_quotation);
+        console.log("Commercial quotation:", data.commercial_quotation);
+        console.log("Receiver amount:", data.receiver_amount);
+        console.log("Sender amount:", data.sender_amount);
+        console.log("Contract details:", data.contract);
+        console.log("Expires at:", new Date(data.expires_at * 1000).toISOString());
+        console.log("Description:", data.description);
+        console.log("Flat fee:", data.flatFee);
+        console.log("Partner fee amount:", data.partnerFeeAmount);
+        console.log("Receiver local amount:", data.receiverLocalAmount);
+      } else if (isError) {
+        console.error("❌ Error creating payout:", error);
+        toast.error("Failed to create payout. Please try again.");
+      }
+    } catch (error) {
+      console.error("❌ Exception in getPayout:", error);
+    }
+  };
 
   const handleConfirm = async () => {
+    // Get payout first
+    await getPayout();
+    
     if (!wallet) {
       throw new Error("No EVM wallet available");
     }

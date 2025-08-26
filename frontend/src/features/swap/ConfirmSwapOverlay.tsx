@@ -51,6 +51,14 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
       transaction,
     });
 
+    /*
+    dispatch(
+      toggleOverlay({
+        type: "confirmSwap",
+        isOpen: false,
+      })
+    );
+    */
     dispatch(
       toggleOverlay({
         type: "processingTransaction",
@@ -65,11 +73,13 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
       ? state.assets.assets[transaction.sell.assetId]
       : null
   );
+  console.log("sellAsset", sellAsset);
   const buyAsset = useAppSelector((state) =>
     transaction.buy.assetId
       ? state.assets.assets[transaction.buy.assetId]
       : null
   );
+  console.log("buyAsset", buyAsset);
 
   const sellAmountUSD = getUsdAmount(
     transaction.sell.assetId,

@@ -81,7 +81,8 @@ const TransactionProcessScreen = ({
             </p>
           )}
         </div>
-        {status === "idle" && (
+        {/* Progress bar temporarily disabled for testing */}
+        {/* {status === "idle" && (
           <div
             css={css`
               margin-block-start: var(--size-400);
@@ -91,7 +92,7 @@ const TransactionProcessScreen = ({
           >
             <ProgressBar value={value} />
           </div>
-        )}
+        )} */}
       </section>
       <section
         css={css`

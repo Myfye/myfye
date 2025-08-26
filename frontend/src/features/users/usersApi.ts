@@ -3,27 +3,23 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { User } from "./users.types";
 
 interface BankAccountResponse {
-  bank_account_id: string;
-  user_id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  blind_pay_receiver_id: string;
-  blind_pay_details: {
-    id: string;
-    type: string;
-    name: string;
-    beneficiary_name: string;
-    spei_protocol: string;
-    spei_institution_code: string;
-    spei_clabe: string;
-  } | null;
-  error: string | null;
+  id: string;
+  type: string;
+  name: string;
+  beneficiary_name: string;
+  spei_institution_code: string;
+  spei_clabe: string;
+  spei_protocol: string;
+  account_class: string | null;
+  account_number: string | null;
+  account_type: string | null;
+  created_at: string;
+  // ... other fields that might be present but not needed
 }
 
 export const usersApi = createApi({
   reducerPath: "usersApi",
-  tagTypes: ["Users"],
+  tagTypes: ["Users", "BankAccounts"],
   baseQuery: fetchBaseQuery({
     baseUrl: MYFYE_BACKEND,
     prepareHeaders: (headers) => {
@@ -80,16 +76,20 @@ export const usersApi = createApi({
         };
       },
     }),
-    getUserBankAccounts: build.query<BankAccountResponse[], string>({
+    getUserBankAccounts: build.query<{ success: boolean; data: BankAccountResponse[]; message: string }, string>({
       query: (userId) => {
         return {
           url: `/get_bank_accounts`,
           method: "POST",
           body: {
-            current_user_id: userId,
+            user_id: userId,
           },
         };
       },
+      providesTags: (result, error, userId) => [
+        { type: 'Users', id: userId },
+        { type: 'BankAccounts', id: userId }
+      ],
     }),
     deleteUserBankAccount: build.query<
       unknown,
@@ -105,6 +105,9 @@ export const usersApi = createApi({
           },
         };
       },
+      invalidatesTags: (result, error, { userId }) => [
+        { type: 'BankAccounts', id: userId }
+      ],
     }),
     searchUsers: build.query<User[], { query: string; userId: string }>({
       query: ({ query, userId }) => {

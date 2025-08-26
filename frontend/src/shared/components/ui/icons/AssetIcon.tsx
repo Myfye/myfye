@@ -18,7 +18,7 @@ const AssetIcon = ({ icon, label, size = "medium" }: AssetIconProps) => {
           css={css`
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
           `}
         />
       )}

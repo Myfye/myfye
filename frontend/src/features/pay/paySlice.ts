@@ -33,7 +33,7 @@ const initialState: PayState = {
     status: "idle",
     amount: 0,
     formattedAmount: "0",
-    assetId: "us_dollar",
+    assetId: "USD",
     user: null,
     fiatCurrency: "usd",
     fee: 0,

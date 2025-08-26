@@ -27,7 +27,7 @@ const RecentlyUsedAddressesList = ({
   }
 
   if (data?.addresses) {
-    addresses.concat(data.addresses);
+    addresses.push(...data.addresses);
   }
 
   if (isLoading) {

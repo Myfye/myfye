@@ -26,6 +26,7 @@ import withdrawOffChainReducer from "@/features/onOffRamp/withdraw/offChain/with
 import depositOffChainReducer from "@/features/onOffRamp/deposit/offChain/depositOffChainSlice.ts";
 import depositReducer from "@/features/onOffRamp/deposit/depositSlice.ts";
 import mfaReducer from "@/features/mfa/mfaSlice.ts";
+import altUSDReducer from "@/features/onOffRamp/deposit/onChain/altUSD/altUSDSlice.ts";
 import { usersApi } from "@/features/users/usersApi.ts";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { contactsApi } from "@/features/contacts/contactsApi.ts";
@@ -81,6 +82,7 @@ const store = configureStore({
     // deposit
     deposit: depositReducer,
     depositOffChain: depositOffChainReducer,
+    altUSD: altUSDReducer,
 
     // MFA
     mfa: mfaReducer,

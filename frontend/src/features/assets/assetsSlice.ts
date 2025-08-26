@@ -2,12 +2,17 @@ import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { Asset, AssetGroup, AssetsState } from "./types";
 import { RootState } from "@/redux/store";
 import { getAssetsBalanceUSDByGroup, getAssetsByGroup } from "./utils";
+import { USDT_MINT_ADDRESS, PYUSD_MINT_ADDRESS } from "@/functions/MintAddress";
 
 import btcIcon from "@/assets/icons/assets/crypto/Bitcoin.svg";
 import solIcon from "@/assets/icons/assets/crypto/Solana.svg";
 import usDollarIcon from "@/assets/icons/assets/cash/US Dollar.svg";
 import euroIcon from "@/assets/icons/assets/cash/Euro.svg";
-import usDollarYieldIcon from "@/assets/icons/assets/earn/US Dollar Yield.svg";
+import usDollarYieldIcon from "@/assets/icons/assets/earn/us.png";
+import mexicanPesoYieldIcon from "@/assets/icons/assets/earn/mx.png";
+import brazilianRealYieldIcon from "@/assets/icons/assets/earn/br.png";
+import euroYieldIcon from "@/assets/icons/assets/earn/eu.png";
+import ukSterlingYieldIcon from "@/assets/icons/assets/earn/uk.png";
 import xrpIcon from "@/assets/icons/assets/crypto/Ripple.svg";
 import dogeIcon from "@/assets/icons/assets/crypto/Dogecoin.svg";
 import suiIcon from "@/assets/icons/assets/crypto/Sui.svg";
@@ -76,6 +81,7 @@ import KOIcon from "@/assets/icons/assets/stocks/The Coca-Cola Company.svg";
 import GMEIcon from "@/assets/icons/assets/stocks/Gamestop Corp. Class A, Inc..svg";
 import SPYIcon from "@/assets/icons/assets/stocks/S&P.png";
 
+
 //import SQIcon from "@/assets/icons/assets/stocks/Block, Inc..svg";
 //import DISIcon from "@/assets/icons/assets/stocks/Walt Disney Company.svg";
 //import AMDIcon from "@/assets/icons/assets/stocks/Advanced Micro Devices.svg";
@@ -85,57 +91,57 @@ const initialState: AssetsState = {
   assetIds: [
     // Stocks
     "AAPL",
-    //"MSFT",
-    //"AMZN",
-    //"GOOGL",
+    "MSFT",
+    "AMZN",
+    "GOOGL",
     "NVDA",
     "TSLA",
-    //"NFLX",
-    //"KO",
-    //"WMT",
-    //"JPM",
+    "NFLX",
+    "KO",
+    "WMT",
+    "JPM",
     "SPY",
-    //"LLY",
-    //"AVGO",
-    //"JNJ",
-    //"V",
-    //"UNH",
-    //"XOM",
-    //"MA",
-    //"PG",
-    //"HD",
-    //"CVX",
-    //"MRK",
-    //"PFE",
-    //"ABT",
-    //"ABBV",
-    //"ACN",
-    //"AZN",
-    //"BAC",
-    //"BRK.B",
-    //"CSCO",
+    "LLY",
+    "AVGO",
+    "JNJ",
+    "V",
+    "UNH",
+    "XOM",
+    "MA",
+    "PG",
+    "HD",
+    "CVX",
+    "MRK",
+    "PFE",
+    "ABT",
+    "ABBV",
+    "ACN",
+    "AZN",
+    "BAC",
+    "BRK.B",
+    "CSCO",
     "COIN",
-    //"CMCSA",
-    //"CRWD",
-    //"DHR",
-    //"GS",
-    //"HON",
-    //"IBM",
-    //"INTC",
-    //"LIN",
-    //"MRVL",
-    //"MCD",
-    //"MDT",
-    //"NDAQ",
-    //"NVO",
-    //"ORCL",
-    //"PLTR",
-    //"PM",
-    //"HOOD",
-    //"CRM",
-    //"TMO",
-    //"MSTR",
-    //"GME",
+    "CMCSA",
+    "CRWD",
+    "DHR",
+    "GS",
+    "HON",
+    "IBM",
+    "INTC",
+    "LIN",
+    "MRVL",
+    "MCD",
+    "MDT",
+    "QQQ",
+    "NVO",
+    "ORCL",
+    "PLTR",
+    "PM",
+    "HOOD",
+    "CRM",
+    "TMO",
+    "MSTR",
+    "GME",
     // Crypto
     "BTC",
     "SOL",
@@ -147,6 +153,10 @@ const initialState: AssetsState = {
     "EUR",
     // Earn
     "USDY",
+    "CETES",
+    //"EUROB",
+    //"GILTS",
+    //"TESOURO"
   ],
   groupIds: ["stocks", "earn", "cash", "crypto"],
   dashboardIds: ["stocks", "cash", "crypto"],
@@ -159,6 +169,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsbEhLAtcf6HdfpFZ5xEMdqW8nfAvcsP5bdudRLJzJp",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -179,6 +190,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xs3eBt7uRfJX8QUs4suhyU8p2M6DoUDrJyWBa8LLZsg",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -199,6 +211,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsCPL9dNWBMvFtTmwcCA5v3xWPSMEBCszbQdiLLq6aN",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -219,6 +232,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xsc9qvGR1efVDFGLrVsmkzv3qi45LTBjeUKSPmx9qEh",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -239,6 +253,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsDoVfqeBukxuZHWhdvWHBhgEHjGNst4MLodqsJHzoB",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -259,6 +274,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -279,6 +295,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XspzcW1PRtgf6Wj92HCiZdjzKCyFekVD8P5Ueh3dRMX",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -299,6 +316,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsEH7wWfJJu2ZT3UCFeVfALnVA6CP5ur7Ee11KmzVpL",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       groupId: "stocks",
 
@@ -320,6 +338,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsaBXg8dU5cPM6ehmVctMkVqoiRG2ZjMo1cyBJ3AykQ",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       groupId: "stocks",
       dashboardId: "stocks",
@@ -340,6 +359,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xs151QeqTCiuKtinzfRATnUESM2xTU6V9Wy8Vy538ci",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -360,6 +380,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsMAqkcKsUewDrzVkait4e5u4y8REgtyS7jWgCpLV2C",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -380,6 +401,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xsnuv4omNoHozR6EEW5mXkw8Nrny5rB3jVfLqi6gKMH",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -400,6 +422,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsgSaSvNSqLTtFuyWPBhK9196Xb9Bbdyjj4fH3cPJGo",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -418,6 +441,8 @@ const initialState: AssetsState = {
       label: "Johnson & Johnson",
       symbol: "JNJ",
       mintAddress: "XsGVi5eo1Dh2zUpic4qACcjuWGjNv8GCt3dm5XcX6Dn",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -438,6 +463,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsqgsbXwWogGJsNcVZ3TyVouy2MbTkfCFhCGGGcQZ2p",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -458,6 +484,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XszvaiXGPwvk2nwb3o9C1CX4K6zH8sez11E6uyup6fe",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -478,6 +505,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsaHND8sHyfMfsWPj6kSdd5VwvCayZvjYgKmmcNL5qh",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -498,6 +526,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsApJFV9MAktqnAc6jqzsHVujxkGm9xcSUffaBoYLKC",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -518,6 +547,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsYdjDjNUygZ7yGKfQaB6TxLh2gC6RRjzLtLAGJrhzV",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -538,6 +568,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XszjVtyhowGjSC5odCqBpW1CtXXwXjYokymrk7fGKD3",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -558,6 +589,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsNNMt7WTNA2sV3jrb1NNfNgapxRF5i4i6GcnTRRHts",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -578,6 +610,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsnQnU7AdbRZYe2akqqpibDdXjkieGFfSkbkjX1Sd1X",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -598,6 +631,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsAtbqkAP1HJxy7hFDeq7ok6yM43DQ9mQ1Rh861X8rw",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -618,6 +652,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsHtf5RpxsQ7jeJ9ivNewouZKJHbPxhPoEy6yYvULr7",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -638,6 +673,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XswbinNKyPmzTa5CskMbCPvMW6G5CMnZXZEeQSSQoie",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -658,6 +694,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xs5UJzmCRQ8DWZjskExdSQDnbE6iLkRu2jjrRAB1JSU",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -678,6 +715,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xs3ZFkPYT2BN7qBMqf1j1bfTeTm1rFzEFSsQ1z3wAKU",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -698,6 +736,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XswsQk4duEQmCbGzfqUUWYmi7pV7xpJ9eEmLHXCaEQP",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -718,6 +757,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xs6B6zawENwAbWVi7w92rjazLuAr5Az59qgWKcNb45x",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -738,6 +778,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xsr3pdLQyXvDJBFgpR5nexCEZwXvigb8wbPYp4YoNFf",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -758,6 +799,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xs7ZdzSHLU9ftNJsii5fCeJhoRWSC32SQGzGQtePxNu",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -778,6 +820,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsvKCaNsxg2GN8jjUmq71qukMJr7Q1c5R2Mk9P8kcS8",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -798,6 +841,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xs7xXqkcK7K8urEqGg52SECi79dRp2cEKKuYjUePYDw",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -818,6 +862,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xseo8tgCZfkHxWS9xbFYeKFyMSbWEvZGFV1Gh53GtCV",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -838,6 +883,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsgaUyp4jd1fNBCxgtTKkW64xnnhQcvgaxzsbAq5ZD1",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -858,6 +904,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsRbLZthfABAPAfumWNEJhPyiKDW6TvDVeAeW7oKqA2",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -878,6 +925,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XspwhyYPdWVM8XBHZnpS9hgyag9MKjLRyE3tVfmCbSr",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -898,6 +946,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XshPgPdXFRWB8tP1j82rebb2Q9rPgGX37RuqzohmArM",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -918,6 +967,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsSr8anD1hkvNMu8XQiVcmiaTP7XGvYu7Q58LdmtE8Z",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -938,6 +988,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsuxRGDzbLjnJ72v74b7p9VY6N66uYgTCyfwwRjVCJA",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -958,6 +1009,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsqE9cRRpzxcGKDXj1BJ7Xmg4GRhZoyY1KpmGSxAWT2",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -978,6 +1030,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsDgw22qRLTv5Uwuzn6T63cW69exG41T6gwQhEK22u2",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -991,12 +1044,13 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "NDAQ": {
-      id: "NDAQ",
+    "QQQ": {
+      id: "QQQ",
       label: "Nasdaq, Inc.",
-      symbol: "NDAQ",
-      mintAddress: "XsnQnU7AdbRZYe2akqqpibDdXjkieGFfSkbkjX1Sd1X",
+      symbol: "QQQ",
+      mintAddress: "Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1017,6 +1071,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsfAzPzYrYjd4Dpa9BU3cusBsvWfVB9gBcyGC87S57n",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1037,6 +1092,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsjFwUPiLofddX5cWFHW35GCbXcSu1BCUGfxoQAQjeL",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1057,6 +1113,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsoBhf2ufR8fTyNSjqfU71DYGaE6Z3SUGAidpzriAA4",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1077,6 +1134,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xsba6tUnSjDae2VcopDB6FGGDaxRrewFCDa5hKn5vT3",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1097,6 +1155,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsvNBAYkrDRNhA7wPHQfX3ZUXZyZLdnCQDfHZ56bzpg",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1117,6 +1176,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsczbcQ3zfcgAEt9qHQES8pxKAVG5rujPSHQEXi4kaN",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1137,6 +1197,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xs8drBWy3Sd5QY3aifG9kt9KFs2K3PGZmx7jWrsrk57",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1157,6 +1218,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "XsP7xzNPvEHS1m6qfanPUGjNmdnmsLKEoNAnHjdxxyZ",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       fiatCurrency: "usd",
       dashboardId: "stocks",
       groupId: "stocks",
@@ -1177,6 +1239,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "Xsf9mBktVB9BSU5kf4nHxPq5hCBJ2j2ui3ecFGxPRGc",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 8,
       dashboardId: "stocks",
       fiatCurrency: "usd",
       groupId: "stocks",
@@ -1198,6 +1261,7 @@ const initialState: AssetsState = {
       color: "orange",
       mintAddress: "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij",
       tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 8,
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1218,6 +1282,7 @@ const initialState: AssetsState = {
       color: "var(--clr-purple-400)",
       mintAddress: "So11111111111111111111111111111111111111112",
       tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 9,
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1238,6 +1303,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "2jcHBYd9T2Mc9nhvFEBCDuBN1XjbbQUVow67WGWhv6zT",
       tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 9,
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1258,6 +1324,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "BFARNBVWNfZfh3JQJLhogQJ9bkop4Y8LaDHeSxDDk5nn",
       tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 9,
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1278,6 +1345,7 @@ const initialState: AssetsState = {
       color: "var(--clr-surface-lowered)",
       mintAddress: "756wWVqA9tpZpxqNxCiJYSCGWi3gD2NXfwKHh4YsYJg9",
       tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 9,
       dashboardId: "crypto",
       fiatCurrency: "usd",
       groupId: "crypto",
@@ -1300,6 +1368,7 @@ const initialState: AssetsState = {
       color: "var(--clr-green-400)",
       mintAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 6,
       dashboardId: "cash",
       fiatCurrency: "usd",
       groupId: "cash",
@@ -1320,6 +1389,7 @@ const initialState: AssetsState = {
       color: "var(--clr-blue-400)",
       mintAddress: "HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr",
       tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 6,
       dashboardId: "cash",
       fiatCurrency: "eur",
       groupId: "cash",
@@ -1341,6 +1411,7 @@ const initialState: AssetsState = {
       color: "var(--clr-purple-400)",
       mintAddress: "A1KLoBrKBde8Ty9qtNQUtq3C2ortoC3u7twggz7sEto6",
       tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 6,
       dashboardId: "cash",
       fiatCurrency: "usd",
       groupId: "earn",
@@ -1354,6 +1425,92 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
+    CETES: {
+      id: "CETES",
+      label: "Mexican Peso Yield",
+      symbol: "CETES",
+      color: "var(--clr-purple-400)",
+      mintAddress: "CETES7CKqqKQizuSN6iWQwmTeFRjbJR6Vw2XRKfEDR8f",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 6,
+      dashboardId: "cash",
+      fiatCurrency: "usd",
+      groupId: "earn",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: mexicanPesoYieldIcon,
+        type: "png",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    /*
+    EUROB: {
+      id: "EUROB",
+      label: "Euro Yield",
+      symbol: "EUROB",
+      color: "var(--clr-purple-400)",
+      mintAddress: "EuroszHk1AL7fHBBsxgeGHsamUqwBpb26oEyt9BcfZ6G",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 6,
+      dashboardId: "cash",
+      fiatCurrency: "eur",
+      groupId: "earn",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: euroYieldIcon,
+        type: "png",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    GILTS: {
+      id: "GILTS",
+      label: "UK Sterling Yield",
+      symbol: "GILTS",
+      color: "var(--clr-purple-400)",
+      mintAddress: "GiLTSeSFnNse7xQVYeKdMyckGw66AoRmyggGg1NNd4yr",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 6,
+      dashboardId: "cash",
+      fiatCurrency: "usd",
+      groupId: "earn",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: ukSterlingYieldIcon,
+        type: "png",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    TESOURO: {
+      id: "TESOURO",
+      label: "Brazilian Real Yield",
+      symbol: "TESOURO",
+      color: "var(--clr-purple-400)",
+      mintAddress: "BRNTNaZeTJANz9PeuD8drNbBHwGgg7ZTjiQYrFgWQ48p",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 6,
+      dashboardId: "cash",
+      fiatCurrency: "usd",
+      groupId: "earn",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: brazilianRealYieldIcon,
+        type: "png",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    */
   },
   groups: {
     stocks: {
@@ -1667,7 +1824,75 @@ export const selectMintAddress = createSelector(
 // Simple utility function to get mint address from asset ID (doesn't require Redux state)
 export const getMintAddress = (assetId: string): string | null => {
   const asset = initialState.assets[assetId];
+  if (!asset) {
+
+    // Special cases
+    if (assetId == "USDT") {
+      return USDT_MINT_ADDRESS;
+    } else if (assetId == "PYUSD") {
+      return PYUSD_MINT_ADDRESS;
+    } else {
+      console.error(`getMintAddress - ERROR: assetId ${assetId} is not found in initialState.assets`);
+    }
+    
+  }
   return asset ? asset.mintAddress : null;
+};
+
+// Simple utility function to get token program address from mint address (doesn't require Redux state)
+export const getTokenProgramAddressFromMintAddress = (mintAddress: string): string | null => {
+  const asset = Object.values(initialState.assets).find(
+    (asset) => asset.mintAddress === mintAddress
+  );
+  if (!asset) {
+
+    // Special cases
+    if (mintAddress == "USDT") {
+      return "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+    } else if (mintAddress == "PYUSD") {
+      return "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
+    } else {
+      console.error(`getTokenProgramAddress - ERROR: mintAddress ${mintAddress} is not found in initialState.assets`);
+    }
+    
+  }
+  return asset ? asset.tokenProgram : null;
+};
+
+// utility function to get all assets with their mint addresses and token programs
+export const getAllAssetsWithMintAddresses = () => {
+  return Object.values(initialState.assets).map(asset => ({
+    id: asset.id,
+    symbol: asset.symbol,
+    mintAddress: asset.mintAddress,
+    tokenProgram: asset.tokenProgram,
+    decimals: asset.decimals
+  }));
+};
+
+// utility function to create a map of mint address to asset ID
+export const getMintAddressToAssetIdMap = () => {
+  const map: Record<string, string> = {};
+  Object.values(initialState.assets).forEach(asset => {
+    map[asset.mintAddress] = asset.id;
+  });
+  return map;
+};
+
+// utility function to create a map of asset ID to mint address
+export const getAssetIdToMintAddressMap = () => {
+  const map: Record<string, string> = {};
+  Object.values(initialState.assets).forEach(asset => {
+    map[asset.id] = asset.mintAddress;
+  });
+  return map;
+};
+
+// utility function to get assets by token program
+export const getAssetsByTokenProgram = (tokenProgram: string) => {
+  return Object.values(initialState.assets).filter(
+    asset => asset.tokenProgram === tokenProgram
+  );
 };
 
 export const assetsSlice = createSlice({

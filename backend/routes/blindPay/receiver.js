@@ -14,13 +14,13 @@ const {
 const { createErrorLog } = require('../errorLog');
 
 
-//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
-//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
-//const NETWORK = 'base'
+const BLIND_PAY_API_KEY = process.env.BLIND_PAY_API_KEY;
+const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_INSTANCE_ID;
+const NETWORK = 'base'
 
-const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
-const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
-const NETWORK = 'sepolia'
+//const BLIND_PAY_API_KEY = process.env.BLIND_PAY_DEV_API_KEY;
+//const BLIND_PAY_INSTANCE_ID = process.env.BLIND_PAY_DEV_INSTANCE_ID;
+//const NETWORK = 'sepolia'
 
 async function create_new_on_ramp_path(data) {
   console.log("On-ramp called!");

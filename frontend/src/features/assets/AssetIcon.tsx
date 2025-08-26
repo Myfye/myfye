@@ -20,7 +20,7 @@ const AssetIcon = ({ icon, width = "2.75rem" }: AssetIconProps) => {
         <img
           src={icon}
           css={css`
-            object-fit: cover;
+            object-fit: contain;
             width: 100%;
             height: 100%;
           `}
@@ -29,7 +29,7 @@ const AssetIcon = ({ icon, width = "2.75rem" }: AssetIconProps) => {
         <img
           src={icon.content}
           css={css`
-            object-fit: cover;
+            object-fit: contain;
             width: 100%;
             height: 100%;
           `}

@@ -14,6 +14,7 @@ import { logError } from "@/functions/LogError";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env";
 import { useState } from "react";
 import { setusdcSolValue } from "@/redux/userWalletData";
+import { updateBalance } from "../assets/assetsSlice";
 
 const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const dispatch = useDispatch();
@@ -48,57 +49,38 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const handleTransactionSubmit = async () => {
     console.log("Starting transaction submission...");
 
-    if (!transaction.amount) return;
-    if (!transaction.user) return;
-    if (!transaction.assetId) return;
-
-    // First open the processing overlay
-    dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
-
-    // Add a small delay to ensure state updates are processed
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // next, go through transaction
-    const sellAsset =
-      assets.Assets[transaction.AssetId];
-
-    // Get all assets associated with this asset
-    const associatedAssets = sellAsset.assetIds.map(
-      (assetId) => assets.assets[assetId]
-    );
-
-    // Calculate the total balance in USD
-    const totalBalance = associatedAssets.reduce(
-      (total, asset) => total + asset.balance,
-      0
-    );
-
-    // Fix: Ensure sendAmount is capped at the totalBalance
-    const sendAmount =
-      transaction.amount > totalBalance ? totalBalance : transaction.amount;
-
-    const sendAmountMicro = sendAmount * 1000000;
-
-    let assetCode = "";
-
-    if (transaction.assetId === "us_dollar_yield") {
-      assetCode = "usdySol";
-    } else if (transaction.assetId === "us_dollar") {
-      assetCode = "usdcSol";
-    } else if (transaction.assetId === "sol") {
-      assetCode = "sol";
-    } else if (transaction.assetId === "euro") {
-      assetCode = "eurcSol";
-    } else if (transaction.assetId === "btc") {
-      assetCode = "btcSol";
-    }
-
     try {
+      if (!transaction.amount) return;
+      if (!transaction.user) return;
+      if (!transaction.assetId) return;
+
+      // First open the processing overlay
+      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
+
+      // Add a small delay to ensure state updates are processed
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // next, go through transaction
+      const sendAsset = assets.assets[transaction.assetId];
+
+      console.log("sendAsset", sendAsset);
+
+      // Calculate the total balance in USD
+      const totalBalance = sendAsset.balance * sendAsset.exchangeRateUSD;
+
+      // Fix: Ensure sendAmount is capped at the totalBalance
+      const sendAmount = transaction.amount > totalBalance ? totalBalance : transaction.amount;
+
+      const sendAmountMicro = sendAmount * 1000000;
+
+      console.log("PAY transaction.assetId", transaction.assetId);
+
+    
       const result = await tokenTransfer(
         solanaPubKey,
         transaction.user.solana_pub_key,
         sendAmountMicro,
-        assetCode,
+        transaction.assetId,
         wallet
       );
 
@@ -126,25 +108,15 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
           console.error("Failed to send email:", error);
           logError("Failed to send email:", "pay", error);
         }
-        // update amounts
-        if (transaction.assetId === "us_dollar_yield") {
-          setusdcSolValue(
-            userWalletData.usdySolBalance -
-              transaction.amount / userWalletData.priceOfUSDYinUSDC
-          );
-        } else if (transaction.assetId === "us_dollar") {
-          setusdcSolValue(userWalletData.usdcSolBalance - transaction.amount);
-        } else if (transaction.assetId === "sol") {
-          // cash only sends
-        } else if (transaction.assetId === "euro") {
-          setusdcSolValue(
-            userWalletData.eurcSolBalance -
-              transaction.amount / userWalletData.priceOfEURCinUSDC
-          );
-        } else if (transaction.assetId === "btc") {
-          // cash only sends
-        }
+        // Update the asset balance after successful transaction
+        const currentBalance = sendAsset.balance;
+        const newBalance = currentBalance - sendAmount;
+        dispatch(updateBalance({ 
+          assetId: transaction.assetId, 
+          balance: newBalance 
+        }));
 
+        
         dispatch(unmount());
         toast.success(
           `Sent $${transaction.formattedAmount} to ${

@@ -1,0 +1,547 @@
+{
+    "success": true,
+    "data": [
+        {
+            "symbol": "AAPL",
+            "price": 224.9,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 30389868,
+            "market_cap": 0,
+            "company_name": "Apple Inc.",
+            "updated_at": "2025-08-21T21:47:29.085Z"
+        },
+        {
+            "symbol": "ABBV",
+            "price": 209.5,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 5240471,
+            "market_cap": 0,
+            "company_name": "AbbVie Inc.",
+            "updated_at": "2025-08-21T21:47:33.537Z"
+        },
+        {
+            "symbol": "ABT",
+            "price": 132,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 3975494,
+            "market_cap": 0,
+            "company_name": "Abbott Laboratories",
+            "updated_at": "2025-08-21T21:47:33.605Z"
+        },
+        {
+            "symbol": "ACN",
+            "price": 253.99,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 2659130,
+            "market_cap": 0,
+            "company_name": "Accenture plc",
+            "updated_at": "2025-08-21T21:47:33.537Z"
+        },
+        {
+            "symbol": "AMZN",
+            "price": 221.95,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 31574032,
+            "market_cap": 0,
+            "company_name": "Amazon.com Inc.",
+            "updated_at": "2025-08-21T21:47:29.066Z"
+        },
+        {
+            "symbol": "AVGO",
+            "price": 289.6,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 14654011,
+            "market_cap": 0,
+            "company_name": "Broadcom Inc.",
+            "updated_at": "2025-08-21T21:47:29.067Z"
+        },
+        {
+            "symbol": "AZN",
+            "price": 80.46,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 2430588,
+            "market_cap": 0,
+            "company_name": "AstraZeneca plc",
+            "updated_at": "2025-08-21T21:47:33.577Z"
+        },
+        {
+            "symbol": "BAC",
+            "price": 48.26,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 24426802,
+            "market_cap": 0,
+            "company_name": "Bank of America Corp.",
+            "updated_at": "2025-08-21T21:47:33.604Z"
+        },
+        {
+            "symbol": "BRK.B",
+            "company_name": "Berkshire Hathaway Inc.",
+            "price": 488.67,
+            "change_amount": -0.01,
+            "change_percent": -0.002,
+            "volume": 3079459,
+            "market_cap": 0,
+            "updated_at": "2025-08-21T21:36:23.520Z"
+        },
+        {
+            "symbol": "CMCSA",
+            "price": 33.6,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 16159258,
+            "market_cap": 0,
+            "company_name": "Comcast Corporation",
+            "updated_at": "2025-08-21T21:47:35.742Z"
+        },
+        {
+            "symbol": "COIN",
+            "price": 300.28,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 5701962,
+            "market_cap": 0,
+            "company_name": "Coinbase Global Inc.",
+            "updated_at": "2025-08-21T21:47:33.526Z"
+        },
+        {
+            "symbol": "CRM",
+            "price": 245.83,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 4765093,
+            "market_cap": 0,
+            "company_name": "Salesforce Inc.",
+            "updated_at": "2025-08-21T21:47:38.729Z"
+        },
+        {
+            "symbol": "CRWD",
+            "price": 414.06,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 1794989,
+            "market_cap": 0,
+            "company_name": "CrowdStrike Holdings Inc.",
+            "updated_at": "2025-08-21T21:47:36.026Z"
+        },
+        {
+            "symbol": "CSCO",
+            "price": 67.02,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 12405122,
+            "market_cap": 0,
+            "company_name": "Cisco Systems Inc.",
+            "updated_at": "2025-08-21T21:47:33.548Z"
+        },
+        {
+            "symbol": "CVX",
+            "price": 155.55,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 6005229,
+            "market_cap": 0,
+            "company_name": "Chevron Corporation",
+            "updated_at": "2025-08-21T21:47:31.387Z"
+        },
+        {
+            "symbol": "DHR",
+            "price": 203.9,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 3172410,
+            "market_cap": 0,
+            "company_name": "Danaher Corporation",
+            "updated_at": "2025-08-21T21:47:35.732Z"
+        },
+        {
+            "symbol": "GME",
+            "price": 22.56,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 3618437,
+            "market_cap": 0,
+            "company_name": "GameStop Corp.",
+            "updated_at": "2025-08-21T21:47:44.098Z"
+        },
+        {
+            "symbol": "GOOGL",
+            "price": 199.75,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 19379690,
+            "market_cap": 0,
+            "company_name": "Alphabet Inc. (Google)",
+            "updated_at": "2025-08-21T21:47:29.065Z"
+        },
+        {
+            "symbol": "GS",
+            "price": 715.95,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 1145713,
+            "market_cap": 0,
+            "company_name": "The Goldman Sachs Group Inc.",
+            "updated_at": "2025-08-21T21:47:35.742Z"
+        },
+        {
+            "symbol": "HD",
+            "price": 397.7,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 2436999,
+            "market_cap": 0,
+            "company_name": "The Home Depot Inc.",
+            "updated_at": "2025-08-21T21:47:31.323Z"
+        },
+        {
+            "symbol": "HON",
+            "price": 217.42,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 2685869,
+            "market_cap": 0,
+            "company_name": "Honeywell International Inc.",
+            "updated_at": "2025-08-21T21:47:35.795Z"
+        },
+        {
+            "symbol": "HOOD",
+            "price": 106.3,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 34434064,
+            "market_cap": 0,
+            "company_name": "Robinhood Markets Inc.",
+            "updated_at": "2025-08-21T21:47:38.120Z"
+        },
+        {
+            "symbol": "IBM",
+            "price": 239.4,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 2593174,
+            "market_cap": 0,
+            "company_name": "International Business Machines Corp.",
+            "updated_at": "2025-08-21T21:47:35.805Z"
+        },
+        {
+            "symbol": "INTC",
+            "price": 23.5,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 96973860,
+            "market_cap": 0,
+            "company_name": "Intel Corporation",
+            "updated_at": "2025-08-21T21:47:35.832Z"
+        },
+        {
+            "symbol": "JNJ",
+            "price": 178.93,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 5206181,
+            "market_cap": 0,
+            "company_name": "Johnson & Johnson",
+            "updated_at": "2025-08-21T21:47:29.169Z"
+        },
+        {
+            "symbol": "JPM",
+            "price": 291.47,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 4781797,
+            "market_cap": 0,
+            "company_name": "JPMorgan Chase & Co.",
+            "updated_at": "2025-08-21T21:47:29.165Z"
+        },
+        {
+            "symbol": "KO",
+            "price": 70.66,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 6007858,
+            "market_cap": 0,
+            "company_name": "The Coca-Cola Company",
+            "updated_at": "2025-08-21T21:47:31.425Z"
+        },
+        {
+            "symbol": "LIN",
+            "price": 480.71,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 1238415,
+            "market_cap": 0,
+            "company_name": "Linde plc",
+            "updated_at": "2025-08-21T21:47:35.790Z"
+        },
+        {
+            "symbol": "LLY",
+            "price": 709.82,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 3245606,
+            "market_cap": 0,
+            "company_name": "Eli Lilly and Company",
+            "updated_at": "2025-08-21T21:47:29.169Z"
+        },
+        {
+            "symbol": "MA",
+            "price": 591.92,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 2347648,
+            "market_cap": 0,
+            "company_name": "Mastercard Incorporated",
+            "updated_at": "2025-08-21T21:47:31.297Z"
+        },
+        {
+            "symbol": "MCD",
+            "price": 313.22,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 2280091,
+            "market_cap": 0,
+            "company_name": "McDonald's Corporation",
+            "updated_at": "2025-08-21T21:47:35.790Z"
+        },
+        {
+            "symbol": "MDT",
+            "price": 91.1,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 6465990,
+            "market_cap": 0,
+            "company_name": "Medtronic plc",
+            "updated_at": "2025-08-21T21:47:38.192Z"
+        },
+        {
+            "symbol": "MRK",
+            "price": 86.08,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 11520753,
+            "market_cap": 0,
+            "company_name": "Merck & Co. Inc.",
+            "updated_at": "2025-08-21T21:47:31.401Z"
+        },
+        {
+            "symbol": "MRVL",
+            "price": 71.21,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 9424978,
+            "market_cap": 0,
+            "company_name": "Marvell Technology Inc.",
+            "updated_at": "2025-08-21T21:47:35.726Z"
+        },
+        {
+            "symbol": "MSFT",
+            "price": 504.24,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 18164295,
+            "market_cap": 0,
+            "company_name": "Microsoft Corporation",
+            "updated_at": "2025-08-21T21:47:29.077Z"
+        },
+        {
+            "symbol": "MSTR",
+            "price": 337.58,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 8271668,
+            "market_cap": 0,
+            "company_name": "MicroStrategy Incorporated",
+            "updated_at": "2025-08-21T21:47:44.747Z"
+        },
+        {
+            "symbol": "NDAQ",
+            "price": 93.96,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 1763731,
+            "market_cap": 0,
+            "company_name": "Nasdaq Inc.",
+            "updated_at": "2025-08-21T21:47:38.193Z"
+        },
+        {
+            "symbol": "NFLX",
+            "price": 1206.21,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 2038426,
+            "market_cap": 0,
+            "company_name": "Netflix Inc.",
+            "updated_at": "2025-08-21T21:47:33.525Z"
+        },
+        {
+            "symbol": "NVDA",
+            "price": 174.98,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 135452544,
+            "market_cap": 0,
+            "company_name": "NVIDIA Corporation",
+            "updated_at": "2025-08-21T21:47:29.069Z"
+        },
+        {
+            "symbol": "NVO",
+            "price": 55.45,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 12718708,
+            "market_cap": 0,
+            "company_name": "Novo Nordisk A/S",
+            "updated_at": "2025-08-21T21:47:38.184Z"
+        },
+        {
+            "symbol": "ORCL",
+            "price": 233.16,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 6053168,
+            "market_cap": 0,
+            "company_name": "Oracle Corporation",
+            "updated_at": "2025-08-21T21:47:38.126Z"
+        },
+        {
+            "symbol": "PFE",
+            "price": 25.74,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 29531097,
+            "market_cap": 0,
+            "company_name": "Pfizer Inc.",
+            "updated_at": "2025-08-21T21:47:31.423Z"
+        },
+        {
+            "symbol": "PG",
+            "price": 158.73,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 4773120,
+            "market_cap": 0,
+            "company_name": "Procter & Gamble Co.",
+            "updated_at": "2025-08-21T21:47:31.331Z"
+        },
+        {
+            "symbol": "PLTR",
+            "price": 156.18,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 94251240,
+            "market_cap": 0,
+            "company_name": "Palantir Technologies Inc.",
+            "updated_at": "2025-08-21T21:47:38.118Z"
+        },
+        {
+            "symbol": "PM",
+            "price": 174.49,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 4343138,
+            "market_cap": 0,
+            "company_name": "Philip Morris International Inc.",
+            "updated_at": "2025-08-21T21:47:38.155Z"
+        },
+        {
+            "symbol": "TMO",
+            "price": 483.76,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 1360129,
+            "market_cap": 0,
+            "company_name": "Thermo Fisher Scientific Inc.",
+            "updated_at": "2025-08-21T21:47:40.952Z"
+        },
+        {
+            "symbol": "TSLA",
+            "price": 320.11,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 55110017,
+            "market_cap": 0,
+            "company_name": "Tesla Inc.",
+            "updated_at": "2025-08-21T21:47:33.560Z"
+        },
+        {
+            "symbol": "UNH",
+            "price": 303.35,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 13274929,
+            "market_cap": 0,
+            "company_name": "UnitedHealth Group Incorporated",
+            "updated_at": "2025-08-21T21:47:31.322Z"
+        },
+        {
+            "symbol": "V",
+            "price": 343.69,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 5969449,
+            "market_cap": 0,
+            "company_name": "Visa Inc.",
+            "updated_at": "2025-08-21T21:47:29.081Z"
+        },
+        {
+            "symbol": "WFC",
+            "price": 77.83,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 9092001,
+            "market_cap": 0,
+            "company_name": "Wells Fargo & Company",
+            "updated_at": "2025-08-21T21:47:41.958Z"
+        },
+        {
+            "symbol": "WMT",
+            "price": 97.96,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 51615727,
+            "market_cap": 0,
+            "company_name": "Walmart Inc.",
+            "updated_at": "2025-08-21T21:47:31.316Z"
+        },
+        {
+            "symbol": "XOM",
+            "price": 109.23,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 9850389,
+            "market_cap": 0,
+            "company_name": "Exxon Mobil Corporation",
+            "updated_at": "2025-08-21T21:47:31.364Z"
+        },
+        {
+            "symbol": "XRX",
+            "price": 3.69,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 4790976,
+            "market_cap": 0,
+            "company_name": "Xerox Holdings Corporation",
+            "updated_at": "2025-08-21T21:47:45.565Z"
+        },
+        {
+            "symbol": "BRK-B",
+            "price": 488.59,
+            "change_amount": 0,
+            "change_percent": 0,
+            "volume": 3042033,
+            "market_cap": 0,
+            "company_name": "Berkshire Hathaway Inc.",
+            "updated_at": "2025-08-21T21:47:33.584Z"
+        }
+    ],
+    "last_update": "2025-08-21T21:47:45.565Z",
+    "total_stocks": 54
+}

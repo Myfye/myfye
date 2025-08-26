@@ -2,7 +2,8 @@ import { PublicKey, Connection, VersionedTransaction } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
 import getTokenAccountData from "../../../functions/GetSolanaTokenAccount.tsx";
 import prepareTransaction from "./PrepareSwap.tsx";
-import mintAddress from "../../../functions/MintAddress.tsx";
+import { getMintAddress } from "../../assets/assetsSlice";
+import { getAssetDecimals } from "../../assets/utils";
 import verifyTransaction from "./VerifyTransaction.tsx";
 import ensureTokenAccount from "../../../functions/ensureTokenAccount.tsx";
 import { SwapTransaction, updateStatus } from "../swapSlice.ts";
@@ -11,6 +12,7 @@ import { ConnectedSolanaWallet } from "@privy-io/react-auth";
 import { Asset, AssetsState } from "@/features/assets/types.ts";
 import { logError } from "../../../functions/LogError.tsx";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
+import toast from "react-hot-toast/headless";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -50,8 +52,8 @@ export const swap = async ({
     type,
     microPlatformFeeAmount
   );
-  const output_mint = mintAddress(outputCurrency);
-  const inputMint = mintAddress(inputCurrency);
+  const output_mint = getMintAddress(outputCurrency);
+  const inputMint = getMintAddress(inputCurrency);
 
   await ensureTokenAccount(publicKey, output_mint);
 
@@ -64,11 +66,11 @@ export const swap = async ({
       //'DR5s8mAdygzmHihziLzDBwjuux1R131ydAG2rjYhpAmn',
       "688pzWEMqC52hiVgFviu45A24EzJ6ZfVoHiSzPSahJgh",
       inputMint,
-      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" // To do test with other program IDs like stocks
     );
   }
 
-  const microInputAmount = convertToMicro(inputAmount, inputCurrency);
+  const microInputAmount = convertToMicro(inputAmount, inputCurrency, assets);
 
   console.log("Calling getSwapQuote...");
   getSwapQuote(
@@ -100,29 +102,11 @@ export const swap = async ({
     });
 };
 
-const convertToMicro = (amount: number, currency: string) => {
+const convertToMicro = (amount: number, currency: string, assets: AssetsState) => {
   console.log("convertToMicro currency: ", currency);
-  if (currency === "btc_sol" || 
-    currency === "AAPL" ||
-    currency === "SPY" ||
-    currency === "NVDA" ||
-    currency === "TSLA" ||
-    currency === "NFLX" ||
-    currency === "KO" ||
-    currency === "WMT" ||
-    currency === "JPM" ||
-    currency === "SPY" ||
-    currency === "COIN" ) { // 8 decimals
-    return Math.round(amount * 100000000);
-  } else if ( // 9 decimals
-    currency === "w_sol" || currency === "sol" || 
-    currency === "xrp_sol" || currency === 'xrp' || 
-    currency === "doge_sol" || currency === "doge" || 
-    currency === "sui_sol" || currency === "sui") { 
-    return Math.round(amount * 1000000000);
-  } else {
-    return Math.round(amount * 1000000);
-  }
+  const decimals = getAssetDecimals(assets, currency);
+  const multiplier = Math.pow(10, decimals);
+  return Math.round(amount * multiplier);
 };
 
 {
@@ -142,7 +126,7 @@ async function getSwapQuote(
   });
   
   // Input mint
-  const inputMintAddress = mintAddress(inputCurrencyType);
+  const inputMintAddress = getMintAddress(inputCurrencyType);
 
   try {
     let url = `https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`;
@@ -178,6 +162,7 @@ async function getSwapQuote(
     };
   } catch (error) {
     console.error("Error in getSwapQuote:", error);
+    parseErrorAndDisplayToast(error);
     const errorLogMessage = "Error getting the swap quote" + `Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
     const errorStackTrace = `${error} Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
 
@@ -185,6 +170,31 @@ async function getSwapQuote(
     logError(errorLogMessage, "swap", errorStackTrace);
     throw error; // rethrow the error if you want to handle it in the calling function
   }
+}
+
+const parseErrorAndDisplayToast = (error: any) => {
+  let errorCode = 'Unknown error';
+  
+  // Check if error has errorCode property (from our custom error object)
+  if (error.errorCode) {
+    errorCode = error.errorCode;
+  }
+  // Check if error.message contains Jupiter API error response
+  else if (error.message && error.message.includes('Jupiter API error:')) {
+    try {
+      // Extract the JSON part from the error message
+      const jsonStart = error.message.indexOf('{');
+      const jsonEnd = error.message.lastIndexOf('}') + 1;
+      const jsonString = error.message.substring(jsonStart, jsonEnd);
+      const errorData = JSON.parse(jsonString);
+      
+      errorCode = errorData.errorCode || errorCode;
+    } catch (parseError) {
+      console.error('Failed to parse Jupiter API error:', parseError);
+    }
+  }
+  
+  toast.error(`Blockchain error: ${errorCode}`);
 }
 
 {

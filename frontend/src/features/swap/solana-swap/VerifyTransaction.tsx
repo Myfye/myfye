@@ -9,7 +9,6 @@ import { saveNewSwapTransaction } from "@/functions/SaveNewTransaction.tsx";
 import { SwapTransaction } from "../types.ts";
 import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
 import { useSelector } from "react-redux";
-import { assetId } from "@/functions/MintAddress.tsx";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -49,6 +48,27 @@ async function verifyTransaction(
             "Transaction details:",
             JSON.stringify(transaction, null, 2)
           );
+
+
+          console.log("transaction", transaction);
+          console.log("update status to success");
+
+
+          // Hacked together special cases for PYUSD and USDT
+          if ((transaction.sell.assetId === "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo") ||
+          (transaction.sell.assetId === "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB")) {
+            const balance = assets.assets["USD"].balance;
+
+            console.log("DETECT ALT USD Incrementing USDC balance", balance, "by", transaction.buy.amount);
+            dispatch(
+              updateBalance({
+                assetId: "USD",
+                balance: balance + transaction.buy.amount,
+              })
+            );
+          } 
+
+                    
           saveTransaction(
             transaction, 
             transactionId, 
@@ -164,89 +184,6 @@ function updateBalances(
   transaction: SwapTransaction,
   assets: AssetsState
 ) {
-  // Add debugging to see what assets are available
-  console.log("Available assets:", Object.keys(assets.assets));
-  console.log("COIN_sol asset:", assets.assets["COIN_sol"]);
-  
-  // Check which assets are missing
-      const requiredAssets = [
-      "btc_sol", "xrp_sol", "usdc_sol", "usdy_sol", "eurc_sol", "doge_sol", "sui_sol", "sol",
-      "AAPL", "MSFT", "AMZN", "GOOGL", "NVDA", "TSLA", "NFLX", "KO",
-      "WMT", "JPM", "SPY", "LLY", "AVGO", "JNJ", "V", "UNH",
-      "XOM", "MA", "PG", "HD", "CVX", "MRK", "PFE", "ABT",
-      "ABBV", "ACN", "AZN", "BAC", "BRK.B", "CSCO", "COIN", "CMCSA",
-      "CRWD", "DHR", "GS", "HON", "IBM", "INTC", "LIN", "MRVL",
-      "MCD", "MDT", "NDAQ", "NVO", "ORCL", "PLTR", "PM", "HOOD",
-      "CRM", "TMO", "MSTR", "GME"
-    ];
-  
-  const missingAssets = requiredAssets.filter(asset => !assets.assets[asset]);
-  console.log("Missing assets:", missingAssets);
-  
-  const balances = {
-    btcSol: assets.assets["btc_sol"].balance,
-    xrpSol: assets.assets["xrp_sol"].balance,
-    usdcSol: assets.assets["usdc_sol"].balance,
-    usdySol: assets.assets["usdy_sol"].balance,
-    eurcSol: assets.assets["eurc_sol"].balance,
-    dogeSol: assets.assets["doge_sol"].balance,
-    suiSol: assets.assets["sui_sol"].balance,
-    sol: assets.assets["sol"].balance,
-    // Stock balances
-    aaplSol: assets.assets["AAPL_sol"].balance,
-    //msftSol: assets.assets["MSFT_sol"].balance,
-    //amznSol: assets.assets["AMZN_sol"].balance,
-    //googlSol: assets.assets["GOOGL_sol"].balance,
-    nvdaSol: assets.assets["NVDA_sol"].balance,
-    tslaSol: assets.assets["TSLA_sol"].balance,
-    //nflxSol: assets.assets["NFLX_sol"].balance,
-    //koSol: assets.assets["KO_sol"].balance,
-    //wmtSol: assets.assets["WMT_sol"].balance,
-    //jpmSol: assets.assets["JPM_sol"].balance,
-    spySol: assets.assets["SPY_sol"].balance,
-    //llySol: assets.assets["LLY_sol"].balance,
-    //avgoSol: assets.assets["AVGO_sol"].balance,
-    //jnjSol: assets.assets["JNJ_sol"].balance,
-    //vSol: assets.assets["V_sol"].balance,
-    //unhSol: assets.assets["UNH_sol"].balance,
-    //xomSol: assets.assets["XOM_sol"].balance,
-    //maSol: assets.assets["MA_sol"].balance,
-    //pgSol: assets.assets["PG_sol"].balance,
-    //hdSol: assets.assets["HD_sol"].balance,
-    //cvxSol: assets.assets["CVX_sol"].balance,
-    //mrkSol: assets.assets["MRK_sol"].balance,
-    //pfeSol: assets.assets["PFE_sol"].balance,
-    //abtSol: assets.assets["ABT_sol"].balance,
-    //abbvSol: assets.assets["ABBV_sol"].balance,
-    //acnSol: assets.assets["ACN_sol"].balance,
-    //aznSol: assets.assets["AZN_sol"].balance,
-    //bacSol: assets.assets["BAC_sol"].balance,
-    //brkBSol: assets.assets["BRK.B_sol"].balance,
-    //cscoSol: assets.assets["CSCO_sol"].balance,
-    coinSol: assets.assets["COIN_sol"].balance,
-    //cmcsaSol: assets.assets["CMCSA_sol"].balance,
-    //crwdSol: assets.assets["CRWD_sol"].balance,
-    //dhrSol: assets.assets["DHR_sol"].balance,
-    //gsSol: assets.assets["GS_sol"].balance,
-    //honSol: assets.assets["HON_sol"].balance,
-    //ibmSol: assets.assets["IBM_sol"].balance,
-    //intcSol: assets.assets["INTC_sol"].balance,
-    //linSol: assets.assets["LIN_sol"].balance,
-    //mrvlSol: assets.assets["MRVL_sol"].balance,
-    //mcdSol: assets.assets["MCD_sol"].balance,
-    //mdtSol: assets.assets["MDT_sol"].balance,
-    //ndaqSol: assets.assets["NDAQ_sol"].balance,
-    //nvoSol: assets.assets["NVO_sol"].balance,
-    //orclSol: assets.assets["ORCL_sol"].balance,
-    //pltrSol: assets.assets["PLTR_sol"].balance,
-    //pmSol: assets.assets["PM_sol"].balance,
-    //hoodSol: assets.assets["HOOD_sol"].balance,
-    //crmSol: assets.assets["CRM_sol"].balance,
-    //tmoSol: assets.assets["TMO_sol"].balance,
-    //mstrSol: assets.assets["MSTR_sol"].balance,
-    //gmeSol: assets.assets["GME_sol"].balance,
-  };
-
   const { sell, buy } = transaction;
 
   if (!sell.amount || !buy.amount) {
@@ -254,290 +191,46 @@ function updateBalances(
       sellAmount: sell.amount,
       buyAmount: buy.amount,
     });
-    return; // Return early instead of throwing an error
+    return;
   }
-
-  const buyActions = {
-    btcSol: () => {
-      dispatch(
-        updateBalance({
-          assetId: "btc_sol",
-          balance: balances.btcSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to btc balance`);
-    },
-    xrpSol: () => {
-      dispatch(
-        updateBalance({
-          assetId: "xrp_sol",
-          balance: balances.xrpSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to xrp balance`);
-    },
-    dogeSol: () => {
-      dispatch(
-        updateBalance({
-          assetId: "doge_sol",
-          balance: balances.dogeSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to doge balance`);
-    },
-    suiSol: () => {
-      dispatch(
-        updateBalance({
-          assetId: "sui_sol",
-          balance: balances.suiSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to sui balance`);
-    },
-    usdcSol: () => {
-      dispatch(
-        updateBalance({
-          assetId: "usdc_sol",
-          balance: balances.usdcSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to usdc balance`);
-    },
-    usdySol: () => {
-      dispatch(
-        updateBalance({
-          assetId: "usdy_sol",
-          balance: balances.usdySol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to usdy balance`);
-    },
-    eurcSol: () => {
-      dispatch(
-        updateBalance({
-          assetId: "eurc_sol",
-          balance: balances.eurcSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to eurc balance`);
-    },
-    sol: () => {
-      dispatch(
-        updateBalance({
-          assetId: "sol",
-          balance: balances.sol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to sol balance`);
-    },
-    // Stock buy actions
-    AAPL: () => {
-      dispatch(
-        updateBalance({
-          assetId: "AAPL_sol",
-          balance: balances.aaplSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to aapl balance`);
-    },
-    NVDA: () => {
-      dispatch(
-        updateBalance({
-          assetId: "NVDA_sol",
-          balance: balances.nvdaSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to nvda balance`);
-    },
-    TSLA: () => {
-      dispatch(
-        updateBalance({
-          assetId: "TSLA_sol",
-          balance: balances.tslaSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to tsla balance`);
-    },
-    SPY: () => {
-      dispatch(
-        updateBalance({
-          assetId: "SPY_sol",
-          balance: balances.spySol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to spy balance`);
-    },
-    COIN: () => {
-      console.log("adding coin balance", balances.coinSol, buy.amount)
-      dispatch(
-        updateBalance({
-          assetId: "COIN_sol",
-          balance: balances.coinSol + buy.amount,
-        })
-      );
-      console.log(`added ${buy.amount} to coin balance`);
-    },
-  };
-
-  const sellActions = {
-    btcSol: () => {
-      const newBalance = Math.max(0, balances.btcSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "btc_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    xrpSol: () => {
-      const newBalance = Math.max(0, balances.xrpSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "xrp_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    dogeSol: () => {
-      const newBalance = Math.max(0, balances.dogeSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "doge_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    suiSol: () => {
-      const newBalance = Math.max(0, balances.suiSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "sui_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    usdcSol: () => {
-      const newBalance = Math.max(0, balances.usdcSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "usdc_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    usdySol: () => {
-      const newBalance = Math.max(0, balances.usdySol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "usdy_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    eurcSol: () => {
-      const newBalance = Math.max(0, balances.eurcSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "eurc_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    sol: () => {
-      const newBalance = Math.max(0, balances.sol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "sol",
-          balance: newBalance,
-        })
-      );
-    },
-    usdtSol: () => {
-      const newBalance = Math.max(0, balances.usdtSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "usdt_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    // Stock sell actions
-    AAPL: () => {
-      const newBalance = Math.max(0, balances.aaplSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "AAPL_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    NVDA: () => {
-      const newBalance = Math.max(0, balances.nvdaSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "NVDA_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    TSLA: () => {
-      const newBalance = Math.max(0, balances.tslaSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "TSLA_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    SPY: () => {
-      const newBalance = Math.max(0, balances.spySol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "SPY_sol",
-          balance: newBalance,
-        })
-      );
-    },
-    COIN: () => {
-      const newBalance = Math.max(0, balances.coinSol - sell.amount);
-      dispatch(
-        updateBalance({
-          assetId: "COIN_sol",
-          balance: newBalance,
-        })
-      );
-    },
-  };
 
   if (!sell.assetId || !buy.assetId) {
     console.error("Missing asset IDs in transaction:", { sell, buy });
-    return; // Return early instead of throwing an error
+    return;
   }
 
-  // Map the mint addresses to our asset IDs
-  const sellAssetId = assetId(sell.assetId);
-  const buyAssetId = assetId(buy.assetId);
-  console.log("Original mint addresses:", { sellMint: sell.assetId, buyMint: buy.assetId });
-  console.log("Mapped asset IDs:", { sellAssetId, buyAssetId });
-  console.log("Available action keys:", {
-    sellActions: Object.keys(sellActions),
-    buyActions: Object.keys(buyActions)
-  });
+  // Get current balances for sell and buy assets
+  const sellAsset = assets.assets[sell.assetId];
+  const buyAsset = assets.assets[buy.assetId];
 
-  if (!sellActions[sellAssetId] || !buyActions[buyAssetId]) {
-    console.error("Invalid asset IDs:", { 
-      sellAssetId, 
-      buyAssetId,
-      availableSellActions: Object.keys(sellActions),
-      availableBuyActions: Object.keys(buyActions)
+  if (!sellAsset || !buyAsset) {
+    console.error("Assets not found in state:", { 
+      sellAssetId: sell.assetId, 
+      buyAssetId: buy.assetId,
+      availableAssets: Object.keys(assets.assets)
     });
-    return; // Return early instead of throwing an error
+    return;
   }
 
-  console.log("Executing sell action for:", sellAssetId);
-  sellActions[sellAssetId]();
-  console.log("Executing buy action for:", buyAssetId);
-  buyActions[buyAssetId]();
+  // Update sell asset balance (subtract the sold amount)
+  const newSellBalance = Math.max(0, sellAsset.balance - sell.amount);
+  dispatch(
+    updateBalance({
+      assetId: sell.assetId,
+      balance: newSellBalance,
+    })
+  );
+  console.log(`Subtracted ${sell.amount} from ${sell.assetId} balance (new balance: ${newSellBalance})`);
+
+  // Update buy asset balance (add the bought amount)
+  const newBuyBalance = buyAsset.balance + buy.amount;
+  dispatch(
+    updateBalance({
+      assetId: buy.assetId,
+      balance: newBuyBalance,
+    })
+  );
+  console.log(`Added ${buy.amount} to ${buy.assetId} balance (new balance: ${newBuyBalance})`);
 }
 
 

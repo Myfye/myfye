@@ -26,8 +26,10 @@ interface CreatePayoutResponse {
 }
 
 interface CreatePayoutQuery {
+  userId: string;
   bankAccountId: string;
   amount: number;
+  currency: string;
 }
 
 interface AddBankAccountResponse {
@@ -601,7 +603,7 @@ interface AddBankAccountQuery {
 
 export const withdrawApi = createApi({
   reducerPath: "withdrawApi",
-  tagTypes: ["Withdraw"],
+  tagTypes: ["Withdraw", "BankAccounts"],
   baseQuery: fetchBaseQuery({
     baseUrl: MYFYE_BACKEND,
     prepareHeaders: (headers) => {
@@ -611,19 +613,33 @@ export const withdrawApi = createApi({
   }),
   endpoints: (build) => ({
     createPayout: build.query<CreatePayoutResponse, CreatePayoutQuery>({
-      query: ({ bankAccountId, amount }) => {
+      query: ({ userId, bankAccountId, amount, currency }) => {
         return {
-          url: `/payout_quote`,
+          url: `/create_payout`,
           method: "POST",
           mode: "cors",
           credentials: "include",
           body: {
+            user_id: userId,
             bank_account_id: bankAccountId,
-            currency_type: "sender",
-            cover_fees: false,
-            request_amount: amount,
+            amount: amount,
+            currency: currency,
           },
         };
+      },
+      transformResponse: (response: any) => {
+        console.log('🔍 withdrawApi - createPayout transformResponse called with:', response);
+        
+        // Check if the response indicates an error
+        if (response && response.success === false) {
+          console.log('❌ withdrawApi - Response indicates failure:', response);
+          // Don't throw here, let the error handling in the component deal with it
+          // This allows us to access the detailed error information
+          return response;
+        }
+        
+        console.log('✅ withdrawApi - Response indicates success:', response);
+        return response;
       },
     }),
     addBankAccount: build.query<AddBankAccountResponse, AddBankAccountQuery>({
@@ -654,6 +670,23 @@ export const withdrawApi = createApi({
           },
         };
       },
+      transformResponse: (response: any) => {
+        console.log('🔍 withdrawApi - addBankAccount transformResponse called with:', response);
+        
+        // Check if the response indicates an error
+        if (response && response.success === false) {
+          console.log('❌ withdrawApi - Response indicates failure:', response);
+          // Don't throw here, let the error handling in the component deal with it
+          // This allows us to access the detailed error information
+          return response;
+        }
+        
+        console.log('✅ withdrawApi - Response indicates success:', response);
+        return response;
+      },
+      invalidatesTags: (result, error, { userId }) => [
+        { type: 'BankAccounts', id: userId }
+      ],
     }),
   }),
 });

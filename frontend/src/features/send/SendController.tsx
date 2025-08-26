@@ -24,11 +24,11 @@ const AssetSelectButton = ({
   assetId,
   ...restProps
 }: {
-  AssetId: asset["id"] | null;
+  assetId: Asset["id"] | null;
 }) => {
   const dispatch = useDispatch();
   const asset = useSelector((state: RootState) =>
-    AssetId
+    assetId
       ? selectAssetWithBalance(state, assetId)
       : null
   );

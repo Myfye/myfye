@@ -70,7 +70,26 @@ const KYCOverlay = ({
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch KYC status");
+          // Log detailed error information for debugging
+          console.error('KYC Status Fetch Error Details:', {
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url,
+            headers: Object.fromEntries(response.headers.entries()),
+            currentUserID,
+            requestBody: { user_id: currentUserID },
+            timestamp: new Date().toISOString()
+          });
+          
+          // Try to get error response body if available
+          try {
+            const errorData = await response.text();
+            console.error('KYC Status Error Response Body:', errorData);
+          } catch (bodyError) {
+            console.error('Could not read error response body:', bodyError);
+          }
+          
+          throw new Error(`Failed to fetch KYC status: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -385,13 +404,14 @@ const KYCOverlay = ({
                     color: var(--clr-text);
                   `}
                 >
+                  To continue,&nbsp;
                   <span style={{ color: "#006BCC", textDecoration: "underline" }}>
                     <a
                       href="https://www.investopedia.com/terms/k/knowyourclient.asp"
                       rel="noopener noreferrer"
                       target="_blank"
                     >
-                      Regulations
+                      regulations
                     </a>
                   </span>{" "}
                   require us to collect and verify your information

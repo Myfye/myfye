@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { parseFormattedAmount, updateFormattedAmount } from "../utils";
 import {
+  BankAccount,
   PresetAmountOption,
   WithdrawOffChainOverlay,
   WithdrawOffChainTransaction,
@@ -9,6 +10,11 @@ import { Asset } from "@/features/assets/types";
 
 interface WithdrawOffChainState {
   transaction: WithdrawOffChainTransaction;
+  bankAccounts: {
+    data: BankAccount[];
+    isLoading: boolean;
+    isError: boolean;
+  };
   overlays: {
     withdrawOffChain: {
       isOpen: boolean;
@@ -40,7 +46,7 @@ const initialState: WithdrawOffChainState = {
     status: "idle",
     amount: 0,
     formattedAmount: "0",
-    assetId: "us_dollar",
+    assetId: "USD",
     fiatCurrency: "usd",
     fee: 0,
     presetAmount: null,
@@ -74,6 +80,11 @@ const initialState: WithdrawOffChainState = {
       receiverLocalAmount: null,
       senderAmount: null,
     },
+  },
+  bankAccounts: {
+    data: [],
+    isLoading: false,
+    isError: false,
   },
   overlays: {
     withdrawOffChain: {
@@ -165,6 +176,23 @@ const withdrawOffChainSlice = createSlice({
     updateAssetId(state, action: PayloadAction<Asset["id"] | null>) {
       state.transaction.assetId = action.payload;
     },
+    setBankAccountsLoading: (state, action: PayloadAction<boolean>) => {
+      state.bankAccounts.isLoading = action.payload;
+    },
+    setBankAccountsError: (state, action: PayloadAction<boolean>) => {
+      state.bankAccounts.isError = action.payload;
+    },
+    setBankAccounts: (state, action: PayloadAction<BankAccount[]>) => {
+      state.bankAccounts.data = action.payload;
+      state.bankAccounts.isLoading = false;
+      state.bankAccounts.isError = false;
+    },
+    addBankAccount: (state, action: PayloadAction<BankAccount>) => {
+      state.bankAccounts.data.push(action.payload);
+    },
+    clearBankAccounts: (state) => {
+      state.bankAccounts = initialState.bankAccounts;
+    },
     unmount: () => ({ ...initialState }),
   },
 });
@@ -175,6 +203,11 @@ export const {
   updateBankInfo,
   toggleOverlay,
   updateAmount,
+  setBankAccountsLoading,
+  setBankAccountsError,
+  setBankAccounts,
+  addBankAccount,
+  clearBankAccounts,
   unmount,
   unmountOverlays,
 } = withdrawOffChainSlice.actions;

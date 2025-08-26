@@ -52,10 +52,9 @@ const Pay = () => {
       assets.assets[transaction.assetId];
     if (!sellAsset) return true;
 
-    // Loop through assets to make sure that user has assets within an asset
-    const totalBalance = sellAsset.assetIds
-      .map((assetId) => assets.assets[assetId])
-      .reduce((acc, val) => acc + val.balance * val.exchangeRateUSD, 0);
+    // Calculate the total balance in USD for this asset
+    console.log("sellAsset", sellAsset);
+    const totalBalance = sellAsset.balance * sellAsset.exchangeRateUSD;
     // Now check the balance using the specific asset ID
     if (totalBalance < transaction.amount) return true;
     console.log(totalBalance, transaction.amount);

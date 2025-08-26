@@ -20,10 +20,10 @@ const WithdrawOnChainSelectAssetOverlay = ({ ...restProps }: OverlayProps) => {
   );
 
   const eurcAsset = useSelector((state: RootState) =>
-    selectAsset(state, "eurc_sol")
+    selectAsset(state, "EUR")
   );
   const usdcAsset = useSelector((state: RootState) =>
-    selectAsset(state, "usdc_sol")
+    selectAsset(state, "USD")
   );
 
   return (

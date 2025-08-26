@@ -98,7 +98,7 @@ const AssetSelectButton = ({
 const MaxAmountButton = ({
   assetId,
 }: {
-  assetId: AAsset["id"] | null;
+  assetId: Asset["id"] | null;
 }) => {
   const dispatch = useDispatch();
 
@@ -117,7 +117,7 @@ const MaxAmountButton = ({
         onPress={() => {
           if (!asset) return;
 
-          if (asset.id == "sol") {
+          if (asset.id === "SOL") {
             // We have to keep 0.0015 Sol for transaction fees
             const solFee = 0.0025;
             if (asset.balance - solFee > 0.00001) {

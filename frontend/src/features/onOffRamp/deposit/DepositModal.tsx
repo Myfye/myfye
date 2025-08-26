@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { css } from "@emotion/react";
-import { Bank, Wallet } from "@phosphor-icons/react";
+import { Bank, Wallet, CreditCard } from "@phosphor-icons/react";
 import ModalButton from "../_components/ModalButton";
 import Modal from "@/shared/components/ui/modal/Modal";
 // import toast from "react-hot-toast/headless";
@@ -9,7 +9,7 @@ import OnChainDepositContent from "./onChain/OnChainDepositContent";
 import { AnimatePresence, useMotionValue, animate } from "motion/react";
 import toast from "react-hot-toast/headless";
 import { toggleModal, unmount } from "./depositSlice";
-// import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 import {
   toggleOverlay,
   unmount as unmountOffChain,
@@ -98,15 +98,17 @@ const DepositModal = () => {
                 title="Bank Account"
                 description="Deposit via bank transfer"
                 onPress={() => {
-                  // if (!currentUserKYCVerified)
-                  //   return dispatch(toggleKYCModal({ isOpen: true }));
-                  dispatch(
-                    toggleOverlay({ type: "bankAccount", isOpen: true })
-                  );
+                  if (currentUserKYCStatus !== 'APPROVED') {
+                    return dispatch(toggleKYCModal({ isOpen: true }));
+                  } else {
+                    dispatch(
+                      toggleOverlay({ type: "bankAccount", isOpen: true })
+                    );
+                  }
                 }}
               />
               <ModalButton
-                icon={Bank}
+                icon={CreditCard}
                 title="Card / Apple Pay / Google Pay"
                 description="Deposit via credit/debit card"
                 onPress={() => {

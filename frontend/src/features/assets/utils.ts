@@ -33,3 +33,15 @@ export const formatBalance = (
     currency: currency,
     style: "currency",
   }).format(balance);
+
+export const getAssetDecimals = (
+  assets: AssetsState,
+  assetId: string
+): number => {
+  const asset = assets.assets[assetId];
+  if (!asset) {
+    console.error(`Asset with id ${assetId} not found`);
+    return 6; // Default to 6 decimals as fallback
+  }
+  return asset.decimals || 6; // Fallback to 6 decimals if decimals property is missing
+};

@@ -58,4 +58,27 @@ export interface BankInfo {
   icon: string;
 }
 
+export interface BankAccount {
+  id: string;
+  name: string;
+  beneficiary_name: string;
+  spei_institution_code: string;
+  spei_clabe: string;
+}
+
+export interface BankAccountResponse {
+  id: string;
+  type: string;
+  name: string;
+  beneficiary_name: string;
+  spei_institution_code: string;
+  spei_clabe: string;
+  spei_protocol: string;
+  account_class: string | null;
+  account_number: string | null;
+  account_type: string | null;
+  created_at: string;
+  // ... other fields that might be present but not needed
+}
+
 export type PresetAmountOption = "10" | "50" | "100" | "max" | null;

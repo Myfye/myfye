@@ -23,6 +23,7 @@ import {
 import truncateBankAccountNumber from "@/shared/utils/bankUtils";
 import WithdrawOffChainConfirmTransactionOverlay from "./WithdrawOffChainConfirmTransactionOverlay";
 import { useEffect } from "react";
+import {encodeFunctionData} from "viem";
 
 const WithdrawOffChainOverlay = () => {
   const dispatch = useDispatch();
@@ -41,19 +42,53 @@ const WithdrawOffChainOverlay = () => {
 
   const [triggerCreatePayout, { isLoading }] = useLazyCreatePayoutQuery();
 
-  const handleWithdraw = async () => {
-    if (!transaction.amount) return;
-    if (!transaction.bankInfo.id) return;
-    // const { data, isError } = await triggerCreatePayout({
-    //   amount: Math.round(transaction.amount * 100),
-    //   bankAccountId: transaction.bankInfo.id,
-    // });
+  /*
+    const approvalData = encodeFunctionData({
+              abi: [
+                {
+                  type: "function",
+                  name: "approve",
+                  stateMutability: "nonpayable",
+                  inputs: [
+                    { name: "spender", type: "address" },
+                    { name: "amount", type: "uint256" },
+                  ],
+                  outputs: [{ name: "", type: "bool" }],
+                },
+              ],
+              functionName: "approve",
+              args: [
+                CHAIN_IDS_TO_TOKEN_MESSENGER[sourceChainId] as `0x${string}`,
+                10000000000n,
+              ],
+            });
+            
+    
+            const provider = await embeddedWallet.getEthereumProvider();
+            const txHash = await provider.request({
+              method: "eth_sendTransaction",
+              params: [
+                {
+                  from: embeddedWallet.address,
+                  to: [],
+                  data: approvalData,
+                  value: "0x0"
+                }
+              ]
+            });
+    
+    const { data, isError } = await triggerCreatePayout({
+      amount: Math.round(transaction.amount * 100),
+      bankAccountId: transaction.bankInfo.id,
+    });
 
-    // if (isError || !data)
-    //   return toast.error("Error creating payout. Please try again.");
+    if (isError || !data)
+      return toast.error("Error creating payout. Please try again.");
 
     dispatch(toggleOverlay({ type: "confirmTransaction", isOpen: true }));
+    
   };
+  */
 
   const numberPadProps = useNumberPad({
     onStartDelete: (input) => {
@@ -158,7 +193,6 @@ const WithdrawOffChainOverlay = () => {
             },
           }}
           onSubmit={async () => {
-            handleWithdraw();
             dispatch(
               toggleOverlay({ type: "confirmTransaction", isOpen: true })
             );

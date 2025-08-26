@@ -59,20 +59,18 @@ export const getExchangeRate = (
   assets: AssetsState
 ) => {
   if (!assetId) throw new Error("Invalid asset id");
-  // since only usdc is available for now, return exchange rate for first result... normally this would be based on the combined amounts times their respective exchange rates
-  const exchangeRateUSD = assets.assetIds
-    .map((id) => assets.assets[id])
-    .filter((asset) => asset.id === assetId)
-    .map((asset) => {
-      const usdRateAsset = asset.assetIds[0];
-      const _asset = assets.assets[usdRateAsset];
-      return _asset.exchangeRateUSD;
-    })[0];
-  return exchangeRateUSD;
+  
+  const asset = assets.assets[assetId];
+  if (!asset) {
+    console.error(`Asset with id ${assetId} not found`);
+    return 0;
+  }
+  
+  return asset.exchangeRateUSD;
 };
 
 export const getUsdAmount = (
-  assetId: asset["id"] | null,
+  assetId: Asset["id"] | null,
   assets: AssetsState,
   amount: number | null
 ) => {
@@ -108,7 +106,7 @@ export const calculateExchangeRate = ({
   buyAssetId: Asset["id"] | null;
   sellAssetId: Asset["id"] | null;
 }) => {
-  if (!buyAAssetId || !sellAssetId) return null;
+  if (!buyAssetId || !sellAssetId) return null;
 
   const buyExchangeRate = getExchangeRate(buyAssetId, assets);
   const sellExchangeRate = getExchangeRate(sellAssetId, assets);

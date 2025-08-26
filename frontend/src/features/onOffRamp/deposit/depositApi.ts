@@ -75,16 +75,36 @@ interface CreatePayinQuery {
   email: string;
 }
 
-export const depositApi = createApi({
-  reducerPath: "depositApi",
-  tagTypes: ["DepositApi"],
-  baseQuery: fetchBaseQuery({
+// Custom baseQuery with error handling
+const baseQueryWithErrorHandling = async (args: any, api: any, extraOptions: any) => {
+  const result = await fetchBaseQuery({
     baseUrl: MYFYE_BACKEND,
     prepareHeaders: (headers) => {
       headers.set("x-api-key", MYFYE_BACKEND_KEY);
       return headers;
     },
-  }),
+  })(args, api, extraOptions);
+  
+  // Handle custom error response format
+  if (result.error && 'data' in result.error) {
+    const errorData = result.error.data as any;
+    if (errorData && typeof errorData === 'object') {
+      // Check for different possible error message locations
+      if ('message' in errorData) {
+        result.error.data = errorData.message;
+      } else if ('error' in errorData) {
+        result.error.data = errorData.error;
+      }
+    }
+  }
+  
+  return result;
+};
+
+export const depositApi = createApi({
+  reducerPath: "depositApi",
+  tagTypes: ["DepositApi"],
+  baseQuery: baseQueryWithErrorHandling,
   endpoints: (build) => ({
     createPayin: build.query<CreatePayinResponse, CreatePayinQuery>({
       query: ({ blindPayEvmWalletId, amount, currency, email }) => {

@@ -72,6 +72,8 @@ const SwapTransactionConfirmationScreen = ({
           margin-block-start: auto;
         `}
       >
+      {/* Total temporarily disabled for */}
+      {/*
         <div
           css={css`
             display: flex;
@@ -86,6 +88,7 @@ const SwapTransactionConfirmationScreen = ({
             {formatAmountWithCurrency(total, "usd")}
           </span>
         </div>
+        */}
       </section>
       <section
         css={css`
