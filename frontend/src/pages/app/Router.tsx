@@ -16,9 +16,9 @@ import {
 } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import Footer from "../../shared/components/layout/nav/footer/Footer";
-import NavMenu from "../../shared/components/layout/nav/header/nav-menu/NavMenu";
-import Header from "../../shared/components/layout/nav/header/Header";
+import Footer from "../../shared/components/layout/footer/Footer";
+import NavMenu from "../../shared/components/layout/header/nav-menu/NavMenu";
+import Header from "../../shared/components/layout/header/Header";
 import Wallet from "@/pages/app/wallet/Wallet";
 import Activity from "@/pages/app/activity/Activity";
 import { useDispatch } from "react-redux";

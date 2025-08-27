@@ -20,7 +20,7 @@ import {
 import QRCode from "../QRCode";
 import { useDispatch, useSelector } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
-import Header from "../../../shared/components/layout/nav/header/Header";
+import Header from "../../../shared/components/layout/header/Header";
 import { RootState } from "@/redux/store";
 import {
   toggleModal as toggleSendModal,

@@ -28,7 +28,9 @@ import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import KYCOverlay from "@/features/compliance/KYCOverlay.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
-import AltUSDModal, { useAltUSDModal } from "@/features/onOffRamp/deposit/onChain/altUSD/detectAltUSD.tsx";
+import AltUSDModal, {
+  useAltUSDModal,
+} from "@/features/onOffRamp/deposit/onChain/altUSD/detectAltUSD.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWallets.tsx";
 import { setEmbeddedWallet, setWalletClient } from "./redux/userWalletData.tsx";
@@ -72,7 +74,6 @@ function WebAppInner() {
   const walletClient = useAppSelector(
     (state) => state.userWalletData.walletClient
   );
-  const users = useAppSelector((state) => state.userWalletData.users);
   const dispatch = useAppDispatch();
 
   // Move the hook call here at the component level
@@ -261,24 +262,24 @@ function WebAppInner() {
     return <MFAOnboardingPage />;
   }
 
-  if (mfaStatus === "enrolled") {
-    return (
-      <div className="app-layout">
-        <Router />
-        {/* Modals */}
-        <SendModal />
-        <ReceiveModal />
-        <DepositModal />
-        <WithdrawModal />
-        <QRCodeModal />
-        <SwapModal />
-        <AltUSDModal />
-        <KYCOverlay zIndex={99999} />
-        <PrivyUseSolanaWallets />
-        <Toaster />
-      </div>
-    );
-  }
+  // Default screen
+
+  return (
+    <div className="app-layout">
+      <Router />
+      {/* Modals */}
+      <SendModal />
+      <ReceiveModal />
+      <DepositModal />
+      <WithdrawModal />
+      <QRCodeModal />
+      <SwapModal />
+      <AltUSDModal />
+      <KYCOverlay zIndex={99999} />
+      <PrivyUseSolanaWallets />
+      <Toaster />
+    </div>
+  );
 }
 
 const AppRouter = () => {

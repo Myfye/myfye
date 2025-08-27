@@ -12,7 +12,7 @@ import { css } from "@emotion/react";
 import QrReader from "./QRReader";
 import Button from "@/shared/components/ui/button/Button";
 import { X } from "@phosphor-icons/react";
-import Header from "../../shared/components/layout/nav/header/Header";
+import Header from "../../shared/components/layout/header/Header";
 import {
   Dialog,
   DialogBackdrop,
