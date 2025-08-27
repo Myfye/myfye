@@ -9,6 +9,7 @@ import {
   getEmbeddedConnectedWallet,
   useWallets,
 } from "@privy-io/react-auth";
+import { useSolanaWallets, useSignMessage } from '@privy-io/react-auth/solana';
 import { Address, createWalletClient, custom } from "viem";
 import { HandleUserLogIn } from "./features/authentication/LoginService.tsx";
 import logo from "@/assets/logo/myfye_logo_white.svg";
@@ -49,6 +50,8 @@ function WebAppInner() {
   window.Buffer = Buffer;
 
   const { wallets } = useWallets();
+  const { wallets:solanaWallets } = useSolanaWallets();
+
   const firstNameUI = useAppSelector(
     (state) => state.userWalletData.currentUserFirstName
   );
@@ -113,6 +116,7 @@ function WebAppInner() {
 
             dispatch(setWalletClient(client));
             dispatch(setEmbeddedWallet(wallet));
+            dispatch(setEmbeddedSolanaWallet(solanaWallets[0]));
           }
 
           await HandleUserLogIn(user, dispatch, wallets);
@@ -141,14 +145,16 @@ function WebAppInner() {
           SupportedChainId.SOLANA_MAINNET,
           "0.05",
           "fast",
-          solanaPubKey
+          embeddedWallet,
+          walletClient,
+          solanaWallets,
         );
       } else {
         console.log("BRIDGING no solana pub key found");
       }
     };
     listenForUSDCBase();
-  }, [solanaPubKey, evmPubKey, walletClient, embeddedWallet]);
+  }, [solanaWallets, evmPubKey, walletClient, embeddedWallet]);
 
   if (!authenticated) {
     return (

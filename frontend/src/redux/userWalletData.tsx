@@ -4,6 +4,7 @@ import { User } from "@/features/users/users.types";
 export interface UserWalletDataState {
   wallet: any;
   embeddedWallet: any;
+  solanaWallet: any;
   walletClient: any;
   currentUserID: string;
   currentUserFirstName: string;
@@ -64,6 +65,7 @@ export interface UserWalletDataState {
 
 const initialUserWalletData: UserWalletDataState = {
   embeddedWallet: null,
+  solanaWallet: null,
   walletClient: null,
   solanaPubKey: "",
   evmPubKey: "",
@@ -127,6 +129,9 @@ export const userWalletDataSlice = createSlice({
   reducers: {
     setEmbeddedWallet: (state, action: PayloadAction<any>) => {
       state.embeddedWallet = action.payload;
+    },
+    setEmbeddedSolanaWallet: (state, action: PayloadAction<any>) => {
+      state.solanaWallet = action.payload;
     },
     setWalletClient: (state, action: PayloadAction<any>) => {
       state.walletClient = action.payload;
