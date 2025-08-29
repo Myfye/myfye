@@ -321,6 +321,7 @@ export const userWalletDataSlice = createSlice({
 
 export const {
   setEmbeddedWallet,
+  setEmbeddedSolanaWallet,
   setWalletClient,
   setSolanaPubKey,
   setEvmPubKey,

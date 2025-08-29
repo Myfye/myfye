@@ -32,7 +32,7 @@ import Toaster from "@/features/notifications/toaster/Toaster.tsx";
 import AltUSDModal, { useAltUSDModal } from "@/features/onOffRamp/deposit/onChain/altUSD/detectAltUSD.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWallets.tsx";
-import { setEmbeddedWallet, setWalletClient } from "./redux/userWalletData.tsx";
+import { setEmbeddedWallet, setWalletClient, setEmbeddedSolanaWallet } from "./redux/userWalletData.tsx";
 import { useCrossChainTransfer } from "./functions/bridge/use-cross-chain-transfer.ts";
 import { getUSDCBalanceOnBase } from "./functions/checkForEVMDeposit.ts";
 import {
@@ -116,7 +116,7 @@ function WebAppInner() {
 
             dispatch(setWalletClient(client));
             dispatch(setEmbeddedWallet(wallet));
-            dispatch(setEmbeddedSolanaWallet(solanaWallets[0]));
+            dispatch(setEmbeddedSolanaWallet(solanaWallets));
           }
 
           await HandleUserLogIn(user, dispatch, wallets);
@@ -133,17 +133,17 @@ function WebAppInner() {
     const listenForUSDCBase = async () => {
       const usdcBaseBalance = await getUSDCBalanceOnBase(
         evmPubKey,
-        solanaPubKey
+        solanaWallets[0]?.address || ""
       );
 
-      console.log("BRIDGING uusdcBaseBalance", usdcBaseBalance);
-      console.log("BRIDGING executeTransfer", executeTransfer);
+      console.log("BRIDGING uusdcBaseBalance", embeddedWallet);
+      console.log("BRIDGING executeTransfer", walletClient);
 
-      if (solanaPubKey && walletClient && embeddedWallet) {
+      if (walletClient && embeddedWallet) {
         await executeTransfer(
           SupportedChainId.BASE,
           SupportedChainId.SOLANA_MAINNET,
-          "0.05",
+          "0.01",
           "fast",
           embeddedWallet,
           walletClient,
@@ -154,7 +154,7 @@ function WebAppInner() {
       }
     };
     listenForUSDCBase();
-  }, [solanaWallets, evmPubKey, walletClient, embeddedWallet]);
+  }, [solanaWallets, walletClient, embeddedWallet, userDataLoaded]);
 
   if (!authenticated) {
     return (

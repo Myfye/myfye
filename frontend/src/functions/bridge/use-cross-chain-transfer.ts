@@ -626,7 +626,8 @@ export function useCrossChainTransfer(embeddedWallet?: any, walletClient?: Walle
 ) => {
   setCurrentStep("burning");
   addLog("Burning USDC on Solana...");
-  const { getPrograms, getDepositForBurnPdas, evmAddressToBytes32, findProgramAddress, } = await import("@/lib/solana-utils"); const { getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, getAccount, } = await import("@solana/spl-token");
+  const { getPrograms, getDepositForBurnPdas, evmAddressToBytes32, findProgramAddress, } = await import("./solana-utils.ts"); 
+  const { getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, getAccount, } = await import("@solana/spl-token");
 
   try {
     const connection = new Connection("https://api.devnet.solana.com", "confirmed");
@@ -905,7 +906,7 @@ export function useCrossChainTransfer(embeddedWallet?: any, walletClient?: Walle
     });
     
     setCurrentStep("minting");
-    addLog("Minting Solana USDC...");
+    console.log ("Minting Solana USDC...");
 
     try {
       const {
@@ -1119,27 +1120,27 @@ const executeTransfer = async (
       }
 
       // Check native balance for destination chain
-      const checkNativeBalance = async (chainId: SupportedChainId) => {
-        if (isSolanaChain(chainId)) {
-          const connection = getSolanaConnection();
-          const pubkey = new PublicKey(solanaWallets[0].address.toString());
-          const balance = await connection.getBalance(pubkey);
-          return BigInt(balance);
-        } else {
-          const publicClient = createPublicClient({
-            chain: chains[chainId as keyof typeof chains],
-            transport: http(),
-          });
-          const balance = await publicClient.getBalance({
-            address: embedwallet.address,
-          });
-          return balance;
-        }
-      };
+      // const checkNativeBalance = async (chainId: SupportedChainId) => {
+      //   if (isSolanaChain(chainId)) {
+      //     const connection = getSolanaConnection();
+      //     const pubkey = new PublicKey(solanaWallets[0].address.toString());
+      //     const balance = await connection.getBalance(pubkey);
+      //     return BigInt(balance);
+      //   } else {
+      //     const publicClient = createPublicClient({
+      //       chain: chains[chainId as keyof typeof chains],
+      //       transport: http(),
+      //     });
+      //     const balance = await publicClient.getBalance({
+      //       address: embedwallet.address,
+      //     });
+      //     return balance;
+      //   }
+      // };
      
 
       // Log transfer details
-      addLog(
+      console.log(
         `Transferring ${amount} USDC from ${CHAIN_TO_CHAIN_NAME[sourceChainId]} to ${CHAIN_TO_CHAIN_NAME[destinationChainId]} using ${transferType} transfer.`,
       );
 
