@@ -616,124 +616,76 @@ export function useCrossChainTransfer(embeddedWallet?: any, walletClient?: Walle
   // };
 
   // Solana burn function
-  const burnSolanaUSDC = async (
-    keypair: Keypair,
-    sourceChainId: number,
-    amount: bigint,
-    destinationChainId: number,
-    destinationAddress: string,
-    transferType: "fast" | "standard",
-  ) => {
-    console.log("🔥 BRIDGE: Starting Solana USDC burn...", {
-      sourceChainId,
-      destinationChainId,
-      amount: amount.toString(),
-      destinationAddress,
-      transferType,
-      keypairPublicKey: keypair.publicKey.toBase58()
-    });
+   const burnSolanaUSDC = async (
+  solanaWallet: any, // Privy embedded Solana wallet
+  sourceChainId: number,
+  amount: bigint,
+  destinationChainId: number,
+  destinationAddress: string,
+  transferType: "fast" | "standard",
+) => {
+  setCurrentStep("burning");
+  addLog("Burning USDC on Solana...");
+  const { getPrograms, getDepositForBurnPdas, evmAddressToBytes32, findProgramAddress, } = await import("./solana-utils.ts"); 
+  const { getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, getAccount, } = await import("@solana/spl-token");
+
+  try {
+    const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+
+    // ✅ use Privy wallet wrapper instead of Keypair
+    const provider = await getAnchorProviderFromPrivy(solanaWallet, SOLANA_RPC_ENDPOINT);
+    const { messageTransmitterProgram, tokenMessengerMinterProgram } = getPrograms(provider);
+
+    const usdcMint = new PublicKey(CHAIN_IDS_TO_USDC_ADDRESSES[sourceChainId] as string);
+      addLog("usdcMint Solana...");
+    const pdas = getDepositForBurnPdas(
+      { messageTransmitterProgram, tokenMessengerMinterProgram },
+      usdcMint,
+      DESTINATION_DOMAINS[destinationChainId]
+    );
+
+    // Associated Token Account for wallet
+    const userTokenAccount = await getAssociatedTokenAddress(
+      usdcMint,
+      new PublicKey(solanaWallet.address)
+    );
+    console.log(userTokenAccount.toBase58(), "userTokenAccount");
+
+    // Destination recipient
+    let mintRecipient: PublicKey;
     
-    setCurrentStep("burning");
-    addLog("Burning Solana USDC...");
+      const cleanAddress = destinationAddress.replace(/^0x/, "").toLowerCase();
+      if (cleanAddress.length !== 40) throw new Error(`Invalid EVM address: ${destinationAddress}`);
+      const bytes32Address = evmAddressToBytes32(`0x${cleanAddress}`);
+      mintRecipient = new PublicKey(Buffer.from(bytes32Address.slice(2), "hex"));
+    
+    addLog("mintRecipient Solana...",);
+    console.log(destinationAddress, "destinationAddress");
 
-    try {
-      const {
-        getAnchorConnection,
-        getPrograms,
-        getDepositForBurnPdas,
-        evmAddressToBytes32,
-        findProgramAddress,
-      } = await import("./solana-utils");
-      const {
-        getAssociatedTokenAddress,
-        createAssociatedTokenAccountInstruction,
-        getAccount,
-      } = await import("@solana/spl-token");
-
-      console.log("🔥 BRIDGE: Setting up Solana connection and programs...");
-      const connection = getSolanaConnection();
-      const provider = getAnchorConnection(keypair, SOLANA_RPC_ENDPOINT);
-      const { messageTransmitterProgram, tokenMessengerMinterProgram } =
-        getPrograms(provider);
-      console.log("🔥 BRIDGE: Solana programs loaded");
-
-      const usdcMint = new PublicKey(
-        CHAIN_IDS_TO_USDC_ADDRESSES[SupportedChainId.SOLANA_DEVNET] as string,
-      );
-      console.log("🔥 BRIDGE: USDC mint address:", usdcMint.toBase58());
-
-      const pdas = getDepositForBurnPdas(
-        { messageTransmitterProgram, tokenMessengerMinterProgram },
-        usdcMint,
-        DESTINATION_DOMAINS[destinationChainId],
-      );
-      console.log("🔥 BRIDGE: PDAs generated for deposit for burn");
-
-      // Generate event account keypair
-      const messageSentEventAccountKeypair = Keypair.generate();
-      console.log("🔥 BRIDGE: Generated event account keypair:", messageSentEventAccountKeypair.publicKey.toBase58());
-
-      // Get user's token account
-      const userTokenAccount = await getAssociatedTokenAddress(
-        usdcMint,
-        keypair.publicKey,
-      );
-      console.log("🔥 BRIDGE: User token account:", userTokenAccount.toBase58());
-
-      // Convert destination address based on chain type
-      let mintRecipient: PublicKey;
-
-      if (isSolanaChain(destinationChainId)) {
-        console.log("🔥 BRIDGE: Processing Solana destination...");
-        // For Solana destinations, use the Solana public key directly
-        mintRecipient = new PublicKey(destinationAddress);
-      } else {
-        console.log("🔥 BRIDGE: Processing EVM destination...");
-        // For EVM chains, ensure address is properly formatted
-        const cleanAddress = destinationAddress
-          .replace(/^0x/, "")
-          .toLowerCase();
-        if (cleanAddress.length !== 40) {
-          throw new Error(
-            `Invalid EVM address length: ${cleanAddress.length}, expected 40`,
-          );
-        }
-        const formattedAddress = `0x${cleanAddress}`;
-        // Convert address to bytes32 format then to PublicKey
-        const bytes32Address = evmAddressToBytes32(formattedAddress);
-        mintRecipient = new PublicKey(toBytes(bytes32Address));
-      }
-      console.log("🔥 BRIDGE: Mint recipient:", mintRecipient.toBase58());
-
-      // Get the EVM address that will call receiveMessage
-      const evmAccount = privateKeyToAccount(
-        `0x${process.env.NEXT_PUBLIC_EVM_PRIVATE_KEY}`,
-      );
-      const evmAddress = evmAccount.address;
+    const evmAddress = destinationAddress;
       const destinationCaller = new PublicKey(
-        toBytes(evmAddressToBytes32(evmAddress)),
+        getBytes(evmAddressToBytes32(evmAddress)),
       );
-      console.log("🔥 BRIDGE: Destination caller:", {
-        evmAddress,
-        destinationCaller: destinationCaller.toBase58()
-      });
 
-      console.log("🔥 BRIDGE: Calling depositForBurn...");
-      // Call depositForBurn using Circle's exact approach
-      const depositForBurnTx = await (
-        tokenMessengerMinterProgram as any
-      ).methods
-        .depositForBurn({
-          amount: new BN(amount.toString()),
-          destinationDomain: DESTINATION_DOMAINS[destinationChainId],
-          mintRecipient,
-          maxFee: new BN((amount - 1n).toString()),
-          minFinalityThreshold: transferType === "fast" ? 1000 : 2000,
-          destinationCaller,
-        })
-        .accounts({
-          owner: keypair.publicKey,
-          eventRentPayer: keypair.publicKey,
+    const finalityThreshold = transferType === "fast" ? 1000 : 2000;
+    console.log(amount, "amount");
+    const pub = new PublicKey(solanaWallet.address)
+    const messageSentEventAccountKeypair = Keypair.generate();
+    console.log(destinationCaller.toBase58(), "destinationCaller");
+
+    // Instruction
+    const ix = await (tokenMessengerMinterProgram as any).methods
+      .depositForBurn({
+        amount: new BN(amount.toString()),
+        destinationDomain: DESTINATION_DOMAINS[destinationChainId],
+        mintRecipient,
+        maxFee: new BN((amount - 1n).toString()),
+        minFinalityThreshold: finalityThreshold,
+        destinationCaller,
+      })
+      .accounts({
+                owner: pub,
+          eventRentPayer: pub,
           senderAuthorityPda: pdas.authorityPda.publicKey,
           burnTokenAccount: userTokenAccount,
           messageTransmitter: pdas.messageTransmitterAccount.publicKey,
@@ -747,22 +699,34 @@ export function useCrossChainTransfer(embeddedWallet?: any, walletClient?: Walle
           tokenMessengerMinterProgram: tokenMessengerMinterProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
-        })
-        .signers([messageSentEventAccountKeypair])
-        .rpc();
+      })
+      .instruction();
+    addLog("Instruction created Solana...");
 
-      console.log("✅ BRIDGE: Solana burn transaction completed:", depositForBurnTx);
-      addLog(`Solana burn transaction: ${depositForBurnTx}`);
-      return depositForBurnTx;
-    } catch (err) {
-      console.error("❌ BRIDGE: Solana burn failed:", err);
-      setError("Solana burn failed");
-      addLog(
-        `Solana burn error: ${err instanceof Error ? err.message : "Unknown error"}`,
-      );
-      throw err;
-    }
-  };
+    // Build + sign
+    const tx = new Transaction().add(ix);
+    tx.feePayer = new PublicKey(solanaWallet.address);
+    tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+    console.log(solanaWallet.address, "solanaWallet.address");
+
+    // const signedTx = await solanaWallet.signTransaction(tx);
+    // addLog("Transaction signed Solana...");
+
+  
+
+    // Send
+    const txid = await solanaWallet.sendTransaction(tx, connection, solanaWallet.address);
+    console.log(txid, "txid");
+
+
+    addLog(`✅ Solana burn tx sent: ${signedTx}`);
+    return txid;
+  } catch (err: any) {
+    setError("Solana burn failed");
+    addLog(`❌ Solana burn error: ${err.message || err}`);
+    throw err;
+  }
+};
 
   const retrieveAttestation = async (
     transactionHash: string,
@@ -942,7 +906,7 @@ export function useCrossChainTransfer(embeddedWallet?: any, walletClient?: Walle
     });
     
     setCurrentStep("minting");
-    addLog("Minting Solana USDC...");
+    console.log ("Minting Solana USDC...");
 
     try {
       const {
@@ -1113,134 +1077,95 @@ export function useCrossChainTransfer(embeddedWallet?: any, walletClient?: Walle
     }
   };
 
-  const executeTransfer = async (
+const executeTransfer = async (
     sourceChainId: number,
     destinationChainId: number,
     amount: string,
     transferType: "fast" | "standard",
-    solPubKey: string,
-    embeddedWalletParam?: any,
-    walletClientParam?: WalletClient
+    sourceClientOverride?: WalletClient<HttpTransport, Chain, Account>,
+    embedwallet?: any,
+    solanaWallets?: any,
   ) => {
-    // Use passed parameters or fall back to hook parameters
-    const walletToUse = embeddedWalletParam || embeddedWallet;
-    const clientToUse = walletClientParam || walletClient;
-    
-    // Check if required wallet data is available
-    if (!walletToUse || !clientToUse) {
-      console.log("🚫 BRIDGE: Wallet data not available, skipping transfer", {
-        hasEmbeddedWallet: !!walletToUse,
-        hasWalletClient: !!clientToUse
-      });
-      setError("Wallet not connected. Please connect your wallet first.");
-      return;
-    }
-
-    console.log("🚀 BRIDGE: Starting executeTransfer with params:", {
-      sourceChainId,
-      destinationChainId,
-      amount,
-      transferType,
-      solPubKey
-    });
-    
     try {
       const numericAmount = parseUnits(amount, DEFAULT_DECIMALS);
-      console.log("🔢 BRIDGE: Parsed amount:", {
-        originalAmount: amount,
-        numericAmount: numericAmount.toString(),
-        decimals: DEFAULT_DECIMALS
-      });
+      console.log("ccetp",sourceChainId)
 
       // Handle different chain types
       const isSourceSolana = isSolanaChain(sourceChainId);
       const isDestinationSolana = isSolanaChain(destinationChainId);
-      
-      console.log("🔗 BRIDGE: Chain type analysis:", {
-        isSourceSolana,
-        isDestinationSolana,
-        sourceChainId,
-        destinationChainId
-      });
 
       let sourceClient: any, destinationClient: any, defaultDestination: string;
 
-      console.log("🔄 BRIDGE: Switching chain to source chain:", sourceChainId);
-      await walletToUse.switchChain(sourceChainId);
-      console.log("✅ BRIDGE: Chain switched successfully");
-
       // If provided, use the embedded wallet client
-      if (!isSourceSolana && walletToUse && clientToUse) {
-        sourceClient = clientToUse
-        console.log("💼 BRIDGE: Using embedded wallet client for source:", {
-          walletAddress: walletToUse.address,
-          chainId: walletToUse.chainId
-        });
+      if (!isSourceSolana && sourceClientOverride) {
+        sourceClient = sourceClientOverride;
+        console.log("Using provided source client:", sourceClient);
       } else {
-        sourceClient = getClients(sourceChainId);
-        console.log("🔑 BRIDGE: Using private key client for source chain");
+        sourceClient = solanaWallets[0];
       }
+
+      // // Get source client
+      // sourceClient = getClients(sourceChainId);
+
+      // Get destination client
+      destinationClient = getClients(destinationChainId);
 
       // For cross-chain transfers, destination address should be derived from destination chain's private key
       if (isDestinationSolana) {
         // Destination is Solana, so get Solana public key
-        defaultDestination = solPubKey;
-        console.log("🎯 BRIDGE: Using Solana destination address:", defaultDestination);
+        defaultDestination = solanaWallets[0].address.toString();
       } else {
-        // Destination is EVM, so get EVM address
-        // For cross-chain transfers, we'll use the provided solPubKey as the destination
-        // since we're bridging to the user's wallet
-        defaultDestination = solPubKey;
-        console.log("🎯 BRIDGE: Using provided destination address:", defaultDestination);
+        
+        defaultDestination = embedwallet.address;
       }
 
-      // Check native balance for destination chain (only for informational purposes)
-      const checkNativeBalance = async (chainId: SupportedChainId) => {
-        console.log("💰 BRIDGE: Checking native balance for chain:", chainId);
-        if (isSolanaChain(chainId)) {
-          const connection = getSolanaConnection();
-          const pubKey = new PublicKey(solPubKey)
-          const balance = await connection.getBalance(pubKey);
-          console.log("💰 BRIDGE: Solana native balance:", {
-            balance: balance.toString(),
-            solBalance: balance / LAMPORTS_PER_SOL
-          });
-          return BigInt(balance);
-        } else {
-          // For EVM chains, we'll skip balance checking for cross-chain transfers
-          console.log("💰 BRIDGE: Skipping EVM balance check for cross-chain transfer");
-          return BigInt(0);
-        }
-      };
+      // Check native balance for destination chain
+      // const checkNativeBalance = async (chainId: SupportedChainId) => {
+      //   if (isSolanaChain(chainId)) {
+      //     const connection = getSolanaConnection();
+      //     const pubkey = new PublicKey(solanaWallets[0].address.toString());
+      //     const balance = await connection.getBalance(pubkey);
+      //     return BigInt(balance);
+      //   } else {
+      //     const publicClient = createPublicClient({
+      //       chain: chains[chainId as keyof typeof chains],
+      //       transport: http(),
+      //     });
+      //     const balance = await publicClient.getBalance({
+      //       address: embedwallet.address,
+      //     });
+      //     return balance;
+      //   }
+      // };
+     
 
-      console.log("✅ BRIDGE: Starting approval step...");
+      // Log transfer details
+      console.log(
+        `Transferring ${amount} USDC from ${CHAIN_TO_CHAIN_NAME[sourceChainId]} to ${CHAIN_TO_CHAIN_NAME[destinationChainId]} using ${transferType} transfer.`,
+      );
+
       // Execute approve step
       if (isSourceSolana) {
-        console.log("🔐 BRIDGE: Approving Solana USDC (no-op for SPL tokens)");
         await approveSolanaUSDC(sourceClient, sourceChainId);
       } else {
-        console.log("🔐 BRIDGE: Approving EVM USDC...");
-        await approveUSDC(walletToUse, sourceChainId);
+        await approveUSDC(sourceClient, sourceChainId);
       }
-      console.log("✅ BRIDGE: Approval completed");
 
-      console.log("🔥 BRIDGE: Starting burn step...");
       // Execute burn step
       let burnTx: string;
       if (isSourceSolana) {
-        console.log("🔥 BRIDGE: Burning Solana USDC...");
+        console.log("Burning from Solana...", defaultDestination);
         burnTx = await burnSolanaUSDC(
           sourceClient,
           sourceChainId,
           numericAmount,
           destinationChainId,
-          defaultDestination,
+          embedwallet.address,
           transferType,
         );
       } else {
-        console.log("🔥 BRIDGE: Burning EVM USDC...");
         burnTx = await burnUSDC(
-          walletToUse,
+          embedwallet,
           sourceChainId,
           numericAmount,
           destinationChainId,
@@ -1248,32 +1173,31 @@ export function useCrossChainTransfer(embeddedWallet?: any, walletClient?: Walle
           transferType,
         );
       }
-      console.log("✅ BRIDGE: Burn transaction completed:", burnTx);
 
-      console.log("⏳ BRIDGE: Starting attestation retrieval...");
       // Retrieve attestation
       const attestation = await retrieveAttestation(burnTx, sourceChainId);
-      console.log("✅ BRIDGE: Attestation retrieved:", {
-        messageLength: attestation.message?.length,
-        attestationLength: attestation.attestation?.length
-      });
 
-      console.log("💰 BRIDGE: Checking destination chain balance...");
-      // Check destination chain balance (informational only)
+      // Check destination chain balance
+      const minBalance = isSolanaChain(destinationChainId)
+        ? BigInt(0.01 * LAMPORTS_PER_SOL) // 0.01 SOL
+        : parseEther("0.01"); // 0.01 native token
+
       const balance = await checkNativeBalance(destinationChainId);
-      console.log("💰 BRIDGE: Balance check result:", {
-        balance: balance.toString(),
-        destinationChain: destinationChainId
-      });
-      
-      console.log("🪙 BRIDGE: Skipping automatic minting for cross-chain transfer");
-      console.log("🪙 BRIDGE: User will need to manually mint on destination chain using attestation");
-      addLog("Burn completed. Manual minting required on destination chain.");
-      addLog(`Attestation received. To complete the transfer, mint on Solana mainnet using the attestation.`);
-      setCurrentStep("completed");
-      
+      if (balance < minBalance) {
+        throw new Error("Insufficient native token for gas fees");
+      }
+
+      // Execute mint step
+      if (isDestinationSolana) {
+        await mintSolanaUSDC(
+          destinationClient,
+          destinationChainId,
+          attestation,
+        );
+      } else {
+        await mintUSDC(destinationClient, destinationChainId, attestation);
+      }
     } catch (error) {
-      console.error("❌ BRIDGE: Transfer failed with error:", error);
       setCurrentStep("error");
       addLog(
         `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
