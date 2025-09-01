@@ -149,6 +149,7 @@ const initialState: AssetsState = {
     "DOGE",
     "SUI",
     // Cash
+    //"MXN",
     "USD",
     "EUR",
     // Earn
@@ -1361,6 +1362,29 @@ const initialState: AssetsState = {
     },
 
     // Cash
+    /*
+    MXN: {
+      id: "MXN",
+      label: "Mexican Peso",
+      symbol: "MXN",
+      color: "var(--clr-green-400)",
+      mintAddress: "6zYgzrT7X2wi9a9NeMtUvUWLLmf2a8vBsbYkocYdB9wa",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 9,
+      dashboardId: "cash",
+      fiatCurrency: "usd",
+      groupId: "cash",
+      balance: 0,
+      exchangeRateUSD: 1,
+      icon: {
+        content: usDollarIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    */
     USD: {
       id: "USD",
       label: "US Dollar",

@@ -1,5 +1,6 @@
 import pyusdSol from "@/assets/pyusdSol.png";
 import usdtSol from "@/assets/usdtSol.png";
+import { Money as CashIcon, Bank as BankIcon, ChartLineUp as ChartIcon } from "@phosphor-icons/react";
 import Modal from "@/shared/components/ui/modal/Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { setModalOpen, setUSDTBalance, setPYUSDBalance } from "./altUSDSlice";
@@ -23,6 +24,7 @@ const AltUSDModal = () => {
   const walletData = useAppSelector((state: RootState) => state.userWalletData);
   const transaction = useAppSelector((state: RootState) => state.swap.transaction);
   const [selectedCurrency, setSelectedCurrency] = useState<string>("");
+  const [selectedOutputCurrency, setSelectedOutputCurrency] = useState<string>("");
   const dispatch = useDispatch();
 
   // Monitor swap status and handle balance increment when swap succeeds
@@ -30,8 +32,12 @@ const AltUSDModal = () => {
     if (transaction.status === "success") {
       console.log("DETECT ALT USD Swap succeeded, incrementing USD balance");
       
-      // Get the current USD balance
-      const currentUSDBalance = assets.assets["USD"].balance;
+              // Get the current balances
+        const currentUSDBalance = assets.assets["USD"].balance;
+        const currentUSDYBalance = assets.assets["USDY"].balance;
+        const currentQQQBalance = assets.assets["QQQ"].balance;
+        const usdyPrice = assets.assets["USDY"].exchangeRateUSD;
+        const qqqPrice = assets.assets["QQQ"].exchangeRateUSD;
       
       // Determine the amount to add based on selected currency
       let amountToAdd = 0;
@@ -45,12 +51,27 @@ const AltUSDModal = () => {
       
       if (amountToAdd > 0) {
         // Increment USD balance
+
+        if (selectedOutputCurrency === "USD") {
         dispatch(updateBalance({
-          assetId: "USD",
-          balance: currentUSDBalance + amountToAdd,
-        }));
-        
-        console.log(`DETECT ALT USD Updated USD balance from ${currentUSDBalance} to ${currentUSDBalance + amountToAdd}`);
+            assetId: "USD",
+            balance: currentUSDBalance + amountToAdd,
+          }));
+        } else if (selectedOutputCurrency === "USDY") {
+          const usdyAmountToAdd = amountToAdd / usdyPrice;
+          console.log(`DETECT ALT USD Adding ${amountToAdd} USD worth of USDY (${usdyAmountToAdd} tokens at $${usdyPrice} each) from USDY swap ${currentUSDYBalance} + ${usdyAmountToAdd} = ${currentUSDYBalance + usdyAmountToAdd}`);
+          dispatch(updateBalance({
+            assetId: "USDY",
+            balance: currentUSDYBalance + usdyAmountToAdd,
+          }));
+        } else if (selectedOutputCurrency === "QQQ") {
+          const qqqAmountToAdd = amountToAdd / qqqPrice;
+          console.log(`DETECT ALT USD Adding ${amountToAdd} USD worth of QQQ (${qqqAmountToAdd} shares at $${qqqPrice} each) from QQQ swap ${currentQQQBalance} + ${qqqAmountToAdd} = ${currentQQQBalance + qqqAmountToAdd}`);
+          dispatch(updateBalance({
+            assetId: "QQQ",
+            balance: currentQQQBalance + qqqAmountToAdd,
+          }));
+        }
         
         // Reset the altUSD balances to 0 since they've been swapped
         if (selectedCurrency === "USDT") {
@@ -59,7 +80,13 @@ const AltUSDModal = () => {
           dispatch(setPYUSDBalance(0));
         }
       }
-    }
+         } else if (transaction.status === "failed") {
+       console.log("DETECT ALT USD Swap failed");
+       // wait 2 seconds and refresh the page
+       setTimeout(() => {
+         window.location.reload();
+       }, 2000);
+     }
   }, [transaction.status, selectedCurrency, usdtBalance, pyusdBalance, assets.assets, dispatch]);
 
   // Debug logging
@@ -92,8 +119,9 @@ const AltUSDModal = () => {
     });
   }, [usdtBalance, pyusdBalance, modalIsOpen]);
 
-  const handleSwapPressed = () => {
+  const handleSwapPressed = (outputAsset: string) => {
 
+    setSelectedOutputCurrency(outputAsset);
     let amount = 0;
     let inputAsset = "";
 
@@ -107,7 +135,7 @@ const AltUSDModal = () => {
 
     // Set minimal transaction data for the swap to proceed
     dispatch(updateAssetId({ transactionType: "sell", assetId: "USD" }));
-    dispatch(updateAssetId({ transactionType: "buy", assetId: "USD" }));
+    dispatch(updateAssetId({ transactionType: "buy", assetId: outputAsset }));
     dispatch(updateAmount({ input: amount.toString(), replace: true }));
     dispatch(updateInputPublicKey(walletData.solanaPubKey));
     
@@ -118,7 +146,7 @@ const AltUSDModal = () => {
       publicKey: walletData.solanaPubKey,
       inputAmount: amount,
       inputCurrency: inputAsset,
-      outputCurrency: "USD",
+      outputCurrency: outputAsset,
       dispatch,
       transaction,
     });
@@ -150,26 +178,17 @@ const AltUSDModal = () => {
       isOpen={isOpen}
       onOpenChange={closeModal}
       title="Deposit received!"
-      height={400}
+      height={550}
       zIndex={99999}
     >
       <div
         css={css`
-          padding: var(--size-300);
+          padding: var(--size-100);
           display: flex;
           flex-direction: column;
-          gap: var(--size-300);
+          gap: var(--size-200);
         `}
       >
-        <p
-          css={css`
-            color: var(--clr-neutral-600);
-            font-size: var(--font-size-small);
-            line-height: 1.5;
-          `}
-        >
-          Swap to US Dollars to use these funds.
-        </p>
 
         <div
           css={css`
@@ -186,8 +205,6 @@ const AltUSDModal = () => {
                 gap: var(--size-200);
                 padding: var(--size-200);
                 background-color: var(--clr-neutral-50);
-                border-radius: var(--border-radius-small);
-                border: 1px solid var(--clr-neutral-200);
               `}
             >
               <img
@@ -209,7 +226,7 @@ const AltUSDModal = () => {
                     color: var(--clr-neutral-900);
                   `}
                 >
-                  {usdtBalance.toFixed(2)} USDT
+                  ${usdtBalance.toFixed(2)} USD
                 </div>
               </div>
             </div>
@@ -223,8 +240,6 @@ const AltUSDModal = () => {
                 gap: var(--size-200);
                 padding: var(--size-200);
                 background-color: var(--clr-neutral-50);
-                border-radius: var(--border-radius-small);
-                border: 1px solid var(--clr-neutral-200);
               `}
             >
               <img
@@ -246,12 +261,207 @@ const AltUSDModal = () => {
                     color: var(--clr-neutral-900);
                   `}
                 >
-                  {pyusdBalance.toFixed(2)} PYUSD
+                  ${pyusdBalance.toFixed(2)} USD
                 </div>
               </div>
             </div>
           )}
         </div>
+
+        <div
+              css={css`
+                display: flex;
+                align-items: center;
+                gap: var(--size-200);
+                padding: var(--size-200);
+                background-color: var(--clr-neutral-50);
+                border-radius: var(--border-radius-small);
+                border: 1px solid var(--clr-neutral-200);
+              `}
+            >
+
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
+
+          <div
+            css={css`
+              width: 2.75rem;
+              height: 2.75rem;
+              border-radius: var(--border-radius-circle);
+              background-color: transparent;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
+          >
+            <CashIcon 
+              size={30} 
+              color="var(--clr-primary)" 
+              weight="light" 
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, marginLeft: 'var(--size-200)', marginRight: 'var(--size-200)'}}>
+
+            <div style={{ fontWeight: '600', color: 'var(--clr-neutral-900)', fontSize: 'var(--fs-medium)' }}>
+            Keep funds in US Dollars
+            </div>
+            <div style={{ fontSize: 'var(--fs-small)' }}>
+            Hold USD for instant trading
+            </div>
+
+          </div>
+
+                    <Button
+            onPress={() => handleSwapPressed('USD')}
+            variant="primary"
+            css={css`
+              min-width: 80px;
+            `}
+          >
+            Select
+          </Button>
+
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div
+              css={css`
+                display: flex;
+                align-items: center;
+                gap: var(--size-200);
+                padding: var(--size-200);
+                background-color: var(--clr-neutral-50);
+                border-radius: var(--border-radius-small);
+                border: 1px solid var(--clr-neutral-200);
+              `}
+            >
+
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
+
+          <div
+            css={css`
+              width: 2.75rem;
+              height: 2.75rem;
+              border-radius: var(--border-radius-circle);
+              background-color: transparent;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
+          >
+            <BankIcon 
+              size={30} 
+              color="var(--clr-primary)" 
+              weight="light" 
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, marginLeft: 'var(--size-200)', marginRight: 'var(--size-200)'}}>
+
+            <div style={{ fontWeight: '600', color: 'var(--clr-neutral-900)', fontSize: 'var(--fs-medium)' }}>
+            Create a savings account
+            </div>
+            <div style={{ fontSize: 'var(--fs-small)' }}>
+            Earn 4.1% with U.S. Treasury Bonds
+            </div>
+
+          </div>
+
+                    <Button
+            onPress={() => handleSwapPressed('USDY')}
+            variant="primary"
+            css={css`
+              min-width: 80px;
+            `}
+          >
+            Select
+          </Button>
+
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div
+              css={css`
+                display: flex;
+                align-items: center;
+                gap: var(--size-200);
+                padding: var(--size-200);
+                background-color: var(--clr-neutral-50);
+                border-radius: var(--border-radius-small);
+                border: 1px solid var(--clr-neutral-200);
+              `}
+            >
+
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
+
+          <div
+            css={css`
+              width: 2.75rem;
+              height: 2.75rem;
+              border-radius: var(--border-radius-circle);
+              background-color: transparent;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
+          >
+            <ChartIcon 
+              size={30} 
+              color="var(--clr-primary)" 
+              weight="light" 
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, marginLeft: 'var(--size-200)', marginRight: 'var(--size-200)'}}>
+
+            <div style={{ fontWeight: '600', color: 'var(--clr-neutral-900)', fontSize: 'var(--fs-medium)' }}>
+            Open retirement account
+            </div>
+            <div style={{ fontSize: 'var(--fs-small)' }}>
+            Diversify with the 100 largest companies on the Nasdaq
+            </div>
+
+          </div>
+
+                    <Button
+            onPress={() => handleSwapPressed('QQQ')}
+            variant="primary"
+            css={css`
+              min-width: 80px;
+            `}
+          >
+            Select
+          </Button>
+
+          </div>
+        </div>
+
+
 
         <div
           css={css`
@@ -260,15 +470,7 @@ const AltUSDModal = () => {
             margin-top: var(--size-200);
           `}
         >
-          <Button
-            onPress={handleSwapPressed}
-            variant="primary"
-            css={css`
-              flex: 1;
-            `}
-          >
-            Swap
-          </Button>
+
         </div>
       </div>
     </Modal>
