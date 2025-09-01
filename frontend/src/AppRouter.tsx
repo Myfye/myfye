@@ -124,7 +124,7 @@ function WebAppInner() {
     };
     handleLogin();
   }, [authenticated, user]);
-
+/*
   useEffect(() => {
     const listenForUSDCBase = async () => {
       const usdcBaseBalance = await getUSDCBalanceOnBase(
@@ -149,6 +149,7 @@ function WebAppInner() {
     };
     listenForUSDCBase();
   }, [solanaPubKey, evmPubKey, walletClient, embeddedWallet]);
+*/
 
   if (!authenticated) {
     return (
