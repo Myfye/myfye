@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NavTrigger from "./NavTrigger";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -7,6 +8,7 @@ import {
   CaretRight,
   ShieldCheck,
   PaperPlaneTilt,
+  Trash,
 } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,6 +25,7 @@ import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 
 const NavMenu = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const currentUserEmail = useSelector(
     (state: RootState) => state.userWalletData.currentUserEmail
@@ -54,6 +57,11 @@ const NavMenu = () => {
     if (!disableLogout) {
       logout();
     }
+  };
+
+  const handleDeleteAccount = () => {
+    navigate('/delete-account');
+    closeMenu(); // Close the nav menu when navigating
   };
 
   const handleVerifyKYC = () => {
@@ -233,6 +241,14 @@ const NavMenu = () => {
                           isDisabled={disableLogout}
                         >
                           Sign out
+                        </ButtonGroupItem>
+                        <ButtonGroupItem
+                          onPress={handleDeleteAccount}
+                          variant="danger"
+                          expand
+                          icon={Trash}
+                        >
+                          Delete Account
                         </ButtonGroupItem>
                       </ButtonGroup>
                     </footer>

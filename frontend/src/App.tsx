@@ -4,6 +4,7 @@ import AppRouter from "./AppRouter.tsx";
 import LandingPage from "./pages/landing/LandingPage.tsx";
 import PrivacyPolicy from "./pages/privacyPolicy/PrivacyPolicy.tsx";
 import TermsOfService from "./pages/termsOfService/TermsOfService.tsx";
+import DeleteAccountPage from "./pages/app/deleteAccount.tsx";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy/>} />
         <Route path="/terms-of-service" element={<TermsOfService/>} />
+        <Route path="/delete-account" element={<DeleteAccountPage/>} />
       </Routes>
     </Router>
   );
