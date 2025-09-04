@@ -16,12 +16,12 @@ import { useAppSelector } from "@/redux/hooks";
 
 import { css } from "@emotion/react";
 import { usePrivy } from "@privy-io/react-auth";
-import Header from "../Header";
 import { RootState } from "@/redux/store";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 import { createPortal } from "react-dom";
 import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import Header from "../../layout/header/Header";
 
 const NavMenu = () => {
   const dispatch = useDispatch();

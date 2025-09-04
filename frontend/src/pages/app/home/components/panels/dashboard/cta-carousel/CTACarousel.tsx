@@ -4,12 +4,24 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import CTACard from "./CTACard";
 import { Pagination } from "swiper/modules";
 
 import { css } from "@emotion/react";
+import IconCard from "@/shared/components/ui/card/IconCard";
+import { Icon } from "@phosphor-icons/react";
 
-const CTACarousel = ({ slides }) => {
+interface Slide {
+  icon: Icon;
+  title: string;
+  subtitle: string;
+  action: () => void;
+}
+
+interface CTACarouselProps {
+  slides: Slide[];
+}
+
+const CTACarousel = ({ slides }: CTACarouselProps) => {
   return (
     <Swiper
       spaceBetween={0}
@@ -29,18 +41,13 @@ const CTACarousel = ({ slides }) => {
     >
       {slides.map((slide, i: number) => (
         <SwiperSlide key={`slide=${i}`}>
-          <div
-            className="slide-inner"
-            css={css`
-              display: grid;
-              place-items: center;
-            `}
-          >
-            <CTACard
-              title={slide.title}
-              icon={slide?.icon}
-              subtitle={slide?.subtitle}
-            ></CTACard>
+          <div className="slide-inner">
+            <button>
+              <IconCard
+                icon={slide.icon}
+                leftContent={{ title: slide.title, subtitle: slide.subtitle }}
+              />
+            </button>
           </div>
         </SwiperSlide>
       ))}

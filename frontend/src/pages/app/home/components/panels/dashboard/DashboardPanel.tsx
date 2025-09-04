@@ -1,10 +1,10 @@
 import Button from "@/shared/components/ui/button/Button";
 import {
-  ArrowCircleDown as ArrowCircleDownIcon,
-  ArrowCircleUp as ArrowCircleUpIcon,
-  ArrowLineDown as ArrowLineDownIcon,
-  ArrowLineUp as ArrowLineUpIcon,
-  ArrowsDownUp,
+  ArrowCircleDownIcon,
+  ArrowCircleUpIcon,
+  ArrowLineDownIcon,
+  ArrowLineUpIcon,
+  ArrowsDownUpIcon,
 } from "@phosphor-icons/react";
 import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,9 @@ import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/
 import { toggleModal as toggleWithdrawModal } from "@/features/onOffRamp/withdraw/withdrawSlice";
 import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 import ChartTabs from "./chart_tabs/ChartTabs";
+import PortfolioTab from "./chart_tabs/Portfolio";
+import Portfolio from "./chart_tabs/Portfolio";
+import CTACarousel from "./cta-carousel/CTACarousel";
 
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
@@ -63,7 +66,7 @@ const DashboardPanel = ({}) => {
           <li>
             <Button
               size="x-small"
-              icon={ArrowsDownUp}
+              icon={ArrowsDownUpIcon}
               onPress={() => {
                 console.log("opening swap modal");
                 dispatch(toggleSwapModal({ isOpen: true }));
@@ -162,13 +165,13 @@ const DashboardPanel = ({}) => {
       ) : (
         <section
           css={css`
-            margin-block-start: max(var(--size-200), 4vh);
+            margin-block-start: var(--size-300);
           `}
         >
-          <ChartTabs />
+          <Portfolio />
         </section>
       )}
-      {/* <section
+      <section
         className="cta-carousel-container"
         css={css`
           margin-block-start: auto;
@@ -177,16 +180,27 @@ const DashboardPanel = ({}) => {
         <CTACarousel
           slides={[
             {
-              title: "Earn up to 4.6% APY with USDY",
-              subtitle: "Invest with ONDO US Dollar Yield (USDY)",
+              title: "Create a savings account",
+              subtitle: "Earn 4.1% APY with US Treasury Bonds",
               icon: "test",
+              action: () => {},
             },
-            { title: "Test", subtitle: "test", icon: "test" },
-            { title: "Test", subtitle: "test", icon: "test" },
-            { title: "Test", subtitle: "test", icon: "test" },
+            {
+              title: "Open a retirement account",
+              subtitle:
+                "Instantly invest in the top 100 listed companies on the NASDAQ",
+              icon: "test",
+              action: () => {},
+            },
+            {
+              title: "Buy Bitcoin",
+              subtitle: "Crypto made easy. Buy bitcoin instantly",
+              icon: "test",
+              action: () => {},
+            },
           ]}
         />
-      </section> */}
+      </section>
     </div>
   );
 };

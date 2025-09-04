@@ -7,10 +7,41 @@
   gap: var(--_gap);
 }
 
-.aspect-ratio-square {
-  aspect-ratio: 1;
+/* For landing page */
+.content-grid {
+  --_padding-inline: 1rem;
+  --_content-max-width: 1000px;
+  --_breakout-max-width: 1200px;
+
+  --_breakout-size: calc(
+    (var(--_breakout-max-width) - var(--_content-max-width)) / 2
+  );
+
+  display: grid;
+  grid-template-columns:
+    [full-width-start] minmax(var(--_padding-inline), 1fr)
+    [breakout-start] minmax(0, var(--_breakout-size))
+    [content-start] min(
+      100% - (var(--_padding-inline) * 2),
+      var(--_content-max-width)
+    )
+    [content-end]
+    minmax(0, var(--_breakout-size)) [breakout-end]
+    minmax(var(--_padding-inline), 1fr) [full-width-end];
 }
 
-.aspect-ratio-16-9 {
-  aspect-ratio: 16/9;
+.content-grid > :not(.breakout, .full-width),
+.full-width > :not(.breakout, .full-width) {
+  grid-column: content;
+}
+
+.content-grid > .breakout {
+  grid-column: breakout;
+}
+
+.content-grid > .full-width {
+  grid-column: full-width;
+
+  display: grid;
+  grid-template-columns: inherit;
 }

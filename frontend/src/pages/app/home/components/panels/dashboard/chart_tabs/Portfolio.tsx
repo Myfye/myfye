@@ -1,21 +1,20 @@
 import { selectAssetsBalanceUSDByGroup } from "@/features/assets/assetsSlice";
 import DonutChart3D from "./DonutChart3D";
-import { useSelector } from "react-redux";
 import { css } from "@emotion/react";
-import { RootState } from "@/redux/store";
 import logo from "@/assets/logo/myfye_logo.svg";
+import { useAppSelector } from "@/redux/hooks";
 
-const PortfolioTab = () => {
-  const cashBalanceUSD = useSelector((state: RootState) =>
+const Portfolio = () => {
+  const cashBalanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "cash")
   );
-  const earnBalanceUSD = useSelector((state: RootState) =>
+  const earnBalanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "earn")
   );
-  const cryptoBalanceUSD = useSelector((state: RootState) =>
+  const cryptoBalanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "crypto")
   );
-  const stocksBalanceUSD = useSelector((state: RootState) =>
+  const stocksBalanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "stocks")
   );
 
@@ -179,4 +178,4 @@ const PortfolioTab = () => {
     </div>
   );
 };
-export default PortfolioTab;
+export default Portfolio;

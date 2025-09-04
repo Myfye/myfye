@@ -8,7 +8,8 @@ import FlagIcon from "../icons/FlagIcon";
 import Button from "../button/Button";
 import AssetIcon from "../icons/AssetIcon";
 import BankIcon from "../icons/BankIcon";
-import { IconSize } from "../icons/utils";
+import { getIconWrapperSize, IconSize } from "../icons/utils";
+import { getIconSize } from "../button/utils";
 
 export const getIcon = (icon: string, size: IconSize = "medium") => {
   switch (icon) {
@@ -43,6 +44,7 @@ const IconCardInner = () => {
   const iconCardProps = useContext(IconCardContext);
   if (!iconCardProps) throw new Error("Context not found");
   const { icon, leftContent, rightContent, action } = iconCardProps;
+  const Icon = typeof icon !== "string" && icon;
   return (
     <div
       css={css`
@@ -59,7 +61,9 @@ const IconCardInner = () => {
           margin-inline-end: var(--size-150);
         `}
       >
-        {icon && getIcon(icon)}
+        {typeof icon === "string"
+          ? getIcon(icon)
+          : Icon && <Icon size={getIconSize("medium")} />}
       </div>
       <div
         className="icon-card-content"

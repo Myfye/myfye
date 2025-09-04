@@ -17,7 +17,6 @@ import {
 
 import { css } from "@emotion/react";
 import Footer from "../../shared/components/layout/footer/Footer";
-import NavMenu from "../../shared/components/layout/header/nav-menu/NavMenu";
 import Header from "../../shared/components/layout/header/Header";
 import Wallet from "@/pages/app/wallet/Wallet";
 import Activity from "@/pages/app/activity/Activity";
@@ -26,6 +25,7 @@ import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../../shared/components/ui/button/Button";
 import { motion, AnimatePresence } from "motion/react";
 import Pay from "@/pages/app/pay/Pay";
+import NavMenu from "@/shared/components/ui/nav-menu/NavMenu";
 
 const tabs = [
   { id: "home", label: "Home" },

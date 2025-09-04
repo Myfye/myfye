@@ -29,7 +29,8 @@ export interface IconCardContent {
     | "USFlag"
     | "MXFlag"
     | "bank_neutral"
-    | string;
+    | string
+    | Icon;
   action?: {
     id: string;
     label: string;
