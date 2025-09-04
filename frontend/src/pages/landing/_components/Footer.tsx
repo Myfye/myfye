@@ -62,12 +62,12 @@ const Footer = ({ children }: FooterProps) => {
                 `}
               >
                 <li>
-                  <a href="https://instagram.com/myfye">
+                  <a href="https://instagram.com/myfyeapp">
                     <InstagramLogoIcon size={32} color="#02302c" />
                   </a>
                 </li>
                 <li>
-                  <a href="https://x.com/myfye">
+                  <a href="https://x.com/myfyeapp">
                     <XLogoIcon size={32} color="#02302c" />
                   </a>
                 </li>

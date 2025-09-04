@@ -22,7 +22,7 @@ const Mockup = () => {
       <div
         className="full-width"
         css={css`
-          margin-block-start: -22rem;
+          margin-block-start: -17rem;
         `}
       >
         <div
@@ -59,7 +59,7 @@ const Mockup = () => {
             icon={MoneyIcon}
             title="You received"
             subtitle="+$50"
-            inset="0 auto 7rem -80%"
+            inset="0 auto 10rem -80%"
           />
           <MockupNotification
             icon={ArrowsLeftRightIcon}
