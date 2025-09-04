@@ -15,30 +15,31 @@ import Section from "@/shared/components/ui/section/Section";
 import PieChart from "../_components/PieChart";
 import { walletPieChartLabelFormatter } from "../utils";
 import { toggleModal } from "@/features/onOffRamp/deposit/depositSlice";
+import { useAppSelector } from "@/redux/hooks";
 
 const CryptoOverlay = () => {
   const dispatch = useDispatch();
 
-  const isOpen = useSelector(
-    (state: RootState) => state.assets.groups["crypto"].overlay.isOpen
+  const isOpen = useAppSelector(
+    (state) => state.assets.groups["crypto"].overlay.isOpen
   );
 
   const handleOpen = (isOpen: boolean) => {
     dispatch(toggleGroupOverlay({ isOpen, groupId: "crypto" }));
   };
 
-  const assets = useSelector((state: RootState) =>
+  const assets = useAppSelector((state) =>
     selectAssetsWithBalanceByGroup(state, "crypto")
   );
 
-  const balanceUSD = useSelector((state: RootState) =>
+  const balanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "crypto")
   );
-  const btcBalanceUSD = useSelector((state: RootState) =>
+  const btcBalanceUSD = useAppSelector((state) =>
     selectAssetBalanceUSD(state, "BTC")
   );
 
-  const solBalanceUSD = useSelector((state: RootState) =>
+  const solBalanceUSD = useAppSelector((state) =>
     selectAssetBalanceUSD(state, "SOL")
   );
 
@@ -48,7 +49,7 @@ const CryptoOverlay = () => {
       const cashData = {
         name: "Bitcoin",
         y: btcBalanceUSD,
-        color: "#BD8B58",
+        color: "var(--clr-orange)",
       };
       data.push(cashData);
     }
@@ -56,7 +57,7 @@ const CryptoOverlay = () => {
       const earnData = {
         name: "Solana",
         y: solBalanceUSD,
-        color: "var(--clr-purple-400)",
+        color: "var(--clr-purple)",
       };
       data.push(earnData);
     }

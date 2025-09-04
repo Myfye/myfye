@@ -5,6 +5,8 @@ import {
   ArrowLineDownIcon,
   ArrowLineUpIcon,
   ArrowsDownUpIcon,
+  ChartLineUpIcon,
+  PiggyBankIcon,
 } from "@phosphor-icons/react";
 import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,10 +17,9 @@ import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
 import { toggleModal as toggleWithdrawModal } from "@/features/onOffRamp/withdraw/withdrawSlice";
 import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
-import ChartTabs from "./chart_tabs/ChartTabs";
-import PortfolioTab from "./chart_tabs/Portfolio";
 import Portfolio from "./chart_tabs/Portfolio";
 import CTACarousel from "./cta-carousel/CTACarousel";
+import bitcoinIcon from "@/assets/svgs/coins/btc-coin.svg";
 
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
@@ -166,6 +167,7 @@ const DashboardPanel = ({}) => {
         <section
           css={css`
             margin-block-start: var(--size-300);
+            padding-inline: var(--size-250);
           `}
         >
           <Portfolio />
@@ -182,20 +184,20 @@ const DashboardPanel = ({}) => {
             {
               title: "Create a savings account",
               subtitle: "Earn 4.1% APY with US Treasury Bonds",
-              icon: "test",
+              icon: PiggyBankIcon,
               action: () => {},
             },
             {
               title: "Open a retirement account",
               subtitle:
                 "Instantly invest in the top 100 listed companies on the NASDAQ",
-              icon: "test",
+              icon: ChartLineUpIcon,
               action: () => {},
             },
             {
               title: "Buy Bitcoin",
               subtitle: "Crypto made easy. Buy bitcoin instantly",
-              icon: "test",
+              icon: bitcoinIcon,
               action: () => {},
             },
           ]}

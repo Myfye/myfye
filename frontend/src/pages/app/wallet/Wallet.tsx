@@ -47,7 +47,7 @@ const Wallet = () => {
         <motion.div
           className="no-scrollbar"
           ref={ref}
-          style={{ marginTop: pullMargin }}
+          style={{ y: pullMargin }}
           css={css`
             z-index: 1;
             grid-row: 1 / -1;

@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-import mockup from "@/assets/mockups/mockup.png";
+import mockup from "@/assets/mockups/home_mockup.png";
 import MockupNotification from "./MockupNotification";
 import {
   ArrowLineDownIcon,
@@ -22,14 +22,15 @@ const Mockup = () => {
       <div
         className="full-width"
         css={css`
-          margin-block-start: -19rem;
+          margin-block-start: -22rem;
         `}
       >
         <div
           className="mockup-container"
           css={css`
             position: relative;
-            width: 21rem;
+            width: 350px;
+            height: auto;
             margin-inline: auto;
           `}
         >
@@ -38,7 +39,7 @@ const Mockup = () => {
             alt=""
             css={css`
               margin-inline: auto;
-              width: 100%
+              width: 350px;
               height: auto;
             `}
           />
@@ -46,25 +47,25 @@ const Mockup = () => {
             icon={PaperPlaneRightIcon}
             title="You sent"
             subtitle="€30 EUR"
-            inset="5rem -9rem auto auto"
+            inset="5rem -60% auto auto"
           />
           <MockupNotification
             icon={ArrowLineDownIcon}
             title="You deposited"
             subtitle="+$329.20"
-            inset="0 auto 7rem -70%"
+            inset="auto auto 8rem -70%"
           />
           <MockupNotification
             icon={MoneyIcon}
             title="You received"
             subtitle="+$50"
-            inset="10rem -14rem 0 auto"
+            inset="0 auto 7rem -80%"
           />
           <MockupNotification
             icon={ArrowsLeftRightIcon}
             title="You swapped"
             subtitle="$75 USD → 0.3565 SOL"
-            inset="auto auto 3rem -50%"
+            inset="10rem -120% 0 auto"
           />
         </div>
       </div>

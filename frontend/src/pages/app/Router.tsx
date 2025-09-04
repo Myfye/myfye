@@ -141,7 +141,7 @@ const Router = () => {
               z-index: 0;
             `}
           >
-            <AnimatePresence mode="wait">
+            <AnimatePresence initial={false} mode="wait">
               {tabs.map((tab) => (
                 <MotionTabLabel
                   id={tab.id}

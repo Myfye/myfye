@@ -24,7 +24,7 @@ const Portfolio = () => {
       const cashData = {
         name: "Cash",
         y: cashBalanceUSD,
-        color: "var(--clr-green-400)",
+        color: "var(--clr-green)",
       };
       data.push(cashData);
     }
@@ -32,7 +32,7 @@ const Portfolio = () => {
       const earnData = {
         name: "Earn",
         y: earnBalanceUSD,
-        color: "var(--clr-purple-400)",
+        color: "var(--clr-secondary)",
       };
       data.push(earnData);
     }
@@ -40,7 +40,7 @@ const Portfolio = () => {
       const cryptoData = {
         name: "Crypto",
         y: cryptoBalanceUSD,
-        color: "#BD8B58",
+        color: "var(--clr-teritary)",
       };
       data.push(cryptoData);
     }
@@ -48,7 +48,7 @@ const Portfolio = () => {
       const stocksData = {
         name: "Stocks",
         y: stocksBalanceUSD,
-        color: "var(--clr-blue-300)",
+        color: "var(--clr-primary)",
       };
       data.push(stocksData);
     }

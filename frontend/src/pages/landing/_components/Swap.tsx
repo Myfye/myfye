@@ -2,7 +2,7 @@ import Button from "@/shared/components/ui/button/Button";
 import { css } from "@emotion/react";
 import { useContext } from "react";
 import { QRCodeModalContext } from "../QRCodeModalContext";
-import mockup from "@/assets/mockups/mockup.png";
+import mockup from "@/assets/mockups/swap_mockup.png";
 
 const Swap = () => {
   const { setModalOpen } = useContext(QRCodeModalContext);
@@ -62,7 +62,7 @@ const Swap = () => {
             src={mockup}
             alt=""
             css={css`
-              width: 16rem;
+              width: 320px;
             `}
           />
         </div>

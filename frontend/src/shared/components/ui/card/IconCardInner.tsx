@@ -8,8 +8,9 @@ import FlagIcon from "../icons/FlagIcon";
 import Button from "../button/Button";
 import AssetIcon from "../icons/AssetIcon";
 import BankIcon from "../icons/BankIcon";
-import { getIconWrapperSize, IconSize } from "../icons/utils";
+import { IconSize } from "../icons/utils";
 import { getIconSize } from "../button/utils";
+import IconWrapper from "../icons/IconWrapper";
 
 export const getIcon = (icon: string, size: IconSize = "medium") => {
   switch (icon) {
@@ -57,13 +58,21 @@ const IconCardInner = () => {
       <div
         className="icon-card-icon"
         css={css`
-          align-content: center;
+          display: grid;
+          place-items: center;
           margin-inline-end: var(--size-150);
         `}
       >
         {typeof icon === "string"
           ? getIcon(icon)
-          : Icon && <Icon size={getIconSize("medium")} />}
+          : Icon && (
+              <IconWrapper
+                backgroundColor="var(--clr-green-100)"
+                borderRadius="var(--border-radius-medium)"
+              >
+                <Icon size={32} color="var(--clr-primary)" />
+              </IconWrapper>
+            )}
       </div>
       <div
         className="icon-card-content"
@@ -81,6 +90,7 @@ const IconCardInner = () => {
           align={leftContent.align}
           titleWeight={leftContent.titleWeight}
           textAlign={leftContent.textAlign}
+          subtitleSize={leftContent.subtitleSize}
         />
         {rightContent && (
           <IconCardTextContent
@@ -90,6 +100,7 @@ const IconCardInner = () => {
             align={rightContent.align}
             titleWeight={rightContent.titleWeight}
             textAlign={rightContent.textAlign}
+            subtitleSize={rightContent.subtitleSize}
           />
         )}
       </div>

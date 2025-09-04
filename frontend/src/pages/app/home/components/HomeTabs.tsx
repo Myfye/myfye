@@ -8,8 +8,11 @@ import {
 } from "react-aria-components";
 import {
   animate,
+  AnimatePresence,
   AnimationPlaybackControlsWithThen,
   motion,
+  useDragControls,
+  useMotionValue,
   useMotionValueEvent,
   useScroll,
   useTransform,
@@ -26,136 +29,81 @@ import PullToRefreshIndicator from "@/features/pull-to-refresh/PullToRefreshIndi
 import { useSolanaWallets } from "@privy-io/react-auth";
 import { useDispatch } from "react-redux";
 import getSolanaBalances from "@/functions/GetSolanaBalances";
-import { useScrollDirectionLock } from "@/features/scroll/useScrollDirectionLock";
+import { AriaTabListProps, useTabList } from "react-aria";
+import { useTabListState } from "react-stately";
+import { cn } from "cn-utility";
+import HomeTab from "./HomeTab";
+import HomeTabPanel from "./HomeTabPanel";
 
-const tabs = [
-  { id: "dashboard", label: "Dashboard" },
-  { id: "cash", label: "Cash" },
-  { id: "crypto", label: "Crypto" },
-  { id: "stocks", label: "Stocks" },
-];
-
-const HomeTabs = () => {
-  const [selectedKey, setSelectedKey] = useState<Key>(tabs[0].id);
-
-  const tabListRef = useRef<HTMLDivElement>(null!);
+const HomeTabs = ({ ...restProps }: AriaTabListProps<object>) => {
+  const state = useTabListState(restProps);
+  const ref = useRef<HTMLDivElement>(null!);
   const tabPanelsRef = useRef<HTMLDivElement>(null!);
-  const { wallets } = useSolanaWallets();
+  const { tabListProps } = useTabList(restProps, state, ref);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const {
+    wallets: [wallet],
+  } = useSolanaWallets();
   const dispatch = useDispatch();
 
-  let solanaAddress = "";
-  if (wallets.length > 0) {
-    solanaAddress = wallets[0].address;
-  }
+  const solanaAddress = wallet?.address;
 
   const { spinnerParams, pullMargin } = usePullToRefresh({
     onRefresh: async () => {
-      if (solanaAddress) {
-        await getSolanaBalances(solanaAddress, dispatch);
-      }
+      solanaAddress && (await getSolanaBalances(solanaAddress, dispatch));
     },
     container: tabPanelsRef,
   });
 
-  // Track the scroll position of the tab panel container.
-  const { scrollXProgress } = useScroll({
-    container: tabPanelsRef,
-  });
+  const width = useMotionValue(0);
+  const x = useMotionValue(0);
 
-  // Find all the tab elements so we can use their dimensions.
-  const [tabElements, setTabElements] = useState<HTMLDivElement[]>([]);
-  useEffect(() => {
-    if (tabElements.length === 0) {
-      const tabs = [
-        ...tabListRef.current.querySelectorAll<HTMLDivElement>("[role=tab]"),
-      ];
-      setTabElements(tabs);
-    }
-  }, [tabElements]);
+  const [prevSelectedKey, setPrevSelectedKey] = useState(state.selectedKey);
 
-  // This function determines which tab should be selected
-  // based on the scroll position.
-  const getIndex = (x: number) =>
-    Math.max(0, Math.floor((tabElements.length - 1) * x));
-
-  // This function transforms the scroll position into the X position
-  // or width of the selected tab indicator.
-  const transform = (x: number, property: "offsetLeft" | "offsetWidth") => {
-    if (!tabElements.length) return 0;
-
-    // Find the tab index for the scroll X position.
-    const index = getIndex(x);
-
-    // Get the difference between this tab and the next one.
-    const difference =
-      index < tabElements.length - 1
-        ? tabElements[index + 1][property] - tabElements[index][property]
-        : tabElements[index].offsetWidth;
-
-    // Get the percentage between tabs.
-    // This is the difference between the integer index and fractional one.
-    const percent = (tabElements.length - 1) * x - index;
-
-    // Linearly interpolate to calculate the position of the selection indicator.
-    const value = tabElements[index][property] + difference * percent;
-
-    // iOS scrolls weird when translateX is 0 for some reason. 🤷‍♂️
-    return value || 0.1;
-  };
-
-  const x = useTransform(scrollXProgress, (x) => transform(x, "offsetLeft"));
-  const width = useTransform(scrollXProgress, (x) =>
-    transform(x, "offsetWidth")
-  );
-
-  // When the user scrolls, update the selected key
-  // so that the correct tab panel becomes interactive.
-  useMotionValueEvent(scrollXProgress, "change", (x) => {
-    setSelectedKey(tabs[getIndex(x)].id);
-  });
-
-  // When the user clicks on a tab perform an animation of
-  // the scroll position to the newly selected tab panel.
-  const animationRef = useRef<AnimationPlaybackControlsWithThen | null>(null);
-  const onSelectionChange = (selectedKey: Key) => {
-    setSelectedKey(selectedKey);
-
-    // If the scroll position is already moving but we aren't animating
-    // then the key changed as a result of a user scrolling. Ignore.
-    if (scrollXProgress.getVelocity() && !animationRef.current) {
-      return;
-    }
-
-    const tabPanel = tabPanelsRef.current;
-    const index = tabs.findIndex((tab) => tab.id === selectedKey);
-    animationRef.current?.stop();
-    animationRef.current = animate(
-      tabPanel.scrollLeft,
-      tabPanel.scrollWidth * (index / tabs.length),
-      {
-        type: "spring",
-        bounce: 0,
-        duration: 0.6,
-        onUpdate: (v) => {
-          tabPanel.scrollLeft = v;
-        },
-        onPlay: () => {
-          // Disable scroll snap while the animation is going or weird things happen.
-          tabPanel.style.scrollSnapType = "none";
-        },
-        onComplete: () => {
-          tabPanel.style.scrollSnapType = "";
-          animationRef.current = null;
-        },
-      }
+  if (state.selectedKey !== prevSelectedKey) {
+    setPrevSelectedKey(state.selectedKey);
+    // check if prev key has bigger or lesser index
+    const collection = [...state.collection];
+    const prevKeyIndex = collection.findIndex(
+      (item) => item.key === prevSelectedKey
     );
-  };
+    const index = state.selectedItem?.index;
+    if (index !== undefined && prevKeyIndex !== undefined) {
+      if (prevKeyIndex > index) {
+        setDirection(-1);
+      } else if (prevKeyIndex < index) {
+        setDirection(1);
+      }
+    }
+  }
+
+  useEffect(() => {
+    const activeTab = ref.current.querySelector<HTMLDivElement>(
+      '[role="tab"][aria-selected="true"]'
+    );
+
+    const _animate = () => {
+      if (activeTab?.offsetWidth && activeTab?.offsetLeft) {
+        animate(width, activeTab?.offsetWidth, {
+          type: "spring",
+          bounce: 0,
+          duration: 0.6,
+        });
+        animate(x, activeTab?.offsetLeft, {
+          type: "spring",
+          bounce: 0,
+          duration: 0.6,
+        });
+      }
+    };
+
+    _animate();
+  });
 
   return (
     <>
-      <AriaTabs
-        selectedKey={selectedKey}
-        onSelectionChange={onSelectionChange}
+      <div
+        className={cn("home-tabs", restProps.orientation)}
         css={css`
           display: grid;
           grid-template-rows: auto 1fr;
@@ -171,47 +119,18 @@ const HomeTabs = () => {
             height: 100%;
           `}
         >
-          <TabList
-            ref={tabListRef}
+          <div
+            {...tabListProps}
+            ref={ref}
             css={css`
               display: flex;
               gap: var(--size-200);
             `}
-            items={tabs}
           >
-            {(tab) => (
-              <Tab
-                css={css`
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: flex-start;
-                  font-size: var(--fs-medium);
-                  font-weight: var(--fw-active);
-                  height: 3rem;
-                  cursor: pointer;
-                  transition: color 200ms ease-out;
-                  color: var(--clr-text-neutral-strong);
-                  &:hover {
-                    color: var(--clr-primary);
-                  }
-                  &[data-selected="true"] {
-                    transition: color 200ms ease-out;
-                    color: var(--clr-primary);
-                  }
-                `}
-              >
-                <span
-                  css={css`
-                    display: inline-block;
-                    padding-block-start: 0.5rem;
-                  `}
-                >
-                  {tab.label}
-                </span>
-              </Tab>
-            )}
-          </TabList>
+            {[...state.collection].map((item) => (
+              <HomeTab key={item.key} item={item} state={state} />
+            ))}
+          </div>
           {/* Selection indicator. */}
           <motion.div
             aria-hidden="true"
@@ -244,41 +163,21 @@ const HomeTabs = () => {
           <PullToRefreshIndicator style={spinnerParams} />
           <motion.div
             ref={tabPanelsRef}
-            className="no-scrollbar"
             css={css`
-              display: flex;
-              overflow: auto;
-              scroll-snap-type: x mandatory;
-              scroll-snap-stop: always;
+              overflow-y: auto;
+              overflow-x: hidden;
               background-color: var(--clr-surface);
-              grid-column: 1 / -1;
-              grid-row: 1 / -1;
               z-index: 1;
               position: relative;
             `}
-            style={{ marginTop: pullMargin }}
+            style={{ y: pullMargin }}
           >
-            <Collection items={tabs}>
-              {(tab) => (
-                <TabPanel
-                  shouldForceMount
-                  css={css`
-                    width: 100%;
-                    flex-shrink: 0;
-                    scroll-snap-align: start;
-                    container: ${tab.id}-panel / size;
-                  `}
-                >
-                  {tab.id === "dashboard" && <DashboardPanel />}
-                  {tab.id === "cash" && <CashPanel />}
-                  {tab.id === "crypto" && <CryptoPanel />}
-                  {tab.id === "stocks" && <StocksPanel />}
-                </TabPanel>
-              )}
-            </Collection>
+            <AnimatePresence initial={false} mode="wait" custom={direction}>
+              <HomeTabPanel key={state.selectedKey} state={state} />
+            </AnimatePresence>
           </motion.div>
         </div>
-      </AriaTabs>
+      </div>
     </>
   );
 };

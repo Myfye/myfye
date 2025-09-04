@@ -9,6 +9,7 @@ import { Pagination } from "swiper/modules";
 import { css } from "@emotion/react";
 import IconCard from "@/shared/components/ui/card/IconCard";
 import { Icon } from "@phosphor-icons/react";
+import { Button } from "react-aria-components";
 
 interface Slide {
   icon: Icon;
@@ -41,13 +42,29 @@ const CTACarousel = ({ slides }: CTACarouselProps) => {
     >
       {slides.map((slide, i: number) => (
         <SwiperSlide key={`slide=${i}`}>
-          <div className="slide-inner">
-            <button>
+          <div
+            className="slide-inner"
+            css={css`
+              padding-inline: var(--size-250);
+            `}
+          >
+            <Button
+              css={css`
+                display: block;
+                width: 100%;
+              `}
+            >
               <IconCard
+                height="5.25rem"
+                padding="var(--size-200)"
                 icon={slide.icon}
-                leftContent={{ title: slide.title, subtitle: slide.subtitle }}
+                leftContent={{
+                  title: slide.title,
+                  subtitle: slide.subtitle,
+                  subtitleSize: "small",
+                }}
               />
-            </button>
+            </Button>
           </div>
         </SwiperSlide>
       ))}

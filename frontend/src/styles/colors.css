@@ -2,6 +2,12 @@
   --clr-white: #f4f6f9;
   --clr-black: #0d1525;
 
+  --clr-orange: #f49d23;
+  --clr-purple: #9d36eb;
+  --clr-blue: #1855d8;
+  --clr-red: #e41d1d;
+  --clr-green: #11a660;
+
   --clr-neutral-100: #edf0f2;
   --clr-neutral-200: #dde4e8;
   --clr-neutral-300: #c8cdcf;
@@ -75,14 +81,8 @@
   --clr-primary: var(--clr-green-500);
   --clr-primary-active: var(--clr-green-600);
 
-  --clr-secondary: var(--clr-teal-500);
-  --clr-secondary-active: var(--clr-teal-600);
-
-  --clr-pie-chart-usdt: var(--clr-green-300);
-  --clr-pie-chart-eurc: var(--clr-blue-300);
-  --clr-pie-chart-usdy: var(--clr-purple-300);
-  --clr-pie-chart-btc: #c48f52;
-  --clr-pie-chart-sol: var(--clr-purple-300);
+  --clr-secondary: #02302c;
+  --clr-teritary: #dcfd8f;
 
   --clr-text: var(--clr-neutral-900);
   --clr-text-link: var(--clr-accent);

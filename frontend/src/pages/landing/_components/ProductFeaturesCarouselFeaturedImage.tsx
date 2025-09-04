@@ -58,7 +58,7 @@ const ProductFeaturesCarouselFeaturedImage = ({
                     clipPath: "inset(0 0 0 0)",
                     transition: {
                       clipPath: {
-                        duration: i === 0 ? 0 : 0.7,
+                        duration: i === 0 ? 0 : 0.75,
                         ease: "easeInOut",
                       },
                     },
@@ -67,7 +67,7 @@ const ProductFeaturesCarouselFeaturedImage = ({
                     clipPath: "inset(0 0 0 0)",
                     transition: {
                       clipPath: {
-                        duration: i === 0 ? 0 : 0.7,
+                        duration: i === 0 ? 0 : 0.75,
                         ease: "easeInOut",
                       },
                     },
@@ -76,7 +76,7 @@ const ProductFeaturesCarouselFeaturedImage = ({
                     clipPath: "inset(100% 0 0 0)",
                     transition: {
                       clipPath: {
-                        duration: i === 0 ? 0 : 0.7,
+                        duration: i === 0 ? 0 : 0.75,
                         ease: "easeInOut",
                       },
                     },
@@ -99,15 +99,15 @@ const ProductFeaturesCarouselFeaturedImage = ({
                       },
                     },
                     prev: {
-                      y: -40,
+                      y: -42,
                       transition: {
-                        y: { duration: 0.7, ease: "easeInOut" },
+                        y: { duration: 0.75, ease: "easeInOut" },
                       },
                     },
                     next: {
-                      y: 40,
+                      y: 42,
                       transition: {
-                        y: { duration: 1.2, ease: "easeInOut" },
+                        y: { duration: 1.25, ease: "easeInOut" },
                       },
                     },
                   }}
