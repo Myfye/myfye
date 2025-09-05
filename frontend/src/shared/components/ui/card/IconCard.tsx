@@ -1,13 +1,7 @@
-import { FlagComponent } from "country-flag-icons/react/3x2";
 import { IconCardContext } from "./IconCardContext";
 import IconCardInner from "./IconCardInner";
 import { css } from "@emotion/react";
-import {
-  CaretRight,
-  CaretRightIcon,
-  Icon,
-  PlusIcon,
-} from "@phosphor-icons/react";
+import { CaretRightIcon, Icon, PlusIcon } from "@phosphor-icons/react";
 import { ButtonProps } from "../button/button.types";
 import { CheckIcon } from "@phosphor-icons/react/dist/ssr";
 
@@ -17,6 +11,7 @@ interface Content {
   align?: "start" | "center";
   titleSize?: "medium" | "large";
   titleWeight?: string;
+  subtitleSize?: "medium" | "small";
   textAlign?: string;
 }
 export interface IconCardContent {
@@ -29,7 +24,8 @@ export interface IconCardContent {
     | "USFlag"
     | "MXFlag"
     | "bank_neutral"
-    | string;
+    | string
+    | Icon;
   action?: {
     id: string;
     label: string;

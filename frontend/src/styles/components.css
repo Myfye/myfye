@@ -56,17 +56,17 @@
         --_color-active: var(--clr-text-on-primary);
       }
       &[data-color="primary-light"] {
-        --_background-color: var(--clr-green-300);
-        --_border-color: var(--clr-green-300);
-        --_color: var(--clr-text);
+        --_background-color: #dcfd8f;
+        --_border-color: #dcfd8f;
+        --_color: #02302c;
 
         --_background-color-active: var(--clr-primary-active);
         --_border-color-active: var(--clr-primary-active);
-        --_color-active: var(--clr-text-on-primary);
+        --_color-active: #02302c;
       }
       &[data-color="blue"] {
-        --_background-color: #0056CC;
-        --_border-color: #0056CC;
+        --_background-color: #0056cc;
+        --_border-color: #0056cc;
         --_color: var(--clr-text-on-primary);
 
         --_background-color-active: #004499;
@@ -130,14 +130,22 @@
       }
     }
     &[data-variant="secondary"] {
+      --_background-color: transparent;
       &[data-color="primary"] {
-        --_background-color: transparent;
         --_border-color: var(--clr-primary);
         --_color: var(--clr-primary);
 
         --_background-color-active: var(--clr-primary-active);
         --_border-color-active: var(--clr-primary-active);
         --_color-active: var(--clr-text-on-primary);
+      }
+      &[data-color="white"] {
+        --_border-color: var(--clr-white);
+        --_color: var(--clr-white);
+
+        --_background-color-active: var(--clr-white);
+        --_border-color-active: var(--clr-white);
+        --_color-active: var(--clr-white);
       }
     }
     &[data-variant="ghost"] {

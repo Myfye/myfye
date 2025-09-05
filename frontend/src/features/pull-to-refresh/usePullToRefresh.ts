@@ -25,7 +25,7 @@ export const usePullToRefresh = ({
   container,
   pullThreshold = PULL_THRESHOLD,
 }: UsePullToRefreshParams) => {
-  const [startPoint, setStartPoint] = useState(0);
+  const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
   const pullChange = useMotionValue(0);
   const [isRefreshing, setRefreshing] = useState(false);
   const [canRefresh, setRefresh] = useState(false);
@@ -83,26 +83,27 @@ export const usePullToRefresh = ({
         return;
       }
 
-      const { screenY } = touch;
+      const { screenX, screenY } = touch;
 
-      setStartPoint(screenY);
+      setStartPoint({ x: screenX, y: screenY });
     };
 
     const pull = (e: TouchEvent) => {
       const el = container.current;
       if (!el) return;
 
-      const scrollLock = el.dataset.scrollLock;
-      if (scrollLock && scrollLock === "x") return;
-
       const [touch] = e.targetTouches;
 
       if (!canRefresh) return;
 
-      const { screenY } = touch;
+      // get delta between start point and currrent point
+
+      const { screenX, screenY } = touch;
+      const delta = { x: screenX - startPoint.x, y: screenY - startPoint.y };
+      if (delta.x > delta.y) return setRefresh(false);
 
       const pullLength =
-        startPoint < screenY ? Math.abs(screenY - startPoint) : 0;
+        startPoint.y < screenY ? Math.abs(screenY - startPoint.y) : 0;
       pullChange.set(pullLength);
     };
 
@@ -111,7 +112,7 @@ export const usePullToRefresh = ({
 
       if (!canRefresh || !el) return;
 
-      setStartPoint(0);
+      setStartPoint({ x: 0, y: 0 });
 
       if (pullChange.get() < pullThreshold) {
         await animate(pullChange, 0, { type: spring, bounce: 0.1 });

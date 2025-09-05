@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { Buffer } from "buffer";
 import "./styles/components.css";
 import {
@@ -28,7 +26,9 @@ import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
 import SwapModal from "@/features/swap/SwapModal.tsx";
 import KYCOverlay from "@/features/compliance/KYCOverlay.tsx";
 import Toaster from "@/features/notifications/toaster/Toaster.tsx";
-import AltUSDModal, { useAltUSDModal } from "@/features/onOffRamp/deposit/onChain/altUSD/detectAltUSD.tsx";
+import AltUSDModal, {
+  useAltUSDModal,
+} from "@/features/onOffRamp/deposit/onChain/altUSD/detectAltUSD.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
 import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWallets.tsx";
 import { setEmbeddedWallet, setWalletClient } from "./redux/userWalletData.tsx";
@@ -72,7 +72,6 @@ function WebAppInner() {
   const walletClient = useAppSelector(
     (state) => state.userWalletData.walletClient
   );
-  const users = useAppSelector((state) => state.userWalletData.users);
   const dispatch = useAppDispatch();
 
   // Move the hook call here at the component level
@@ -186,7 +185,7 @@ function WebAppInner() {
                   background-image: linear-gradient(
                     to bottom,
                     transparent 0%,
-                    var(--clr-teal-900) 100%
+                    #02302c 100%
                   );
                 }
               `}
@@ -209,9 +208,10 @@ function WebAppInner() {
               `}
             >
               <h1
-                className="heading-xx-large"
                 css={css`
+                  font-size: 1.5rem;
                   font-weight: 700;
+                  line-height: var(--line-height-heading);
                   color: var(--clr-white);
                 `}
               >
@@ -222,6 +222,8 @@ function WebAppInner() {
                 css={css`
                   margin-block-start: var(--size-200);
                   color: var(--clr-neutral-300);
+                  max-width: 35ch;
+                  margin-inline: auto;
                 `}
               >
                 Access global markets for stocks, treasuries, crypto, and more
@@ -261,24 +263,24 @@ function WebAppInner() {
     return <MFAOnboardingPage />;
   }
 
-  if (mfaStatus === "enrolled") {
-    return (
-      <div className="app-layout">
-        <Router />
-        {/* Modals */}
-        <SendModal />
-        <ReceiveModal />
-        <DepositModal />
-        <WithdrawModal />
-        <QRCodeModal />
-        <SwapModal />
-        <AltUSDModal />
-        <KYCOverlay zIndex={99999} />
-        <PrivyUseSolanaWallets />
-        <Toaster />
-      </div>
-    );
-  }
+  // Default screen
+
+  return (
+    <div className="app-layout">
+      <Router />
+      {/* Modals */}
+      <SendModal />
+      <ReceiveModal />
+      <DepositModal />
+      <WithdrawModal />
+      <QRCodeModal />
+      <SwapModal />
+      <AltUSDModal />
+      <KYCOverlay zIndex={99999} />
+      <PrivyUseSolanaWallets />
+      <Toaster />
+    </div>
+  );
 }
 
 const AppRouter = () => {

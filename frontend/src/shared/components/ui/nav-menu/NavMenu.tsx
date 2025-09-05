@@ -16,32 +16,33 @@ import { useAppSelector } from "@/redux/hooks";
 
 import { css } from "@emotion/react";
 import { usePrivy } from "@privy-io/react-auth";
-import Header from "../Header";
 import { RootState } from "@/redux/store";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 import { createPortal } from "react-dom";
 import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import Header from "../../layout/header/Header";
 
 const NavMenu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const currentUserEmail = useSelector(
-    (state: RootState) => state.userWalletData.currentUserEmail
+  const currentUserEmail = useAppSelector(
+    (state) => state.userWalletData.currentUserEmail
   );
   const walletData = useSelector((state: RootState) => state.userWalletData);
 
   const currentUserKYCStatus = useAppSelector(
     (state) => state.userWalletData.currentUserKYCStatus
   );
-  
+
   const name =
     walletData.currentUserFirstName + walletData.currentUserLastName
       ? " " + walletData.currentUserLastName
       : "";
 
   const { ready, authenticated, logout } = usePrivy();
+
   // Disable logout when Privy is not ready or the user is not authenticated
   const disableLogout = !ready || (ready && !authenticated);
 
@@ -88,9 +89,6 @@ const NavMenu = () => {
     return email;
   };
 
-  useEffect(() => {
-    console.log(name, walletData.currentUserFirstName);
-  }, [name, walletData]);
   return (
     <>
       <NavTrigger onPress={toggleMenu} />
@@ -224,10 +222,9 @@ const NavMenu = () => {
                       `}
                     >
                       <ButtonGroup direction="vertical" expand>
-                        {currentUserKYCStatus !== 'APPROVED' && (
+                        {currentUserKYCStatus !== "APPROVED" && (
                           <ButtonGroupItem
                             variant="primary"
-                            expand
                             icon={ShieldCheck}
                             onPress={handleVerifyKYC}
                           >
@@ -236,8 +233,8 @@ const NavMenu = () => {
                         )}
                         <ButtonGroupItem
                           onPress={signOut}
-                          variant="secondary"
-                          expand
+                          variant="ghost"
+                          color="danger"
                           isDisabled={disableLogout}
                         >
                           Sign out

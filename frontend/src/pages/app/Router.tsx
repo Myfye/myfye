@@ -16,9 +16,8 @@ import {
 } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
-import Footer from "../../shared/components/layout/nav/footer/Footer";
-import NavMenu from "../../shared/components/layout/nav/header/nav-menu/NavMenu";
-import Header from "../../shared/components/layout/nav/header/Header";
+import Footer from "../../shared/components/layout/footer/Footer";
+import Header from "../../shared/components/layout/header/Header";
 import Wallet from "@/pages/app/wallet/Wallet";
 import Activity from "@/pages/app/activity/Activity";
 import { useDispatch } from "react-redux";
@@ -26,6 +25,7 @@ import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../../shared/components/ui/button/Button";
 import { motion, AnimatePresence } from "motion/react";
 import Pay from "@/pages/app/pay/Pay";
+import NavMenu from "@/shared/components/ui/nav-menu/NavMenu";
 
 const tabs = [
   { id: "home", label: "Home" },
@@ -141,7 +141,7 @@ const Router = () => {
               z-index: 0;
             `}
           >
-            <AnimatePresence mode="wait">
+            <AnimatePresence initial={false} mode="wait">
               {tabs.map((tab) => (
                 <MotionTabLabel
                   id={tab.id}

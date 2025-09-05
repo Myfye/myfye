@@ -9,7 +9,7 @@ const LoginPage = ({ children }) => {
         grid-template-rows: 6rem 1fr auto;
         max-width: var(--app-max-width);
         margin-inline: auto;
-        background-color: var(--clr-teal-900);
+        background-color: #02302c;
       `}
     >
       {children}

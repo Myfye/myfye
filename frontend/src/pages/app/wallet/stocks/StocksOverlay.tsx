@@ -18,23 +18,24 @@ import Section from "@/shared/components/ui/section/Section";
 import StockChart from "../../home/components/panels/dashboard/chart_tabs/StockChart";
 
 import mockData from "@/assets/mock_stock_data.csv?url";
+import { useAppSelector } from "@/redux/hooks";
 
 const StocksOverlay = () => {
   const dispatch = useDispatch();
 
-  const isOpen = useSelector(
-    (state: RootState) => state.assets.groups["stocks"].overlay.isOpen
+  const isOpen = useAppSelector(
+    (state) => state.assets.groups["stocks"].overlay.isOpen
   );
 
   const handleOpen = (isOpen: boolean) => {
     dispatch(toggleGroupOverlay({ isOpen, groupId: "stocks" }));
   };
 
-  const assets = useSelector((state: RootState) =>
+  const assets = useAppSelector((state) =>
     selectAssetsWithBalanceByGroup(state, "stocks")
   );
 
-  const balanceUSD = useSelector((state: RootState) =>
+  const balanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "stocks")
   );
 
@@ -153,7 +154,7 @@ const StocksOverlay = () => {
       floating: true,
       verticalAlign: "bottom",
     },
-    colors: ["var(--clr-green-400)"],
+    colors: ["var(--clr-primary)"],
     title: {
       text: "<span class='visually-hidden'>Myfye Performance</span>",
       useHTML: true,

@@ -6,6 +6,7 @@ import { getIconSize } from "./utils";
 import { AnchorHTMLAttributes, ButtonHTMLAttributes, useRef } from "react";
 import RingLoader from "../loading/spinners/RingLoader";
 import { css } from "@emotion/react";
+import { cn } from "cn-utility";
 
 const _Button = ({
   ref,
@@ -20,6 +21,7 @@ const _Button = ({
   iconRight,
   wrap = false,
   expand = false,
+  mobile = true,
   isLoading = false,
   children,
   ...restProps
@@ -49,13 +51,18 @@ const _Button = ({
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
       data-loading={isLoading}
+      data-mobile={mobile}
       className={`button ${className ? className : ""} ${
         variant === "token-select" ? "token-select" : ""
       }`}
       ref={ref}
-      animate={{
-        scale: isPressed ? 0.9 : 1,
-      }}
+      animate={
+        mobile
+          ? {
+              scale: isPressed ? 0.9 : 1,
+            }
+          : undefined
+      }
     >
       {isLoading && (
         <RingLoader
@@ -87,6 +94,7 @@ const _Link = ({
   iconRight,
   wrap = false,
   expand = false,
+  mobile = true,
   isLoading = false,
   children,
   ...restProps
@@ -108,13 +116,20 @@ const _Link = ({
       data-expand={expand}
       data-icon-only={iconOnly}
       data-border-radius={borderRadius}
-      className={`button ${className ? className : ""} ${
-        variant === "token-select" ? "token-select" : ""
-      }`}
+      data-mobile={mobile}
+      className={cn(
+        "button",
+        className,
+        variant === "token-select" && "token-select"
+      )}
       ref={ref}
-      animate={{
-        scale: isPressed ? 0.9 : 1,
-      }}
+      animate={
+        mobile
+          ? {
+              scale: isPressed ? 0.9 : 1,
+            }
+          : undefined
+      }
     >
       {Icon && <Icon size={iconSize} />}
       {children}

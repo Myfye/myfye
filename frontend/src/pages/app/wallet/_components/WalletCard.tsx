@@ -59,7 +59,7 @@ const WalletCard = ({
         justify-content: space-between;
         container: wallet-card / size;
         width: 100%;
-        aspect-ratio: 1;
+        height: 100%;
         padding: var(--size-150);
         background-color: var(--clr-surface-raised);
         border-radius: var(--border-radius-medium);

@@ -4,12 +4,25 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
-import CTACard from "./CTACard";
 import { Pagination } from "swiper/modules";
 
 import { css } from "@emotion/react";
+import IconCard from "@/shared/components/ui/card/IconCard";
+import { Icon } from "@phosphor-icons/react";
+import { Button } from "react-aria-components";
 
-const CTACarousel = ({ slides }) => {
+interface Slide {
+  icon: Icon;
+  title: string;
+  subtitle: string;
+  action: () => void;
+}
+
+interface CTACarouselProps {
+  slides: Slide[];
+}
+
+const CTACarousel = ({ slides }: CTACarouselProps) => {
   return (
     <Swiper
       spaceBetween={0}
@@ -32,15 +45,26 @@ const CTACarousel = ({ slides }) => {
           <div
             className="slide-inner"
             css={css`
-              display: grid;
-              place-items: center;
+              padding-inline: var(--size-250);
             `}
           >
-            <CTACard
-              title={slide.title}
-              icon={slide?.icon}
-              subtitle={slide?.subtitle}
-            ></CTACard>
+            <Button
+              css={css`
+                display: block;
+                width: 100%;
+              `}
+            >
+              <IconCard
+                height="5.25rem"
+                padding="var(--size-200)"
+                icon={slide.icon}
+                leftContent={{
+                  title: slide.title,
+                  subtitle: slide.subtitle,
+                  subtitleSize: "small",
+                }}
+              />
+            </Button>
           </div>
         </SwiperSlide>
       ))}

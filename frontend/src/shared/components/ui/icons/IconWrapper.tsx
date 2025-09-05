@@ -9,6 +9,7 @@ interface IconWrapperProps {
   border?: string;
   height?: string;
   size?: IconSize;
+  borderRadius?: string;
 }
 
 const IconContext = createContext<{
@@ -20,6 +21,7 @@ const IconWrapper = ({
   backgroundColor = "transparent",
   border = "none",
   size = "medium",
+  borderRadius = "var(--border-radius-circle)",
 }: IconWrapperProps) => {
   const iconWrapperSize = getIconWrapperSize(size);
   return (
@@ -33,7 +35,7 @@ const IconWrapper = ({
           overflow: hidden;
           width: ${iconWrapperSize};
           aspect-ratio: 1;
-          border-radius: var(--border-radius-circle);
+          border-radius: ${borderRadius};
           border: ${border};
         `}
       >

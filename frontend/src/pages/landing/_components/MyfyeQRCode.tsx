@@ -1,12 +1,19 @@
+import { MotionValue, motion } from "motion/react";
 import { SVGProps } from "react";
 
 interface MyfyeQRCodeProps extends SVGProps<SVGSVGElement> {
   title?: string;
+  color?: MotionValue<string> | string;
+  backgroundColor?: MotionValue<string> | string;
 }
 
-const MyfyeQRCode = ({ ...svgAttributes }: MyfyeQRCodeProps) => {
+const MyfyeQRCode = ({
+  backgroundColor = "var(--clr-white)",
+  color = "var(--clr-black)",
+  ...svgAttributes
+}: MyfyeQRCodeProps) => {
   return (
-    <svg
+    <motion.svg
       version="1.1"
       id="Layer_1"
       xmlns="http://www.w3.org/2000/svg"
@@ -18,1105 +25,1111 @@ const MyfyeQRCode = ({ ...svgAttributes }: MyfyeQRCodeProps) => {
       enable-background="new 0 0 1160 1160"
       {...svgAttributes}
     >
-      <rect x="0" y="0" width="1160" height="1160" fill="rgb(255,255,255)" />
+      <motion.rect
+        x="0"
+        y="0"
+        width="1160"
+        height="1160"
+        fill={backgroundColor}
+      />
       <g transform="translate(80,80)">
         <g transform="translate(320,0) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,0) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,0) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,40) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,40) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,40) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,40) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,80) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,80) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,80) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,80) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,80) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,80) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,120) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,120) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,120) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,120) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,120) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,160) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,160) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(440,160) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,160) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,160) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,200) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,200) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,200) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(440,200) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,200) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,240) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,240) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,240) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,240) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,240) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,280) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,280) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,280) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,280) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(0,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(80,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(240,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(280,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(440,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(880,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,320) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(0,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(80,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(200,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(280,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(680,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(840,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(920,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,360) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(0,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(80,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(160,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(200,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(240,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(680,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(840,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(880,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,400) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(160,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(280,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(680,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(840,440) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(40,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(160,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(200,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(240,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(280,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(440,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,480) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(40,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(120,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(200,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(280,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(920,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,520) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(0,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(40,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(80,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(200,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(240,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(840,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(880,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,560) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(80,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(120,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(160,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(440,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(840,600) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(0,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(40,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(80,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(240,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(680,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(920,640) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,680) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,680) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,680) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,680) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,680) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,680) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,720) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,720) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,720) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(440,720) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,720) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,720) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,720) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,720) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,760) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,760) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,760) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,760) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,760) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(920,760) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(440,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(680,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,800) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,840) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(600,840) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(680,840) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,840) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(880,840) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(920,840) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(840,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(920,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,880) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(360,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(440,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(480,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(760,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,920) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(320,960) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(400,960) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(520,960) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(560,960) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(640,960) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,960) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(840,960) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(960,960) scale(0.08,0.08)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <path d="M250,0c138.077,0,250,111.93,250,250c0,138.077-111.923,250-250,250C111.93,500,0,388.077,0,250C0,111.93,111.93,0,250,0z" />
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(0,0) scale(2.8, 2.8)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <g>
               <path
                 style={{ fill: "none" }}
@@ -1132,10 +1145,10 @@ const MyfyeQRCode = ({ ...svgAttributes }: MyfyeQRCodeProps) => {
             c1.42-2.557,3.429-4.756,5.848-6.421c3.11-2.141,6.897-3.398,10.979-3.398h31.719C76.414,15.008,85,23.419,85,33.758V66.229z"
               />
             </g>
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(720,0) scale(2.8, 2.8)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <g>
               <path
                 style={{ fill: "none" }}
@@ -1151,10 +1164,10 @@ const MyfyeQRCode = ({ ...svgAttributes }: MyfyeQRCodeProps) => {
             c1.42-2.557,3.429-4.756,5.848-6.421c3.11-2.141,6.897-3.398,10.979-3.398h31.719C76.414,15.008,85,23.419,85,33.758V66.229z"
               />
             </g>
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(0,720) scale(2.8, 2.8)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <g>
               <path
                 style={{ fill: "none" }}
@@ -1170,10 +1183,10 @@ const MyfyeQRCode = ({ ...svgAttributes }: MyfyeQRCodeProps) => {
             c1.42-2.557,3.429-4.756,5.848-6.421c3.11-2.141,6.897-3.398,10.979-3.398h31.719C76.414,15.008,85,23.419,85,33.758V66.229z"
               />
             </g>
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(80,80) scale(1.2, 1.2)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <g>
               <g id="XMLID_1_">
                 <g>
@@ -1186,10 +1199,10 @@ const MyfyeQRCode = ({ ...svgAttributes }: MyfyeQRCodeProps) => {
                 <g></g>
               </g>
             </g>
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(800,80) scale(1.2, 1.2)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <g>
               <g id="XMLID_1_">
                 <g>
@@ -1202,10 +1215,10 @@ const MyfyeQRCode = ({ ...svgAttributes }: MyfyeQRCodeProps) => {
                 <g></g>
               </g>
             </g>
-          </g>
+          </motion.g>
         </g>
         <g transform="translate(80,800) scale(1.2, 1.2)">
-          <g transform="" style={{ fill: "rgb(0, 0, 0)" }}>
+          <motion.g transform="" style={{ fill: color }}>
             <g>
               <g id="XMLID_1_">
                 <g>
@@ -1218,10 +1231,10 @@ const MyfyeQRCode = ({ ...svgAttributes }: MyfyeQRCodeProps) => {
                 <g></g>
               </g>
             </g>
-          </g>
+          </motion.g>
         </g>
       </g>
-    </svg>
+    </motion.svg>
   );
 };
 

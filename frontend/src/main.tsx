@@ -23,8 +23,7 @@ root.render(
         loginMethods: ["email"],
         appearance: {
           theme: "light",
-          primaryColor: "#447E26",
-          accentColor: "#117E3B",
+          accentColor: "#025121",
           logo: "https://project-eli-lewitt.s3.us-west-2.amazonaws.com/logo512.png",
           walletChainType: "ethereum-and-solana",
         },

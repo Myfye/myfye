@@ -1,4 +1,5 @@
 :root {
+  --fs-7x-large: calc(1rem * 64 / 16);
   --fs-6x-large: calc(1rem * 48 / 16);
   --fs-5x-large: calc(1rem * 40 / 16);
   --fs-4x-large: calc(1rem * 32 / 16);
@@ -24,6 +25,12 @@
   --line-height-caption: 1.4;
   --line-height-default: 1.5;
   --line-height-form: calc(1rem * 16 / 16);
+}
+
+.heading-6x-large {
+  line-height: var(--line-height-heading);
+  font-size: var(--fs-7x-large);
+  font-weight: 700;
 }
 
 .heading-5x-large {

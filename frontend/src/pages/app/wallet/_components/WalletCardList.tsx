@@ -98,7 +98,13 @@ const WalletCardList = ({ ...restProps }) => {
         `}
       >
         {cards.map((card, i) => (
-          <li className="wallet-card-wrapper" key={`wallet-card-wrapper-${i}`}>
+          <li
+            className="wallet-card-wrapper"
+            key={`wallet-card-wrapper-${i}`}
+            css={css`
+              aspect-ratio: 1;
+            `}
+          >
             <WalletCard
               title={card.title}
               icon={card.icon}

@@ -7,11 +7,17 @@ interface IconCardTextContentProps {
   titleWeight?: string;
   align?: "start" | "center" | "end";
   textAlign?: string;
+  subtitleSize?: "medium" | "small";
 }
 
-const getFontSize = (titleSize: "medium" | "large") => {
+const getTitleFontSize = (titleSize: "medium" | "large") => {
   if (titleSize === "medium") return "var(--fs-medium)";
   return "var(--fs-large)";
+};
+
+const getSubtitleFontSize = (subtitleSize: "medium" | "small") => {
+  if (subtitleSize === "medium") return "var(--fs-medium)";
+  return "var(--fs-small)";
 };
 
 const getAlignItems = (textAlign: string) => {
@@ -38,8 +44,10 @@ const IconCardTextContent = ({
   titleWeight = "var(--fw-active)",
   align = "start",
   textAlign = "start",
+  subtitleSize = "medium",
 }: IconCardTextContentProps) => {
-  const fontSize = getFontSize(titleSize);
+  const titleFontSize = getTitleFontSize(titleSize);
+  const subtitleFontSize = getSubtitleFontSize(subtitleSize);
   const alignItems = getAlignItems(textAlign);
   return (
     <div
@@ -53,7 +61,7 @@ const IconCardTextContent = ({
     >
       <span
         css={css`
-          font-size: ${fontSize};
+          font-size: ${titleFontSize};
           line-height: var(--line-height-tight);
           font-weight: ${titleWeight};
         `}
@@ -63,7 +71,7 @@ const IconCardTextContent = ({
       {subtitle && (
         <span
           css={css`
-            font-size: var(--fs-medium);
+            font-size: ${subtitleFontSize};
             line-height: var(--line-height-tight);
             color: var(--clr-text-weaker);
           `}
@@ -76,10 +84,7 @@ const IconCardTextContent = ({
           aria-hidden="true"
           css={css`
             width: 1px;
-            height: calc(var(--fs-medium) * var(--line-height-tight));
-            font-size: var(--fs-medium);
-            line-height: var(--line-height-tight);
-            color: var(--clr-text-weaker);
+            height: calc(${subtitleFontSize} * var(--line-height-tight));
           `}
         ></span>
       )}

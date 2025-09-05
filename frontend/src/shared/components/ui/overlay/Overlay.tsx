@@ -11,7 +11,7 @@ import { css } from "@emotion/react";
 import { CaretLeft as CaretLeftIcon, XIcon } from "@phosphor-icons/react";
 
 import Button from "@/shared/components/ui/button/Button";
-import Header from "@/shared/components/layout/nav/header/Header";
+import Header from "@/shared/components/layout/header/Header";
 
 import { createPortal } from "react-dom";
 import { useOverlay } from "./useOverlay";

@@ -9,9 +9,20 @@ import {
 } from "motion/react";
 import { useEffect, useRef } from "react";
 
-const TextCarousel = ({ textArray }: { textArray: string[] }) => {
-  const y = useMotionValue(0);
-
+interface TextCarouselProps {
+  textArray: string[];
+  color?: string;
+  fontSize?: number;
+  lineHeight?: number;
+  fontWeight?: string;
+}
+const TextCarousel = ({
+  textArray,
+  color = "var(--clr-primary)",
+  fontSize = 1.5,
+  lineHeight = 1.4,
+  fontWeight = "600",
+}: TextCarouselProps) => {
   const keyframes = textArray.map((_, i) => i + 1);
 
   const [textRef, animate] = useAnimate();
@@ -24,7 +35,7 @@ const TextCarousel = ({ textArray }: { textArray: string[] }) => {
         await animate(
           textListEl,
           {
-            y: `${1.625 * -1 * frame}rem`,
+            y: `${fontSize * lineHeight * -1 * frame}rem`,
           },
           { duration: 0.625, delay: 1 }
         );
@@ -43,7 +54,7 @@ const TextCarousel = ({ textArray }: { textArray: string[] }) => {
       css={css`
         display: inline-block;
         overflow-y: hidden;
-        height: 1.625rem;
+        height: ${fontSize * lineHeight}rem;
       `}
     >
       <motion.span
@@ -51,8 +62,10 @@ const TextCarousel = ({ textArray }: { textArray: string[] }) => {
         css={css`
           display: inline-flex;
           flex-direction: column;
-          color: var(--clr-green-300);
-          font-weight: 600;
+          color: ${color};
+          font-weight: ${fontWeight};
+          font-size: ${fontSize}rem;
+          line-height: ${fontSize * lineHeight}rem;
         `}
       >
         {[...textArray, ...textArray].map((text, i) => (
@@ -61,8 +74,8 @@ const TextCarousel = ({ textArray }: { textArray: string[] }) => {
             aria-hidden={i > textArray.length - 1 ? true : false}
             css={css`
               display: inline-block;
-              height: 1.625rem;
-              line-height: 1.625rem;
+              height: ${fontSize * lineHeight}rem;
+              line-height: ${fontSize * lineHeight}rem;
             `}
           >
             {text}

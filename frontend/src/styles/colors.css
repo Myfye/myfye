@@ -1,6 +1,12 @@
 :root {
-  --clr-white: #f8fbfc;
-  --clr-black: #000407;
+  --clr-white: #f4f6f9;
+  --clr-black: #0d1525;
+
+  --clr-orange: #f49d23;
+  --clr-purple: #9d36eb;
+  --clr-blue: #1855d8;
+  --clr-red: #e41d1d;
+  --clr-green: #11a660;
 
   --clr-neutral-100: #edf0f2;
   --clr-neutral-200: #dde4e8;
@@ -56,7 +62,7 @@
   --clr-green-200: #caebd6;
   --clr-green-300: #8fd4a9;
   --clr-green-400: #4fb878;
-  --clr-green-500: #117e3b;
+  --clr-green-500: #025121;
   --clr-green-600: #0a662d;
   --clr-green-700: #055122;
   --clr-green-800: #023f1a;
@@ -75,14 +81,8 @@
   --clr-primary: var(--clr-green-500);
   --clr-primary-active: var(--clr-green-600);
 
-  --clr-secondary: var(--clr-teal-500);
-  --clr-secondary-active: var(--clr-teal-600);
-
-  --clr-pie-chart-usdt: var(--clr-green-300);
-  --clr-pie-chart-eurc: var(--clr-blue-300);
-  --clr-pie-chart-usdy: var(--clr-purple-300);
-  --clr-pie-chart-btc: #c48f52;
-  --clr-pie-chart-sol: var(--clr-purple-300);
+  --clr-secondary: #02302c;
+  --clr-teritary: #dcfd8f;
 
   --clr-text: var(--clr-neutral-900);
   --clr-text-link: var(--clr-accent);

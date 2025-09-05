@@ -1,21 +1,20 @@
 import { selectAssetsBalanceUSDByGroup } from "@/features/assets/assetsSlice";
 import DonutChart3D from "./DonutChart3D";
-import { useSelector } from "react-redux";
 import { css } from "@emotion/react";
-import { RootState } from "@/redux/store";
 import logo from "@/assets/logo/myfye_logo.svg";
+import { useAppSelector } from "@/redux/hooks";
 
-const PortfolioTab = () => {
-  const cashBalanceUSD = useSelector((state: RootState) =>
+const Portfolio = () => {
+  const cashBalanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "cash")
   );
-  const earnBalanceUSD = useSelector((state: RootState) =>
+  const earnBalanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "earn")
   );
-  const cryptoBalanceUSD = useSelector((state: RootState) =>
+  const cryptoBalanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "crypto")
   );
-  const stocksBalanceUSD = useSelector((state: RootState) =>
+  const stocksBalanceUSD = useAppSelector((state) =>
     selectAssetsBalanceUSDByGroup(state, "stocks")
   );
 
@@ -25,7 +24,7 @@ const PortfolioTab = () => {
       const cashData = {
         name: "Cash",
         y: cashBalanceUSD,
-        color: "var(--clr-green-400)",
+        color: "var(--clr-green)",
       };
       data.push(cashData);
     }
@@ -33,7 +32,7 @@ const PortfolioTab = () => {
       const earnData = {
         name: "Earn",
         y: earnBalanceUSD,
-        color: "var(--clr-purple-400)",
+        color: "var(--clr-secondary)",
       };
       data.push(earnData);
     }
@@ -41,7 +40,7 @@ const PortfolioTab = () => {
       const cryptoData = {
         name: "Crypto",
         y: cryptoBalanceUSD,
-        color: "#BD8B58",
+        color: "var(--clr-teritary)",
       };
       data.push(cryptoData);
     }
@@ -49,7 +48,7 @@ const PortfolioTab = () => {
       const stocksData = {
         name: "Stocks",
         y: stocksBalanceUSD,
-        color: "var(--clr-blue-300)",
+        color: "var(--clr-primary)",
       };
       data.push(stocksData);
     }
@@ -179,4 +178,4 @@ const PortfolioTab = () => {
     </div>
   );
 };
-export default PortfolioTab;
+export default Portfolio;
