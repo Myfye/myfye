@@ -7,6 +7,7 @@ import { USDT_MINT_ADDRESS, PYUSD_MINT_ADDRESS } from "@/functions/MintAddress";
 import btcIcon from "@/assets/icons/assets/crypto/Bitcoin.svg";
 import solIcon from "@/assets/icons/assets/crypto/Solana.svg";
 import usDollarIcon from "@/assets/icons/assets/cash/US Dollar.svg";
+import pesoIcon from "@/assets/icons/assets/cash/MX peso.svg";
 import euroIcon from "@/assets/icons/assets/cash/Euro.svg";
 import usDollarYieldIcon from "@/assets/icons/assets/earn/us.png";
 import mexicanPesoYieldIcon from "@/assets/icons/assets/earn/mx.png";
@@ -150,6 +151,7 @@ const initialState: AssetsState = {
     "SUI",
     // Cash
     //"MXN",
+    "MXN",
     "USD",
     "EUR",
     // Earn
@@ -1385,6 +1387,27 @@ const initialState: AssetsState = {
       },
     },
     */
+    MXN: {
+      id: "MXN",
+      label: "Mexican Peso",
+      symbol: "MXN",
+      color: "var(--clr-green-400)",
+      mintAddress: "6zYgzrT7X2wi9a9NeMtUvUWLLmf2a8vBsbYkocYdB9wa",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 9,
+      dashboardId: "cash",
+      fiatCurrency: "usd",
+      groupId: "cash",
+      balance: 0,
+      exchangeRateUSD: 0.053, // hardcoded for now
+      icon: {
+        content: pesoIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
     USD: {
       id: "USD",
       label: "US Dollar",
