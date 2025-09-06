@@ -1,6 +1,6 @@
 import pyusdSol from "@/assets/pyusdSol.png";
 import usdtSol from "@/assets/usdtSol.png";
-import { Money as CashIcon, Bank as BankIcon, ChartLineUp as ChartIcon } from "@phosphor-icons/react";
+import { Money as CashIcon, Bank as BankIcon, ChartLineUp as ChartIcon, ArrowsClockwise as SwapIcon } from "@phosphor-icons/react";
 import Modal from "@/shared/components/ui/modal/Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { setModalOpen, setUSDTBalance, setPYUSDBalance } from "./altUSDSlice";
@@ -14,6 +14,7 @@ import { SwapTransaction } from "@/features/swap/solana-swap/swapSlice.ts";
 import { RootState } from "@/redux/store";
 import { toggleOverlay, updateAmount, updateAssetId, updateInputPublicKey, updateExchangeRate } from "@/features/swap/swapSlice";
 import { updateBalance } from "@/features/assets/assetsSlice";
+import toast from "react-hot-toast/headless";
 
 const AltUSDModal = () => {
   const { isOpen, openModal, closeModal } = useAltUSDModal();
@@ -29,6 +30,7 @@ const AltUSDModal = () => {
 
   // Monitor swap status and handle balance increment when swap succeeds
   useEffect(() => {
+    
     if (transaction.status === "success") {
       console.log("DETECT ALT USD Swap succeeded, incrementing USD balance");
       
@@ -80,12 +82,12 @@ const AltUSDModal = () => {
           dispatch(setPYUSDBalance(0));
         }
       }
-         } else if (transaction.status === "failed") {
+         } else if (transaction.status === "fail") {
        console.log("DETECT ALT USD Swap failed");
        // wait 2 seconds and refresh the page
        setTimeout(() => {
-         window.location.reload();
-       }, 2000);
+        toast.error("Swap failed, please reload to try again");
+       }, 4000);
      }
   }, [transaction.status, selectedCurrency, usdtBalance, pyusdBalance, assets.assets, dispatch]);
 
@@ -178,7 +180,7 @@ const AltUSDModal = () => {
       isOpen={isOpen}
       onOpenChange={closeModal}
       title="Deposit received!"
-      height={550}
+      height={600}
       zIndex={99999}
     >
       <div
@@ -186,7 +188,7 @@ const AltUSDModal = () => {
           padding: var(--size-100);
           display: flex;
           flex-direction: column;
-          gap: var(--size-200);
+          gap: var(--size-100);
         `}
       >
 
@@ -203,7 +205,8 @@ const AltUSDModal = () => {
                 display: flex;
                 align-items: center;
                 gap: var(--size-200);
-                padding: var(--size-200);
+                padding-left: var(--size-200);
+                padding-bottom: var(--size-100);
                 background-color: var(--clr-neutral-50);
               `}
             >
@@ -238,7 +241,8 @@ const AltUSDModal = () => {
                 display: flex;
                 align-items: center;
                 gap: var(--size-200);
-                padding: var(--size-200);
+                padding-left: var(--size-200);
+                padding-bottom: var(--size-100);
                 background-color: var(--clr-neutral-50);
               `}
             >
@@ -324,6 +328,73 @@ const AltUSDModal = () => {
           </div>
         </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+        <div
+              css={css`
+                display: flex;
+                align-items: center;
+                gap: var(--size-200);
+                padding: var(--size-200);
+                background-color: var(--clr-neutral-50);
+                border-radius: var(--border-radius-small);
+                border: 1px solid var(--clr-neutral-200);
+              `}
+            >
+
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', alignItems: 'center'}}>
+
+          <div
+            css={css`
+              width: 2.75rem;
+              height: 2.75rem;
+              border-radius: var(--border-radius-circle);
+              background-color: transparent;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `}
+          >
+            <SwapIcon 
+              size={30} 
+              color="var(--clr-primary)" 
+              weight="light" 
+            />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, marginLeft: 'var(--size-200)', marginRight: 'var(--size-200)'}}>
+
+            <div style={{ fontWeight: '600', color: 'var(--clr-neutral-900)', fontSize: 'var(--fs-medium)' }}>
+            Convert to Mexican Peso
+            </div>
+            <div style={{ fontSize: 'var(--fs-small)' }}>
+            Swap USD to MXN with no fees
+            </div>
+
+          </div>
+
+                    <Button
+            onPress={() => handleSwapPressed('MXN')}
+            variant="primary"
+            css={css`
+              min-width: 80px;
+            `}
+          >
+            Select
+          </Button>
+
+          </div>
+        </div>
 
 
 
@@ -459,6 +530,8 @@ const AltUSDModal = () => {
           </Button>
 
           </div>
+
+          
         </div>
 
 
