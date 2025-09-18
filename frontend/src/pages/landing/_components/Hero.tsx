@@ -57,12 +57,11 @@ const Hero = () => {
                 lineHeight={1.4}
                 fontSize={1.25}
                 textArray={[
-                  "US Dollars",
-                  "Euros",
-                  "Apple",
-                  "Microsoft",
-                  "SPY",
-                  "Bitcoin",
+                  "stocks",
+                  "currencies",
+                  "treasuries",
+                  "commodities",
+                  "crypto",
                 ]}
               />
               <svg
