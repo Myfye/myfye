@@ -1,13 +1,18 @@
 import { css } from "@emotion/react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Logo from "./Logo";
 import Nav from "./Nav";
 import NavItem from "./NavItem";
 import Button from "@/shared/components/ui/button/Button";
 import { QRCodeModalContext } from "../QRCodeModalContext";
+import SupportModal from "./SupportModal";
+import ContactModal from "./ContactModal";
 
 const Header = () => {
   const { setModalOpen } = useContext(QRCodeModalContext);
+  const [supportModalOpen, setSupportModalOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  
   return (
     <header
       className="content-grid"
@@ -38,9 +43,8 @@ const Header = () => {
           `}
         >
           <Nav>
-            <NavItem href="/about">About</NavItem>
-            <NavItem href="/support">Support</NavItem>
-            <NavItem href="/contact">Contact</NavItem>
+            <NavItem onClick={() => setSupportModalOpen(true)}>Support</NavItem>
+            <NavItem onClick={() => setContactModalOpen(true)}>Contact</NavItem>
           </Nav>
           <div
             css={css`
@@ -51,6 +55,14 @@ const Header = () => {
           </div>
         </div>
       </div>
+      <SupportModal 
+        isOpen={supportModalOpen} 
+        onOpenChange={setSupportModalOpen} 
+      />
+      <ContactModal 
+        isOpen={contactModalOpen} 
+        onOpenChange={setContactModalOpen} 
+      />
     </header>
   );
 };

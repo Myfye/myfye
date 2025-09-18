@@ -1,12 +1,17 @@
 import { css } from "@emotion/react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import myfyeLogo from "@/assets/logo/myfye_logo_dark_green.svg";
 import { InstagramLogoIcon, XLogoIcon } from "@phosphor-icons/react";
+import SupportModal from "./SupportModal";
+import ContactModal from "./ContactModal";
 
 interface FooterProps {
   children?: ReactNode;
 }
 const Footer = ({ children }: FooterProps) => {
+  const [supportModalOpen, setSupportModalOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  
   return (
     <footer
       className="content-grid"
@@ -91,13 +96,46 @@ const Footer = ({ children }: FooterProps) => {
               `}
             >
               <li>
-                <a href="">About</a>
               </li>
               <li>
-                <a>Support</a>
+                <button
+                  onClick={() => setSupportModalOpen(true)}
+                  css={css`
+                    font-weight: var(--fw-active);
+                    font-size: var(--fs-large);
+                    line-height: var(--line-height-tight);
+                    color: #02302c;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    &:hover {
+                      color: #034a45;
+                    }
+                    transition: 0.2s color linear;
+                  `}
+                >
+                  Support
+                </button>
               </li>
               <li>
-                <a>Contact</a>
+                <button
+                  onClick={() => setContactModalOpen(true)}
+                  css={css`
+                    font-weight: var(--fw-active);
+                    font-size: var(--fs-large);
+                    line-height: var(--line-height-tight);
+                    color: #02302c;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    &:hover {
+                      color: #034a45;
+                    }
+                    transition: 0.2s color linear;
+                  `}
+                >
+                  Contact
+                </button>
               </li>
             </ul>
           </nav>
@@ -144,6 +182,14 @@ const Footer = ({ children }: FooterProps) => {
           </div>
         </section>
       </div>
+      <SupportModal 
+        isOpen={supportModalOpen} 
+        onOpenChange={setSupportModalOpen} 
+      />
+      <ContactModal 
+        isOpen={contactModalOpen} 
+        onOpenChange={setContactModalOpen} 
+      />
     </footer>
   );
 };
