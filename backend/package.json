@@ -25,6 +25,7 @@
     "express-rate-limit": "^7.5.0",
     "geoip-lite": "^1.4.10",
     "pg": "^8.14.1",
+    "uuid": "^13.0.0",
     "viem": "^2.24.1"
   },
   "devDependencies": {

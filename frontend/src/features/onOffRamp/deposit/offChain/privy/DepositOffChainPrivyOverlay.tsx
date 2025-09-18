@@ -46,8 +46,7 @@ const DepositOffChainPrivyOverlay = () => {
     await fundWallet(solanaPubKey, {
       cluster: { name: "mainnet-beta" },
       amount: solAmount.toString(),
-      defaultFundingMethod: "card",
-      asset: "USDC"
+      defaultFundingMethod: "card"
     });
     toggleOverlay({ type: "privy", isOpen: false });
   };

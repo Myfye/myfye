@@ -107,6 +107,15 @@ CREATE TABLE IF NOT EXISTS blind_pay_bank_accounts (
   user_id TEXT REFERENCES users(uid)
 );
 
+CREATE TABLE IF NOT EXISTS etherfuse_users (
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  user_id TEXT NOT NULL REFERENCES users(uid),
+  customer_id TEXT NOT NULL,
+  bank_account_id TEXT NOT NULL,
+  creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+  UNIQUE(user_id)
+);
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE INDEX ON users USING gin (first_name gin_trgm_ops);
 CREATE INDEX ON users USING gin (last_name gin_trgm_ops);

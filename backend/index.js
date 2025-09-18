@@ -68,6 +68,8 @@ const {
     initializeStockPriceSystem,
     clearAllStockPrices
 } = require('./routes/stockPrice');
+const { createEtherfuseOnboardingUrl } = require('./routes/etherfuse/onboarding');
+const { createBankAccount, getBankAccount } = require('./routes/etherfuse/bankAccount');
 
 app.set('trust proxy', true);
 
@@ -1467,6 +1469,111 @@ app.delete("/stock-prices/clear", sensitiveLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to clear stock prices",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Etherfuse onboarding endpoint */
+app.post("/etherfuse/onboarding", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Etherfuse Onboarding Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    
+    // Validate required fields
+    if (!data.publicKey || !data.userId) {
+      return res.status(400).json({ 
+        error: 'Invalid request. publicKey, and userId are required.' 
+      });
+    }
+
+    const result = await createEtherfuseOnboardingUrl(data);
+    
+    if (result.success) {
+      console.log("Etherfuse onboarding result:", JSON.stringify(result.data, null, 2));
+      res.json(result.data);
+    } else {
+      console.error("Etherfuse onboarding failed:", result.error);
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/onboarding endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to create Etherfuse onboarding URL",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Etherfuse bank account endpoint */
+app.post("/etherfuse/bank-account", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Etherfuse Bank Account Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    
+    // Validate required fields
+    if (!data.presignedUrl || !data.account) {
+      return res.status(400).json({ 
+        error: 'Invalid request. presignedUrl and account are required.' 
+      });
+    }
+
+    const result = await createBankAccount(data);
+    
+    if (result.success) {
+      console.log("Etherfuse bank account result:", JSON.stringify(result.data, null, 2));
+      res.json(result.data);
+    } else {
+      console.error("Etherfuse bank account failed:", result.error);
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/bank-account endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to create bank account",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Etherfuse get bank accounts endpoint */
+app.post("/etherfuse/get-bank-accounts", generalLimiter, async (req, res) => {
+  console.log("\n=== Etherfuse Get Bank Accounts Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    
+    // Validate required fields
+    if (!data.userId) {
+      return res.status(400).json({ 
+        error: 'Invalid request. userId is required.' 
+      });
+    }
+
+    const result = await getBankAccount(data);
+    
+    if (result.success) {
+      console.log("Etherfuse get bank accounts result:", JSON.stringify(result.data, null, 2));
+      res.json(result.data);
+    } else {
+      console.error("Etherfuse get bank accounts failed:", result.error);
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/get-bank-accounts endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get bank accounts",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });

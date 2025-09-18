@@ -40,6 +40,7 @@ export interface BankAccountTransaction extends Transaction {
 export type DepositOffChainOverlay =
   | "bankAccount"
   | "bankAccountInstructions"
-  | "privy";
+  | "privy"
+  | "etherfuse";
 
 export type PresetAmountOption = "10" | "50" | "100" | "max" | null;

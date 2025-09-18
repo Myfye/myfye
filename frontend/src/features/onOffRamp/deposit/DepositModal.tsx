@@ -17,6 +17,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import DepositOffChainBankAccountOverlay from "./offChain/bankAccount/DepositOffChainBankAccountOverlay";
 import DepositOffChainPrivyOverlay from "./offChain/privy/DepositOffChainPrivyOverlay";
+import EtherfuseRampOverlay from "./offChain/etherfuseRamp";
 
 const DEFAULT_HEIGHT = 360;
 
@@ -98,13 +99,7 @@ const DepositModal = () => {
                 title="Bank Account"
                 description="Deposit via bank transfer"
                 onPress={() => {
-                  if (currentUserKYCStatus !== 'APPROVED') {
-                    return dispatch(toggleKYCModal({ isOpen: true }));
-                  } else {
-                    dispatch(
-                      toggleOverlay({ type: "bankAccount", isOpen: true })
-                    );
-                  }
+                  dispatch(toggleOverlay({ type: "etherfuse", isOpen: true }));
                 }}
               />
               <ModalButton
@@ -121,6 +116,7 @@ const DepositModal = () => {
       </Modal>
       <DepositOffChainBankAccountOverlay />
       <DepositOffChainPrivyOverlay />
+      <EtherfuseRampOverlay />
     </>
   );
 };

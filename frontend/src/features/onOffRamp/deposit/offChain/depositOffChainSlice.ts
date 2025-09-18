@@ -22,6 +22,9 @@ interface DepositOffChainState {
     privy: {
       isOpen: boolean;
     };
+    etherfuse: {
+      isOpen: boolean;
+    };
   };
   modals: {
     selectCurrency: {
@@ -66,6 +69,9 @@ const initialState: DepositOffChainState = {
       isOpen: false,
     },
     privy: {
+      isOpen: false,
+    },
+    etherfuse: {
       isOpen: false,
     },
   },
