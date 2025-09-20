@@ -23,6 +23,18 @@ async function prepareTransaction(instructions: any) {
         addressLookupTableAddresses, // The lookup table addresses that you can use if you are using versioned transaction.
         } = instructions;
 
+        // Log setup instructions to understand what Jupiter is providing
+        console.log("Jupiter setup instructions:", setupInstructions?.length || 0, "instructions");
+        if (setupInstructions && setupInstructions.length > 0) {
+            setupInstructions.forEach((instruction, index) => {
+                console.log(`Setup instruction ${index}:`, {
+                    programId: instruction.programId,
+                    accounts: instruction.accounts?.length || 0,
+                    dataLength: instruction.data?.length || 0
+                });
+            });
+        }
+
         const deserializeInstruction = (instruction: any) => {
             const deserializedInstruction = new TransactionInstruction({
               programId: new PublicKey(instruction.programId),

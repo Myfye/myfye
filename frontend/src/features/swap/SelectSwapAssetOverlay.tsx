@@ -51,9 +51,9 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
     );
     // to do: ensure token account
     if (transactionType === "buy") {
-      console.log("Ensuring token account for ", assetId);
+      console.log("Skip Ensuring token account for ", assetId);
       // TODO: if it is a stock no not ensure token account
-      ensureTokenAccountForSwap(assetId);
+      // ensureTokenAccountForSwap(assetId);
     }
     dispatch(
       updateAssetId({

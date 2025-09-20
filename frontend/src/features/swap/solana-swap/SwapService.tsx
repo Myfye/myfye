@@ -5,7 +5,7 @@ import prepareTransaction from "./PrepareSwap.tsx";
 import { getMintAddress } from "../../assets/assetsSlice";
 import { getAssetDecimals } from "../../assets/utils";
 import verifyTransaction from "./VerifyTransaction.tsx";
-import ensureTokenAccount from "../../../functions/ensureTokenAccount.tsx";
+// import ensureTokenAccount from "../../../functions/ensureTokenAccount.tsx"; // No longer needed - Jupiter handles ATA creation
 import { SwapTransaction, updateStatus } from "../swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
@@ -55,9 +55,27 @@ export const swap = async ({
   const output_mint = getMintAddress(outputCurrency);
   const inputMint = getMintAddress(inputCurrency);
 
-  await ensureTokenAccount(publicKey, output_mint);
-
-  console.log("Done ensuring token account");
+  // Check if the output token account already exists
+  // If it exists, Jupiter shouldn't try to create it (which causes the error)
+  console.log("Checking if output token account exists...");
+  try {
+    const userPublicKeyObj = new PublicKey(publicKey);
+    const outputMintObj = new PublicKey(output_mint);
+    
+    const existingTokenAccounts = await connection.getParsedTokenAccountsByOwner(
+      userPublicKeyObj,
+      { mint: outputMintObj }
+    );
+    
+    if (existingTokenAccounts.value.length > 0) {
+      console.log("Output token account already exists, Jupiter should not create it");
+      console.log("Existing account:", existingTokenAccounts.value[0].pubkey.toString());
+    } else {
+      console.log("Output token account does not exist, Jupiter will create it");
+    }
+  } catch (error) {
+    console.log("Error checking token account existence:", error);
+  }
 
   let platformFeeAccountData: any;
 
@@ -150,7 +168,7 @@ async function getSwapQuote(
     console.log("Quote response:", quoteResponse);
     
     // Ensure the response has the expected structure
-    if (!quoteResponse.inputAmount || !quoteResponse.outputAmount) {
+    if (!quoteResponse.inAmount || !quoteResponse.outAmount) {
       console.error("Quote response missing required fields:", quoteResponse);
     }
     
@@ -234,6 +252,77 @@ const swapTransaction = async (
   );
   if (instructions.error) {
     throw new Error("Failed to get swap instructions: " + instructions.error);
+  }
+
+  // Log Jupiter's setup instructions to debug token account creation
+  console.log("Jupiter instructions received:", {
+    setupInstructions: instructions.setupInstructions?.length || 0,
+    computeBudgetInstructions: instructions.computeBudgetInstructions?.length || 0,
+    hasSwapInstruction: !!instructions.swapInstruction,
+    hasCleanupInstruction: !!instructions.cleanupInstruction
+  });
+
+  if (instructions.setupInstructions && instructions.setupInstructions.length > 0) {
+    console.log("Setup instructions details:");
+    instructions.setupInstructions.forEach((instruction, index) => {
+      console.log(`  Setup ${index}:`, {
+        programId: instruction.programId,
+        accounts: instruction.accounts?.length || 0,
+        accountDetails: instruction.accounts?.map((acc, i) => ({
+          index: i,
+          pubkey: acc.pubkey,
+          isSigner: acc.isSigner,
+          isWritable: acc.isWritable
+        })) || []
+      });
+    });
+
+    // Check if the token account already exists and filter out ATA creation instructions
+    try {
+      const userPublicKeyObj = new PublicKey(userPublicKey);
+      const outputMintObj = new PublicKey(quoteData.outputMint);
+      
+      const existingTokenAccounts = await connection.getParsedTokenAccountsByOwner(
+        userPublicKeyObj,
+        { mint: outputMintObj }
+      );
+      
+      if (existingTokenAccounts.value.length > 0) {
+        console.log("Token account already exists, filtering out ATA creation instructions");
+        console.log("Existing token account:", existingTokenAccounts.value[0].pubkey.toString());
+        // Filter out Associated Token Account creation instructions
+        instructions.setupInstructions = instructions.setupInstructions.filter(
+          instruction => instruction.programId !== 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+        );
+        console.log("Filtered setup instructions:", instructions.setupInstructions.length);
+      } else {
+        console.log("No existing token account found, ATA creation should proceed");
+        
+        // Fix ATA creation instruction for sponsored transactions
+        // Replace user as payer with server as payer
+        instructions.setupInstructions = instructions.setupInstructions.map(instruction => {
+          if (instruction.programId === 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL') {
+            console.log("Modifying ATA creation instruction for sponsored transaction");
+            // The first account should be the payer (server), not the user
+            const modifiedAccounts = [...instruction.accounts];
+            modifiedAccounts[0] = {
+              ...modifiedAccounts[0],
+              pubkey: SERVER_SOLANA_PUBLIC_KEY, // Server as payer
+              isSigner: true, // Server needs to sign
+              isWritable: true
+            };
+            
+            return {
+              ...instruction,
+              accounts: modifiedAccounts
+            };
+          }
+          return instruction;
+        });
+      }
+    } catch (error) {
+      console.log("Error checking token account existence:", error);
+    }
   }
 
   const preparedTransaction = await prepareTransaction(instructions);
@@ -338,6 +427,18 @@ const swapTransaction = async (
       logs: error.logs,
       fullError: error
     });
+
+    // Specific analysis for InstructionError
+    if (error.message && error.message.includes('InstructionError')) {
+      console.error("=== INSTRUCTION ERROR DEBUG ===");
+      console.error("Error details:", error.message);
+      if (error.logs && Array.isArray(error.logs)) {
+        console.error("Transaction logs:");
+        error.logs.forEach((log, index) => {
+          console.error(`  ${index}: ${log}`);
+        });
+      }
+    }
     
     const transactionDetails = {
       userPublicKey,
