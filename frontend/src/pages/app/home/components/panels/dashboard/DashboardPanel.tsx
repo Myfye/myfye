@@ -20,190 +20,205 @@ import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 import Portfolio from "./chart_tabs/Portfolio";
 import CTACarousel from "./cta-carousel/CTACarousel";
 import bitcoinIcon from "@/assets/svgs/coins/btc-coin.svg";
+import { togglePopup } from "./cta-carousel/ctaCarouselSlice";
+import BitcoinPopup from "./cta-carousel/popups/BitcoinPopup";
+import EarnPopup from "./cta-carousel/popups/EarnPopup";
+import InvestPopup from "./cta-carousel/popups/InvestPopup";
+import { useAppDispatch } from "@/redux/hooks";
 
 const DashboardPanel = ({}) => {
   const dispatch = useDispatch();
-
   const balanceUSD = useSelector(selectAssetsBalanceUSD);
 
   return (
-    <div
-      className="dashboard-panel"
-      css={css`
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        height: 100%;
-        > * {
-          width: 100%;
-        }
-        padding-bottom: var(--size-100);
-      `}
-    >
-      <section
+    <>
+      <div
+        className="dashboard-panel"
         css={css`
-          padding-inline: var(--size-250);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
+          height: 100%;
+          > * {
+            width: 100%;
+          }
+          padding-bottom: var(--size-100);
         `}
       >
-        <BalanceCard balance={balanceUSD}></BalanceCard>
-      </section>
-      <section
-        css={css`
-          margin-block-start: var(--size-200);
-        `}
-      >
-        <menu
-          className="no-scrollbar"
-          css={css`
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: var(--controls-gap-small);
-            overflow-x: auto;
-            padding-inline: var(--size-250);
-          `}
-        >
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowsDownUpIcon}
-              onPress={() => {
-                console.log("opening swap modal");
-                dispatch(toggleSwapModal({ isOpen: true }));
-              }}
-            >
-              Swap
-            </Button>
-          </li>
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowCircleUpIcon}
-              onPress={() => {
-                dispatch(toggleSendModal({ isOpen: true }));
-              }}
-            >
-              Send
-            </Button>
-          </li>
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowCircleDownIcon}
-              onPress={() => {
-                dispatch(toggleReceiveModal(true));
-              }}
-            >
-              Receive
-            </Button>
-          </li>
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowLineUpIcon}
-              onPress={() => {
-                dispatch(toggleDepositModal(true));
-              }}
-            >
-              Deposit
-            </Button>
-          </li>
-          <li>
-            <Button
-              size="x-small"
-              icon={ArrowLineDownIcon}
-              onPress={() => {
-                dispatch(toggleWithdrawModal(true));
-              }}
-            >
-              Withdraw
-            </Button>
-          </li>
-        </menu>
-      </section>
-      {balanceUSD === 0 ? (
         <section
           css={css`
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
             padding-inline: var(--size-250);
           `}
         >
-          <div
+          <BalanceCard balance={balanceUSD}></BalanceCard>
+        </section>
+        <section
+          css={css`
+            margin-block-start: var(--size-200);
+          `}
+        >
+          <menu
+            className="no-scrollbar"
             css={css`
-              padding-inline: var(--size-200);
-              padding-block: var(--size-400);
-              border-radius: var(--border-radius-medium);
-              background-color: var(--clr-surface-raised);
-              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              gap: var(--controls-gap-small);
+              overflow-x: auto;
+              padding-inline: var(--size-250);
             `}
           >
-            <h2
-              className="heading-large"
-              css={css`
-                text-align: center;
-              `}
-            >
-              Get started by depositing funds
-            </h2>
-            <Button
-              expand
-              onPress={() => {
-                dispatch(toggleDepositModal(true));
-              }}
-              css={css`
-                margin-block-start: var(--size-300);
-              `}
-            >
-              Deposit funds
-            </Button>
-          </div>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowsDownUpIcon}
+                onPress={() => {
+                  console.log("opening swap modal");
+                  dispatch(toggleSwapModal({ isOpen: true }));
+                }}
+              >
+                Swap
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowCircleUpIcon}
+                onPress={() => {
+                  dispatch(toggleSendModal({ isOpen: true }));
+                }}
+              >
+                Send
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowCircleDownIcon}
+                onPress={() => {
+                  dispatch(toggleReceiveModal(true));
+                }}
+              >
+                Receive
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowLineUpIcon}
+                onPress={() => {
+                  dispatch(toggleDepositModal(true));
+                }}
+              >
+                Deposit
+              </Button>
+            </li>
+            <li>
+              <Button
+                size="x-small"
+                icon={ArrowLineDownIcon}
+                onPress={() => {
+                  dispatch(toggleWithdrawModal(true));
+                }}
+              >
+                Withdraw
+              </Button>
+            </li>
+          </menu>
         </section>
-      ) : (
+        {balanceUSD === 0 ? (
+          <section
+            css={css`
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              height: 100%;
+              padding-inline: var(--size-250);
+            `}
+          >
+            <div
+              css={css`
+                padding-inline: var(--size-200);
+                padding-block: var(--size-400);
+                border-radius: var(--border-radius-medium);
+                background-color: var(--clr-surface-raised);
+                width: 100%;
+              `}
+            >
+              <h2
+                className="heading-large"
+                css={css`
+                  text-align: center;
+                `}
+              >
+                Get started by depositing funds
+              </h2>
+              <Button
+                expand
+                onPress={() => {
+                  dispatch(toggleDepositModal(true));
+                }}
+                css={css`
+                  margin-block-start: var(--size-300);
+                `}
+              >
+                Deposit funds
+              </Button>
+            </div>
+          </section>
+        ) : (
+          <section
+            css={css`
+              margin-block-start: var(--size-300);
+              padding-inline: var(--size-250);
+            `}
+          >
+            <Portfolio />
+          </section>
+        )}
         <section
+          className="cta-carousel-container"
           css={css`
-            margin-block-start: var(--size-300);
-            padding-inline: var(--size-250);
+            margin-block-start: auto;
           `}
         >
-          <Portfolio />
+          <CTACarousel
+            slides={[
+              {
+                title: "Create a savings account",
+                subtitle: "Earn 4.1% APY with US Treasury Bonds",
+                icon: PiggyBankIcon,
+                action: () => {
+                  dispatch(togglePopup({ type: "earn", isOpen: true }));
+                },
+              },
+              {
+                title: "Open a retirement account",
+                subtitle:
+                  "Instantly invest in the top 100 listed companies on the NASDAQ",
+                icon: ChartLineUpIcon,
+                action: () => {
+                  dispatch(togglePopup({ type: "invest", isOpen: true }));
+                },
+              },
+              {
+                title: "Buy Bitcoin",
+                subtitle: "Crypto made easy. Buy bitcoin instantly",
+                icon: bitcoinIcon,
+                action: () => {
+                  dispatch(togglePopup({ type: "bitcoin", isOpen: true }));
+                },
+              },
+            ]}
+          />
         </section>
-      )}
-      <section
-        className="cta-carousel-container"
-        css={css`
-          margin-block-start: auto;
-        `}
-      >
-        <CTACarousel
-          slides={[
-            {
-              title: "Create a savings account",
-              subtitle: "Earn 4.1% APY with US Treasury Bonds",
-              icon: PiggyBankIcon,
-              action: () => {},
-            },
-            {
-              title: "Open a retirement account",
-              subtitle:
-                "Instantly invest in the top 100 listed companies on the NASDAQ",
-              icon: ChartLineUpIcon,
-              action: () => {},
-            },
-            {
-              title: "Buy Bitcoin",
-              subtitle: "Crypto made easy. Buy bitcoin instantly",
-              icon: bitcoinIcon,
-              action: () => {},
-            },
-          ]}
-        />
-      </section>
-    </div>
+      </div>
+      <EarnPopup />
+      <InvestPopup />
+      <BitcoinPopup />
+    </>
   );
 };
 

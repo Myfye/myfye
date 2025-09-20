@@ -34,6 +34,7 @@ import { solanaApi } from "@/features/solana/solanaApi.ts";
 import { depositApi } from "@/features/onOffRamp/deposit/depositApi.ts";
 import { baseRelayerApi } from "@/features/base_relayer/baseRelayerApi.ts";
 import { withdrawApi } from "@/features/onOffRamp/withdraw/withdrawApi.ts";
+import ctaCarouselReducer from "@/pages/app/home/components/panels/dashboard/cta-carousel/ctaCarouselSlice.ts";
 
 const store = configureStore({
   reducer: {
@@ -87,6 +88,9 @@ const store = configureStore({
     // MFA
     mfa: mfaReducer,
 
+    // CTA Carousel
+    ctaCarousel: ctaCarouselReducer,
+
     // APIs
     [usersApi.reducerPath]: usersApi.reducer,
     [contactsApi.reducerPath]: contactsApi.reducer,
@@ -108,6 +112,7 @@ const store = configureStore({
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
+
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
 

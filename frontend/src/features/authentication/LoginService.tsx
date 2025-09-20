@@ -225,9 +225,10 @@ const HandleUserLogIn = async (
 
   // Get price quotes for all assets
   try {
-    updateExchangeRateUSD({ assetId: "usdc_sol", exchangeRateUSD: 1 });
-    updateExchangeRateUSD({ assetId: "usdt_sol", exchangeRateUSD: 1 });
-    updateExchangeRateUSD({ assetId: "usdc_base", exchangeRateUSD: 1 });
+    updateExchangeRateUSD({ assetId: "USD", exchangeRateUSD: 1 });
+    // updateExchangeRateUSD({ assetId: "usdc_sol", exchangeRateUSD: 1 });
+    // updateExchangeRateUSD({ assetId: "usdt_sol", exchangeRateUSD: 1 });
+    // updateExchangeRateUSD({ assetId: "usdc_base", exchangeRateUSD: 1 });
 
     await getPriceQuotes(dispatch);
 

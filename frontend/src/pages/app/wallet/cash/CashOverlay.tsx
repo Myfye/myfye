@@ -48,7 +48,7 @@ const CashOverlay = () => {
       const cashData = {
         name: "US Dollar",
         y: usdBalance,
-        color: "var(--clr-green)",
+        color: "var(--clr-primary)",
       };
       data.push(cashData);
     }

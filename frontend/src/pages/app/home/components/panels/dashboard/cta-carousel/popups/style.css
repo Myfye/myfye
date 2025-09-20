@@ -1,0 +1,50 @@
+.earn-column-chart {
+  .highcharts-point {
+    fill: var(--clr-green-200);
+    stroke: var(--clr-green-200);
+  }
+  .highcharts-point-hover {
+    fill: var(--clr-primary);
+    stroke: var(--clr-primary);
+    ~ .highcharts-point {
+      fill: var(--clr-neutral-100);
+      stroke: var(--clr-neutral-100);
+    }
+  }
+  .highcharts-axis {
+    display: none;
+  }
+  .column-tooltip {
+    filter: none;
+    background-color: var(--clr-primary);
+    border-radius: var(--border-radius-medium);
+    & .highcharts-tooltip-box {
+      fill: var(--clr-primary) !important;
+    }
+    .point-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      & .date {
+        font-size: var(--fs-xx-small);
+        text-align: center;
+        color: var(--clr-white);
+      }
+      & .amount {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--size-050);
+        font-size: var(--fs-small);
+        text-align: center;
+        font-weight: 700;
+        margin-block-start: var(--size-025);
+        color: var(--clr-white);
+        & svg {
+          width: 18px;
+          aspect-ratio: 1;
+          margin-block-start: -2px;
+        }
+      }
+    }
+  }
+}
