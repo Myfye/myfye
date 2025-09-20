@@ -48,7 +48,7 @@ const Portfolio = () => {
       const stocksData = {
         name: "Stocks",
         y: stocksBalanceUSD,
-        color: "var(--clr-primary)",
+        color: "var(--clr-green)",
       };
       data.push(stocksData);
     }

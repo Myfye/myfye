@@ -26,6 +26,7 @@ import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
 import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
 import { RootState } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 interface AssetCardProps extends HTMLAttributes<HTMLDivElement> {
   id: Asset["id"];
@@ -62,18 +63,17 @@ const AssetCard = ({
   const [showKYCOverlay, setShowKYCOverlay] = useState(false);
   const formattedBalance = formatBalance(balance, fiatCurrency);
 
-  const dispatch = useDispatch();
-  const currentUserKYCStatus = useSelector(
-    (state: RootState) => state.userWalletData.currentUserKYCStatus
+  const dispatch = useAppDispatch();
+  const currentUserKYCStatus = useAppSelector(
+    (state) => state.userWalletData.currentUserKYCStatus
   );
 
   const handleSwapClick = () => {
-
     console.log("opening swap modal");
     dispatch(
       toggleSwapModal({
         isOpen: true,
-        assetId: id,
+        sellAssetId: id,
       })
     );
   };
@@ -226,9 +226,7 @@ const AssetCard = ({
                     }
                   `}
                   onAction={() =>
-                    dispatch(
-                      toggleSendModal({ isOpen: true, assetId: id })
-                    )
+                    dispatch(toggleSendModal({ isOpen: true, assetId: id }))
                   }
                 >
                   <ArrowCircleUp

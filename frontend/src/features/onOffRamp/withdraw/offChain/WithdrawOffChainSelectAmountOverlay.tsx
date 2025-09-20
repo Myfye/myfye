@@ -35,9 +35,7 @@ const WthdrawOffChainSelectAmountOverlay = () => {
   );
 
   const asset = useSelector((state: RootState) =>
-    transaction.assetId
-      ? selectAsset(state, transaction.assetId)
-      : null
+    transaction.assetId ? selectAsset(state, transaction.assetId) : null
   );
 
   // const handleNextPressed = async () => {
@@ -98,7 +96,7 @@ const WthdrawOffChainSelectAmountOverlay = () => {
 
   const currencySymbol =
     getFiatCurrencySymbol(
-      transaction.id === "usdc_sol" || !transaction.id ? "usd" : "euro"
+      transaction.id === "USD" || !transaction.id ? "usd" : "euro"
     ) ?? "$";
 
   const isAddressEntryDisabled =

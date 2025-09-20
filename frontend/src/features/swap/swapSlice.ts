@@ -66,13 +66,17 @@ const swapSlice = createSlice({
       state,
       action: PayloadAction<{
         isOpen: boolean;
-        assetId?: Asset["id"];
+        buyAssetId?: Asset["id"];
+        sellAssetId?: Asset["id"];
       }>
     ) {
       state.modal.isOpen = action.payload.isOpen;
-      if (action.payload?.assetId)
-        state.transaction.sell.assetId =
-          action.payload.assetId;
+      if (action.payload?.sellAssetId) {
+        state.transaction.sell.assetId = action.payload.sellAssetId;
+      }
+      if (action.payload?.buyAssetId) {
+        state.transaction.buy.assetId = action.payload.buyAssetId;
+      }
     },
     toggleOverlay(
       state,
@@ -96,9 +100,8 @@ const swapSlice = createSlice({
         replace?: boolean;
       }>
     ) {
-
       console.log("updateAmount", action.payload);
-      
+
       state.transaction.sell.formattedAmount = updateFormattedAmount(
         state.transaction.sell.formattedAmount,
         action.payload.input,
@@ -120,7 +123,11 @@ const swapSlice = createSlice({
       }
 
       state.transaction.buy.amount =
-        Math.round((state.transaction.sell.amount * state.transaction.exchangeRate) * 1000000) / 1000000;
+        Math.round(
+          state.transaction.sell.amount *
+            state.transaction.exchangeRate *
+            1000000
+        ) / 1000000;
 
       state.transaction.buy.formattedAmount = updateFormattedAmount(
         state.transaction.buy.formattedAmount,
@@ -159,7 +166,11 @@ const swapSlice = createSlice({
       }
 
       state.transaction.buy.amount =
-        Math.round((state.transaction.sell.amount * state.transaction.exchangeRate) * 1000000) / 1000000;
+        Math.round(
+          state.transaction.sell.amount *
+            state.transaction.exchangeRate *
+            1000000
+        ) / 1000000;
 
       state.transaction.buy.formattedAmount = updateFormattedAmount(
         state.transaction.buy.formattedAmount,
