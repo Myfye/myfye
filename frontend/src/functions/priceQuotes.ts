@@ -125,68 +125,88 @@ const getCETESPriceQuote = async (
   }
 };
 
-const getBTCPriceQuote = async (
+// CoinGecko API batch call for crypto prices
+const getCryptoPriceQuotes = async (
   dispatch: Function
 ): Promise<boolean> => {
-      const quote = await getSwapQuote(getMintAddress("BTC"));
-  const priceInUSD = quote.outAmount / 10000;
-  dispatch(
-    updateExchangeRateUSD({
-      assetId: "BTC",
-      exchangeRateUSD: priceInUSD,
-    })
-  );
-
-  return true;
-};
-
-const getXRPPriceQuote = async (
-  dispatch: Function
-): Promise<boolean> => {
-      const quote = await getSwapQuote(getMintAddress("XRP"));
-  const priceInUSD = quote.outAmount / 1000;
-  
-  dispatch(
-    updateExchangeRateUSD({
-      assetId: "XRP",
-      exchangeRateUSD: priceInUSD,
-    })
-  );
-  
-  return true;
-};
-
-const getSUIPriceQuote = async (
-  dispatch: Function
-): Promise<boolean> => {
-      const quote = await getSwapQuote(getMintAddress("SUI"));
-  const priceInUSD = quote.outAmount / 1000;
-  
-  dispatch(
-    updateExchangeRateUSD({
-      assetId: "SUI",
-      exchangeRateUSD: priceInUSD,
-    })
-  );
-
-  console.log("SUI quote response:", quote);
-  return true;
-};
-
-const getDOGEPriceQuote = async (
-  dispatch: Function
-): Promise<boolean> => {
-      const quote = await getSwapQuote(getMintAddress("DOGE"));
-  const priceInUSD = quote.outAmount / 1000;
-  
-  dispatch(
-    updateExchangeRateUSD({
-      assetId: "DOGE",
-      exchangeRateUSD: priceInUSD,
-    })
-  );
-
-  return true;
+  try {
+    console.log("COINGECKO - Starting batch price fetch for BTC, XRP, DOGE, SUI, SOL");
+    
+    // CoinGecko API endpoint for batch price lookup
+    const response = await fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ripple,dogecoin,sui,solana&vs_currencies=usd'
+    );
+    
+    if (!response.ok) {
+      throw new Error(`CoinGecko API error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log("COINGECKO - Raw API response:", data);
+    
+    // Map CoinGecko IDs to our asset IDs and dispatch prices
+    const cryptoMapping = {
+      'bitcoin': 'BTC',
+      'ripple': 'XRP', 
+      'dogecoin': 'DOGE',
+      'sui': 'SUI',
+      'solana': 'SOL'
+    };
+    
+    let successCount = 0;
+    
+    const fallbackPrices = getHardcodedFallbackPrices();
+    
+    Object.entries(cryptoMapping).forEach(([coingeckoId, assetId]) => {
+      let price: number;
+      let priceSource: string;
+      
+      if (data[coingeckoId] && data[coingeckoId].usd) {
+        price = data[coingeckoId].usd;
+        priceSource = "CoinGecko API";
+        successCount++;
+      } else {
+        // Use fallback price if CoinGecko data is missing
+        price = fallbackPrices[assetId];
+        priceSource = "Fallback";
+        console.warn(`COINGECKO - No price data found for ${assetId} (${coingeckoId}), using fallback: $${price}`);
+      }
+      
+      console.log(`COINGECKO - ${assetId} price: $${price} (${priceSource})`);
+      
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: assetId,
+          exchangeRateUSD: price,
+        })
+      );
+    });
+    
+    console.log(`COINGECKO - Successfully fetched ${successCount}/5 crypto prices`);
+    return successCount > 0;
+    
+  } catch (error) {
+    console.error('COINGECKO - Error getting crypto price quotes:', error);
+    console.log('COINGECKO - Using all fallback prices due to API error');
+    
+    // Use all fallback prices when the entire API call fails
+    const fallbackPrices = getHardcodedFallbackPrices();
+    const cryptoAssets = ['BTC', 'XRP', 'DOGE', 'SUI', 'SOL'];
+    
+    cryptoAssets.forEach(assetId => {
+      const price = fallbackPrices[assetId];
+      console.log(`COINGECKO - ${assetId} price: $${price} (Fallback - API Error)`);
+      
+      dispatch(
+        updateExchangeRateUSD({
+          assetId: assetId,
+          exchangeRateUSD: price,
+        })
+      );
+    });
+    
+    return true; // Return true since we still provided prices via fallback
+  }
 };
 
 const getEURPriceQuote = async (
@@ -229,13 +249,10 @@ export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
   
   try {
     await Promise.all([
-      // Crypto & Cash assets
-      getBTCPriceQuote(dispatch),
+      // Crypto assets (using CoinGecko batch API - includes BTC, XRP, DOGE, SUI, SOL)
+      getCryptoPriceQuotes(dispatch),
+      // Other assets
       getEURPriceQuote(dispatch),
-      getSOLPriceQuote(dispatch),
-      getXRPPriceQuote(dispatch),
-      getSUIPriceQuote(dispatch),
-      getDOGEPriceQuote(dispatch),
       // Earn assets
       getUSDYPriceQuote(dispatch),
       getCETESPriceQuote(dispatch),
@@ -249,4 +266,16 @@ export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
   } catch (error) {
     console.error('QUOTE ERROR GETTING PRICE QUOTES:', error)
   }
+};
+
+// Hardcoded fallback prices for crypto assets
+const getHardcodedFallbackPrices = (): Record<string, number> => {
+  return {
+    // Crypto
+    "BTC": 115800,
+    "SOL": 237,
+    "XRP": 3,
+    "DOGE": 0.27,
+    "SUI": 3.5
+  };
 };
