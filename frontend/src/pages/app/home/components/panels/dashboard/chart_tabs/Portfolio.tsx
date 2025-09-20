@@ -24,7 +24,7 @@ const Portfolio = () => {
       const cashData = {
         name: "Cash",
         y: cashBalanceUSD,
-        color: "var(--clr-primary)",
+        color: "var(--clr-green)",
       };
       data.push(cashData);
     }
