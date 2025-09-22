@@ -70,6 +70,9 @@ const {
 } = require('./routes/stockPrice');
 const { createEtherfuseOnboardingUrl } = require('./routes/etherfuse/onboarding');
 const { createBankAccount, getBankAccount } = require('./routes/etherfuse/bankAccount');
+const { handleCustomerUpdatedWebhook } = require('./routes/etherfuse/customer_updated');
+const { handleOrderUpdatedWebhook } = require('./routes/etherfuse/order_updated');
+const { handleBankAccountUpdatedWebhook } = require('./routes/etherfuse/bank_account_updated');
 
 app.set('trust proxy', true);
 
@@ -1574,6 +1577,85 @@ app.post("/etherfuse/get-bank-accounts", generalLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to get bank accounts",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Etherfuse webhook endpoints */
+app.post("/etherfuse/webhook/customer-updated", async (req, res) => {
+  console.log("\n=== Etherfuse Customer Updated Webhook Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const result = await handleCustomerUpdatedWebhook(req.body);
+    
+    if (result.success) {
+      console.log("Customer updated webhook processed successfully");
+      res.status(200).json(result);
+    } else {
+      console.error("Customer updated webhook failed:", result.error);
+      res.status(500).json(result);
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/webhook/customer-updated endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      success: false,
+      error: error.message || "Failed to process customer updated webhook",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/etherfuse/webhook/order-updated", async (req, res) => {
+  console.log("\n=== Etherfuse Order Updated Webhook Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const result = await handleOrderUpdatedWebhook(req.body);
+    
+    if (result.success) {
+      console.log("Order updated webhook processed successfully");
+      res.status(200).json(result);
+    } else {
+      console.error("Order updated webhook failed:", result.error);
+      res.status(500).json(result);
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/webhook/order-updated endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      success: false,
+      error: error.message || "Failed to process order updated webhook",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/etherfuse/webhook/bank-account-updated", async (req, res) => {
+  console.log("\n=== Etherfuse Bank Account Updated Webhook Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const result = await handleBankAccountUpdatedWebhook(req.body);
+    
+    if (result.success) {
+      console.log("Bank account updated webhook processed successfully");
+      res.status(200).json(result);
+    } else {
+      console.error("Bank account updated webhook failed:", result.error);
+      res.status(500).json(result);
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/webhook/bank-account-updated endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      success: false,
+      error: error.message || "Failed to process bank account updated webhook",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
