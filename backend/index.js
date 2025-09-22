@@ -128,7 +128,7 @@ app.use((req, res, next) => {
 // Create different rate limiters for different endpoints
 const generalLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minutes
-  max: 400, // Limit each IP requests per windowMs
+  max: 500, // Limit each IP requests per windowMs
   message: { error: 'Too many requests from this IP, please try again later.' },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -160,7 +160,7 @@ const blockUnauthorizedIPs = (req, res, next) => {
   }
   
   // Allow webhook routes without API key (they use signature authentication)
-  if (req.path.startsWith('/webhooks/')) {
+  if (req.path.startsWith('/webhooks/') || req.path.startsWith('/etherfuse/webhook/')) {
     console.log(`Webhook request from IP: ${req.ip} - bypassing API key check`);
     return next();
   }
@@ -198,7 +198,7 @@ app.get("/api/sumsub/temp-image/:filename", serveTempImage);
 // Apply general rate limiting to all routes (excluding webhooks)
 app.use((req, res, next) => {
   // Skip rate limiting for webhook routes
-  if (req.path.startsWith('/webhooks/')) {
+  if (req.path.startsWith('/webhooks/') || req.path.startsWith('/etherfuse/webhook/')) {
     return next();
   }
   generalLimiter(req, res, next);
