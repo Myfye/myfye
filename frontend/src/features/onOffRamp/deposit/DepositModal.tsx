@@ -17,7 +17,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import DepositOffChainBankAccountOverlay from "./offChain/bankAccount/DepositOffChainBankAccountOverlay";
 import DepositOffChainPrivyOverlay from "./offChain/privy/DepositOffChainPrivyOverlay";
-import EtherfuseRampOverlay from "./offChain/etherfuseRamp";
+import EtherfuseRampOverlay from "./offChain/etherfuse/etherfuseRamp";
 
 const DEFAULT_HEIGHT = 360;
 

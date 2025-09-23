@@ -25,6 +25,14 @@ const createEtherfuseOnboardingUrl = async (data) => {
       bankAccountId = existingUser.bank_account_id;
       
       console.log("Using existing Etherfuse user - Customer ID:", customerId, "Bank Account ID:", bankAccountId);
+      
+      // Update solana_pub_key if it's different
+      const updatePubKeyQuery = `
+        UPDATE etherfuse_users 
+        SET solana_pub_key = $1 
+        WHERE user_id = $2 AND (solana_pub_key IS NULL OR solana_pub_key != $1)
+      `;
+      await pool.query(updatePubKeyQuery, [data.publicKey, userId]);
     } else {
       // User doesn't exist, create new credentials
       customerId = uuidv4();
@@ -34,14 +42,11 @@ const createEtherfuseOnboardingUrl = async (data) => {
       
       // Save new user to database
       const insertUserQuery = `
-        INSERT INTO etherfuse_users (user_id, customer_id, bank_account_id)
-        VALUES ($1, $2, $3)
-        ON CONFLICT (user_id) DO UPDATE SET
-          customer_id = EXCLUDED.customer_id,
-          bank_account_id = EXCLUDED.bank_account_id
+        INSERT INTO etherfuse_users (user_id, customer_id, bank_account_id, solana_pub_key, bank_account_status, customer_status)
+        VALUES ($1, $2, $3, $4, $5, $6)
       `;
       
-      await pool.query(insertUserQuery, [userId, customerId, bankAccountId]);
+      await pool.query(insertUserQuery, [userId, customerId, bankAccountId, data.publicKey, 'pending', 'pending']);
       console.log("Saved new Etherfuse user to database");
     }
 

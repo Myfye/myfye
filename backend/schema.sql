@@ -112,6 +112,7 @@ CREATE TABLE IF NOT EXISTS etherfuse_users (
   user_id TEXT NOT NULL REFERENCES users(uid),
   customer_id TEXT NOT NULL,
   bank_account_id TEXT NOT NULL,
+  solana_pub_key TEXT,
   creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
   bank_account_status TEXT NOT NULL,
   customer_status TEXT NOT NULL,

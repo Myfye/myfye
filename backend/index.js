@@ -70,6 +70,8 @@ const {
 } = require('./routes/stockPrice');
 const { createEtherfuseOnboardingUrl } = require('./routes/etherfuse/onboarding');
 const { createBankAccount, getBankAccount } = require('./routes/etherfuse/bankAccount');
+const { createEtherfuseOrder } = require('./routes/etherfuse/order');
+const { getUserEtherfuseData } = require('./routes/etherfuse/customer_data.js');
 const { handleCustomerUpdatedWebhook } = require('./routes/etherfuse/customer_updated');
 const { handleOrderUpdatedWebhook } = require('./routes/etherfuse/order_updated');
 const { handleBankAccountUpdatedWebhook } = require('./routes/etherfuse/bank_account_updated');
@@ -1577,6 +1579,76 @@ app.post("/etherfuse/get-bank-accounts", generalLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to get bank accounts",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Etherfuse order endpoint */
+app.post("/etherfuse/order", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Etherfuse Order Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    
+    // Validate required fields
+    if (!data.fiatAmount || !data.direction) {
+      return res.status(400).json({ 
+        error: 'Invalid request. bankAccountId, publicKey, fiatAmount, and direction are required.' 
+      });
+    }
+
+    const result = await createEtherfuseOrder(data);
+    
+    if (result.success) {
+      console.log("Etherfuse order result:", JSON.stringify(result.data, null, 2));
+      res.json(result.data);
+    } else {
+      console.error("Etherfuse order failed:", result.error);
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/order endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to create Etherfuse order",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Etherfuse get user data endpoint */
+app.post("/etherfuse/get-user-data", generalLimiter, async (req, res) => {
+  console.log("\n=== Etherfuse Get User Data Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const data = req.body;
+    
+    // Validate required fields
+    if (!data.userId) {
+      return res.status(400).json({ 
+        error: 'Invalid request. userId is required.' 
+      });
+    }
+
+    const result = await getUserEtherfuseData(data);
+    
+    if (result.success) {
+      console.log("Etherfuse user data retrieved successfully");
+      res.json(result.data);
+    } else {
+      console.error("Failed to get Etherfuse user data:", result.error);
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/get-user-data endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get Etherfuse user data",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
