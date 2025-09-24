@@ -29,49 +29,45 @@ const getUserEtherfuseData = async (data) => {
     const { customer_id, bank_account_id } = userResult.rows[0];
     console.log(`Found Etherfuse user - Customer ID: ${customer_id}, Bank Account ID: ${bank_account_id}`);
 
-    // Query crypto wallets for the customer - COMMENTED OUT DUE TO 404 ERROR
-    // console.log(`\n--- Querying crypto wallets for customer: ${customer_id} ---`);
-    // const walletsResponse = await axios.post(
-    //   `https://api.etherfuse.com/ramp/customer/${customer_id}/crypto-wallets`,
-    //   {
-    //     pageSize: 10,
-    //     pageNumber: 0
-    //   },
-    //   {
-    //     headers: {
-    //       'Authorization': ETHERFUSE_API_KEY,
-    //       'Content-Type': 'application/json'
-    //     }
-    //   }
-    // );
+    // Query crypto wallets for the customer
+    console.log(`\n--- Querying crypto wallets for customer: ${customer_id} ---`);
+    const walletsResponse = await axios.post(
+      `https://api.etherfuse.com/ramp/customer/${customer_id}/wallets`,
+      {
+        pageSize: 10,
+        pageNumber: 0
+      },
+      {
+        headers: {
+          'Authorization': ETHERFUSE_API_KEY,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-    // console.log('Crypto wallets response:', JSON.stringify(walletsResponse.data, null, 2));
+    console.log('Crypto wallets response:', JSON.stringify(walletsResponse.data, null, 2));
 
-    // let walletDetails = null;
+    let walletDetails = null;
     
-    // // If there are wallets, get details for the first one
-    // if (walletsResponse.data.items && walletsResponse.data.items.length > 0) {
-    //   const walletId = walletsResponse.data.items[0].walletId;
-    //   console.log(`\n--- Querying wallet details for wallet: ${walletId} ---`);
+    // If there are wallets, get details for the first one
+    if (walletsResponse.data.items && walletsResponse.data.items.length > 0) {
+      const walletId = walletsResponse.data.items[0].walletId;
+      console.log(`\n--- Querying wallet details for wallet: ${walletId} ---`);
       
-    //   const walletResponse = await axios.get(
-    //     `https://api.etherfuse.com/ramp/wallet/${walletId}`,
-    //     {
-    //       headers: {
-    //         'Authorization': ETHERFUSE_API_KEY
-    //       }
-    //     }
-    //   );
+      const walletResponse = await axios.get(
+        `https://api.etherfuse.com/ramp/wallet/${walletId}`,
+        {
+          headers: {
+            'Authorization': ETHERFUSE_API_KEY
+          }
+        }
+      );
 
-    //   console.log('Wallet details response:', JSON.stringify(walletResponse.data, null, 2));
-    //   walletDetails = walletResponse.data;
-    // } else {
-    //   console.log('No crypto wallets found for this customer');
-    // }
-
-    // Temporary placeholder data since crypto wallets query is commented out
-    const walletsResponse = { data: { items: [], message: 'Crypto wallets query temporarily disabled due to 404 error' } };
-    const walletDetails = null;
+      console.log('Wallet details response:', JSON.stringify(walletResponse.data, null, 2));
+      walletDetails = walletResponse.data;
+    } else {
+      console.log('No crypto wallets found for this customer');
+    }
 
     // Query bank account details
     console.log(`\n--- Querying bank account details for bank account: ${bank_account_id} ---`);
