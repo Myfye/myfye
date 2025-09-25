@@ -1592,14 +1592,6 @@ app.post("/etherfuse/order", sensitiveLimiter, async (req, res) => {
 
   try {
     const data = req.body;
-    
-    // Validate required fields
-    if (!data.fiatAmount || !data.direction) {
-      return res.status(400).json({ 
-        error: 'Invalid request. bankAccountId, publicKey, fiatAmount, and direction are required.' 
-      });
-    }
-
     const result = await createEtherfuseOrder(data);
     
     if (result.success) {
