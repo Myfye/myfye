@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { BankIcon, WalletIcon } from "@phosphor-icons/react";
 import ModalButton from "../_components/ModalButton";
 import Modal from "@/shared/components/ui/modal/Modal";
-import { toggleModal } from "./withdrawSlice";
+import { toggleModal, toggleOverlay } from "./withdrawSlice";
 import { toggleOverlay as toggleOnChainOverlay } from "./onChain/withdrawOnChainSlice";
 import { toggleOverlay as toggleOffChainOverlay } from "./offChain/withdrawOffChainSlice";
 import WithdrawOnChainOverlay from "./onChain/WithdrawOnChainOverlay";
@@ -13,6 +13,7 @@ import WithdrawOffChainBankInputOverlay from "./offChain/WithdrawOffChainBankInp
 import WithdrawOffChainSelectAssetOverlay from "./offChain/WithdrawOffChainSelectAssetOverlay";
 import WithdrawProcessingTransactionOverlay from "./onChain/WithdrawOnChainProcessingTransactionOverlay";
 import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import EtherfuseRampOverlay from "./offChain/etherfuseRamp";
 
 const WithdrawModal = () => {
   const dispatch = useAppDispatch();
@@ -60,16 +61,7 @@ const WithdrawModal = () => {
               title="To bank account"
               description="Send money to bank account"
               onPress={() => {
-                if (currentUserKYCStatus !== 'APPROVED') {
-                  return dispatch(toggleKYCModal({ isOpen: true }));
-                } else {
-                  dispatch(
-                    toggleOffChainOverlay({
-                      type: "withdrawOffChain",
-                      isOpen: true,
-                    })
-                  );
-                }
+                dispatch(toggleOverlay({ type: "etherfuse", isOpen: true }));
               }}
             />
           </li>
@@ -83,6 +75,8 @@ const WithdrawModal = () => {
       <WithdrawOffChainBankInputOverlay />
       <WithdrawOffChainSelectAssetOverlay zIndex={9999} />
       <WithdrawProcessingTransactionOverlay />
+      {/* Etherfuse Withdraw */}
+      <EtherfuseRampOverlay />
     </>
   );
 };

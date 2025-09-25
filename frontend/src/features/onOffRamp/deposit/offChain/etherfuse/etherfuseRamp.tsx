@@ -14,7 +14,6 @@ import { useLottie } from 'lottie-react';
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 import AmountSelectScreen from "@/shared/components/ui/amount-select-screen/AmountSelectScreen";
 import { updateAmount, updatePresetAmount } from "../depositOffChainSlice";
-import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '@/env';
 
 const EtherfuseRampOverlay = () => {
   const dispatch = useAppDispatch();
@@ -44,18 +43,49 @@ const EtherfuseRampOverlay = () => {
     fee: 0
   });
 
-  // Function to simulate backend call to check onboarding status
+  // Function to check onboarding status via backend API
   const checkOnboardingStatus = async () => {
     setIsLoading(true);
     
     try {
-      // Simulate backend call with 2 second timeout
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log("Etherfuse Checking Etherfuse onboarding status for user:", userId);
       
-      // Simulate successful response - set isOnboarded to true
-      setIsOnboarded(false);
+      const response = await axios.post(
+        `${MYFYE_BACKEND}/etherfuse/get-user-data`,
+        {
+          userId: userId
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': MYFYE_BACKEND_KEY,
+          },
+          withCredentials: true
+        }
+      );
+
+      console.log("Etherfuse customer data response:", response.data);
+      
+      // Check if the response has bankAccountDetails and status is 'active'
+      if (response.data && response.data.bankAccountDetails && response.data.bankAccountDetails.status === 'active') {
+        console.log("Etherfuse User is onboarded and bank account is active");
+        setIsOnboarded(true);
+      } else {
+        console.log("Etherfuse User is not fully onboarded or bank account is not active");
+        setIsOnboarded(false);
+      }
     } catch (error) {
       console.error('Error checking onboarding status:', error);
+      
+      // If user is not found or any other error, they're not onboarded
+      setIsOnboarded(false);
+      
+      // Log the error but don't show toast to user since this is a background check
+      if (error.response?.status === 400) {
+        console.log("Etherfuse User not found in Etherfuse system - not onboarded");
+      } else {
+        console.error("Etherfuse Unexpected error checking onboarding status:", error.response?.data || error.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -142,7 +172,12 @@ const EtherfuseRampOverlay = () => {
       
       if (response.data) {
         toast.success("Deposit order created successfully!");
-        // You can add additional logic here, such as redirecting to instructions
+        
+        // Open the status page in a new tab if it exists
+        if (response.data.statusPage) {
+          console.log("Opening status page:", response.data.statusPage);
+          window.open(response.data.statusPage, '_blank');
+        }
       } else {
         toast.error("Failed to create deposit order");
       }
