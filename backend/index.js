@@ -70,7 +70,7 @@ const {
 } = require('./routes/stockPrice');
 const { createEtherfuseOnboardingUrl } = require('./routes/etherfuse/onboarding');
 const { createBankAccount, getBankAccount } = require('./routes/etherfuse/bankAccount');
-const { createEtherfuseOrder } = require('./routes/etherfuse/order');
+const { createEtherfuseOrder, getEtherfuseOrderDetails } = require('./routes/etherfuse/order');
 const { getUserEtherfuseData } = require('./routes/etherfuse/customer_data.js');
 const { handleCustomerUpdatedWebhook } = require('./routes/etherfuse/customer_updated');
 const { handleOrderUpdatedWebhook } = require('./routes/etherfuse/order_updated');
@@ -1606,6 +1606,41 @@ app.post("/etherfuse/order", sensitiveLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to create Etherfuse order",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/* Etherfuse get order details endpoint */
+app.post("/etherfuse/order-details", generalLimiter, async (req, res) => {
+  console.log("\n=== Etherfuse Get Order Details Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { orderId } = req.body;
+    
+    // Validate required fields
+    if (!orderId) {
+      return res.status(400).json({ 
+        error: 'Invalid request. orderId is required.' 
+      });
+    }
+
+    const result = await getEtherfuseOrderDetails(orderId);
+    
+    if (result.success) {
+      console.log("Etherfuse order details retrieved successfully");
+      res.json(result.data);
+    } else {
+      console.error("Failed to get Etherfuse order details:", result.error);
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error("Error in /etherfuse/order-details endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to get Etherfuse order details",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });

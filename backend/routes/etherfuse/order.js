@@ -115,6 +115,69 @@ const createEtherfuseOrder = async (data) => {
   }
 };
 
+//Get order details
+const getEtherfuseOrderDetails = async (orderId) => {
+  try {
+    // Validate required fields
+    if (!orderId) {
+      return {
+        success: false,
+        error: 'Missing required field: orderId is required'
+      };
+    }
+
+    // Call Etherfuse API to get order details
+    const response = await axios.get(
+      `https://api.etherfuse.com/ramp/order/${orderId}`,
+      {
+        headers: {
+          'Authorization': ETHERFUSE_API_KEY,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    return {
+      success: true,
+      data: response.data
+    };
+  } catch (error) {
+    console.error('Etherfuse order details retrieval error:', error.response?.data || error.message);
+    
+    // Extract the actual error message from the response
+    let errorMessage = 'Failed to get Etherfuse order details';
+    
+    if (error.response?.data) {
+      // If the response data is a string, use it directly
+      if (typeof error.response.data === 'string') {
+        errorMessage = error.response.data;
+      }
+      // If the response data is an object with a message property
+      else if (error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+      // If the response data is an object with an error property
+      else if (error.response.data.error) {
+        errorMessage = error.response.data.error;
+      }
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    return {
+      success: false,
+      error: errorMessage
+    };
+  }
+};
+
+/*
+curl --request GET \
+  --url https://api.etherfuse.com/ramp/order/{order_id} \
+  --header 'Authorization: <api-key>'
+  */
+
 module.exports = {
-  createEtherfuseOrder
+  createEtherfuseOrder,
+  getEtherfuseOrderDetails
 };

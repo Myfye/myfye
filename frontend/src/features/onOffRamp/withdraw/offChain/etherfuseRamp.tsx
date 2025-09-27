@@ -158,13 +158,18 @@ const EtherfuseRampOverlay = () => {
       console.log("Etherfuse order response:", response.data);
       
       if (response.data) {
-        toast.success("Withdrawal order created successfully!");
+        toast.success("Etherfuse Withdrawal order created successfully!");
         
-        // Open the status page in a new tab if it exists
-        if (response.data.statusPage) {
-          console.log("Opening status page:", response.data.statusPage);
-          window.open(response.data.statusPage, '_blank');
-        }
+        // wait 3 seconds and then call order details
+        setTimeout(async () => {
+          const orderDetails = await axios.post(
+            `${MYFYE_BACKEND}/etherfuse/order-details`,
+            {
+              orderId: response.data.orderId
+            }
+          );
+        }, 3000);
+
       } else {
         toast.error("Failed to create withdrawal order");
       }
