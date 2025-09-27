@@ -14,6 +14,8 @@ import { useLottie } from 'lottie-react';
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 import AmountSelectScreen from "@/shared/components/ui/amount-select-screen/AmountSelectScreen";
 import { updateAmount, updatePresetAmount } from "../depositOffChainSlice";
+import BankDepositDetailsList from "../_components/BankDepositDetailsList";
+import BankDepositDetailsListItem from "../_components/BankDepositDetailsListItem";
 
 const EtherfuseRampOverlay = () => {
   const dispatch = useAppDispatch();
@@ -32,7 +34,11 @@ const EtherfuseRampOverlay = () => {
   const [isOnboarded, setIsOnboarded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const [displayInstruction, setDisplayInstruction] = useState(false);
+  const [orderClabe, setOrderClabe] = useState(null);
+  const [orderAmount, setOrderAmount] = useState(null);
+
+
   // Transaction state for amount selection
   const [transaction, setTransaction] = useState({
     amount: 0,
@@ -171,13 +177,11 @@ const EtherfuseRampOverlay = () => {
       console.log("Etherfuse order response:", response.data);
       
       if (response.data) {
-        toast.success("Deposit order created successfully!");
+        setDisplayInstruction(true);
         
-        // Open the status page in a new tab if it exists
-        if (response.data.statusPage) {
-          console.log("Opening status page:", response.data.statusPage);
-          window.open(response.data.statusPage, '_blank');
-        }
+        setOrderClabe(response.data.depositClabe);
+        setOrderAmount(response.data.amountInFiat);
+
       } else {
         toast.error("Failed to create deposit order");
       }
@@ -287,6 +291,121 @@ const EtherfuseRampOverlay = () => {
           >
             Checking your onboarding status...
           </p>
+        </div>
+      </Overlay>
+    );
+  }
+
+  if (displayInstruction) {
+    return (
+      <Overlay
+        isOpen={isOpen}
+        onOpenChange={(isOpen) => {
+          dispatch(toggleOverlay({ type: "etherfuse", isOpen }));
+        }}
+        zIndex={2001}
+        onExit={() => {
+          dispatch(unmount());
+        }}
+        title="Bank Deposit"
+        color="var(--clr-surface-raised)"
+      >
+        <div
+          css={css`
+            display: flex;
+            flex-direction: column;
+            height: 100cqh;
+            padding-block-end: var(--size-200);
+          `}
+        >
+          <section
+            css={css`
+              padding-block-start: var(--size-400);
+              padding-inline: var(--size-400);
+            `}
+          >
+            <h1 className="heading-x-large">
+              Deposit Instructions
+            </h1>
+            <p
+              className="caption"
+              css={css`
+                color: var(--clr-text-weak);
+                margin-block-start: var(--size-150);
+              `}
+            >
+              Copy the following information into your bank's transfer details.
+            </p>
+            <p
+              className="caption"
+              css={css`
+                color: var(--clr-text-weak);
+                margin-block-start: 1em;
+              `}
+            >
+              Send the exact amount to the CLABE number below to complete your deposit.
+            </p>
+          </section>
+          <section
+            css={css`
+              padding-inline: var(--size-400);
+              margin-block-start: var(--size-500);
+            `}
+          >
+            <h2 className="heading-large">Deposit Details</h2>
+            <div
+              css={css`
+                margin-block-start: var(--size-200);
+              `}
+            >
+              <BankDepositDetailsList>
+                <BankDepositDetailsListItem
+                  title="Amount"
+                  content={`$${orderAmount} MXN`}
+                  copyContent={orderAmount || ""}
+                />
+                <BankDepositDetailsListItem
+                  title="CLABE Number"
+                  content={orderClabe || ""}
+                  copyContent={orderClabe || ""}
+                />
+                <BankDepositDetailsListItem
+                  title="Bank Name"
+                  content="STP MX"
+                  copyContent="STP MX"
+                />
+                <BankDepositDetailsListItem
+                  title="Account Name"
+                  content="Etherfuse MX SA"
+                  copyContent="Etherfuse MX SA"
+                />
+              </BankDepositDetailsList>
+            </div>
+            <div
+              css={css`
+                display: grid;
+                place-items: center;
+                margin-block-start: var(--size-400);
+              `}
+            >
+            </div>
+          </section>
+          <section
+            css={css`
+              margin-block-start: auto;
+              padding-inline: var(--size-250);
+            `}
+          >
+            <Button
+              expand
+              variant="primary"
+              onPress={() => {
+                dispatch(unmount());
+              }}
+            >
+              Done
+            </Button>
+          </section>
         </div>
       </Overlay>
     );
