@@ -461,19 +461,6 @@ const EtherfuseRampOverlay = () => {
               value: "10000",
             },
           ]}
-          primaryAction={{
-            action: () => {
-              // You can add currency selection logic here if needed
-              console.log("Currency selection clicked");
-            },
-            props: {
-              leftContent: {
-                title: "Deposit",
-                subtitle: "Mexican Peso",
-              },
-              icon: "MXFlag",
-            },
-          }}
           onSubmit={handleSubmit}
           submitLabel={"Deposit Now"}
           submitButtonProps={{
