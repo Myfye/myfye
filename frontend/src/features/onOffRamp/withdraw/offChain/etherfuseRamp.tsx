@@ -19,7 +19,8 @@ import { updateAmount, updatePresetAmount } from "../withdrawSlice";
 import { RootState } from "@/redux/store";
 import { SendTransactionStatus } from "@/features/send/types";
 import { useSolanaWallets } from "@privy-io/react-auth";
-import { Connection, Transaction } from "@solana/web3.js";
+import { Connection, Transaction, VersionedTransaction } from "@solana/web3.js";
+import bs58 from "bs58";
 import { HELIUS_API_KEY } from "@/env";
 
 const EtherfuseRampOverlay = () => {
@@ -69,102 +70,29 @@ const EtherfuseRampOverlay = () => {
       console.log("Etherfuse Burn transaction string:", burnTransactionString);
       console.log("Etherfuse Burn transaction string length:", burnTransactionString.length);
       
-      // Try different decoding methods
-      let transactionBuffer;
-      try {
-        // First try base64 decoding
-        transactionBuffer = Buffer.from(burnTransactionString, 'base64');
-        console.log("Etherfuse Base64 decode successful, buffer length:", transactionBuffer.length);
-      } catch (error) {
-        console.log("Etherfuse Base64 decode failed, trying hex decode:", error);
-        // If base64 fails, try hex decoding
-        transactionBuffer = Buffer.from(burnTransactionString, 'hex');
-        console.log("Etherfuse Hex decode successful, buffer length:", transactionBuffer.length);
-      }
+      // Decode the base58 transaction string from Etherfuse
+      const transactionBuffer = Buffer.from(bs58.decode(burnTransactionString));
+      console.log("Etherfuse Base58 decode successful, buffer length:", transactionBuffer.length);
       
-      // Validate buffer before creating transaction
-      if (transactionBuffer.length === 0) {
-        throw new Error("Transaction buffer is empty");
-      }
-      
-      console.log("Etherfuse Buffer validation passed, creating transaction...");
-      
-      // Check if this might be a transaction signature instead of a transaction
-      if (burnTransactionString.length === 88) {
-        console.log("Etherfuse Burn transaction appears to be a signature, not a transaction to sign");
-        console.log("Signature:", burnTransactionString);
-        
-        // This might be a transaction that was already submitted by Etherfuse
-        // We should wait for confirmation instead of signing
-        try {
-          const signature = burnTransactionString;
-          console.log("Etherfuse Waiting for transaction confirmation...");
-          
-          // Wait for confirmation
-          const confirmation = await connection.confirmTransaction(signature, 'confirmed');
-          
-          if (confirmation.value.err) {
-            throw new Error("Transaction failed confirmation");
-          }
+      // Deserialize as a legacy transaction (we know this is the format Etherfuse uses)
+      const transaction = Transaction.from(transactionBuffer);
+      console.log("Etherfuse Legacy transaction deserialized successfully");
 
-          console.log("Etherfuse Burn transaction confirmed!");
-          setTransactionStatus("success");
-          toast.success("Withdrawal completed successfully!");
-          
-          // Close the signing overlay after success
-          setTimeout(() => {
-            setSigningOnChain(false);
-            setTransactionStatus("idle");
-            dispatch(toggleOverlay({ type: "etherfuse", isOpen: false }));
-          }, 2000);
-          
-          return; // Exit early since we handled it as a signature
-          
-        } catch (error) {
-          console.error("Etherfuse Error confirming transaction:", error);
-          setTransactionStatus("fail");
-          toast.error("Failed to confirm withdrawal transaction. Please try again.");
-          
-          setTimeout(() => {
-            setSigningOnChain(false);
-            setTransactionStatus("idle");
-          }, 2500);
-          return;
-        }
-      }
+      // The transaction from Etherfuse is already partially signed (fee payer signed)
+      // We just need the user to sign it as the second signer
+      console.log("Etherfuse Transaction is already partially signed, user needs to sign as second signer...");
       
-      // The burn transaction from Etherfuse doesn't appear to be a standard Solana transaction
-      // Let's try a different approach - maybe we need to send this back to Etherfuse
-      // or handle it differently
-      console.log("Etherfuse Burn transaction appears to be in a non-standard format");
-      console.log("Etherfuse Buffer length:", transactionBuffer.length);
-      console.log("Etherfuse String length:", burnTransactionString.length);
-      console.log("Etherfuse First 50 bytes as hex:", Array.from(transactionBuffer.slice(0, 50)).map(b => b.toString(16).padStart(2, '0')).join(' '));
+      // Sign with user's wallet (as the second signer)
+      console.log("Etherfuse Signing with user wallet...");
+      const userSignedTx = await wallet.signTransaction(transaction);
       
-      // For now, let's treat this as a success since Etherfuse provided the burn transaction
-      // This might mean the transaction was already processed by Etherfuse
-      console.log("Etherfuse Assuming burn transaction is already processed by Etherfuse");
-      setTransactionStatus("success");
-      toast.success("Withdrawal completed successfully!");
-      
-      // Close the signing overlay after success
-      setTimeout(() => {
-        setSigningOnChain(false);
-        setTransactionStatus("idle");
-        dispatch(toggleOverlay({ type: "etherfuse", isOpen: false }));
-      }, 2000);
-      
-      return; // Exit early since we're treating this as success
+      console.log("Etherfuse User signing successful, submitting to network...");
 
-      console.log("Etherfuse Transaction deserialized, signing with wallet...");
-
-      // Sign the transaction using Privy wallet
-      const signedTransaction = await wallet.signTransaction(transaction);
-      
-      console.log("Etherfuse Transaction signed, submitting to network...");
-
-      // Submit the signed transaction
-      const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+      // Submit the fully signed transaction
+      const signature = await connection.sendRawTransaction(userSignedTx.serialize(), {
+        skipPreflight: true,
+        maxRetries: 3
+      });
       
       console.log("Etherfuse Burn transaction submitted successfully:", signature);
       
@@ -172,12 +100,12 @@ const EtherfuseRampOverlay = () => {
       const confirmation = await connection.confirmTransaction(signature, 'confirmed');
       
       if (confirmation.value.err) {
-        throw new Error("Etherfuse Transaction failed confirmation");
+        throw new Error("Transaction failed confirmation");
       }
 
       console.log("Etherfuse Burn transaction confirmed!");
       setTransactionStatus("success");
-      toast.success("Etherfuse Withdrawal completed successfully!");
+      toast.success("Withdrawal completed successfully!");
       
       // Close the signing overlay after success
       setTimeout(() => {
