@@ -384,7 +384,7 @@ const AltUSDModal = () => {
           </div>
 
                     <Button
-            onPress={() => handleSwapPressed('MXN')}
+            onPress={() => handleSwapPressed('CETES')}
             variant="primary"
             css={css`
               min-width: 80px;

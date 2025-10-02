@@ -10,7 +10,7 @@ const getSwapQuote = async (
     const outputMintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
 
     const response = await fetch(
-      `https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMintAddress}&amount=${amount}&slippageBps=50`
+      `https://lite-api.jup.ag/swap/v1/quote?inputMint=${inputMintAddress}&outputMint=${outputMintAddress}&amount=${amount}&slippageBps=50`
     );
     
     if (!response.ok) {

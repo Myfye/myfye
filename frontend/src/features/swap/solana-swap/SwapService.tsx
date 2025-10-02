@@ -147,7 +147,7 @@ async function getSwapQuote(
   const inputMintAddress = getMintAddress(inputCurrencyType);
 
   try {
-    let url = `https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`;
+    let url = `https://lite-api.jup.ag/swap/v1/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`;
     console.log("microPlatformFeeAmount", microPlatformFeeAmount);
     if (microPlatformFeeAmount > 0) {
       url += `&platformFeeBps=100`;
@@ -181,8 +181,8 @@ async function getSwapQuote(
   } catch (error) {
     console.error("Error in getSwapQuote:", error);
     parseErrorAndDisplayToast(error);
-    const errorLogMessage = "Error getting the swap quote" + `Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
-    const errorStackTrace = `${error} Quote url: https://quote-api.jup.ag/v6/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
+    const errorLogMessage = "Error getting the swap quote" + `Quote url: https://lite-api.jup.ag/swap/v1/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
+    const errorStackTrace = `${error} Quote url: https://lite-api.jup.ag/swap/v1/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
 
     // to do log the error
     logError(errorLogMessage, "swap", errorStackTrace);
@@ -550,7 +550,7 @@ async function fetchSwapTransaction(
   platformFeeAccountPubKey: PublicKey | null
 ): Promise<any> {
   const response = await fetch(
-    "https://quote-api.jup.ag/v6/swap-instructions",
+    "https://lite-api.jup.ag/swap/v1/swap-instructions",
     {
       method: "POST",
       headers: {

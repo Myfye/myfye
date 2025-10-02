@@ -811,7 +811,7 @@ app.post("/sign_transaction", sensitiveLimiter, async (req, res) => {
   }
 });
 
-app.post("/sign_versioned_transaction", sensitiveLimiter, async (req, res) => {
+app.post("/sign_versioned_transaction", generalLimiter, async (req, res) => {
   console.log("\n=== Sign Versioned Transaction Request Received ===");
   console.log("Request body:", JSON.stringify(req.body, null, 2));
 
