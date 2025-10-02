@@ -12,7 +12,8 @@ const createEtherfuseOrder = async (data) => {
       blockchain = 'solana',
       fiatAmount,
       direction,
-      memo = null
+      memo = null,
+      optionalPayerAccount = null
     } = data;
 
     // Generate orderId using UUID
@@ -61,18 +62,29 @@ const createEtherfuseOrder = async (data) => {
       };
     }
 
+    // Prepare the request payload
+    const requestPayload = {
+      orderId,
+      bankAccountId,
+      publicKey,
+      blockchain,
+      fiatAmount,
+      direction,
+      memo
+    };
+
+    // Add optionalPayerAccount if provided
+    if (optionalPayerAccount) {
+      requestPayload.optionalPayerAccount = optionalPayerAccount;
+      console.log(`Adding optionalPayerAccount to Etherfuse request: ${optionalPayerAccount}`);
+    }
+
+    console.log('Etherfuse order request payload:', JSON.stringify(requestPayload, null, 2));
+
     // Call Etherfuse API to create order
     const response = await axios.post(
       'https://api.etherfuse.com/ramp/order',
-      {
-        orderId,
-        bankAccountId,
-        publicKey,
-        blockchain,
-        fiatAmount,
-        direction,
-        memo
-      },
+      requestPayload,
       {
         headers: {
           'Authorization': ETHERFUSE_API_KEY,

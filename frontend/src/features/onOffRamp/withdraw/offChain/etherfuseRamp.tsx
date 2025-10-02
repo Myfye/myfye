@@ -21,7 +21,7 @@ import { SendTransactionStatus } from "@/features/send/types";
 import { useSolanaWallets } from "@privy-io/react-auth";
 import { Connection, Transaction, VersionedTransaction } from "@solana/web3.js";
 import bs58 from "bs58";
-import { HELIUS_API_KEY } from "@/env";
+import { HELIUS_API_KEY, SERVER_PUBLIC_KEY } from "@/env";
 
 const EtherfuseRampOverlay = () => {
   const dispatch = useAppDispatch();
@@ -30,9 +30,9 @@ const EtherfuseRampOverlay = () => {
   );
   const assets = useAppSelector((state: RootState) => state.assets);
 
-  const currentCETESBalance = assets.assets["CETES"].balance;
   const cetesPrice = assets.assets["CETES"].exchangeRateUSD;
   const pesoPrice = assets.assets["MXN"].exchangeRateUSD;
+
 
   const userId = useAppSelector(
     (state) => state.userWalletData.currentUserID
@@ -41,6 +41,9 @@ const EtherfuseRampOverlay = () => {
   const solanaPubKey = useAppSelector(
     (state) => state.userWalletData.solanaPubKey
   );
+
+    const currentCETESBalance = assets.assets["CETES"].balance;
+
 
   const { wallets } = useSolanaWallets();
   const wallet = wallets[0];
@@ -70,31 +73,153 @@ const EtherfuseRampOverlay = () => {
       console.log("Etherfuse Burn transaction string:", burnTransactionString);
       console.log("Etherfuse Burn transaction string length:", burnTransactionString.length);
       
-      // Decode the base58 transaction string from Etherfuse
+      // Decode the base58 transaction string from Etherfuse and convert to base64 for backend
       const transactionBuffer = Buffer.from(bs58.decode(burnTransactionString));
       console.log("Etherfuse Base58 decode successful, buffer length:", transactionBuffer.length);
       
-      // Deserialize as a legacy transaction (we know this is the format Etherfuse uses)
-      const transaction = Transaction.from(transactionBuffer);
-      console.log("Etherfuse Legacy transaction deserialized successfully");
-
-      // The transaction from Etherfuse is already partially signed (fee payer signed)
-      // We just need the user to sign it as the second signer
-      console.log("Etherfuse Transaction is already partially signed, user needs to sign as second signer...");
+      // Analyze the transaction BEFORE sending to backend
+      const txBeforeBackend = Transaction.from(transactionBuffer);
+      console.log("=== TRANSACTION ANALYSIS (Before Backend Signing) ===");
+      console.log("Fee Payer:", txBeforeBackend.feePayer?.toBase58());
+      console.log("Number of signatures required:", txBeforeBackend.signatures.length);
+      console.log("Signers:", txBeforeBackend.signatures.map((sig, idx) => ({
+        index: idx,
+        publicKey: sig.publicKey?.toBase58(),
+        signature: sig.signature ? "Present" : "Missing"
+      })));
+      console.log("Server Public Key (expected):", SERVER_PUBLIC_KEY);
+      console.log("Is server the fee payer?", txBeforeBackend.feePayer?.toBase58() === SERVER_PUBLIC_KEY);
+      console.log("======================================");
       
-      // Sign with user's wallet (as the second signer)
+      // Additional transaction details for analysis
+      console.log("\n=== TRANSACTION SIGNATURE DETAILS ===");
+      console.log("📄 Raw Transaction Buffer Length:", transactionBuffer.length);
+      console.log("🔢 Transaction Buffer (first 50 bytes):", Array.from(transactionBuffer.slice(0, 50)).map(b => b.toString(16).padStart(2, '0')).join(' '));
+      
+      console.log("\n📝 Individual Signature Details:");
+      txBeforeBackend.signatures.forEach((sig, idx) => {
+        console.log(`\n   Signer ${idx + 1}:`);
+        console.log(`   Public Key: ${sig.publicKey?.toBase58()}`);
+        console.log(`   Signature Present: ${sig.signature ? "YES" : "NO"}`);
+        
+        if (sig.signature) {
+          console.log(`   Signature Length: ${sig.signature.length} bytes`);
+          console.log(`   Signature (hex): ${Array.from(sig.signature).map(b => b.toString(16).padStart(2, '0')).join(' ')}`);
+          console.log(`   Signature (base64): ${Buffer.from(sig.signature).toString('base64')}`);
+        } else {
+          console.log(`   Signature: [MISSING - needs to be signed]`);
+        }
+      });
+      
+      console.log("\n🔍 Transaction Instructions:");
+      if (txBeforeBackend.instructions && txBeforeBackend.instructions.length > 0) {
+        console.log(`   Number of instructions: ${txBeforeBackend.instructions.length}`);
+        txBeforeBackend.instructions.forEach((instruction, idx) => {
+          console.log(`   Instruction ${idx + 1}:`);
+          console.log(`     Program ID: ${instruction.programId.toBase58()}`);
+          console.log(`     Accounts: ${instruction.keys.length}`);
+          console.log(`     Data Length: ${instruction.data.length} bytes`);
+        });
+      } else {
+        console.log("   No instructions found (this might be unusual)");
+      }
+      
+      console.log("\n📊 Transaction Metadata:");
+      console.log(`   Recent Blockhash: ${txBeforeBackend.recentBlockhash}`);
+      console.log(`   Last Valid Block Height: ${txBeforeBackend.lastValidBlockHeight}`);
+      
+      console.log("======================================");
+      
+      const transactionBase64 = transactionBuffer.toString('base64');
+      console.log("Etherfuse Transaction converted to base64 for backend signing");
+      
+      // Generate Solana Explorer Inspector URL for transaction analysis
+      console.log("\n🔍 SOLANA EXPLORER ANALYSIS:");
+      console.log("📋 Transaction Inspector URL:");
+      console.log(`   https://explorer.solana.com/tx/inspector?message=${encodeURIComponent(transactionBase64)}`);
+      console.log("   (Copy this URL to analyze the transaction structure before signing)");
+      
+      // Alternative: You can also paste the base64 transaction directly
+      console.log("\n📋 Alternative Method:");
+      console.log("   1. Go to: https://explorer.solana.com/tx/inspector");
+      console.log("   2. Paste this base64 transaction data:");
+      console.log(`   ${transactionBase64}`);
+      console.log("   3. Click 'Decode Transaction'");
+      
+      console.log("\n💡 What you'll see in the inspector:");
+      console.log("   • Program: BondyhA24H696Y1HudTyBGzZH58PMPCeAoSinHdWMa1f (CETES burn)");
+      console.log("   • Fee Payer: 2cbUAqNoySYkG5R7edjm1WLXgtty6PeCRDVJ7zZbodQm (Etherfuse - already signed)");
+      console.log("   • Required Signer: GnTVHqnb2Mxv5VPt7fpv4Xy3dLMpMNcckk8dbMnyoBua (YOU - needs to sign)");
+      console.log("   • 13 accounts involved in the burn operation");
+      console.log("   • 25 bytes of instruction data");
+      
+      // Send transaction to backend for server signing (first signer)
+      console.log("Etherfuse Sending transaction to backend for server signature...");
+      const backendResponse = await axios.post(
+        `${MYFYE_BACKEND}/sign_transaction`,
+        {
+          serializedTransaction: transactionBase64
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': MYFYE_BACKEND_KEY,
+          },
+          withCredentials: true
+        }
+      );
+
+      if (backendResponse.data.error) {
+        throw new Error(`Backend signing error: ${backendResponse.data.error}`);
+      }
+
+      console.log("Etherfuse Backend signing successful");
+      
+      // Deserialize the server-signed transaction
+      const serverSignedBuffer = Buffer.from(backendResponse.data.signedTransaction, 'base64');
+      const transaction = Transaction.from(serverSignedBuffer);
+      console.log("Etherfuse Server-signed transaction deserialized successfully");
+      
+      // Analyze the transaction AFTER backend signing
+      console.log("=== TRANSACTION ANALYSIS (After Backend Signing) ===");
+      console.log("Fee Payer:", transaction.feePayer?.toBase58());
+      console.log("Number of signatures:", transaction.signatures.length);
+      console.log("Signers:", transaction.signatures.map((sig, idx) => ({
+        index: idx,
+        publicKey: sig.publicKey?.toBase58(),
+        signature: sig.signature ? "Present" : "Missing"
+      })));
+      console.log("User Wallet Public Key:", wallet.address);
+      console.log("Is user wallet in signers?", transaction.signatures.some(s => s.publicKey?.toBase58() === wallet.address));
+      console.log("======================================");
+
+      // Now have the user sign it as the second signer
+      console.log("Etherfuse User needs to sign as second signer...");
       console.log("Etherfuse Signing with user wallet...");
       const userSignedTx = await wallet.signTransaction(transaction);
       
       console.log("Etherfuse User signing successful, submitting to network...");
 
+      // Show the transaction that will be submitted
+      const finalTxBuffer = userSignedTx.serialize();
+      console.log("\n=== FINAL TRANSACTION DETAILS ===");
+      console.log("📤 Transaction about to be submitted:");
+      console.log("   Serialized Length:", finalTxBuffer.length);
+      console.log("   Transaction Data (first 50 bytes):", Array.from(finalTxBuffer.slice(0, 50)).map(b => b.toString(16).padStart(2, '0')).join(' '));
+      
+      // Note: The actual Solana transaction signature is generated by the network
+      // and will be returned after submission
+      console.log("   (Transaction signature will be generated by Solana network)");
+
       // Submit the fully signed transaction
-      const signature = await connection.sendRawTransaction(userSignedTx.serialize(), {
+      const signature = await connection.sendRawTransaction(finalTxBuffer, {
         skipPreflight: true,
         maxRetries: 3
       });
       
-      console.log("Etherfuse Burn transaction submitted successfully:", signature);
+      console.log("\n🎉 TRANSACTION SUBMITTED SUCCESSFULLY!");
+      console.log("📋 Solscan Link: https://solscan.io/tx/" + signature);
+      console.log("🔗 Transaction Signature:", signature);
       
       // Wait for confirmation
       const confirmation = await connection.confirmTransaction(signature, 'confirmed');
@@ -235,7 +360,8 @@ const EtherfuseRampOverlay = () => {
           blockchain: "solana",
           fiatAmount: transaction.amount,
           direction: "offramp",
-          memo: "Etherfuse withdrawal order"
+          memo: "Etherfuse withdrawal order",
+          optionalPayerAccount: SERVER_PUBLIC_KEY
         },
         {
           headers: {
