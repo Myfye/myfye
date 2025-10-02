@@ -44,7 +44,6 @@ const EtherfuseRampOverlay = () => {
 
     const currentCETESBalance = assets.assets["CETES"].balance;
 
-
   const { wallets } = useSolanaWallets();
   const wallet = wallets[0];
   const [isOnboarded, setIsOnboarded] = useState(false);
