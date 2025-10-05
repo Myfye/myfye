@@ -179,8 +179,8 @@ const EtherfuseRampOverlay = () => {
       if (response.data) {
         setDisplayInstruction(true);
         
-        setOrderClabe(response.data.depositClabe);
-        setOrderAmount(response.data.amountInFiat);
+        setOrderClabe(response.data.onramp.depositClabe);
+        setOrderAmount(response.data.onramp.depositAmount);
 
       } else {
         toast.error("Failed to create deposit order");
@@ -202,6 +202,10 @@ const EtherfuseRampOverlay = () => {
       }
       
       toast.error(errorMessage);
+      console.log("error",error);
+      if (error.status === 429) {
+        return;
+      }
       setIsOnboarded(false);
       await new Promise(resolve => setTimeout(resolve, 4300));
       toast.error("Did you complete these steps?");
