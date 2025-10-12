@@ -7,7 +7,7 @@ import store, { RootState } from "@/redux/store";
 import { toggleOverlay, unmount } from "./paySlice";
 import PaySummary from "./PaySummary";
 import { tokenTransfer } from "@/functions/Transaction";
-import { useSolanaWallets } from "@privy-io/react-auth/solana";
+import { useSolanaWallets } from "@privy-io/react-auth";
 import toast from "react-hot-toast/headless";
 import { savePayTransaction } from "./PaySaveTransaction";
 import { logError } from "@/functions/LogError";
@@ -46,8 +46,41 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
   const assets = useSelector((state: RootState) => state.assets);
 
+  const pregeneratePrivyUser = async (email: string) => {
+    try {
+      const response = await fetch(`${MYFYE_BACKEND}/pregenerate_privy_user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": MYFYE_BACKEND_KEY,
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to pregenerate Privy user");
+      }
+
+      const newUser = await response.json();
+      console.log("Pregenerated Privy user:", newUser);
+      return newUser;
+    } catch (error) {
+      console.error("Error pregenerating Privy user:", error);
+      throw error;
+    }
+  };
+
   const handleTransactionSubmit = async () => {
     console.log("Starting transaction submission...");
+
+    
+
+    if (!transaction.user.solana_pub_key && transaction.user.email) {
+      console.log("pregeneratew privy user transaction.user.solana_pub_key", transaction.user.solana_pub_key); 
+      const newUser = await pregeneratePrivyUser(transaction.user.email);
+      console.log("newUser", newUser);
+    };
 
     try {
       if (!transaction.amount) return;

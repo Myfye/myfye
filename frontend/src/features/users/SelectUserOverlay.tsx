@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { css } from "@emotion/react";
 
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import UserCardList from "@/features/users/cards/UserCardList";
+import UserCard from "@/features/users/cards/UserCard";
 import SearchField from "@/features/users/SearchField";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -35,9 +36,28 @@ const SelectUserOverlay = ({
 
   const [isQRScannerOpen, setQRScannerOpen] = useState(false);
 
+  const [isValidEmail, setIsValidEmail] = useState(false);
+
+  const userId = useSelector(
+    (state: RootState) => state.userWalletData.currentUserID
+  );
+
+  const { data: searchData } = useSearchUsersQuery(
+    { query, userId },
+    { skip: !query }
+  );
+
   const handleQRScannerOpen = (isOpen: boolean) => {
     setQRScannerOpen(isOpen);
   };
+
+  useEffect(() =>
+    {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      setIsValidEmail(emailRegex.test(query));
+    }, [query]);
+
+  const showNewUserCard = isValidEmail && searchData?.length === 0;
 
   return (
     <>
@@ -58,6 +78,17 @@ const SelectUserOverlay = ({
               padding-block-start: var(--size-300);
             `}
           >
+            <label
+              css={css`
+                display: block;
+                font-size: var(--fs-medium);
+                font-weight: var(--fw-medium);
+                color: var(--clr-text-strong);
+                margin-block-end: var(--size-100);
+              `}
+            >
+              Enter an email to send money to
+            </label>
             <SearchField
               value={query}
               onChange={(e: string) => setQuery(e)}
@@ -69,7 +100,22 @@ const SelectUserOverlay = ({
               margin-block-start: var(--size-500);
             `}
           >
-            {query ? (
+
+            {showNewUserCard ? (
+              <Section title="Send To">
+                <UserCard
+                  name={null}
+                  email={query}
+                  phone={null}
+                  onPress={() => {
+                    const newUser: User = {
+                      email: query,
+                    };
+                    onUserSelect(newUser);
+                  }}
+                />
+              </Section>
+            ) : query ? (
               <SearchedUsers query={query} onUserSelect={onUserSelect} />
             ) : (
               <>
@@ -137,7 +183,6 @@ const TopContacts = ({
     if (data.length === 0) {
       return (
         <>
-          <section>Search users</section>
         </>
       );
     }

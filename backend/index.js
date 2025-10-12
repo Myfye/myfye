@@ -50,6 +50,7 @@ const { create_new_dinari_account } = require('./routes/dinari_shares/account');
 const { sign_nonce } = require('./routes/dinari_shares/sign_nonce');
 const { sign_order } = require('./routes/dinari_shares/sign_order.js');
 const { getWalletByAddress } = require('./routes/privy/getWallets');
+const { pregenerateUser } = require('./routes/privy/pregenerateUser');
 const { create_new_payout, get_payout_quote } = require('./routes/blindPay/payOut.js');
 const { generateExternalLink } = require('./routes/sumsub/generateExternalLink');
 const { serveTempImage } = require('./routes/sumsub/serveTempImage');
@@ -1341,6 +1342,33 @@ app.post("/get_wallet_id_by_address", sensitiveLimiter, async (req, res) => {
     console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to get wallet ID by address",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+app.post("/pregenerate_privy_user", sensitiveLimiter, async (req, res) => {
+  console.log("\n=== Pregenerate Privy User Request Received ===");
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ 
+        error: 'Email parameter is required' 
+      });
+    }
+
+    const result = await pregenerateUser(email);
+    console.log("Privy user pregeneration result:", JSON.stringify(result, null, 2));
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /pregenerate_privy_user endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to pregenerate Privy user",
       details: error.toString(),
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });

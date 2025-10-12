@@ -60,6 +60,10 @@ const SearchField = ({
           ref={ref}
           css={css`
             font-size: 16px;
+            /* Hide native browser clear button to avoid duplicate X buttons */
+            &::-webkit-search-cancel-button {
+              display: none;
+            }
           `}
         />
         {state.value !== "" ? (
