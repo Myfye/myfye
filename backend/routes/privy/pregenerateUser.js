@@ -20,8 +20,7 @@ async function pregenerateUser(email) {
         ],
         wallets: [
           {
-            chain_type: 'solana',
-            create_smart_wallet: true
+            chain_type: 'solana'
           }
         ]
       },
