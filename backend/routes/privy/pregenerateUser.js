@@ -21,7 +21,6 @@ async function pregenerateUser(email) {
         wallets: [
           {
             chain_type: 'ethereum',
-            create_smart_wallet: true,
             // Add your signer_id and policy_ids here when you have them
             // additional_signers: [
             //   {
