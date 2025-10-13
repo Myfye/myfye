@@ -20,25 +20,8 @@ async function pregenerateUser(email) {
         ],
         wallets: [
           {
-            chain_type: 'ethereum',
-            // Add your signer_id and policy_ids here when you have them
-            // additional_signers: [
-            //   {
-            //     signer_id: 'your-signer-id',
-            //     override_policy_ids: ['your-policy-id']
-            //   }
-            // ],
-            // policy_ids: ['your-policy-id']
-          },
-          {
             chain_type: 'solana',
-            // additional_signers: [
-            //   {
-            //     signer_id: 'your-signer-id',
-            //     override_policy_ids: ['your-policy-id']
-            //   }
-            // ],
-            // policy_ids: []
+            create_smart_wallet: true
           }
         ]
       },
