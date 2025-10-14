@@ -1,224 +1,204 @@
-import { css } from "@emotion/react";
-import { useDispatch, useSelector } from "react-redux";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
-import { RootState } from "@/redux/store";
 import {
   selectAssetBalanceUSD,
   selectAssetsWithBalanceByGroup,
-  selectAssetsBalanceUSDByGroup,
   toggleGroupOverlay,
-} from "../../../../features/assets/assetsSlice";
-import WalletOverlay from "../_components/WalletOverlay";
-import Button from "@/shared/components/ui/button/Button";
-import Section from "@/shared/components/ui/section/Section";
-import PieChart from "../_components/PieChart";
-import { walletPieChartLabelFormatter } from "../utils";
-import { toggleModal } from "@/features/onOffRamp/deposit/depositSlice";
+} from "@/features/assets/assetsSlice";
+import Stack from "@/shared/components/ui/primitives/stack/Stack";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
+import BalanceCard from "@/shared/components/ui/card/BalanceCard";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
+import {
+  ArrowCircleDownIcon,
+  ArrowCircleUpIcon,
+  ArrowsLeftRightIcon,
+  CurrencyDollarIcon,
+  HandArrowDownIcon,
+  HandDepositIcon,
+} from "@phosphor-icons/react";
+import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import Section from "@/shared/components/layout/section/Section";
+import PieChart3DCard from "@/shared/components/ui/charts/pie/PieChart3DCard";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import Inline from "@/shared/components/ui/primitives/inline/Inline";
+import Heading from "@/shared/components/ui/text/Heading";
+import CTACarousel from "@/shared/components/ui/cta-carousel/CTACarousel";
+import ZeroBalanceCard from "@/shared/components/ui/card/ZeroBalanceCard";
+import { PointOptionsObject } from "highcharts";
+import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
+
+const generatePieChartData = (
+  usdBalance: number,
+  euroBalanceUSD: number,
+  mxnBalanceUSD: number
+) => {
+  const data = [];
+  if (usdBalance > 0) {
+    const cashData = {
+      name: "USD",
+      y: usdBalance,
+      color: "var(--clr-green)",
+    };
+    data.push(cashData);
+  }
+  if (euroBalanceUSD > 0) {
+    const euroData = {
+      name: "EUR",
+      y: euroBalanceUSD,
+      color: "var(--clr-blue)",
+    };
+    data.push(euroData);
+  }
+  if (mxnBalanceUSD > 0) {
+    const pesoData = {
+      name: "MXN",
+      y: mxnBalanceUSD,
+      color: "var(--clr-purple)",
+    };
+    data.push(pesoData);
+  }
+  return data satisfies PointOptionsObject[];
+};
 
 const CashOverlay = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const isOpen = useSelector(
-    (state: RootState) => state.assets.groups["cash"].overlay.isOpen
+  const isOpen = useAppSelector(
+    (state) => state.assets.groups["cash"].overlay.isOpen
   );
 
-  const handleOpen = (isOpen: boolean) => {
-    dispatch(toggleGroupOverlay({ isOpen, groupId: "cash" }));
-  };
-
-  const assets = useSelector((state: RootState) =>
+  const assets = useAppSelector((state) =>
     selectAssetsWithBalanceByGroup(state, "cash")
   );
 
-  const usdBalance = useSelector((state: RootState) =>
+  const usdBalance = useAppSelector((state) =>
     selectAssetBalanceUSD(state, "USD")
   );
 
-  const euroBalanceUSD = useSelector((state: RootState) =>
+  const euroBalanceUSD = useAppSelector((state) =>
     selectAssetBalanceUSD(state, "EUR")
   );
 
-  const balanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "cash")
+  const mxnBalanceUSD = useAppSelector((state) =>
+    selectAssetBalanceUSD(state, "MXN")
   );
 
-  const pieChartData = (() => {
-    const data = [];
-    if (usdBalance > 0) {
-      const cashData = {
-        name: "US Dollar",
-        y: usdBalance,
-        color: "var(--clr-green)",
-      };
-      data.push(cashData);
-    }
-    if (euroBalanceUSD > 0) {
-      const earnData = {
-        name: "Euro",
-        y: euroBalanceUSD,
-        color: "var(--clr-blue)",
-      };
-      data.push(earnData);
-    }
-    return data;
-  })();
+  const totalBalance = usdBalance + euroBalanceUSD + mxnBalanceUSD;
 
-  const pieChartOptions: Highcharts.Options = {
-    chart: {
-      type: "pie",
-      height: 320,
-      backgroundColor: "transparent",
-      spacingBottom: 0,
-      spacingLeft: 16,
-      spacingRight: 0,
-      spacingTop: 4,
-      marginTop: 0,
-      marginBottom: 0,
-      marginLeft: 0,
-      marginRight: 0,
-    },
-    plotOptions: {
-      pie: {
-        borderWidth: 2,
-        center: ["28%", "30%"],
-        showInLegend: true,
-        innerSize: "33.33%",
-        size: "60%",
-        depth: 45,
-        allowPointSelect: true,
-        cursor: "pointer",
-        dataLabels: { enabled: false },
-      },
-    },
-    title: {
-      text: "<span class='visually-hidden'>Myfye Portfolio</span>",
-      useHTML: true,
-    },
-    tooltip: {
-      enabled: true,
-      pointFormat: "Balance: <b>${point.y:.2f}</b>",
-    },
-    credits: {
-      enabled: false,
-    },
-    legend: {
-      backgroundColor: "transparent",
-      enabled: true,
-      floating: true,
-      align: "right",
-      verticalAlign: "middle",
-      layout: "vertical",
-      useHTML: true,
-      x: 2,
-      y: -60,
-      width: 120,
-      itemMarginTop: 4,
-      itemMarginBottom: 4,
-      itemStyle: {
-        fontSize: "13px",
-        fontFamily: "Inter",
-        color: "var(--clr-text)",
-      },
-      labelFormatter: walletPieChartLabelFormatter,
-    },
-    series: [
-      // @ts-ignore
-      {
-        name: "Portfolio Summary",
-        colorByPoint: true,
-        data: pieChartData,
-      },
-    ],
-  };
+  const pieChartData = generatePieChartData(
+    usdBalance,
+    euroBalanceUSD,
+    mxnBalanceUSD
+  );
 
   return (
-    <>
-      <WalletOverlay
-        isOpen={isOpen}
-        onOpenChange={handleOpen}
-        title="Cash"
-        balance={balanceUSD}
-        groupId="cash"
+    <Overlay
+      isOpen={isOpen}
+      onOpenChange={(isOpen) =>
+        dispatch(toggleGroupOverlay({ isOpen, groupId: "cash" }))
+      }
+      title="Cash"
+    >
+      <Stack
+        gap="none"
+        alignInline="start"
+        isolate="last"
+        isolateMargin="var(--size-600)"
+        minHeight="100cqh"
       >
-        {pieChartData.length > 0 && (
-          <section
-            css={css`
-              margin-block-start: var(--size-400);
-              padding-inline: var(--size-250);
-            `}
-          >
-            <div
-              className="pie-chart-card"
-              css={css`
-                padding: var(--size-150);
-                background-color: var(--clr-surface-raised);
-                height: 16rem;
-                border-radius: var(--border-radius-medium);
-              `}
+        <Section as="section">
+          <BalanceCard
+            balance={totalBalance}
+            marginTop="var(--size-100)"
+            marginBottom="var(--size-200)"
+          />
+          <ButtonGroup size="x-small">
+            <ButtonGroupItem
+              icon={ArrowsLeftRightIcon}
+              onPress={() =>
+                dispatch(
+                  toggleSwapModal({
+                    isOpen: true,
+                    sellAssetId: "USD",
+                    buyAssetId: "QQQ",
+                  })
+                )
+              }
             >
-              <h2
-                className="heading-medium"
-                css={css`
-                  padding-block-end: var(--size-100);
-                `}
-              >
-                Portfolio Summary
-              </h2>
-              <PieChart options={pieChartOptions} />
-            </div>
-          </section>
-        )}
-        {pieChartData.length === 0 && (
-          <section
-            css={css`
-              display: grid;
-              place-items: center;
-              width: 100%;
-              height: 16rem;
-            `}
-          >
-            <div
-              css={css`
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-              `}
+              Swap
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              icon={ArrowCircleUpIcon}
+              onPress={() =>
+                dispatch(
+                  toggleSendModal({
+                    isOpen: true,
+                  })
+                )
+              }
             >
-              <p className="heading-large">Hold cash. Get paid.</p>
-              <p
-                className="caption"
-                css={css`
-                  color: var(--clr-text-weaker);
-                  margin-block-start: var(--size-100);
-                `}
-              >
-                Get started by making a USD/Euro deposit
-              </p>
-              <div
-                css={css`
-                  margin-block-start: var(--size-300);
-                `}
-              >
-                <Button onPress={() => void dispatch(toggleModal(true))}>
-                  Deposit cash
-                </Button>
-              </div>
-            </div>
-          </section>
-        )}
-        <Section
-          title="Assets"
-          css={css`
-            margin-block-start: var(--size-400);
-            padding-inline: var(--size-250);
-            padding-block-end: var(--size-250);
-          `}
-        >
+              Send
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              icon={ArrowCircleDownIcon}
+              onPress={() => dispatch(toggleReceiveModal(true))}
+            >
+              Receive
+            </ButtonGroupItem>
+          </ButtonGroup>
+        </Section>
+        <Section marginTop="var(--size-300)">
+          {totalBalance > 0 && (
+            <PieChart3DCard data={pieChartData} name="Cash" />
+          )}
+          {totalBalance === 0 && (
+            <ZeroBalanceCard
+              image={{ src: CurrencyDollarIcon, alt: "Dollar sign" }}
+              title="Hold cash. Get paid."
+              caption="Get started by making a cash deposit"
+              action={() => {
+                dispatch(toggleDepositModal(true));
+              }}
+              cta="Deposit"
+            />
+          )}
+        </Section>
+        <Section marginTop="var(--size-400)">
+          <Inline spread="space-between" marginBottom="var(--size-200)">
+            <Heading size="medium">Assets</Heading>
+          </Inline>
           <AssetCardList assets={assets} showOptions={true} />
         </Section>
-      </WalletOverlay>
-    </>
+        <Section marginBottom="var(--size-100)" padding="none">
+          <CTACarousel
+            slides={[
+              {
+                title: "Send cash. No bank needed.",
+                caption: "Send cash to your friends and family with no fees.",
+                icon: HandDepositIcon,
+                action: () =>
+                  dispatch(
+                    toggleSendModal({
+                      isOpen: true,
+                      assetId: "USD",
+                    })
+                  ),
+              },
+              {
+                title: "Receive money in an instant",
+                caption:
+                  "Show your wallet QR code to receive funds from across the globe",
+                icon: HandArrowDownIcon,
+                action: () => dispatch(toggleReceiveModal(true)),
+              },
+            ]}
+          />
+        </Section>
+      </Stack>
+    </Overlay>
   );
 };
 

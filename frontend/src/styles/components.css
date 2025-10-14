@@ -300,19 +300,20 @@
       flex-direction: column;
     }
     &[data-size="x-small"] {
-      gap: var(--control-gap-x-small);
+      gap: var(--controls-gap-small);
     }
     &[data-size="small"] {
-      gap: var(--control-gap-small);
+      gap: var(--controls-gap-small);
     }
     &[data-size="medium"] {
-      gap: var(--control-gap-medium);
+      gap: var(--controls-gap-medium);
     }
     &[data-size="large"] {
-      gap: var(--control-gap-large);
+      gap: var(--controls-gap-large);
     }
     &[data-scroll="true"] {
       overflow-x: auto;
+      padding-inline: var(--size-250);
     }
     &[data-expand="true"] {
       width: 100%;

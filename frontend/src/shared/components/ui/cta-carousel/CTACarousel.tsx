@@ -9,18 +9,17 @@ import { Pagination } from "swiper/modules";
 import { css } from "@emotion/react";
 import IconCard from "@/shared/components/ui/card/IconCard";
 import { Icon } from "@phosphor-icons/react";
-import { Button } from "react-aria-components";
 import { useState } from "react";
 
-interface Slide {
+export type CTASlide = {
   icon: string | Icon;
   title: string;
-  subtitle: string;
-  action: () => void;
-}
+  caption: string;
+  action?: () => void;
+};
 
 interface CTACarouselProps {
-  slides: Slide[];
+  slides: CTASlide[];
 }
 
 const CTACarousel = ({ slides }: CTACarouselProps) => {
@@ -32,7 +31,6 @@ const CTACarousel = ({ slides }: CTACarouselProps) => {
       modules={[Pagination]}
       onDragStart={() => {
         setDragging(true);
-        console.log("dragging");
       }}
       onDragEnd={() => setDragging(false)}
       pagination={{
@@ -41,16 +39,16 @@ const CTACarousel = ({ slides }: CTACarouselProps) => {
       onTap={(swiper) => {
         const currentIndex = swiper.activeIndex;
         if (slides[currentIndex]) {
-          slides[currentIndex].action();
+          slides[currentIndex]?.action?.();
         }
       }}
       css={css`
         padding-block-start: var(--size-025);
-        padding-block-end: var(--size-250);
+        padding-block-end: var(--size-300);
         --swiper-theme-color: var(--clr-text);
         --swiper-pagination-bullet-inactive-color: var(--clr-surface-lowered);
         --swiper-pagination-bullet-inactive-opacity: 1;
-        --swiper-pagination-bottom: 0;
+        --swiper-pagination-bottom: var(--size-050);
       `}
     >
       {slides.map((slide, i) => (
@@ -69,7 +67,7 @@ const CTACarousel = ({ slides }: CTACarouselProps) => {
               icon={slide.icon}
               leftContent={{
                 title: slide.title,
-                subtitle: slide.subtitle,
+                subtitle: slide.caption,
                 subtitleSize: "small",
               }}
             />

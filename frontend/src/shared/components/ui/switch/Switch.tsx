@@ -1,13 +1,23 @@
 import { useToggleState } from "react-stately";
-import { useFocusRing, useSwitch, VisuallyHidden } from "react-aria";
-import { useRef } from "react";
+import {
+  AriaSwitchProps,
+  useFocusRing,
+  useSwitch,
+  VisuallyHidden,
+} from "react-aria";
+import { RefObject, useRef } from "react";
 import { css } from "@emotion/react";
 
-const Switch = (props) => {
-  let state = useToggleState(props);
-  let ref = useRef(null);
-  let { inputProps } = useSwitch(props, state, ref);
-  let { isFocusVisible, focusProps } = useFocusRing();
+const Switch = ({
+  ref,
+  children,
+  ...restProps
+}: AriaSwitchProps & { ref?: RefObject<HTMLInputElement> }) => {
+  const switchProps = { children, ...restProps };
+  const state = useToggleState(switchProps);
+  if (!ref) ref = useRef<HTMLInputElement>(null!);
+  const { inputProps } = useSwitch(switchProps, state, ref);
+  const { isFocusVisible, focusProps } = useFocusRing();
 
   return (
     <div
@@ -27,7 +37,7 @@ const Switch = (props) => {
         <VisuallyHidden>
           <input {...inputProps} {...focusProps} ref={ref} />
         </VisuallyHidden>
-        {props.children}
+        {children}
         <div
           aria-hidden="true"
           css={css`

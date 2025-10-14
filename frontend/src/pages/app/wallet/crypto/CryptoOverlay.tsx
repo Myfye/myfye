@@ -1,40 +1,97 @@
-import { css } from "@emotion/react";
-
-import Button from "@/shared/components/ui/button/Button";
-import { useDispatch, useSelector } from "react-redux";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
-import { RootState } from "@/redux/store";
 import {
   selectAssetBalanceUSD,
   selectAssetsWithBalanceByGroup,
-  selectAssetsBalanceUSDByGroup,
   toggleGroupOverlay,
-} from "../../../../features/assets/assetsSlice";
-import WalletOverlay from "../_components/WalletOverlay";
-import Section from "@/shared/components/ui/section/Section";
-import PieChart from "../_components/PieChart";
-import { walletPieChartLabelFormatter } from "../utils";
-import { toggleModal } from "@/features/onOffRamp/deposit/depositSlice";
-import { useAppSelector } from "@/redux/hooks";
+} from "@/features/assets/assetsSlice";
+import Stack from "@/shared/components/ui/primitives/stack/Stack";
+import Overlay from "@/shared/components/ui/overlay/Overlay";
+import BalanceCard from "@/shared/components/ui/card/BalanceCard";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
+import {
+  ArrowCircleDownIcon,
+  ArrowCircleUpIcon,
+  ArrowsLeftRightIcon,
+  CurrencyBtcIcon,
+  CurrencyDollarIcon,
+} from "@phosphor-icons/react";
+import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import Section from "@/shared/components/layout/section/Section";
+import PieChart3DCard from "@/shared/components/ui/charts/pie/PieChart3DCard";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import Inline from "@/shared/components/ui/primitives/inline/Inline";
+import Heading from "@/shared/components/ui/text/Heading";
+import CTACarousel from "@/shared/components/ui/cta-carousel/CTACarousel";
+import ZeroBalanceCard from "@/shared/components/ui/card/ZeroBalanceCard";
+import { PointOptionsObject } from "highcharts";
+import btcIcon from "@/assets/icons/assets/crypto/Bitcoin.svg";
+import solIcon from "@/assets/icons/assets/crypto/Solana.svg";
+
+const generatePieChartData = (
+  btcBalanceUSD: number,
+  solBalanceUSD: number,
+  xrpBalanceUSD: number,
+  dogeBalanceUSD: number,
+  suiBalanceUSD: number
+) => {
+  const data = [];
+  if (btcBalanceUSD > 0) {
+    const btcData = {
+      name: "BTC",
+      y: btcBalanceUSD,
+      color: "var(--clr-btc)",
+    };
+    data.push(btcData);
+  }
+  if (solBalanceUSD > 0) {
+    const solData = {
+      name: "SOL",
+      y: solBalanceUSD,
+      color: "var(--clr-sol)",
+    };
+    data.push(solData);
+  }
+  if (xrpBalanceUSD > 0) {
+    const xrpData = {
+      name: "XRP",
+      y: xrpBalanceUSD,
+      color: "var(--clr-xrp)",
+    };
+    data.push(xrpData);
+  }
+  if (dogeBalanceUSD > 0) {
+    const dogeData = {
+      name: "DOGE",
+      y: dogeBalanceUSD,
+      color: "var(--clr-doge)",
+    };
+    data.push(dogeData);
+  }
+  if (suiBalanceUSD > 0) {
+    const suiData = {
+      name: "SUI",
+      y: suiBalanceUSD,
+      color: "var(--clr-sui)",
+    };
+    data.push(suiData);
+  }
+  return data satisfies PointOptionsObject[];
+};
 
 const CryptoOverlay = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isOpen = useAppSelector(
     (state) => state.assets.groups["crypto"].overlay.isOpen
   );
 
-  const handleOpen = (isOpen: boolean) => {
-    dispatch(toggleGroupOverlay({ isOpen, groupId: "crypto" }));
-  };
-
   const assets = useAppSelector((state) =>
     selectAssetsWithBalanceByGroup(state, "crypto")
   );
 
-  const balanceUSD = useAppSelector((state) =>
-    selectAssetsBalanceUSDByGroup(state, "crypto")
-  );
   const btcBalanceUSD = useAppSelector((state) =>
     selectAssetBalanceUSD(state, "BTC")
   );
@@ -43,185 +100,150 @@ const CryptoOverlay = () => {
     selectAssetBalanceUSD(state, "SOL")
   );
 
-  const pieChartData = (() => {
-    const data = [];
-    if (btcBalanceUSD > 0) {
-      const cashData = {
-        name: "Bitcoin",
-        y: btcBalanceUSD,
-        color: "var(--clr-orange)",
-      };
-      data.push(cashData);
-    }
-    if (solBalanceUSD > 0) {
-      const earnData = {
-        name: "Solana",
-        y: solBalanceUSD,
-        color: "var(--clr-purple)",
-      };
-      data.push(earnData);
-    }
-    return data;
-  })();
+  const xrpBalanceUSD = useAppSelector((state) =>
+    selectAssetBalanceUSD(state, "XRP")
+  );
 
-  const pieChartOptions: Highcharts.Options = {
-    chart: {
-      type: "pie",
-      height: 320,
-      backgroundColor: "transparent",
-      spacingBottom: 0,
-      spacingLeft: 16,
-      spacingRight: 0,
-      spacingTop: 4,
-      marginTop: 0,
-      marginBottom: 0,
-      marginLeft: 0,
-      marginRight: 0,
-    },
-    plotOptions: {
-      pie: {
-        borderWidth: 2,
-        center: ["28%", "30%"],
-        showInLegend: true,
-        innerSize: "33.33%",
-        size: "60%",
-        depth: 45,
-        allowPointSelect: true,
-        cursor: "pointer",
-        dataLabels: { enabled: false },
-      },
-    },
-    title: {
-      text: "<span class='visually-hidden'>Myfye Portfolio</span>",
-      useHTML: true,
-    },
-    tooltip: {
-      enabled: true,
-      pointFormat: "Balance: <b>${point.y:.2f}</b>",
-    },
-    credits: {
-      enabled: false,
-    },
-    legend: {
-      backgroundColor: "transparent",
-      enabled: true,
-      floating: true,
-      align: "right",
-      verticalAlign: "middle",
-      layout: "vertical",
-      useHTML: true,
-      x: 2,
-      y: -60,
-      width: 120,
-      itemMarginTop: 4,
-      itemMarginBottom: 4,
-      itemStyle: {
-        fontSize: "13px",
-        fontFamily: "Inter",
-        color: "var(--clr-text)",
-      },
-      labelFormatter: walletPieChartLabelFormatter,
-    },
-    series: [
-      // @ts-ignore
-      {
-        name: "Portfolio Summary",
-        colorByPoint: true,
-        data: pieChartData,
-      },
-    ],
-  };
+  const dogeBalanceUSD = useAppSelector((state) =>
+    selectAssetBalanceUSD(state, "DOGE")
+  );
+
+  const suiBalanceUSD = useAppSelector((state) =>
+    selectAssetBalanceUSD(state, "SUI")
+  );
+
+  const totalBalance =
+    btcBalanceUSD +
+    solBalanceUSD +
+    xrpBalanceUSD +
+    dogeBalanceUSD +
+    suiBalanceUSD;
+
+  const pieChartData = generatePieChartData(
+    btcBalanceUSD,
+    solBalanceUSD,
+    xrpBalanceUSD,
+    dogeBalanceUSD,
+    suiBalanceUSD
+  );
 
   return (
-    <>
-      <WalletOverlay
-        isOpen={isOpen}
-        onOpenChange={handleOpen}
-        title="Crypto"
-        balance={balanceUSD}
-        groupId="crypto"
+    <Overlay
+      isOpen={isOpen}
+      onOpenChange={(isOpen) =>
+        dispatch(toggleGroupOverlay({ isOpen, groupId: "crypto" }))
+      }
+      title="Crypto"
+    >
+      <Stack
+        gap="none"
+        alignInline="start"
+        isolate="last"
+        isolateMargin="var(--size-600)"
+        minHeight="100cqh"
       >
-        {pieChartData.length > 0 && (
-          <section
-            css={css`
-              margin-block-start: var(--size-400);
-              padding-inline: var(--size-250);
-            `}
-          >
-            <div
-              className="pie-chart-card"
-              css={css`
-                padding: var(--size-150);
-                background-color: var(--clr-surface-raised);
-                height: 16rem;
-                border-radius: var(--border-radius-medium);
-              `}
+        <Section as="section">
+          <BalanceCard
+            balance={totalBalance}
+            marginTop="var(--size-100)"
+            marginBottom="var(--size-200)"
+          />
+          <ButtonGroup size="x-small">
+            <ButtonGroupItem
+              icon={ArrowsLeftRightIcon}
+              onPress={() =>
+                dispatch(
+                  toggleSwapModal({
+                    isOpen: true,
+                    sellAssetId: "USD",
+                    buyAssetId: "QQQ",
+                  })
+                )
+              }
             >
-              <h2
-                className="heading-medium"
-                css={css`
-                  padding-block-end: var(--size-100);
-                `}
-              >
-                Portfolio Summary
-              </h2>
-              <PieChart options={pieChartOptions} />
-            </div>
-          </section>
-        )}
-        {pieChartData.length === 0 && (
-          <section
-            css={css`
-              display: grid;
-              place-items: center;
-              width: 100%;
-              height: 16rem;
-            `}
-          >
-            <div
-              css={css`
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-              `}
+              Swap
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              icon={ArrowCircleUpIcon}
+              onPress={() =>
+                dispatch(
+                  toggleSendModal({
+                    isOpen: true,
+                  })
+                )
+              }
             >
-              <p className="heading-large">
-                Store crypto. <br /> No complex tools required.
-              </p>
-              <p
-                className="caption"
-                css={css`
-                  color: var(--clr-text-weaker);
-                  margin-block-start: var(--size-100);
-                `}
-              >
-                Get started by depositing Bitcoin/Solana
-              </p>
-              <div
-                css={css`
-                  margin-block-start: var(--size-300);
-                `}
-              >
-                <Button onPress={() => void dispatch(toggleModal(true))}>
-                  Deposit crypto
-                </Button>
-              </div>
-            </div>
-          </section>
-        )}
-        <Section
-          title="Assets"
-          css={css`
-            margin-block-start: var(--size-400);
-            padding-inline: var(--size-250);
-            padding-block-end: var(--size-250);
-          `}
-        >
+              Send
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              icon={ArrowCircleDownIcon}
+              onPress={() => dispatch(toggleReceiveModal(true))}
+            >
+              Receive
+            </ButtonGroupItem>
+          </ButtonGroup>
+        </Section>
+        <Section marginTop="var(--size-300)">
+          {totalBalance > 0 && (
+            <PieChart3DCard data={pieChartData} name="Cash" />
+          )}
+          {totalBalance === 0 && (
+            <ZeroBalanceCard
+              image={{ src: CurrencyBtcIcon, alt: "Bitcoin" }}
+              title={
+                <>
+                  Store crypto. <br />
+                  No complex tools required.
+                </>
+              }
+              caption="Swap between Bitcoin, Euro, DOGE, and more."
+              action={() => {
+                dispatch(toggleSwapModal({ isOpen: true }));
+              }}
+              cta="Swap crypto"
+            />
+          )}
+        </Section>
+        <Section marginTop="var(--size-400)">
+          <Inline spread="space-between" marginBottom="var(--size-200)">
+            <Heading size="medium">Assets</Heading>
+          </Inline>
           <AssetCardList assets={assets} showOptions={true} />
         </Section>
-      </WalletOverlay>
-    </>
+        <Section marginBottom="var(--size-100)" padding="none">
+          <CTACarousel
+            slides={[
+              {
+                title: "Buy Bitcoin",
+                caption: "Buy Bitcoin with Myfye",
+                icon: btcIcon,
+                action: () =>
+                  dispatch(
+                    toggleSwapModal({
+                      isOpen: true,
+                      buyAssetId: "BTC",
+                      sellAssetId: "USD",
+                    })
+                  ),
+              },
+              {
+                title: "Buy Solana",
+                caption: "Buy Solana with Myfye",
+                icon: solIcon,
+                action: () =>
+                  dispatch(
+                    toggleSwapModal({
+                      isOpen: true,
+                      buyAssetId: "SOL",
+                      sellAssetId: "USD",
+                    })
+                  ),
+              },
+            ]}
+          />
+        </Section>
+      </Stack>
+    </Overlay>
   );
 };
 

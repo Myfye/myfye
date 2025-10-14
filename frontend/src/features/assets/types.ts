@@ -1,8 +1,3 @@
-import { CashId } from "../../pages/app/wallet/cash/cash.types";
-import { CryptoId } from "../../pages/app/wallet/crypto/crypto.types";
-import { EarnId } from "../../pages/app/wallet/earn/earn.types";
-import { StocksId } from "../../pages/app/wallet/stocks/stocks.types";
-
 export type FiatCurrency = "usd" | "eur";
 export type DashboardId = "cash" | "crypto" | "stocks";
 export type GroupId = "cash" | "crypto" | "stocks" | "earn";
@@ -53,7 +48,7 @@ export interface AssetsState {
 }
 
 export interface AssetGroup {
-  id: CashId | CryptoId | StocksId | EarnId;
+  id: "cash" | "crypto" | "stocks" | "earn";
   label: string;
   percentChange: number;
   overlay: {

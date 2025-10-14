@@ -4,191 +4,169 @@ import {
   ArrowCircleUpIcon,
   ArrowLineDownIcon,
   ArrowLineUpIcon,
-  ArrowsDownUpIcon,
   ChartLineUpIcon,
+  CurrencyBtcIcon,
   PiggyBankIcon,
 } from "@phosphor-icons/react";
 import { css } from "@emotion/react";
-import { useDispatch, useSelector } from "react-redux";
-import { selectAssetsBalanceUSD } from "@/features/assets/assetsSlice";
+import { useSelector } from "react-redux";
+import {
+  selectAssetsBalanceUSD,
+  selectAssetsBalanceUSDByGroup,
+} from "@/features/assets/assetsSlice";
 import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
 import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
 import { toggleModal as toggleWithdrawModal } from "@/features/onOffRamp/withdraw/withdrawSlice";
-import BalanceCard from "@/shared/components/ui/balance/BalanceCard";
 import Portfolio from "./chart_tabs/Portfolio";
-import CTACarousel from "./cta-carousel/CTACarousel";
+import CTACarousel from "../../../../../../shared/components/ui/cta-carousel/CTACarousel";
 import bitcoinIcon from "@/assets/svgs/coins/btc-coin.svg";
-import { togglePopup } from "./cta-carousel/ctaCarouselSlice";
-import BitcoinPopup from "./cta-carousel/popups/BitcoinPopup";
-import EarnPopup from "./cta-carousel/popups/EarnPopup";
-import InvestPopup from "./cta-carousel/popups/InvestPopup";
-import { useAppDispatch } from "@/redux/hooks";
+import { togglePopup } from "../../../../../../shared/components/ui/cta-carousel/ctaCarouselSlice";
+import BitcoinPopup from "../../../../../../shared/components/ui/cta-carousel/popups/BitcoinPopup";
+import EarnPopup from "../../../../../../shared/components/ui/cta-carousel/popups/EarnPopup";
+import InvestPopup from "../../../../../../shared/components/ui/cta-carousel/popups/InvestPopup";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import Stack from "@/shared/components/ui/primitives/stack/Stack";
+import Section from "@/shared/components/layout/section/Section";
+import BalanceCard from "@/shared/components/ui/card/BalanceCard";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
+import PieChart3DCard from "@/shared/components/ui/charts/pie/PieChart3DCard";
+import ZeroBalanceCard from "@/shared/components/ui/card/ZeroBalanceCard";
 
 const DashboardPanel = ({}) => {
-  const dispatch = useDispatch();
-  const balanceUSD = useSelector(selectAssetsBalanceUSD);
+  const dispatch = useAppDispatch();
+  const totalBalance = useSelector(selectAssetsBalanceUSD);
+
+  const cashBalanceUSD = useAppSelector((state) =>
+    selectAssetsBalanceUSDByGroup(state, "cash")
+  );
+  const earnBalanceUSD = useAppSelector((state) =>
+    selectAssetsBalanceUSDByGroup(state, "earn")
+  );
+  const cryptoBalanceUSD = useAppSelector((state) =>
+    selectAssetsBalanceUSDByGroup(state, "crypto")
+  );
+  const stocksBalanceUSD = useAppSelector((state) =>
+    selectAssetsBalanceUSDByGroup(state, "stocks")
+  );
+
+  const pieChartData = (() => {
+    const data = [];
+    if (cashBalanceUSD > 0) {
+      const cashData = {
+        name: "Cash",
+        y: cashBalanceUSD,
+        color: "var(--clr-green)",
+      };
+      data.push(cashData);
+    }
+    if (earnBalanceUSD > 0) {
+      const earnData = {
+        name: "Earn",
+        y: earnBalanceUSD,
+        color: "var(--clr-secondary)",
+      };
+      data.push(earnData);
+    }
+    if (cryptoBalanceUSD > 0) {
+      const cryptoData = {
+        name: "Crypto",
+        y: cryptoBalanceUSD,
+        color: "var(--clr-teritary)",
+      };
+      data.push(cryptoData);
+    }
+    if (stocksBalanceUSD > 0) {
+      const stocksData = {
+        name: "Stocks",
+        y: stocksBalanceUSD,
+        color: "var(--clr-primary)",
+      };
+      data.push(stocksData);
+    }
+    return data;
+  })();
 
   return (
     <>
-      <div
-        className="dashboard-panel"
-        css={css`
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-          align-items: center;
-          height: 100%;
-          > * {
-            width: 100%;
-          }
-          padding-bottom: var(--size-100);
-        `}
+      <Stack
+        isolate="last"
+        isolateMargin="var(--size-200)"
+        height="100%"
+        spread="flex-start"
+        gap="none"
       >
-        <section
-          css={css`
-            padding-inline: var(--size-250);
-          `}
-        >
-          <BalanceCard balance={balanceUSD}></BalanceCard>
-        </section>
-        <section
-          css={css`
-            margin-block-start: var(--size-200);
-          `}
-        >
-          <menu
-            className="no-scrollbar"
-            css={css`
-              display: flex;
-              align-items: center;
-              justify-content: flex-start;
-              gap: var(--controls-gap-small);
-              overflow-x: auto;
-              padding-inline: var(--size-250);
-            `}
-          >
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowsDownUpIcon}
-                onPress={() => {
-                  console.log("opening swap modal");
-                  dispatch(toggleSwapModal({ isOpen: true }));
-                }}
-              >
-                Swap
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowCircleUpIcon}
-                onPress={() => {
-                  dispatch(toggleSendModal({ isOpen: true }));
-                }}
-              >
-                Send
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowCircleDownIcon}
-                onPress={() => {
-                  dispatch(toggleReceiveModal(true));
-                }}
-              >
-                Receive
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowLineUpIcon}
-                onPress={() => {
-                  dispatch(toggleDepositModal(true));
-                }}
-              >
-                Deposit
-              </Button>
-            </li>
-            <li>
-              <Button
-                size="x-small"
-                icon={ArrowLineDownIcon}
-                onPress={() => {
-                  dispatch(toggleWithdrawModal(true));
-                }}
-              >
-                Withdraw
-              </Button>
-            </li>
-          </menu>
-        </section>
-        {balanceUSD === 0 ? (
-          <section
-            css={css`
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              height: 100%;
-              padding-inline: var(--size-250);
-            `}
-          >
-            <div
-              css={css`
-                padding-inline: var(--size-200);
-                padding-block: var(--size-400);
-                border-radius: var(--border-radius-medium);
-                background-color: var(--clr-surface-raised);
-                width: 100%;
-              `}
+        <Section>
+          <BalanceCard balance={totalBalance} />
+        </Section>
+        <Section padding="none" marginTop="var(--size-200)">
+          <ButtonGroup size="x-small" expand scroll>
+            <ButtonGroupItem
+              icon={ArrowCircleUpIcon}
+              onPress={() => {
+                dispatch(toggleSendModal({ isOpen: true }));
+              }}
             >
-              <h2
-                className="heading-large"
-                css={css`
-                  text-align: center;
-                `}
-              >
-                Get started by depositing funds
-              </h2>
-              <Button
-                expand
-                onPress={() => {
-                  dispatch(toggleDepositModal(true));
-                }}
-                css={css`
-                  margin-block-start: var(--size-300);
-                `}
-              >
-                Deposit funds
-              </Button>
-            </div>
-          </section>
-        ) : (
-          <section
-            css={css`
-              margin-block-start: var(--size-300);
-              padding-inline: var(--size-250);
-            `}
-          >
-            <Portfolio />
-          </section>
-        )}
-        <section
-          className="cta-carousel-container"
-          css={css`
-            margin-block-start: auto;
-          `}
-        >
+              Send
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              icon={ArrowCircleUpIcon}
+              onPress={() => {
+                dispatch(toggleSendModal({ isOpen: true }));
+              }}
+            >
+              Send
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              icon={ArrowCircleDownIcon}
+              onPress={() => {
+                dispatch(toggleReceiveModal(true));
+              }}
+            >
+              Receive
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              icon={ArrowLineUpIcon}
+              onPress={() => {
+                dispatch(toggleDepositModal(true));
+              }}
+            >
+              Deposit
+            </ButtonGroupItem>
+            <ButtonGroupItem
+              icon={ArrowLineDownIcon}
+              onPress={() => {
+                dispatch(toggleWithdrawModal(true));
+              }}
+            >
+              Withdraw
+            </ButtonGroupItem>
+          </ButtonGroup>
+        </Section>
+        <Section marginTop="var(--size-300)">
+          {totalBalance > 0 && (
+            <PieChart3DCard data={pieChartData} name="Portfolio" />
+          )}
+          {totalBalance === 0 && (
+            <ZeroBalanceCard
+              image={{ src: CurrencyBtcIcon, alt: "Bitcoin" }}
+              title="Swap, send, and receive money, crypto, and stocks with MyFye"
+              caption="Get started by depositing funds."
+              action={() => {
+                dispatch(toggleSwapModal({ isOpen: true }));
+              }}
+              cta="Swap crypto"
+            />
+          )}
+        </Section>
+        <Section padding="none">
           <CTACarousel
             slides={[
               {
                 title: "Create a savings account",
-                subtitle: "Earn 4.1% APY with US Treasury Bonds",
+                caption: "Earn 4.1% APY with US Treasury Bonds",
                 icon: PiggyBankIcon,
                 action: () => {
                   dispatch(togglePopup({ type: "earn", isOpen: true }));
@@ -196,7 +174,7 @@ const DashboardPanel = ({}) => {
               },
               {
                 title: "Open a retirement account",
-                subtitle:
+                caption:
                   "Instantly invest in the top 100 listed companies on the NASDAQ",
                 icon: ChartLineUpIcon,
                 action: () => {
@@ -205,7 +183,7 @@ const DashboardPanel = ({}) => {
               },
               {
                 title: "Buy Bitcoin",
-                subtitle: "Crypto made easy. Buy bitcoin instantly",
+                caption: "Crypto made easy. Buy bitcoin instantly",
                 icon: bitcoinIcon,
                 action: () => {
                   dispatch(togglePopup({ type: "bitcoin", isOpen: true }));
@@ -213,8 +191,8 @@ const DashboardPanel = ({}) => {
               },
             ]}
           />
-        </section>
-      </div>
+        </Section>
+      </Stack>
       <EarnPopup />
       <InvestPopup />
       <BitcoinPopup />

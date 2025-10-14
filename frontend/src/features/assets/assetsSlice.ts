@@ -82,7 +82,6 @@ import KOIcon from "@/assets/icons/assets/stocks/The Coca-Cola Company.svg";
 import GMEIcon from "@/assets/icons/assets/stocks/Gamestop Corp. Class A, Inc..svg";
 import SPYIcon from "@/assets/icons/assets/stocks/S&P.png";
 
-
 //import SQIcon from "@/assets/icons/assets/stocks/Block, Inc..svg";
 //import DISIcon from "@/assets/icons/assets/stocks/Walt Disney Company.svg";
 //import AMDIcon from "@/assets/icons/assets/stocks/Advanced Micro Devices.svg";
@@ -186,7 +185,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "AMZN": {
+    AMZN: {
       id: "AMZN",
       label: "Amazon.com Inc.",
       symbol: "AMZN",
@@ -207,7 +206,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "GOOGL": {
+    GOOGL: {
       id: "GOOGL",
       label: "Alphabet Inc.",
       symbol: "GOOGL",
@@ -291,7 +290,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MSFT": {
+    MSFT: {
       id: "MSFT",
       label: "Microsoft Corporation",
       symbol: "MSFT",
@@ -312,7 +311,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "NFLX": {
+    NFLX: {
       id: "NFLX",
       label: "Netflix, Inc.",
       symbol: "NFLX",
@@ -334,7 +333,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "KO": {
+    KO: {
       id: "KO",
       label: "Coca-Cola Company",
       symbol: "KO",
@@ -355,7 +354,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "WMT": {
+    WMT: {
       id: "WMT",
       label: "Walmart Inc.",
       symbol: "WMT",
@@ -376,7 +375,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "JPM": {
+    JPM: {
       id: "JPM",
       label: "JPMorgan Chase & Co.",
       symbol: "JPM",
@@ -397,7 +396,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "LLY": {
+    LLY: {
       id: "LLY",
       label: "Eli Lilly and Company",
       symbol: "LLY",
@@ -418,7 +417,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "AVGO": {
+    AVGO: {
       id: "AVGO",
       label: "Broadcom Inc.",
       symbol: "AVGO",
@@ -439,7 +438,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "JNJ": {
+    JNJ: {
       id: "JNJ",
       label: "Johnson & Johnson",
       symbol: "JNJ",
@@ -459,7 +458,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "V": {
+    V: {
       id: "V",
       label: "Visa Inc.",
       symbol: "V",
@@ -480,7 +479,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "UNH": {
+    UNH: {
       id: "UNH",
       label: "UnitedHealth Group Incorporated",
       symbol: "UNH",
@@ -501,7 +500,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "XOM": {
+    XOM: {
       id: "XOM",
       label: "Exxon Mobil Corporation",
       symbol: "XOM",
@@ -522,7 +521,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MA": {
+    MA: {
       id: "MA",
       label: "Mastercard Incorporated",
       symbol: "MA",
@@ -543,7 +542,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "PG": {
+    PG: {
       id: "PG",
       label: "The Procter & Gamble Company",
       symbol: "PG",
@@ -564,7 +563,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "HD": {
+    HD: {
       id: "HD",
       label: "The Home Depot, Inc.",
       symbol: "HD",
@@ -585,7 +584,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CVX": {
+    CVX: {
       id: "CVX",
       label: "Chevron Corporation",
       symbol: "CVX",
@@ -606,7 +605,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MRK": {
+    MRK: {
       id: "MRK",
       label: "Merck & Co., Inc.",
       symbol: "MRK",
@@ -627,7 +626,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "PFE": {
+    PFE: {
       id: "PFE",
       label: "Pfizer Inc.",
       symbol: "PFE",
@@ -648,7 +647,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "ABT": {
+    ABT: {
       id: "ABT",
       label: "Abbott Laboratories",
       symbol: "ABT",
@@ -669,7 +668,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "ABBV": {
+    ABBV: {
       id: "ABBV",
       label: "AbbVie Inc.",
       symbol: "ABBV",
@@ -690,7 +689,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "ACN": {
+    ACN: {
       id: "ACN",
       label: "Accenture plc",
       symbol: "ACN",
@@ -711,7 +710,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "AZN": {
+    AZN: {
       id: "AZN",
       label: "AstraZeneca PLC",
       symbol: "AZN",
@@ -732,7 +731,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "BAC": {
+    BAC: {
       id: "BAC",
       label: "Bank of America Corporation",
       symbol: "BAC",
@@ -774,7 +773,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CSCO": {
+    CSCO: {
       id: "CSCO",
       label: "Cisco Systems, Inc.",
       symbol: "CSCO",
@@ -816,7 +815,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CMCSA": {
+    CMCSA: {
       id: "CMCSA",
       label: "Comcast Corporation",
       symbol: "CMCSA",
@@ -837,7 +836,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CRWD": {
+    CRWD: {
       id: "CRWD",
       label: "CrowdStrike Holdings, Inc.",
       symbol: "CRWD",
@@ -858,7 +857,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "DHR": {
+    DHR: {
       id: "DHR",
       label: "Danaher Corporation",
       symbol: "DHR",
@@ -879,7 +878,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "GS": {
+    GS: {
       id: "GS",
       label: "The Goldman Sachs Group, Inc.",
       symbol: "GS",
@@ -900,7 +899,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "HON": {
+    HON: {
       id: "HON",
       label: "Honeywell International Inc.",
       symbol: "HON",
@@ -921,7 +920,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "IBM": {
+    IBM: {
       id: "IBM",
       label: "International Business Machines Corporation",
       symbol: "IBM",
@@ -942,7 +941,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "INTC": {
+    INTC: {
       id: "INTC",
       label: "Intel Corporation",
       symbol: "INTC",
@@ -963,7 +962,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "LIN": {
+    LIN: {
       id: "LIN",
       label: "Linde plc",
       symbol: "LIN",
@@ -984,7 +983,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MRVL": {
+    MRVL: {
       id: "MRVL",
       label: "Marvell Technology, Inc.",
       symbol: "MRVL",
@@ -1005,7 +1004,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MCD": {
+    MCD: {
       id: "MCD",
       label: "McDonald's Corporation",
       symbol: "MCD",
@@ -1026,7 +1025,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MDT": {
+    MDT: {
       id: "MDT",
       label: "Medtronic plc",
       symbol: "MDT",
@@ -1047,7 +1046,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "QQQ": {
+    QQQ: {
       id: "QQQ",
       label: "Nasdaq, Inc.",
       symbol: "QQQ",
@@ -1067,7 +1066,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "NVO": {
+    NVO: {
       id: "NVO",
       label: "Novo Nordisk A/S",
       symbol: "NVO",
@@ -1088,7 +1087,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "ORCL": {
+    ORCL: {
       id: "ORCL",
       label: "Oracle Corporation",
       symbol: "ORCL",
@@ -1109,7 +1108,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "PLTR": {
+    PLTR: {
       id: "PLTR",
       label: "Palantir Technologies Inc.",
       symbol: "PLTR",
@@ -1130,7 +1129,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "PM": {
+    PM: {
       id: "PM",
       label: "Philip Morris International Inc.",
       symbol: "PM",
@@ -1151,7 +1150,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "HOOD": {
+    HOOD: {
       id: "HOOD",
       label: "Robinhood Markets, Inc.",
       symbol: "HOOD",
@@ -1172,7 +1171,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "CRM": {
+    CRM: {
       id: "CRM",
       label: "Salesforce, Inc.",
       symbol: "CRM",
@@ -1193,7 +1192,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "TMO": {
+    TMO: {
       id: "TMO",
       label: "Thermo Fisher Scientific Inc.",
       symbol: "TMO",
@@ -1214,7 +1213,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "MSTR": {
+    MSTR: {
       id: "MSTR",
       label: "MicroStrategy, Inc.",
       symbol: "MSTR",
@@ -1235,7 +1234,7 @@ const initialState: AssetsState = {
         isOpen: false,
       },
     },
-    "GME": {
+    GME: {
       id: "GME",
       label: "GameStop Corp. Class A, Inc.",
       symbol: "GME",
@@ -1592,10 +1591,10 @@ export const selectAsset = (state: RootState, asset: string) =>
   state.assets.assets[asset];
 */
 export const selectAssetId = (_: RootState, assetId: Asset["id"]) => assetId;
-export const selectAsset = (
-  state: RootState,
-  assetId: Asset["id"]
-) => state.assets.assets[assetId];
+export const selectAssetIdArray = (_: RootState, assetIdArray: Asset["id"][]) =>
+  assetIdArray;
+export const selectAsset = (state: RootState, assetId: Asset["id"]) =>
+  state.assets.assets[assetId];
 export const selectAssets = (state: RootState) => state.assets;
 export const selectAssetGroupId = (_: RootState, groupId: AssetGroup["id"]) =>
   groupId;
@@ -1603,15 +1602,35 @@ export const selectAssetDashboardId = (
   _: RootState,
   dashboardId: Asset["dashboardId"]
 ) => dashboardId;
-/*
-export const selectAssetId = (
-  _: RootState,
-  assetId: Asset["assetId"]
-) => assetId;
- */
 
 export const selectAssetsArray = createSelector([selectAssets], (assets) =>
   assets.assetIds.map((assetId) => assets.assets[assetId])
+);
+
+export const selectAssetsByArray = createSelector(
+  [selectAssets, selectAssetIdArray],
+  (assets, assetIdArray) => {
+    return assets.assetIds
+      .filter((id) => assetIdArray.includes(id))
+      .map((assetId) => assets.assets[assetId]);
+  }
+);
+
+export const selectAssetsWithBalanceUSDByArray = createSelector(
+  [selectAssets, selectAssetIdArray],
+  (assets, assetIdArray) => {
+    const _assets = assets.assetIds
+      .filter((id) => assetIdArray.includes(id))
+      .map((assetId) => assets.assets[assetId]);
+
+    return _assets.map((asset) => {
+      // Each asset has its own balance and exchange rate
+      const balance = asset.balance || 0;
+      let balanceUSD = balance * (asset.exchangeRateUSD || 0);
+      balanceUSD = Math.floor(balanceUSD * 100) / 100;
+      return { ...asset, balance, balanceUSD };
+    });
+  }
 );
 
 export const selectAssetsGroupsArray = createSelector(
@@ -1655,7 +1674,7 @@ export const selectAssetsBalanceUSDByDashboardId = createSelector(
 export const selectAssetsBalanceUSD = createSelector(
   [selectAssets],
   (assets) => {
-    const allAssets = assets.assetIds.map((assetId, index) => {
+    const allAssets = assets.assetIds.map((assetId) => {
       const asset = assets.assets[assetId];
 
       if (!asset) {
@@ -1748,7 +1767,6 @@ export const selectAssetsWithBalance = createSelector(
 );
 */
 
-
 export const selectAssetsWithBalance = createSelector(
   [selectAssets],
   (assets) => {
@@ -1770,9 +1788,7 @@ export const selectAssetWithBalance = createSelector(
   [selectAssetsWithBalance, selectAssetId],
   (assetsWithBalance, assetId) => {
     // find assets
-    const [result] = assetsWithBalance.filter(
-      (asset) => asset.id === assetId
-    );
+    const [result] = assetsWithBalance.filter((asset) => asset.id === assetId);
     return result;
   }
 );
@@ -1797,23 +1813,20 @@ export const selectAssetBalanceUSD = createSelector(
 );
 */
 
-export const selectAssetBalanceUSD = createSelector(
-  [selectAsset],
-  (asset) => {
-    if (!asset) {
-      console.error(`selectAssetBalanceUSD - ERROR: assetId ${assetId} is not found in assets.assets`);
-    }
-    return Math.floor(asset.balance * asset.exchangeRateUSD * 100) / 100;
+export const selectAssetBalanceUSD = createSelector([selectAsset], (asset) => {
+  if (!asset) {
+    console.error(
+      `selectAssetBalanceUSD - ERROR: assetId ${assetId} is not found in assets.assets`
+    );
   }
-);
+  return Math.floor(asset.balance * asset.exchangeRateUSD * 100) / 100;
+});
 
 export const selectAssetsWithBalanceByGroup = createSelector(
   [selectAssetsWithBalance, selectAssetGroupId],
   (assetsWithBalance, groupId) => {
     // find assets
-    return assetsWithBalance.filter(
-      (asset) => asset.groupId === groupId
-    );
+    return assetsWithBalance.filter((asset) => asset.groupId === groupId);
   }
 );
 
@@ -1872,55 +1885,57 @@ export const selectMintAddress = createSelector(
 export const getMintAddress = (assetId: string): string | null => {
   const asset = initialState.assets[assetId];
   if (!asset) {
-
     // Special cases
     if (assetId == "USDT") {
       return USDT_MINT_ADDRESS;
     } else if (assetId == "PYUSD") {
       return PYUSD_MINT_ADDRESS;
     } else {
-      console.error(`getMintAddress - ERROR: assetId ${assetId} is not found in initialState.assets`);
+      console.error(
+        `getMintAddress - ERROR: assetId ${assetId} is not found in initialState.assets`
+      );
     }
-    
   }
   return asset ? asset.mintAddress : null;
 };
 
 // Simple utility function to get token program address from mint address (doesn't require Redux state)
-export const getTokenProgramAddressFromMintAddress = (mintAddress: string): string | null => {
+export const getTokenProgramAddressFromMintAddress = (
+  mintAddress: string
+): string | null => {
   const asset = Object.values(initialState.assets).find(
     (asset) => asset.mintAddress === mintAddress
   );
   if (!asset) {
-
     // Special cases
     if (mintAddress == "USDT") {
       return "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
     } else if (mintAddress == "PYUSD") {
       return "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
     } else {
-      console.error(`getTokenProgramAddress - ERROR: mintAddress ${mintAddress} is not found in initialState.assets`);
+      console.error(
+        `getTokenProgramAddress - ERROR: mintAddress ${mintAddress} is not found in initialState.assets`
+      );
     }
-    
   }
   return asset ? asset.tokenProgram : null;
 };
 
 // utility function to get all assets with their mint addresses and token programs
 export const getAllAssetsWithMintAddresses = () => {
-  return Object.values(initialState.assets).map(asset => ({
+  return Object.values(initialState.assets).map((asset) => ({
     id: asset.id,
     symbol: asset.symbol,
     mintAddress: asset.mintAddress,
     tokenProgram: asset.tokenProgram,
-    decimals: asset.decimals
+    decimals: asset.decimals,
   }));
 };
 
 // utility function to create a map of mint address to asset ID
 export const getMintAddressToAssetIdMap = () => {
   const map: Record<string, string> = {};
-  Object.values(initialState.assets).forEach(asset => {
+  Object.values(initialState.assets).forEach((asset) => {
     map[asset.mintAddress] = asset.id;
   });
   return map;
@@ -1929,7 +1944,7 @@ export const getMintAddressToAssetIdMap = () => {
 // utility function to create a map of asset ID to mint address
 export const getAssetIdToMintAddressMap = () => {
   const map: Record<string, string> = {};
-  Object.values(initialState.assets).forEach(asset => {
+  Object.values(initialState.assets).forEach((asset) => {
     map[asset.id] = asset.mintAddress;
   });
   return map;
@@ -1938,7 +1953,7 @@ export const getAssetIdToMintAddressMap = () => {
 // utility function to get assets by token program
 export const getAssetsByTokenProgram = (tokenProgram: string) => {
   return Object.values(initialState.assets).filter(
-    asset => asset.tokenProgram === tokenProgram
+    (asset) => asset.tokenProgram === tokenProgram
   );
 };
 

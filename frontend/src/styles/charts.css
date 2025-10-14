@@ -1,0 +1,105 @@
+.stock-chart {
+  .stock-balance {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    .balance {
+      font-size: 26px !important;
+      font-weight: var(--fw-heading);
+      line-height: 30px;
+      color: var(--clr-text);
+    }
+    .date {
+      font-size: 13px !important;
+      line-height: 16px;
+      color: var(--clr-text-weaker);
+    }
+  }
+}
+
+.highcharts-tooltip .highcharts-label-box {
+  fill: var(--clr-white) !important;
+}
+
+.pie-chart-3d {
+  .stock-balance {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    .balance {
+      font-size: 26px !important;
+      font-weight: var(--fw-heading);
+      line-height: 30px;
+      color: var(--clr-text);
+    }
+    .date {
+      font-size: 13px !important;
+      line-height: 16px;
+      color: var(--clr-text-weaker);
+    }
+  }
+
+  .highcharts-tooltip .highcharts-label-box {
+    fill: var(--clr-neutral-900) !important;
+  }
+}
+
+:is(.earn-breakdown-pie-chart, .earn-pie-chart) {
+  .pie-chart-tooltip {
+    background-color: var(--clr-neutral-900);
+    border-radius: var(--border-radius-medium);
+    & .highcharts-tooltip-box {
+      fill: var(--clr-neutral-900) !important;
+    }
+    .point-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      & .name {
+        font-size: var(--fs-xx-small);
+        text-align: center;
+        color: var(--clr-white);
+      }
+      & .amount {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--size-050);
+        font-size: var(--fs-small);
+        text-align: center;
+        font-weight: 700;
+        margin-block-start: var(--size-025);
+        color: var(--clr-white);
+      }
+    }
+  }
+}
+
+.pie-chart-3d {
+  .pie-chart-3d-tooltip {
+    background-color: var(--clr-neutral-900);
+    border-radius: var(--border-radius-medium);
+    & .highcharts-tooltip-box {
+      fill: var(--clr-neutral-900) !important;
+    }
+    .point-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      & .name {
+        font-size: var(--fs-xx-small);
+        text-align: center;
+        color: var(--clr-white);
+      }
+      & .amount {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--size-050);
+        font-size: var(--fs-small);
+        text-align: center;
+        font-weight: 700;
+        margin-block-start: var(--size-025);
+        color: var(--clr-white);
+      }
+    }
+  }
+}

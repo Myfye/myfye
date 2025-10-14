@@ -44,6 +44,7 @@ import { base } from "viem/chains";
 import Button from "@/shared/components/ui/button/Button.tsx";
 import MFAOnboardingPage from "./pages/app/mfa/MFAOnboardingPage.tsx";
 import { useAppDispatch, useAppSelector } from "./redux/hooks.tsx";
+import ActivityOverlay from "./features/activity/ActivityOverlay.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;
@@ -123,7 +124,7 @@ function WebAppInner() {
     };
     handleLogin();
   }, [authenticated, user]);
-/*
+  /*
   useEffect(() => {
     const listenForUSDCBase = async () => {
       const usdcBaseBalance = await getUSDCBalanceOnBase(
@@ -276,6 +277,7 @@ function WebAppInner() {
       <QRCodeModal />
       <SwapModal />
       <AltUSDModal />
+      <ActivityOverlay />
       <KYCOverlay zIndex={99999} />
       <PrivyUseSolanaWallets />
       <Toaster />

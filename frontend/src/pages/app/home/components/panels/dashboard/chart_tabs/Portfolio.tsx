@@ -169,7 +169,7 @@ const Portfolio = () => {
           css={css`
             width: auto;
             height: calc(1.4em * var(--line-height-heading));
-            transform: translateY(-0.2rem);
+            transform: translateY(-0.22rem);
           `}
         />
         <span>Portfolio</span>

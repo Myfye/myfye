@@ -34,7 +34,9 @@ import { solanaApi } from "@/features/solana/solanaApi.ts";
 import { depositApi } from "@/features/onOffRamp/deposit/depositApi.ts";
 import { baseRelayerApi } from "@/features/base_relayer/baseRelayerApi.ts";
 import { withdrawApi } from "@/features/onOffRamp/withdraw/withdrawApi.ts";
-import ctaCarouselReducer from "@/pages/app/home/components/panels/dashboard/cta-carousel/ctaCarouselSlice.ts";
+import ctaCarouselReducer from "@/shared/components/ui/cta-carousel/ctaCarouselSlice.ts";
+import { activityApi } from "@/features/activity/activityApi.ts";
+import activityReducer from "@/features/activity/activitySlice.ts";
 
 const store = configureStore({
   reducer: {
@@ -56,6 +58,8 @@ const store = configureStore({
     // Coin overlay
     // USE SPECIFIC SLICES NOT THESE
     coinSummaryOverlay: coinSummaryOverlayReducer,
+
+    activity: activityReducer,
 
     // Swap
     swap: swapReducer,
@@ -98,6 +102,7 @@ const store = configureStore({
     [depositApi.reducerPath]: depositApi.reducer,
     [withdrawApi.reducerPath]: withdrawApi.reducer,
     [baseRelayerApi.reducerPath]: baseRelayerApi.reducer,
+    [activityApi.reducerPath]: activityApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
@@ -107,6 +112,7 @@ const store = configureStore({
       depositApi.middleware,
       withdrawApi.middleware,
       baseRelayerApi.middleware,
+      activityApi.middleware,
     ]),
 });
 

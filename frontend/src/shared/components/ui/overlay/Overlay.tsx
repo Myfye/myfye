@@ -168,7 +168,7 @@ const Overlay = ({
                     )}
                   </Header>
                   <main
-                    className="overlay-scroll"
+                    className="overlay-scroll | no-scrollbar"
                     css={css`
                       container: overlay-main / size;
                       overflow-y: auto;

@@ -1,5 +1,6 @@
 import { HTMLProps } from "react";
 import { ButtonGroupContext } from "./ButtonGroupContext";
+import { css } from "@emotion/react";
 
 interface ButtonGroupProps extends Omit<HTMLProps<HTMLMenuElement>, "size"> {
   /** Button sizes */
@@ -17,13 +18,13 @@ const ButtonGroup = ({
   size = "medium",
   direction = "horizontal",
   expand = false,
-  scroll = true,
+  scroll = false,
   ...restProps
 }: ButtonGroupProps) => {
   return (
     <ButtonGroupContext value={{ size, expand }}>
       <menu
-        className="button-group no-scrollbar"
+        className="button-group | no-scrollbar"
         data-size={size}
         data-direction={direction}
         data-scroll={scroll}
