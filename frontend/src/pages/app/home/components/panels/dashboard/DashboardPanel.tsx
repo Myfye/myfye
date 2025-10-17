@@ -5,11 +5,9 @@ import {
   ArrowLineDownIcon,
   ArrowLineUpIcon,
   ChartLineUpIcon,
-  CurrencyBtcIcon,
   CurrencyCircleDollarIcon,
   PiggyBankIcon,
 } from "@phosphor-icons/react";
-import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import {
   selectAssetsBalanceUSD,
@@ -20,7 +18,6 @@ import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSli
 import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
 import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
 import { toggleModal as toggleWithdrawModal } from "@/features/onOffRamp/withdraw/withdrawSlice";
-import Portfolio from "./chart_tabs/Portfolio";
 import CTACarousel from "../../../../../../shared/components/ui/cta-carousel/CTACarousel";
 import bitcoinIcon from "@/assets/svgs/coins/btc-coin.svg";
 import { togglePopup } from "../../../../../../shared/components/ui/cta-carousel/ctaCarouselSlice";
