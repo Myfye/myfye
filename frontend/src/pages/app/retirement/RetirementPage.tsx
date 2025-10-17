@@ -37,6 +37,23 @@ import { useSolanaWallets } from "@privy-io/react-auth";
 import { PointOptionsObject } from "highcharts";
 import { useRef, useState } from "react";
 
+const generatePieChartData = (spyAmount: number, qqqAmount: number) => {
+  const data: PointOptionsObject[] = [];
+  if (spyAmount > 0) {
+    const spyData = { name: "SPY", color: "var(--clr-primary)", y: spyAmount };
+    data.push(spyData);
+  }
+  if (qqqAmount > 0) {
+    const qqqData = {
+      name: "QQQ",
+      color: "var(--clr-secondary)",
+      y: qqqAmount,
+    };
+    data.push(qqqData);
+  }
+  return data;
+};
+
 const RetirementPage = () => {
   const dispatch = useAppDispatch();
   const qqqAmount = useAppSelector((state) =>
@@ -48,10 +65,7 @@ const RetirementPage = () => {
 
   const totalBalance = qqqAmount + spyAmount;
 
-  const pieChartData = [
-    { name: "SPY", color: "var(--clr-primary)", y: spyAmount },
-    { name: "QQQ", color: "var(--clr-secondary)", y: qqqAmount },
-  ] satisfies PointOptionsObject[];
+  const pieChartData = generatePieChartData(spyAmount, qqqAmount);
 
   const slides = [
     {

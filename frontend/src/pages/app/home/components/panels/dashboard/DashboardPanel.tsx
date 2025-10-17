@@ -6,6 +6,7 @@ import {
   ArrowLineUpIcon,
   ChartLineUpIcon,
   CurrencyBtcIcon,
+  CurrencyCircleDollarIcon,
   PiggyBankIcon,
 } from "@phosphor-icons/react";
 import { css } from "@emotion/react";
@@ -112,14 +113,6 @@ const DashboardPanel = ({}) => {
               Send
             </ButtonGroupItem>
             <ButtonGroupItem
-              icon={ArrowCircleUpIcon}
-              onPress={() => {
-                dispatch(toggleSendModal({ isOpen: true }));
-              }}
-            >
-              Send
-            </ButtonGroupItem>
-            <ButtonGroupItem
               icon={ArrowCircleDownIcon}
               onPress={() => {
                 dispatch(toggleReceiveModal(true));
@@ -151,13 +144,13 @@ const DashboardPanel = ({}) => {
           )}
           {totalBalance === 0 && (
             <ZeroBalanceCard
-              image={{ src: CurrencyBtcIcon, alt: "Bitcoin" }}
+              image={{ src: CurrencyCircleDollarIcon, alt: "US Dollar" }}
               title="Swap, send, and receive money, crypto, and stocks with MyFye"
               caption="Get started by depositing funds."
               action={() => {
                 dispatch(toggleSwapModal({ isOpen: true }));
               }}
-              cta="Swap crypto"
+              cta="Deposit funds"
             />
           )}
         </Section>
