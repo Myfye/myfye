@@ -59,6 +59,7 @@ const CTACarousel = ({ slides }: CTACarouselProps) => {
               display: block;
               width: 100%;
               padding-inline: var(--size-250);
+              user-select: none;
             `}
           >
             <IconCard

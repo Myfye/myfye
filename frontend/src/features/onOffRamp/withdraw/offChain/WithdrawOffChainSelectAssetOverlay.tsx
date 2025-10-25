@@ -4,8 +4,8 @@ import {
   selectAsset,
   selectAssetsWithBalanceByGroup,
   selectAsset,
-} from "@/features/assets/assetsSlice";
-import SelectAssetOverlay from "@/features/assets/SelectAssetOverlay";
+} from "@/features/assets/stores/assetsSlice";
+import SelectAssetOverlay from "@/features/assets/components/SelectAssetOverlay";
 import { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
 import { updateAmountDisplay } from "./withdrawOffChainThunks";
 import { toggleOverlay } from "./withdrawOffChainSlice";
@@ -20,10 +20,7 @@ const WithdrawOffChainSelectAssetOverlay = ({ ...restProps }: OverlayProps) => {
 
   const asset = useAppSelector((state) =>
     state.withdrawOffChain.transaction.assetId
-      ? selectAsset(
-          state,
-          state.withdrawOffChain.transaction.assetId
-        )
+      ? selectAsset(state, state.withdrawOffChain.transaction.assetId)
       : null
   );
 

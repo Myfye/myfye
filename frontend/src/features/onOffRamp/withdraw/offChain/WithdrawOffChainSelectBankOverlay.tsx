@@ -2,14 +2,13 @@ import { css } from "@emotion/react";
 import { useDispatch } from "react-redux";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
-import { useGetUserBankAccountsQuery } from "@/features/users/usersApi";
-import { 
-  toggleOverlay, 
-  updateBankInfo, 
-  setBankAccountsLoading, 
-  setBankAccountsError, 
+import {
+  toggleOverlay,
+  updateBankInfo,
+  setBankAccountsLoading,
+  setBankAccountsError,
   setBankAccounts,
-  clearBankAccounts
+  clearBankAccounts,
 } from "./withdrawOffChainSlice.ts";
 import { BankAccountResponse } from "./withdrawOffChain.types";
 import NoBankScreen from "./_components/NoBankScreen.tsx";
@@ -20,6 +19,7 @@ import { Button as AriaButton } from "react-aria-components";
 import IconCard from "@/shared/components/ui/card/IconCard.tsx";
 import truncateBankAccountNumber from "@/shared/utils/bankUtils.ts";
 import { useEffect } from "react";
+import { useGetUserBankAccountsQuery } from "@/features/users/api/usersApi.ts";
 
 const WithdrawOffChainSelectBankOverlay = () => {
   const dispatch = useDispatch();
@@ -54,8 +54,10 @@ const WithdrawOffChainSelectBankOverlay = () => {
   };
 
   // Get bank accounts from Redux state
-  const bankAccounts = useAppSelector((state) => state.withdrawOffChain.bankAccounts);
-  
+  const bankAccounts = useAppSelector(
+    (state) => state.withdrawOffChain.bankAccounts
+  );
+
   // Use RTK Query to fetch bank accounts and sync with Redux state
   const {
     isError,
@@ -76,32 +78,38 @@ const WithdrawOffChainSelectBankOverlay = () => {
       dispatch(setBankAccountsLoading(false));
       dispatch(setBankAccountsError(true));
     } else if (isSuccess && bankAccountsData) {
-      console.log('Processing bank accounts data:', bankAccountsData);
-      console.log('Data type:', typeof bankAccountsData);
-      console.log('Is array:', Array.isArray(bankAccountsData));
-      
+      console.log("Processing bank accounts data:", bankAccountsData);
+      console.log("Data type:", typeof bankAccountsData);
+      console.log("Is array:", Array.isArray(bankAccountsData));
+
       // Handle the response structure - it should have success, data, and message
       let accountsArray: BankAccountResponse[] = [];
-      
-      if (bankAccountsData && typeof bankAccountsData === 'object' && 'success' in bankAccountsData) {
+
+      if (
+        bankAccountsData &&
+        typeof bankAccountsData === "object" &&
+        "success" in bankAccountsData
+      ) {
         if (bankAccountsData.success && bankAccountsData.data) {
-          accountsArray = Array.isArray(bankAccountsData.data) ? bankAccountsData.data : [];
+          accountsArray = Array.isArray(bankAccountsData.data)
+            ? bankAccountsData.data
+            : [];
         }
       }
-      
-      console.log('Processed accounts array:', accountsArray);
-      
+
+      console.log("Processed accounts array:", accountsArray);
+
       // Debug each account to see the structure
       accountsArray.forEach((account, index) => {
         console.log(`Account ${index}:`, account);
       });
-      
+
       // Transform the data to match our BankAccount interface
       const transformedData = accountsArray
         .filter((account: BankAccountResponse) => {
           const hasValidData = account.id && account.name && account.spei_clabe;
           if (!hasValidData) {
-            console.log('Filtering out account with invalid data:', account);
+            console.log("Filtering out account with invalid data:", account);
           }
           return hasValidData;
         })
@@ -112,8 +120,8 @@ const WithdrawOffChainSelectBankOverlay = () => {
           spei_institution_code: account.spei_institution_code,
           spei_clabe: account.spei_clabe,
         }));
-      
-      console.log('Transformed data:', transformedData);
+
+      console.log("Transformed data:", transformedData);
       dispatch(setBankAccounts(transformedData));
     }
   }, [isLoading, isError, isSuccess, bankAccountsData, dispatch]);
@@ -126,7 +134,7 @@ const WithdrawOffChainSelectBankOverlay = () => {
   }, [dispatch]);
 
   // Log state for debugging
-  console.log('WithdrawOffChainSelectBankOverlay State:', {
+  console.log("WithdrawOffChainSelectBankOverlay State:", {
     reduxBankAccounts: bankAccounts,
     rtkQueryState: { isError, isLoading, isSuccess },
     rtkQueryData: bankAccountsData,
@@ -136,7 +144,7 @@ const WithdrawOffChainSelectBankOverlay = () => {
 
   if (bankAccounts.isError) {
     // Log detailed error information for debugging
-    console.error('WithdrawOffChainSelectBankOverlay Error Details:', {
+    console.error("WithdrawOffChainSelectBankOverlay Error Details:", {
       reduxError: bankAccounts.isError,
       rtkQueryError: isError,
       userId,
@@ -193,11 +201,15 @@ const WithdrawOffChainSelectBankOverlay = () => {
                   again.
                 </p>
               </div>
-              <Button onPress={() => {
-                dispatch(setBankAccountsLoading(true));
-                dispatch(setBankAccountsError(false));
-                refetch();
-              }} isLoading={bankAccounts.isLoading} expand>
+              <Button
+                onPress={() => {
+                  dispatch(setBankAccountsLoading(true));
+                  dispatch(setBankAccountsError(false));
+                  refetch();
+                }}
+                isLoading={bankAccounts.isLoading}
+                expand
+              >
                 Retry
               </Button>
             </section>

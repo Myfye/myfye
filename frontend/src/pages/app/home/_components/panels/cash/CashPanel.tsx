@@ -1,0 +1,21 @@
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import {
+  selectAssetsWithBalanceByDashboard,
+  selectAssetsBalanceUSDByDashboardId,
+} from "@/features/assets/stores/assetsSlice";
+import AssetPanel from "../../AssetPanel";
+
+const CashPanel = ({}) => {
+  const cashAssets = useSelector((state: RootState) =>
+    selectAssetsWithBalanceByDashboard(state, "cash")
+  );
+
+  const balanceUSD = useSelector((state: RootState) =>
+    selectAssetsBalanceUSDByDashboardId(state, "cash")
+  );
+
+  return <AssetPanel balance={balanceUSD} assets={cashAssets} />;
+};
+
+export default CashPanel;

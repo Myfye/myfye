@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@/redux/hooks";
 import Button from "@/shared/components/ui/button/Button";
 import { css } from "@emotion/react";
-import { Bank, Plus } from "@phosphor-icons/react";
+import { Bank, BankIcon, Plus } from "@phosphor-icons/react";
 import { toggleOverlay } from "../withdrawOffChainSlice";
 
 const NoBankScreen = () => {
@@ -20,14 +20,14 @@ const NoBankScreen = () => {
           width: 8rem;
           aspect-ratio: 1;
           border-radius: var(--border-radius-circle);
-          background-color: var(--clr-green-200);
+          background-color: var(--clr-green-100);
           margin-inline: auto;
         `}
       >
-        <Bank
+        <BankIcon
           width={80}
           height={80}
-          color="var(--clr-green-700)"
+          color="var(--clr-primary)"
           weight="light"
         />
       </div>

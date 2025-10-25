@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "@/features/users/users.types";
+import { User } from "@/features/users/types/users.types";
 
 export interface UserWalletDataState {
   wallet: any;
@@ -60,6 +60,7 @@ export interface UserWalletDataState {
   users: User[];
   blindPayEvmWalletId: string;
   blindPayReceiverId: string;
+  privyUserId: string;
 }
 
 const initialUserWalletData: UserWalletDataState = {

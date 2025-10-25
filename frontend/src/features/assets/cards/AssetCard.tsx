@@ -1,32 +1,27 @@
 import { css } from "@emotion/react";
-import AssetIcon from "../AssetIcon";
+import AssetIcon from "../components/AssetIcon";
 import { HTMLAttributes, RefObject, useState } from "react";
 
-import { formatBalance } from "../utils";
-import { Asset } from "../types";
-import { useSelector } from "react-redux";
-
+import { formatBalance } from "../utils/utils";
+import { Asset } from "../types/types";
 import {
   MenuTrigger,
-  Button as AriaButton,
   Popover,
   Menu,
   MenuItem,
   Button,
 } from "react-aria-components";
-import {
-  ArrowCircleDown,
-  ArrowCircleUp,
-  ArrowLineDown,
-  DotsThreeVertical,
-} from "@phosphor-icons/react";
-import { useDispatch } from "react-redux";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
-import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
-import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
-import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
-import { RootState } from "@/redux/store";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/stores/sendSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/stores/receiveSlice";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/stores/kycSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  ArrowCircleDownIcon,
+  ArrowCircleUpIcon,
+  ArrowLineDownIcon,
+  DotsThreeVerticalIcon,
+} from "@phosphor-icons/react";
 
 interface AssetCardProps extends HTMLAttributes<HTMLDivElement> {
   id: Asset["id"];
@@ -198,7 +193,7 @@ const AssetCard = ({
               border: 1px solid var(--clr-neutral-300);
             `}
           >
-            <DotsThreeVertical size={20} />
+            <DotsThreeVerticalIcon size={20} />
           </Button>
           <Popover placement="bottom end">
             <Menu
@@ -229,7 +224,7 @@ const AssetCard = ({
                     dispatch(toggleSendModal({ isOpen: true, assetId: id }))
                   }
                 >
-                  <ArrowCircleUp
+                  <ArrowCircleUpIcon
                     size={16}
                     css={css`
                       margin-inline-end: var(--size-100);
@@ -252,7 +247,7 @@ const AssetCard = ({
                   `}
                   onAction={handleReceiveClick}
                 >
-                  <ArrowCircleDown
+                  <ArrowCircleDownIcon
                     size={16}
                     css={css`
                       margin-inline-end: var(--size-100);
@@ -274,7 +269,7 @@ const AssetCard = ({
                 `}
                 onAction={handleSwapClick}
               >
-                <ArrowLineDown
+                <ArrowLineDownIcon
                   size={16}
                   css={css`
                     margin-inline-end: var(--size-100);

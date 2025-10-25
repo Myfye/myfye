@@ -1,13 +1,19 @@
+import createVerticalScrollableLegend from "@/features/highcharts/createVerticalScrollableLegend";
 import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";
 import { css } from "@emotion/react";
 import Highcharts, { Point } from "highcharts";
-import HighchartsReact from "highcharts-react-official";
+import HighchartsReact, {
+  HighchartsReactRefObject,
+} from "highcharts-react-official";
 import "highcharts/highcharts-3d";
+import { useEffect, useRef } from "react";
 
 export type PieChart3DProps = {
   name: string;
   data: Highcharts.PointOptionsObject[];
 };
+
+createVerticalScrollableLegend(Highcharts);
 
 const generateOptions = ({
   name,
@@ -15,7 +21,7 @@ const generateOptions = ({
 }: PieChart3DProps): Highcharts.Options => {
   const options = {
     chart: {
-      className: "pie-chart-3d",
+      className: "pie-chart-3d " + `${name}-pie-chart-3d`,
       type: "pie",
       width: 320,
       height: 300,
@@ -69,10 +75,10 @@ const generateOptions = ({
       verticalAlign: "middle",
       layout: "vertical",
       x: 10,
-      y: -60,
+      y: -50,
       width: 120,
-      itemMarginTop: 4,
-      itemMarginBottom: 4,
+      itemMarginTop: 2,
+      itemMarginBottom: 2,
       itemStyle: {
         fontSize: "13px",
         fontFamily: "Inter",
@@ -95,6 +101,47 @@ const generateOptions = ({
           return "";
         }
       },
+      navigation: {
+        enabled: false,
+      },
+      custom: {
+        scrollableLegendArea: {
+          minHeight: 160,
+        },
+      },
+      // backgroundColor: "transparent",
+      // enabled: true,
+      // floating: true,
+      // align: "right",
+      // verticalAlign: "middle",
+      // layout: "vertical",
+      // x: 10,
+      // y: -60,
+      // width: 120,
+      // itemMarginTop: 4,
+      // itemMarginBottom: 4,
+      // itemStyle: {
+      //   fontSize: "13px",
+      //   fontFamily: "Inter",
+      //   color: "var(--clr-text)",
+      // },
+      // useHTML: true,
+      // labelFormatter: function () {
+      //   if (this instanceof Point) {
+      //     return (
+      //       "<span class='legend'>" +
+      //       "<span class='currency'>" +
+      //       `<span>${this.name} ${Math.round(this?.percentage ?? 0)}%</span>` +
+      //       "</span>" +
+      //       "<span class='balance'>" +
+      //       formatAmountWithCurrency(this?.y ?? 0) +
+      //       "</span>" +
+      //       "<span>"
+      //     );
+      //   } else {
+      //     return "";
+      //   }
+      // },
     },
     series: [
       {
@@ -109,6 +156,36 @@ const generateOptions = ({
 
 const PieChart3D = ({ name, data }: PieChart3DProps) => {
   const options = generateOptions({ name, data });
+  const highchartsRef = useRef<HighchartsReactRefObject>(null!);
+  useEffect(() => {
+    const legendEl = highchartsRef.current.chart.legend.group
+      .div as HTMLDivElement;
+    const handleScroll = (e: Event) => {
+      if (!legendEl) return;
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (!legendEl.dataset.scrollTop && target.scrollTop === 0) {
+        legendEl.setAttribute("data-scroll-top", "true");
+      }
+      if (!legendEl.dataset.scrollBottom && target.scrollTop !== 0) {
+        legendEl.setAttribute("data-scroll-top", "false");
+      }
+      console.log(target.scrollHeight - target.offsetHeight, target.scrollTop);
+      if (target.scrollTop < 50) {
+        legendEl.setAttribute("data-scroll-top", "true");
+      } else if (
+        target.scrollTop >
+        target.scrollHeight - 50 - target.offsetHeight
+      ) {
+        legendEl.setAttribute("data-scroll-bottom", "true");
+      } else {
+        legendEl.setAttribute("data-scroll-top", "false");
+        legendEl.setAttribute("data-scroll-bottom", "false");
+      }
+    };
+    legendEl.addEventListener("scroll", handleScroll);
+    return () => document.removeEventListener("scroll", handleScroll);
+  });
   return (
     <div
       className="pie-chart-3d-wrapper"
@@ -117,7 +194,11 @@ const PieChart3D = ({ name, data }: PieChart3DProps) => {
         overflow: hidden;
       `}
     >
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <HighchartsReact
+        highcharts={Highcharts}
+        options={options}
+        ref={highchartsRef}
+      />
     </div>
   );
 };

@@ -3,7 +3,7 @@ import {
   selectAssetBalanceUSD,
   selectAssetsWithBalanceByGroup,
   toggleGroupOverlay,
-} from "@/features/assets/assetsSlice";
+} from "@/features/assets/stores/assetsSlice";
 import Stack from "@/shared/components/ui/primitives/stack/Stack";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import BalanceCard from "@/shared/components/ui/card/BalanceCard";
@@ -17,9 +17,9 @@ import {
   HandArrowDownIcon,
   HandDepositIcon,
 } from "@phosphor-icons/react";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
-import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
-import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/stores/sendSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/stores/receiveSlice";
 import Section from "@/shared/components/layout/section/Section";
 import PieChart3DCard from "@/shared/components/ui/charts/pie/PieChart3DCard";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -27,72 +27,51 @@ import Inline from "@/shared/components/ui/primitives/inline/Inline";
 import Heading from "@/shared/components/ui/text/Heading";
 import CTACarousel from "@/shared/components/ui/cta-carousel/CTACarousel";
 import ZeroBalanceCard from "@/shared/components/ui/card/ZeroBalanceCard";
-import { PointOptionsObject } from "highcharts";
 import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
-
-const generatePieChartData = (
-  usdBalance: number,
-  euroBalanceUSD: number,
-  mxnBalanceUSD: number
-) => {
-  const data = [];
-  if (usdBalance > 0) {
-    const cashData = {
-      name: "USD",
-      y: usdBalance,
-      color: "var(--clr-green)",
-    };
-    data.push(cashData);
-  }
-  if (euroBalanceUSD > 0) {
-    const euroData = {
-      name: "EUR",
-      y: euroBalanceUSD,
-      color: "var(--clr-blue)",
-    };
-    data.push(euroData);
-  }
-  if (mxnBalanceUSD > 0) {
-    const pesoData = {
-      name: "MXN",
-      y: mxnBalanceUSD,
-      color: "var(--clr-purple)",
-    };
-    data.push(pesoData);
-  }
-  return data satisfies PointOptionsObject[];
-};
 
 const CashOverlay = () => {
   const dispatch = useAppDispatch();
 
   const isOpen = useAppSelector(
-    (state) => state.assets.groups["cash"].overlay.isOpen
+    (state) => state.assets.groups["cash"].overlay?.isOpen
   );
 
   const assets = useAppSelector((state) =>
     selectAssetsWithBalanceByGroup(state, "cash")
   );
 
-  const usdBalance = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "USD")
+  const totalBalance = assets.reduce(
+    (acc, current) => acc + current.balanceUSD,
+    0
   );
 
-  const euroBalanceUSD = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "EUR")
-  );
+  const pieChartData = assets.map((asset) => ({
+    name: asset.symbol,
+    y: asset.balanceUSD,
+    color: asset.color,
+  }));
 
-  const mxnBalanceUSD = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "MXN")
-  );
-
-  const totalBalance = usdBalance + euroBalanceUSD + mxnBalanceUSD;
-
-  const pieChartData = generatePieChartData(
-    usdBalance,
-    euroBalanceUSD,
-    mxnBalanceUSD
-  );
+  const ctaCarouselSlides = [
+    {
+      title: "Send cash. No bank needed.",
+      caption: "Send cash to your friends and family with no fees.",
+      icon: HandDepositIcon,
+      action: () =>
+        dispatch(
+          toggleSendModal({
+            isOpen: true,
+            assetId: "USD",
+          })
+        ),
+    },
+    {
+      title: "Receive money in an instant",
+      caption:
+        "Show your wallet QR code to receive funds from across the globe",
+      icon: HandArrowDownIcon,
+      action: () => dispatch(toggleReceiveModal(true)),
+    },
+  ];
 
   return (
     <Overlay
@@ -123,7 +102,7 @@ const CashOverlay = () => {
                   toggleSwapModal({
                     isOpen: true,
                     sellAssetId: "USD",
-                    buyAssetId: "QQQ",
+                    buyAssetId: "MXN",
                   })
                 )
               }
@@ -173,29 +152,7 @@ const CashOverlay = () => {
           <AssetCardList assets={assets} showOptions={true} />
         </Section>
         <Section marginBottom="var(--size-100)" padding="none">
-          <CTACarousel
-            slides={[
-              {
-                title: "Send cash. No bank needed.",
-                caption: "Send cash to your friends and family with no fees.",
-                icon: HandDepositIcon,
-                action: () =>
-                  dispatch(
-                    toggleSendModal({
-                      isOpen: true,
-                      assetId: "USD",
-                    })
-                  ),
-              },
-              {
-                title: "Receive money in an instant",
-                caption:
-                  "Show your wallet QR code to receive funds from across the globe",
-                icon: HandArrowDownIcon,
-                action: () => dispatch(toggleReceiveModal(true)),
-              },
-            ]}
-          />
+          <CTACarousel slides={ctaCarouselSlides} />
         </Section>
       </Stack>
     </Overlay>

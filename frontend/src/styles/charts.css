@@ -75,6 +75,39 @@
 }
 
 .pie-chart-3d {
+  & .highcharts-legend {
+    /* isolation: isolate; */
+    /* &[data-scroll-top="true"] {
+      &::before {
+        content: "";
+        display: block;
+        position: sticky;
+        width: 20px;
+        aspect-ratio: 1;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin-inline: auto;
+        z-index: 1;
+        background-color: red;
+      }
+    }
+    &[data-scroll-bottom="true"] {
+      &::after {
+        content: "";
+        display: block;
+        position: sticky;
+        width: 20px;
+        aspect-ratio: 1;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin-inline: auto;
+        z-index: 1;
+        background-color: red;
+      }
+    } */
+  }
   .pie-chart-3d-tooltip {
     background-color: var(--clr-neutral-900);
     border-radius: var(--border-radius-medium);

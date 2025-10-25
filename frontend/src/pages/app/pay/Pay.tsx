@@ -7,14 +7,14 @@ import {
   updateAmount,
   updatePresetAmount,
   updateTransactionType,
-} from "@/features/pay/paySlice";
-import PayController from "@/features/pay/PayController";
-import PaySelectUserOverlay from "@/features/pay/PaySelectUserOverlay";
+} from "@/features/pay/stores/paySlice";
+import PayController from "@/features/pay/components/PayController";
+import PaySelectUserOverlay from "@/features/pay/components/PaySelectUserOverlay";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
-import PaySelectAssetOverlay from "@/features/pay/PaySelectAssetOverlay";
+import PaySelectAssetOverlay from "@/features/pay/components/PaySelectAssetOverlay";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
-import PayConfirmTransactionOverlay from "@/features/pay/PayConfirmTransactionOverlay";
-import ProcessingTransactionOverlay from "@/features/pay/ProcessingTransactionOverlay";
+import PayConfirmTransactionOverlay from "@/features/pay/components/PayConfirmTransactionOverlay";
+import ProcessingTransactionOverlay from "@/features/pay/components/ProcessingTransactionOverlay";
 import { useAppSelector } from "@/redux/hooks";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 
@@ -48,8 +48,7 @@ const Pay = () => {
     }
 
     // Find the specific asset ID that corresponds to the asset ID
-    const sellAsset =
-      assets.assets[transaction.assetId];
+    const sellAsset = assets.assets[transaction.assetId];
     if (!sellAsset) return true;
 
     // Calculate the total balance in USD for this asset

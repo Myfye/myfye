@@ -1,10 +1,9 @@
 :root {
   --clr-white: #f4f6f9;
-  --clr-black: #0d1525;
+  --clr-black: #070c18;
 
-  --clr-orange: #f49d23;
-  --clr-purple: #9d36eb;
-  --clr-blue: #1855d8;
+  --clr-purple: #4741ef;
+  --clr-blue: #28a0eb;
   --clr-red: #e41d1d;
   --clr-green: #11a660;
 
@@ -14,15 +13,65 @@
   --clr-sol: #a05ce6;
   --clr-btc: #f79413;
 
-  --clr-neutral-100: #edf0f2;
-  --clr-neutral-200: #dde4e8;
-  --clr-neutral-300: #c8cdcf;
-  --clr-neutral-400: #929ba1;
-  --clr-neutral-500: #5f696f;
-  --clr-neutral-600: #48535a;
-  --clr-neutral-700: #36424a;
-  --clr-neutral-800: #273138;
-  --clr-neutral-900: #202c33;
+  --clr-cetes: #235b4e;
+  --clr-apple: #000;
+  --clr-amazon: #ff9900;
+  --clr-google: #008744;
+  --clr-nvidia: #76b900;
+  --clr-tesla: #cc0000;
+  --clr-microsoft: #f14f21;
+  --clr-netflix: #e30913;
+  --clr-coca-cola: #f40009;
+  --clr-walmart: #0071ce;
+  --clr-jp-morgan: rgb(27, 127, 158);
+  --clr-lily: #f01716;
+  --clr-jj: #d71500;
+  --clr-visa: #1a1f71;
+  --clr-united-health: #1e3d6a;
+  --clr-exxon: #ed1b2d;
+  --clr-mc: #f79e1b;
+  --clr-pg: #00a1df;
+  --clr-hd: #f96302;
+  --clr-chevron: #e21836;
+  --clr-merck: #007a73;
+  --clr-pfizer: #0095ff;
+  --clr-abbott-labs: #009cde;
+  --clr-abbvie: #071d49;
+  --clr-accenture: #a100ff;
+  --clr-az: #830051;
+  --clr-boa: #0065b3;
+  --clr-berkshire: #2d2d94;
+  --clr-cisco: #00bceb;
+  --clr-coinbase: #0052ff;
+  --clr-comcast: #c9234a;
+  --clr-crowdstrike: #ec0000;
+  --clr-danaher: #dd05ff;
+  --clr-goldman-sachs: #7399c6;
+  --clr-honeywell: #ee3124;
+  --clr-ibm: #0530ad;
+  --clr-intel: #00c7fd;
+  --clr-linde: #018ec6;
+  --clr-marvell: #0071cd;
+  --clr-mcd: #ffd700;
+  --clr-medtronic: #140f4b;
+  --clr-nasdaq: #0092bc;
+  --clr-sp500: rgb(214, 0, 42);
+  --clr-novo-nordisk: #001965;
+  --clr-oracle: #c74634;
+  --clr-palantir: #1b9c9c;
+  --clr-philip-morris: #0074c2;
+  --clr-robinhood: #ccff00;
+  --clr-salesforce: #009edb;
+  --clr-tfs: #ff0000;
+  --clr-microstrategy: #df3741;
+  --clr-gamestop: #fd0000;
+
+  --clr-neutral-050: #e9ebf0;
+  --clr-neutral-100: #e3e8f2;
+  --clr-neutral-300: #abb1bd;
+  --clr-neutral-500: #838996;
+  --clr-neutral-700: #586172;
+  --clr-neutral-900: #242d3f;
 
   --clr-purple-100: #f3ebf6;
   --clr-purple-200: #e4cded;
@@ -34,15 +83,11 @@
   --clr-purple-800: #35034a;
   --clr-purple-900: #2a023b;
 
-  --clr-red-100: #f5e5e0;
-  --clr-red-200: #f2cfc5;
-  --clr-red-300: #dd957f;
-  --clr-red-400: #cb7054;
-  --clr-red-500: #8f2c0e;
-  --clr-red-600: #742007;
-  --clr-red-700: #541502;
-  --clr-red-800: #481202;
-  --clr-red-900: #3b0f02;
+  --clr-red-100: #f7cbcb;
+  --clr-red-300: #f48686;
+  --clr-red-500: #e41d1d;
+  --clr-red-700: #8f0a0a;
+  --clr-red-900: #480404;
 
   --clr-yellow-100: #f2efdf;
   --clr-yellow-200: #e9e2be;
@@ -64,15 +109,11 @@
   --clr-blue-800: #061b4a;
   --clr-blue-900: #051842;
 
-  --clr-green-100: #e6f8ed;
-  --clr-green-200: #caebd6;
+  --clr-green-100: #cefadf;
   --clr-green-300: #8fd4a9;
-  --clr-green-400: #4fb878;
-  --clr-green-500: #025121;
-  --clr-green-600: #0a662d;
+  --clr-green-500: #117e3b;
   --clr-green-700: #055122;
-  --clr-green-800: #023f1a;
-  --clr-green-900: #023315;
+  --clr-green-900: #022c12;
 
   --clr-teal-100: #edf5f5;
   --clr-teal-200: #c9e4e4;
@@ -84,8 +125,8 @@
   --clr-teal-800: #034643;
   --clr-teal-900: #023331;
 
-  --clr-primary: var(--clr-green-500);
-  --clr-primary-active: var(--clr-green-600);
+  --clr-primary: #025121;
+  --clr-primary-active: var(--clr-green-700);
 
   --clr-secondary: #02302c;
   --clr-teritary: #dcfd8f;
@@ -107,18 +148,18 @@
   --clr-text-info: var(--clr-blue-500);
   --clr-text-progress: var(--clr-green-500);
 
-  --clr-surface: var(--clr-neutral-100);
+  --clr-surface: var(--clr-neutral-050);
   --clr-surface-raised: var(--clr-white);
-  --clr-surface-lowered: var(--clr-neutral-200);
+  --clr-surface-lowered: var(--clr-neutral-300);
 
-  --clr-border-divider: var(--clr-neutral-200);
-  --clr-border-neutral: var(--clr-neutral-200);
+  --clr-border-divider: var(--clr-neutral-300);
+  --clr-border-neutral: var(--clr-neutral-300);
   --clr-border-strong: var(--clr-neutral-300);
-  --clr-border-success: var(--clr-green-200);
+  --clr-border-success: var(--clr-green-300);
   --clr-border-warning: var(--clr-yellow-200);
-  --clr-border-danger: var(--clr-red-200);
-  --clr-border-info: var(--clr-blue-200);
-  --clr-border-progress: var(--clr-green-200);
+  --clr-border-danger: var(--clr-red-300);
+  --clr-border-info: var(--clr-blue-300);
+  --clr-border-progress: var(--clr-green-300);
   --clr-border-hover: var(--clr-neutral-300);
 
   --clr-status-neutral: var(--clr-white);
@@ -132,7 +173,7 @@
   --clr-status-neutral-active: var(--clr-neutral-100);
   --clr-status-success-active: var(--clr-green-600);
   --clr-status-warning-active: var(--clr-yellow-600);
-  --clr-status-danger-active: var(--clr-red-600);
+  --clr-status-danger-active: var(--clr-red-700);
   --clr-status-info-active: var(--clr-blue-600);
   --clr-status-highlight-active: var(--clr-purple-600);
   --clr-status-notification-active: var(--clr-green-600);

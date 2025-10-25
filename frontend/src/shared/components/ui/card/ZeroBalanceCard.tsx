@@ -8,7 +8,7 @@ import { Icon, IconProps } from "@phosphor-icons/react";
 import { ReactNode } from "react";
 import logo from "@/assets/logo/myfye_logo.svg";
 
-type Props = {
+export type ZeroBalanceCardProps = {
   title: ReactNode | string;
   caption?: ReactNode | string;
   action?: () => void;
@@ -24,7 +24,13 @@ const renderIcon = (icon: Icon, props: IconProps) => {
   return <Icon {...props} />;
 };
 
-const ZeroBalanceCard = ({ title, caption, action, cta, image }: Props) => {
+const ZeroBalanceCard = ({
+  title,
+  caption,
+  action,
+  cta,
+  image,
+}: ZeroBalanceCardProps) => {
   return (
     <Card size="x-large">
       <Stack gap="none">

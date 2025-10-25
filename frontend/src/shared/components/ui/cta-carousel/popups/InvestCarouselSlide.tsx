@@ -21,7 +21,7 @@ const InvestCarouselSlide = ({
             0% transparent,
             100% var(--clr-green)
           );
-          border: 1px solid var(--clr-neutral-200);
+          border: 1px solid var(--clr-neutral-300);
           padding: var(--size-200);
         `}
       >

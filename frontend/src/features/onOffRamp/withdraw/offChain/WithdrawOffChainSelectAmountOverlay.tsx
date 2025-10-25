@@ -5,7 +5,7 @@ import {
   selectAsset,
   selectAsset,
   selectAssetBalance,
-} from "@/features/assets/assetsSlice";
+} from "@/features/assets/stores/assetsSlice";
 import Button from "@/shared/components/ui/button/Button";
 import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSelectorGroup";
 import AmountSelector from "@/shared/components/ui/amount-selector/AmountSelector";
@@ -18,7 +18,7 @@ import {
 } from "./withdrawOffChainSlice";
 import { getFiatCurrencySymbol } from "@/shared/utils/currencyUtils";
 import { PresetAmountOption } from "./withdrawOffChain.types";
-import AssetSelectButton from "@/features/assets/AssetSelectButton";
+import AssetSelectButton from "@/features/assets/components/AssetSelectButton";
 import AmountDisplay from "@/shared/components/ui/amount-display/AmountDisplay";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
 

@@ -6,10 +6,10 @@ import {
 import { useCreateWallet } from "@privy-io/react-auth";
 import { css } from "@emotion/react";
 import Button from "@/shared/components/ui/button/Button";
-import { MFAStatus } from "@/features/mfa/mfa.types";
+import { MFAStatus } from "@/features/mfa/types/mfa.types";
 import MFAOnboardingStepList from "./_components/MFAOnboardingStepList";
 import MFAOnboardingStep from "./_components/MFAOnboardingStep";
-import { setStatus } from "@/features/mfa/mfaSlice";
+import { setStatus } from "@/features/mfa/stores/mfaSlice";
 import Page from "@/shared/components/layout/page/Page";
 import myFyeLogo from "@/assets/logo/myfye_logo.svg";
 import MFAOnboardingGradient from "./_components/MFAOnboardingGradient";

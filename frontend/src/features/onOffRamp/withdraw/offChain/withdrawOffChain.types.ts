@@ -1,4 +1,4 @@
-import { Asset } from "@/features/assets/types";
+import { Asset } from "@/features/assets/types/types";
 import { Address } from "viem";
 
 export interface WithdrawOffChainTransaction {

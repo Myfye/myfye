@@ -1,4 +1,4 @@
-import { useCopyAndPaste } from "@/features/copy-and-paste/useCopyAndPaste";
+import { useCopyAndPaste } from "@/features/copy-and-paste/hooks/useCopyAndPaste";
 import Button from "@/shared/components/ui/button/Button";
 import { css } from "@emotion/react";
 import { Check, Copy } from "@phosphor-icons/react";

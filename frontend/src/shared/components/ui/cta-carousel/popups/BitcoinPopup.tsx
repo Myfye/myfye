@@ -13,9 +13,9 @@ import {
 } from "@phosphor-icons/react";
 import BenefitsListItem from "./BenefitsListItem";
 import Button from "@/shared/components/ui/button/Button";
-import { selectAssetsBalanceUSD } from "@/features/assets/assetsSlice";
+import { selectAssetsBalanceUSD } from "@/features/assets/stores/assetsSlice";
 import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
 
 const BitcoinPopup = () => {
   const headingId = useId();

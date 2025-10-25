@@ -1,4 +1,4 @@
-import { Asset, AssetsState } from "@/features/assets/types";
+import { Asset, AssetsState } from "@/features/assets/types/types";
 
 // Helper function to parse and format the amount
 const getFormattedNumberFromString = (amount: string): string => {

@@ -15,8 +15,8 @@ import TextInput from "@/shared/components/ui/inputs/TextInput";
 import { Button as AriaButton } from "react-aria-components";
 import IconCard from "@/shared/components/ui/card/IconCard";
 import Section from "@/shared/components/ui/section/Section";
-import SearchField from "@/features/users/SearchField";
-import QRScanner from "@/features/qr-code/QRScanner";
+import SearchField from "@/features/users/components/SearchField";
+import QRScanner from "@/features/qr-code/components/QRScanner";
 import RecentlyUsedAddressesList from "./_components/RecentlyUsedAddresses";
 
 interface WithdrawOnChainAddressEntryOverlayProps

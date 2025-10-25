@@ -6,7 +6,7 @@ import {
   WithdrawOffChainOverlay,
   WithdrawOffChainTransaction,
 } from "./withdrawOffChain.types";
-import { Asset } from "@/features/assets/types";
+import { Asset } from "@/features/assets/types/types";
 
 interface WithdrawOffChainState {
   transaction: WithdrawOffChainTransaction;

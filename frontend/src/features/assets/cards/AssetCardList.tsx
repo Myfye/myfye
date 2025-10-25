@@ -2,7 +2,7 @@ import AssetCard from "./AssetCard";
 
 import { css } from "@emotion/react";
 
-import { Asset } from "../types";
+import { Asset } from "../types/types";
 
 const AssetCardList = ({
   assets,

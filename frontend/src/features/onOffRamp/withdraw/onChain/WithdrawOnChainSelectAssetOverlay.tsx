@@ -1,8 +1,8 @@
 import store, { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAsset } from "@/features/assets/assetsSlice";
+import { selectAsset } from "@/features/assets/stores/assetsSlice";
 import { toggleOverlay } from "./withdrawOnChainSlice";
-import SelectAssetOverlay from "@/features/assets/SelectAssetOverlay";
+import SelectAssetOverlay from "@/features/assets/components/SelectAssetOverlay";
 import { OverlayProps } from "@/shared/components/ui/overlay/Overlay";
 import { updateAmountDisplay } from "../thunks";
 

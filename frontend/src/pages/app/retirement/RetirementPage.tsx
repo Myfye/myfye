@@ -1,14 +1,16 @@
 import {
   selectAssetBalanceUSD,
+  selectAssetsWithBalanceByGroup,
   selectAssetsWithBalanceUSDByArray,
-} from "@/features/assets/assetsSlice";
+} from "@/features/assets/stores/assetsSlice";
 import AssetCardList from "@/features/assets/cards/AssetCardList";
 import { toggleModal } from "@/features/onOffRamp/deposit/depositSlice";
-import PullToRefreshIndicator from "@/features/pull-to-refresh/PullToRefreshIndicator";
-import PullToRefreshScrollContainer from "@/features/pull-to-refresh/PullToRefreshScrollContainer";
-import { usePullToRefresh } from "@/features/pull-to-refresh/usePullToRefresh";
-import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import PullToRefreshIndicator from "@/features/pull-to-refresh/components/PullToRefreshIndicator";
+import PullToRefreshScrollContainer from "@/features/pull-to-refresh/components/PullToRefreshScrollContainer";
+import { usePullToRefresh } from "@/features/pull-to-refresh/hooks/usePullToRefresh";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/stores/receiveSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/stores/sendSlice";
 import getSolanaBalances from "@/functions/GetSolanaBalances";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import AppPage from "@/shared/components/layout/page/AppPage";
@@ -34,40 +36,27 @@ import {
   ChartPieIcon,
 } from "@phosphor-icons/react";
 import { useSolanaWallets } from "@privy-io/react-auth";
-import { PointOptionsObject } from "highcharts";
 import { useRef, useState } from "react";
-
-const generatePieChartData = (spyAmount: number, qqqAmount: number) => {
-  const data: PointOptionsObject[] = [];
-  if (spyAmount > 0) {
-    const spyData = { name: "SPY", color: "var(--clr-primary)", y: spyAmount };
-    data.push(spyData);
-  }
-  if (qqqAmount > 0) {
-    const qqqData = {
-      name: "QQQ",
-      color: "var(--clr-secondary)",
-      y: qqqAmount,
-    };
-    data.push(qqqData);
-  }
-  return data;
-};
 
 const RetirementPage = () => {
   const dispatch = useAppDispatch();
-  const qqqAmount = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "QQQ")
-  );
-  const spyAmount = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "SPY")
+
+  const assets = useAppSelector((state) =>
+    selectAssetsWithBalanceByGroup(state, "retirement")
   );
 
-  const totalBalance = qqqAmount + spyAmount;
+  const totalBalance = assets.reduce(
+    (acc, current) => acc + current.balanceUSD,
+    0
+  );
 
-  const pieChartData = generatePieChartData(spyAmount, qqqAmount);
+  const pieChartData = assets.map((asset) => ({
+    name: asset.symbol,
+    color: asset.color,
+    y: asset.balanceUSD,
+  }));
 
-  const slides = [
+  const ctaCarouselSlides = [
     {
       title: "Hold ETFs like a pro",
       caption: "Deposit money to invest in SPDR, SPY, and QQQ.",
@@ -75,10 +64,6 @@ const RetirementPage = () => {
       action: () => dispatch(toggleModal(true)),
     },
   ] satisfies CTASlide[];
-
-  const assets = useAppSelector((state) =>
-    selectAssetsWithBalanceUSDByArray(state, ["SPDR", "SPY", "QQQ"])
-  );
 
   const [selected, setSelected] = useState(false);
 
@@ -107,7 +92,7 @@ const RetirementPage = () => {
           <Section as="section">
             <AppPageHeading>Retirement</AppPageHeading>
             <BalanceCard
-              balance={0}
+              balance={totalBalance}
               marginTop="var(--size-100)"
               marginBottom="var(--size-200)"
             />
@@ -125,6 +110,19 @@ const RetirementPage = () => {
                 }
               >
                 Swap
+              </ButtonGroupItem>
+              <ButtonGroupItem
+                icon={ArrowCircleDownIcon}
+                onPress={() =>
+                  dispatch(
+                    toggleSendModal({
+                      isOpen: true,
+                      assetId: "QQQ",
+                    })
+                  )
+                }
+              >
+                Send
               </ButtonGroupItem>
               <ButtonGroupItem
                 icon={ArrowCircleDownIcon}
@@ -178,7 +176,7 @@ const RetirementPage = () => {
             />
           </Section>
           <Section marginBottom="var(--size-100)" padding="none">
-            <CTACarousel slides={slides} />
+            <CTACarousel slides={ctaCarouselSlides} />
           </Section>
         </Stack>
       </PullToRefreshScrollContainer>

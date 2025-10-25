@@ -5,7 +5,7 @@ import {
   selectAssetsWithBalanceByGroup,
   selectAssetsBalanceUSDByGroup,
   toggleGroupOverlay,
-} from "../../../../features/assets/assetsSlice";
+} from "../../../../features/assets/stores/assetsSlice";
 import Switch from "@/shared/components/ui/switch/Switch";
 
 import { useAppSelector } from "@/redux/hooks";
@@ -21,30 +21,34 @@ import {
   ArrowsLeftRightIcon,
   ChartLineUpIcon,
 } from "@phosphor-icons/react";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
-import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
-import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
-import StockChartCard from "@/shared/components/ui/charts/stock/StockChartCard";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/stores/receiveSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/stores/sendSlice";
 import ZeroBalanceCard from "@/shared/components/ui/card/ZeroBalanceCard";
 import Heading from "@/shared/components/ui/text/Heading";
 import Inline from "@/shared/components/ui/primitives/inline/Inline";
 import Text from "@/shared/components/ui/text/Text";
 import CTACarousel from "@/shared/components/ui/cta-carousel/CTACarousel";
+import PieChart3DCard from "@/shared/components/ui/charts/pie/PieChart3DCard";
 
 const StocksOverlay = () => {
   const dispatch = useDispatch();
 
   const isOpen = useAppSelector(
-    (state) => state.assets.groups["stocks"].overlay.isOpen
+    (state) => state.assets.groups["stocks"].overlay?.isOpen
   );
 
   const assets = useAppSelector((state) =>
     selectAssetsWithBalanceByGroup(state, "stocks")
   );
 
-  const totalBalance = useAppSelector((state) =>
-    selectAssetsBalanceUSDByGroup(state, "stocks")
-  );
+  const totalBalance = 20;
+
+  const pieChartData = assets.map((asset) => ({
+    name: asset.symbol,
+    y: asset.balanceUSD,
+    color: asset.color,
+  }));
 
   const [selected, setSelected] = useState(false);
 
@@ -99,7 +103,9 @@ const StocksOverlay = () => {
           </ButtonGroup>
         </Section>
         <Section marginTop="var(--size-300)">
-          {totalBalance > 0 && <StockChartCard name="Performance" />}
+          {totalBalance > 0 && (
+            <PieChart3DCard data={pieChartData} name="Performance" />
+          )}
           {totalBalance === 0 && (
             <ZeroBalanceCard
               image={{ src: ChartLineUpIcon, alt: "Chart line up" }}

@@ -8,12 +8,11 @@ import {
 } from "react-aria-components";
 import Home from "./home/Home";
 import {
-  HouseSimple as HomeIcon,
-  Wallet as WalletIcon,
-  ArrowsLeftRight as PayIcon,
-  ClockCounterClockwise as ActivityIcon,
+  HouseSimpleIcon as HomeIcon,
+  WalletIcon as WalletIcon,
+  ArrowsLeftRightIcon as PayIcon,
+  ClockCounterClockwiseIcon as ActivityIcon,
   ScanIcon,
-  ChartLineUpIcon,
   CurrencyCircleDollarIcon,
   ClockCounterClockwiseIcon,
 } from "@phosphor-icons/react";
@@ -21,18 +20,16 @@ import {
 import { css } from "@emotion/react";
 import Footer from "../../shared/components/layout/footer/Footer";
 import Header from "../../shared/components/layout/header/Header";
-import Wallet from "@/pages/app/wallet/Wallet";
-import Activity from "@/features/activity/ActivityOverlay";
+import Wallet from "@/pages/app/wallet/_components/Wallet";
 import { useDispatch } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
-import Button from "../../shared/components/ui/button/Button";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import Pay from "@/pages/app/pay/Pay";
 import NavMenu from "@/shared/components/ui/nav-menu/NavMenu";
 import RetirementPage from "./retirement/RetirementPage";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
-import { toggleOverlay } from "@/features/activity/activitySlice";
+import { toggleOverlay } from "@/features/activity/stores/activitySlice";
 
 const tabs = [
   { id: "home", label: "Home" },

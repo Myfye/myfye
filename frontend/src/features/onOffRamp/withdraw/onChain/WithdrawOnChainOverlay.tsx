@@ -1,7 +1,10 @@
 import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
-import { selectAsset, selectAssetBalance } from "@/features/assets/assetsSlice";
+import {
+  selectAsset,
+  selectAssetBalance,
+} from "@/features/assets/stores/assetsSlice";
 import Button from "@/shared/components/ui/button/Button";
 import { RootState } from "@/redux/store";
 import AmountSelectorGroup from "@/shared/components/ui/amount-selector/AmountSelectorGroup";
@@ -18,7 +21,7 @@ import {
   formatAmountWithCurrency,
   getFiatCurrencySymbol,
 } from "@/shared/utils/currencyUtils";
-import AssetSelectButton from "@/features/assets/AssetSelectButton";
+import AssetSelectButton from "@/features/assets/components/AssetSelectButton";
 import WithdrawOnChainSelectAssetOverlay from "./WithdrawOnChainSelectAssetOverlay";
 import WithdrawOnChainAddressEntryOverlay from "./WithdrawOnChainAddressEntryOverlay";
 import { PresetAmountOption } from "./withdrawOnChain.types";

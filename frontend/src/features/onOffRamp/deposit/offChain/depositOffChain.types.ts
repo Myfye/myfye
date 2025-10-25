@@ -1,4 +1,4 @@
-import { Asset } from "@/features/assets/types";
+import { Asset } from "@/features/assets/types/types";
 import { FlagComponent } from "country-flag-icons/react/3x2";
 
 export type CurrencyType = "brl" /*| "usd"*/ | "mxn";

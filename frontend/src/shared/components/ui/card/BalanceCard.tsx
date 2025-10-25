@@ -1,4 +1,4 @@
-import { FiatCurrency } from "@/types/fiatCurrency.types";
+import { FiatCurrency } from "@/shared/types/fiatCurrency.types";
 import Card, { CardProps } from "./Card";
 import { Heading } from "react-aria-components";
 import { formatAmountWithCurrency } from "@/shared/utils/currencyUtils";

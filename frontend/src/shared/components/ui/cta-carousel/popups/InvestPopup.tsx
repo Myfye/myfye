@@ -3,11 +3,11 @@ import { css } from "@emotion/react";
 import { useId } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { togglePopup } from "../ctaCarouselSlice";
-import { selectAssetsBalanceUSD } from "@/features/assets/assetsSlice";
+import { selectAssetsBalanceUSD } from "@/features/assets/stores/assetsSlice";
 import BenefitsList from "./BenefitsList";
 import BenefitsListItem from "./BenefitsListItem";
 import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
 import Button from "@/shared/components/ui/button/Button";
 import {
   ArrowsLeftRightIcon,

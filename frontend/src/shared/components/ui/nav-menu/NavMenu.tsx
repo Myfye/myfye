@@ -20,7 +20,7 @@ import { RootState } from "@/redux/store";
 import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
 import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
 import { createPortal } from "react-dom";
-import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/stores/kycSlice";
 import Header from "../../layout/header/Header";
 
 const NavMenu = () => {
@@ -61,7 +61,7 @@ const NavMenu = () => {
   };
 
   const handleDeleteAccount = () => {
-    navigate('/delete-account');
+    navigate("/delete-account");
     closeMenu(); // Close the nav menu when navigating
   };
 

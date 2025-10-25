@@ -2,17 +2,18 @@ import { PublicKey, Connection, VersionedTransaction } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
 import getTokenAccountData from "../../../functions/GetSolanaTokenAccount.tsx";
 import prepareTransaction from "./PrepareSwap.tsx";
-import { getMintAddress } from "../../assets/assetsSlice";
-import { getAssetDecimals } from "../../assets/utils";
+import { getMintAddress } from "../../assets/stores/assetsSlice.ts";
+import { getAssetDecimals } from "../../assets/utils/utils.ts";
 import verifyTransaction from "./VerifyTransaction.tsx";
 // import ensureTokenAccount from "../../../functions/ensureTokenAccount.tsx"; // No longer needed - Jupiter handles ATA creation
-import { SwapTransaction, updateStatus } from "../swapSlice.ts";
+import { updateStatus } from "../stores/swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
-import { Asset, AssetsState } from "@/features/assets/types.ts";
+import { Asset, AssetsState } from "@/features/assets/types/types.ts";
 import { logError } from "../../../functions/LogError.tsx";
-import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../../env";
 import toast from "react-hot-toast/headless";
+import { SwapTransaction } from "../types/types.ts";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 const connection = new Connection(RPC);
@@ -61,17 +62,24 @@ export const swap = async ({
   try {
     const userPublicKeyObj = new PublicKey(publicKey);
     const outputMintObj = new PublicKey(output_mint);
-    
-    const existingTokenAccounts = await connection.getParsedTokenAccountsByOwner(
-      userPublicKeyObj,
-      { mint: outputMintObj }
-    );
-    
+
+    const existingTokenAccounts =
+      await connection.getParsedTokenAccountsByOwner(userPublicKeyObj, {
+        mint: outputMintObj,
+      });
+
     if (existingTokenAccounts.value.length > 0) {
-      console.log("Output token account already exists, Jupiter should not create it");
-      console.log("Existing account:", existingTokenAccounts.value[0].pubkey.toString());
+      console.log(
+        "Output token account already exists, Jupiter should not create it"
+      );
+      console.log(
+        "Existing account:",
+        existingTokenAccounts.value[0].pubkey.toString()
+      );
     } else {
-      console.log("Output token account does not exist, Jupiter will create it");
+      console.log(
+        "Output token account does not exist, Jupiter will create it"
+      );
     }
   } catch (error) {
     console.log("Error checking token account existence:", error);
@@ -120,7 +128,11 @@ export const swap = async ({
     });
 };
 
-const convertToMicro = (amount: number, currency: string, assets: AssetsState) => {
+const convertToMicro = (
+  amount: number,
+  currency: string,
+  assets: AssetsState
+) => {
   console.log("convertToMicro currency: ", currency);
   const decimals = getAssetDecimals(assets, currency);
   const multiplier = Math.pow(10, decimals);
@@ -140,9 +152,9 @@ async function getSwapQuote(
     microInputAmount,
     inputCurrencyType,
     outputMint,
-    microPlatformFeeAmount
+    microPlatformFeeAmount,
   });
-  
+
   // Input mint
   const inputMintAddress = getMintAddress(inputCurrencyType);
 
@@ -153,36 +165,38 @@ async function getSwapQuote(
       url += `&platformFeeBps=100`;
     }
     console.log("Quote url", url);
-    
+
     console.log("Fetching quote from Jupiter API...");
     const response = await fetch(url);
     console.log("Response status:", response.status);
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Jupiter API error response:", errorText);
       throw new Error(`Jupiter API error: ${response.status} ${errorText}`);
     }
-    
+
     const quoteResponse = await response.json();
     console.log("Quote response:", quoteResponse);
-    
+
     // Ensure the response has the expected structure
     if (!quoteResponse.inAmount || !quoteResponse.outAmount) {
       console.error("Quote response missing required fields:", quoteResponse);
     }
-    
+
     // Add the input and output mint addresses to the response for easier access
     return {
       ...quoteResponse,
       inputMint: inputMintAddress,
-      outputMint: outputMint
+      outputMint: outputMint,
     };
   } catch (error) {
     console.error("Error in getSwapQuote:", error);
     parseErrorAndDisplayToast(error);
-    const errorLogMessage = "Error getting the swap quote" + `Quote url: https://lite-api.jup.ag/swap/v1/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
-    const errorStackTrace = `${error} Quote url: https://lite-api.jup.ag/swap/v1/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`
+    const errorLogMessage =
+      "Error getting the swap quote" +
+      `Quote url: https://lite-api.jup.ag/swap/v1/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`;
+    const errorStackTrace = `${error} Quote url: https://lite-api.jup.ag/swap/v1/quote?inputMint=${inputMintAddress}&outputMint=${outputMint}&amount=${microInputAmount}&slippageBps=300&maxAccounts=54&feeAccount${SERVER_SOLANA_PUBLIC_KEY}`;
 
     // to do log the error
     logError(errorLogMessage, "swap", errorStackTrace);
@@ -191,29 +205,29 @@ async function getSwapQuote(
 }
 
 const parseErrorAndDisplayToast = (error: any) => {
-  let errorCode = 'Unknown error';
-  
+  let errorCode = "Unknown error";
+
   // Check if error has errorCode property (from our custom error object)
   if (error.errorCode) {
     errorCode = error.errorCode;
   }
   // Check if error.message contains Jupiter API error response
-  else if (error.message && error.message.includes('Jupiter API error:')) {
+  else if (error.message && error.message.includes("Jupiter API error:")) {
     try {
       // Extract the JSON part from the error message
-      const jsonStart = error.message.indexOf('{');
-      const jsonEnd = error.message.lastIndexOf('}') + 1;
+      const jsonStart = error.message.indexOf("{");
+      const jsonEnd = error.message.lastIndexOf("}") + 1;
       const jsonString = error.message.substring(jsonStart, jsonEnd);
       const errorData = JSON.parse(jsonString);
-      
+
       errorCode = errorData.errorCode || errorCode;
     } catch (parseError) {
-      console.error('Failed to parse Jupiter API error:', parseError);
+      console.error("Failed to parse Jupiter API error:", parseError);
     }
   }
-  
+
   toast.error(`Blockchain error: ${errorCode}`);
-}
+};
 
 {
   /* Swap Transaction */
@@ -257,23 +271,28 @@ const swapTransaction = async (
   // Log Jupiter's setup instructions to debug token account creation
   console.log("Jupiter instructions received:", {
     setupInstructions: instructions.setupInstructions?.length || 0,
-    computeBudgetInstructions: instructions.computeBudgetInstructions?.length || 0,
+    computeBudgetInstructions:
+      instructions.computeBudgetInstructions?.length || 0,
     hasSwapInstruction: !!instructions.swapInstruction,
-    hasCleanupInstruction: !!instructions.cleanupInstruction
+    hasCleanupInstruction: !!instructions.cleanupInstruction,
   });
 
-  if (instructions.setupInstructions && instructions.setupInstructions.length > 0) {
+  if (
+    instructions.setupInstructions &&
+    instructions.setupInstructions.length > 0
+  ) {
     console.log("Setup instructions details:");
     instructions.setupInstructions.forEach((instruction, index) => {
       console.log(`  Setup ${index}:`, {
         programId: instruction.programId,
         accounts: instruction.accounts?.length || 0,
-        accountDetails: instruction.accounts?.map((acc, i) => ({
-          index: i,
-          pubkey: acc.pubkey,
-          isSigner: acc.isSigner,
-          isWritable: acc.isWritable
-        })) || []
+        accountDetails:
+          instruction.accounts?.map((acc, i) => ({
+            index: i,
+            pubkey: acc.pubkey,
+            isSigner: acc.isSigner,
+            isWritable: acc.isWritable,
+          })) || [],
       });
     });
 
@@ -281,44 +300,63 @@ const swapTransaction = async (
     try {
       const userPublicKeyObj = new PublicKey(userPublicKey);
       const outputMintObj = new PublicKey(quoteData.outputMint);
-      
-      const existingTokenAccounts = await connection.getParsedTokenAccountsByOwner(
-        userPublicKeyObj,
-        { mint: outputMintObj }
-      );
-      
+
+      const existingTokenAccounts =
+        await connection.getParsedTokenAccountsByOwner(userPublicKeyObj, {
+          mint: outputMintObj,
+        });
+
       if (existingTokenAccounts.value.length > 0) {
-        console.log("Token account already exists, filtering out ATA creation instructions");
-        console.log("Existing token account:", existingTokenAccounts.value[0].pubkey.toString());
+        console.log(
+          "Token account already exists, filtering out ATA creation instructions"
+        );
+        console.log(
+          "Existing token account:",
+          existingTokenAccounts.value[0].pubkey.toString()
+        );
         // Filter out Associated Token Account creation instructions
         instructions.setupInstructions = instructions.setupInstructions.filter(
-          instruction => instruction.programId !== 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+          (instruction) =>
+            instruction.programId !==
+            "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         );
-        console.log("Filtered setup instructions:", instructions.setupInstructions.length);
+        console.log(
+          "Filtered setup instructions:",
+          instructions.setupInstructions.length
+        );
       } else {
-        console.log("No existing token account found, ATA creation should proceed");
-        
+        console.log(
+          "No existing token account found, ATA creation should proceed"
+        );
+
         // Fix ATA creation instruction for sponsored transactions
         // Replace user as payer with server as payer
-        instructions.setupInstructions = instructions.setupInstructions.map(instruction => {
-          if (instruction.programId === 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL') {
-            console.log("Modifying ATA creation instruction for sponsored transaction");
-            // The first account should be the payer (server), not the user
-            const modifiedAccounts = [...instruction.accounts];
-            modifiedAccounts[0] = {
-              ...modifiedAccounts[0],
-              pubkey: SERVER_SOLANA_PUBLIC_KEY, // Server as payer
-              isSigner: true, // Server needs to sign
-              isWritable: true
-            };
-            
-            return {
-              ...instruction,
-              accounts: modifiedAccounts
-            };
+        instructions.setupInstructions = instructions.setupInstructions.map(
+          (instruction) => {
+            if (
+              instruction.programId ===
+              "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+            ) {
+              console.log(
+                "Modifying ATA creation instruction for sponsored transaction"
+              );
+              // The first account should be the payer (server), not the user
+              const modifiedAccounts = [...instruction.accounts];
+              modifiedAccounts[0] = {
+                ...modifiedAccounts[0],
+                pubkey: SERVER_SOLANA_PUBLIC_KEY, // Server as payer
+                isSigner: true, // Server needs to sign
+                isWritable: true,
+              };
+
+              return {
+                ...instruction,
+                accounts: modifiedAccounts,
+              };
+            }
+            return instruction;
           }
-          return instruction;
-        });
+        );
       }
     } catch (error) {
       console.log("Error checking token account existence:", error);
@@ -347,25 +385,28 @@ const swapTransaction = async (
 
   try {
     const fullySignedTx = await wallet.signTransaction(serverSignedTransaction);
-    
+
     //simulate(fullySignedTx);
 
     // Instead of using wallet.sendTransaction, use connection.sendRawTransaction
     const rawTransaction = fullySignedTx.serialize();
     const transactionId = await connection.sendRawTransaction(rawTransaction, {
       skipPreflight: true, // Skip preflight checks including balance check
-      maxRetries: 3
+      maxRetries: 3,
     });
 
     // Update the transaction object with the correct amounts from the quote
     if (quoteData && transaction) {
       console.log("Quote data:", quoteData);
-      console.log("Original transaction:", JSON.stringify(transaction, null, 2));
-      
+      console.log(
+        "Original transaction:",
+        JSON.stringify(transaction, null, 2)
+      );
+
       // Extract the amounts from the quote data
       let inputAmount = null;
       let outputAmount = null;
-      
+
       if (quoteData.inputAmount && quoteData.outputAmount) {
         inputAmount = quoteData.inputAmount / 1e9;
         outputAmount = quoteData.outputAmount / 1e9;
@@ -375,25 +416,28 @@ const swapTransaction = async (
         inputAmount = transaction.sell.amount;
         outputAmount = transaction.buy.amount;
       }
-      
+
       console.log("Extracted amounts:", { inputAmount, outputAmount });
-      
+
       // Create a new transaction object instead of modifying the existing one
       const updatedTransaction = {
         ...transaction,
         buy: {
           ...transaction.buy,
           amount: outputAmount || transaction.buy.amount,
-          assetId: transaction.buy.assetId || quoteData.outputMint
+          assetId: transaction.buy.assetId || quoteData.outputMint,
         },
         sell: {
           ...transaction.sell,
           amount: inputAmount || transaction.sell.amount,
-          assetId: transaction.sell.assetId || quoteData.inputMint
-        }
+          assetId: transaction.sell.assetId || quoteData.inputMint,
+        },
       };
-      
-      console.log("Updated transaction object:", JSON.stringify(updatedTransaction, null, 2));
+
+      console.log(
+        "Updated transaction object:",
+        JSON.stringify(updatedTransaction, null, 2)
+      );
 
       await verifyTransaction(
         transactionId,
@@ -404,11 +448,11 @@ const swapTransaction = async (
         assets
       );
     } else {
-      console.log("Missing quote data or transaction:", { 
-        hasQuoteData: !!quoteData, 
-        hasTransaction: !!transaction 
+      console.log("Missing quote data or transaction:", {
+        hasQuoteData: !!quoteData,
+        hasTransaction: !!transaction,
       });
-      
+
       await verifyTransaction(
         transactionId,
         dispatch,
@@ -425,11 +469,11 @@ const swapTransaction = async (
       name: error.name,
       code: error.code,
       logs: error.logs,
-      fullError: error
+      fullError: error,
     });
 
     // Specific analysis for InstructionError
-    if (error.message && error.message.includes('InstructionError')) {
+    if (error.message && error.message.includes("InstructionError")) {
       console.error("=== INSTRUCTION ERROR DEBUG ===");
       console.error("Error details:", error.message);
       if (error.logs && Array.isArray(error.logs)) {
@@ -439,29 +483,33 @@ const swapTransaction = async (
         });
       }
     }
-    
+
     const transactionDetails = {
       userPublicKey,
       quoteData,
       platformFeeAccount: platformFeeAccount?.toString() || null,
       serverPublicKey: SERVER_SOLANA_PUBLIC_KEY,
       type,
-      transaction
+      transaction,
     };
-    
+
     logError(
-      `Swap transaction failed: ${error.message}`, 
-      "swap", 
-      `Error details: ${JSON.stringify({
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-        code: error.code,
-        logs: error.logs,
-        transactionDetails: transactionDetails
-      }, null, 2)}`
+      `Swap transaction failed: ${error.message}`,
+      "swap",
+      `Error details: ${JSON.stringify(
+        {
+          message: error.message,
+          stack: error.stack,
+          name: error.name,
+          code: error.code,
+          logs: error.logs,
+          transactionDetails: transactionDetails,
+        },
+        null,
+        2
+      )}`
     );
-    
+
     dispatch(updateStatus("fail"));
   }
 };
@@ -481,10 +529,10 @@ async function signTransactionOnBackend(transaction: any) {
 
   // Send to backend for signing
   const response = await fetch(`${MYFYE_BACKEND}/sign_versioned_transaction`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': MYFYE_BACKEND_KEY,
+      "Content-Type": "application/json",
+      "x-api-key": MYFYE_BACKEND_KEY,
     },
     body: JSON.stringify({
       serializedTransaction: serializedTx,
@@ -492,7 +540,11 @@ async function signTransactionOnBackend(transaction: any) {
   });
 
   if (!response.ok) {
-    console.error("Server signing error:", response.status, await response.text());
+    console.error(
+      "Server signing error:",
+      response.status,
+      await response.text()
+    );
     return false;
   }
 
@@ -524,19 +576,14 @@ async function signTransactionOnBackend(transaction: any) {
     ),
   });
 
-  if (
-    error ||
-    !signedTransaction
-  ) {
+  if (error || !signedTransaction) {
     console.error("Signing failed:", error);
     return false;
   }
 
   // Deserialize and send the signed transaction
   const signedTx = VersionedTransaction.deserialize(
-    new Uint8Array(
-      Buffer.from(signedTransaction, "base64")
-    )
+    new Uint8Array(Buffer.from(signedTransaction, "base64"))
   );
   return signedTx;
 }

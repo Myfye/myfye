@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 //import currentUserDataReducer from './ephemeralUserData';
 import userWalletDataReducer from "./userWalletData.tsx";
-import swapReducer from "@/features/swap/swapSlice.ts";
-import kycReducer from "@/features/compliance/kycSlice.ts";
+import swapReducer from "@/features/swap/stores/swapSlice.ts";
+import kycReducer from "@/features/compliance/stores/kycSlice.ts";
 import {
   QRCodeModalReducer,
   addContactModalReducer,
@@ -16,27 +16,27 @@ import {
   userInfoOverlayReducer,
 } from "./overlayReducers.tsx";
 
-import assetsReducer from "@/features/assets/assetsSlice.ts";
-import sendReducer from "@/features/send/sendSlice.ts";
-import receiveReducer from "@/features/receive/receiveSlice.ts";
-import payReducer from "@/features/pay/paySlice.ts";
+import assetsReducer from "@/features/assets/stores/assetsSlice.ts";
+import sendReducer from "@/features/send/stores/sendSlice.ts";
+import receiveReducer from "@/features/receive/stores/receiveSlice.ts";
+import payReducer from "@/features/pay/stores/paySlice.ts";
 import withdrawReducer from "@/features/onOffRamp/withdraw/withdrawSlice.ts";
 import withdrawOnChainReducer from "@/features/onOffRamp/withdraw/onChain/withdrawOnChainSlice.ts";
 import withdrawOffChainReducer from "@/features/onOffRamp/withdraw/offChain/withdrawOffChainSlice.ts";
 import depositOffChainReducer from "@/features/onOffRamp/deposit/offChain/depositOffChainSlice.ts";
 import depositReducer from "@/features/onOffRamp/deposit/depositSlice.ts";
-import mfaReducer from "@/features/mfa/mfaSlice.ts";
+import mfaReducer from "@/features/mfa/stores/mfaSlice.ts";
 import altUSDReducer from "@/features/onOffRamp/deposit/onChain/altUSD/altUSDSlice.ts";
-import { usersApi } from "@/features/users/usersApi.ts";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { contactsApi } from "@/features/contacts/contactsApi.ts";
+import { contactsApi } from "@/features/contacts/api/contactsApi.ts";
 import { solanaApi } from "@/features/solana/solanaApi.ts";
 import { depositApi } from "@/features/onOffRamp/deposit/depositApi.ts";
-import { baseRelayerApi } from "@/features/base_relayer/baseRelayerApi.ts";
+import { baseRelayerApi } from "@/features/base_relayer/api/baseRelayerApi.ts";
 import { withdrawApi } from "@/features/onOffRamp/withdraw/withdrawApi.ts";
 import ctaCarouselReducer from "@/shared/components/ui/cta-carousel/ctaCarouselSlice.ts";
-import { activityApi } from "@/features/activity/activityApi.ts";
-import activityReducer from "@/features/activity/activitySlice.ts";
+import { activityApi } from "@/features/activity/api/activityApi.ts";
+import activityReducer from "@/features/activity/stores/activitySlice.ts";
+import { usersApi } from "@/features/users/api/usersApi.ts";
 
 const store = configureStore({
   reducer: {

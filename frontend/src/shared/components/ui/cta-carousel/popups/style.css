@@ -1,7 +1,7 @@
 .earn-column-chart {
   .highcharts-point {
-    fill: var(--clr-green-200);
-    stroke: var(--clr-green-200);
+    fill: var(--clr-green-100);
+    stroke: var(--clr-green-100);
   }
   .highcharts-point-hover {
     fill: var(--clr-primary);

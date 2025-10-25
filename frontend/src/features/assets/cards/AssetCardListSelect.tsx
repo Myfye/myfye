@@ -12,7 +12,7 @@ import {
   RadioGroupState,
   useRadioGroupState,
 } from "react-stately";
-import { Asset } from "../types";
+import { Asset } from "../types/types";
 import AssetCard from "./AssetCard";
 import { motion } from "motion/react";
 

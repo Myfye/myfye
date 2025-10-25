@@ -1,40 +1,31 @@
 import {
-  Coins as CryptoIcon,
-  PiggyBank as EarnIcon,
-  Money as CashIcon,
-  ChartLineUp as StocksIcon,
+  CoinsIcon as CryptoIcon,
+  PiggyBankIcon as EarnIcon,
+  MoneyIcon as CashIcon,
+  ChartLineUpIcon as StocksIcon,
 } from "@phosphor-icons/react";
 import WalletCard from "./WalletCard";
 
 import { css } from "@emotion/react";
-import { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import { RootState } from "@/redux/store";
 import {
   selectAssetsBalanceUSDByGroup,
   selectAssetsGroupsArray,
   toggleGroupOverlay,
-} from "../../../../features/assets/assetsSlice";
-import { AssetGroup } from "../../../../features/assets/types";
+} from "../../../../features/assets/stores/assetsSlice";
+import { AssetGroup } from "../../../../features/assets/types/types";
+import { useAppSelector } from "@/redux/hooks";
 
-const WalletCardList = ({ ...restProps }) => {
+const WalletCardList = () => {
   const dispatch = useDispatch();
-  const assetsGroups = useSelector(selectAssetsGroupsArray);
-  const cashBalanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "cash")
-  );
-  const cryptoBalanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "crypto")
-  );
-
-  const earnBalanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "earn")
-  );
-
-  const stocksBalanceUSD = useSelector((state: RootState) =>
-    selectAssetsBalanceUSDByGroup(state, "stocks")
-  );
+  const assetsGroups = useAppSelector((state) => {
+    const groups = selectAssetsGroupsArray(state);
+    return groups.map((group) => ({
+      ...group,
+      balanceUSD: selectAssetsBalanceUSDByGroup(state, group.id),
+    }));
+  });
 
   const getCardIcon = (groupId: AssetGroup["id"]) => {
     switch (groupId) {
@@ -56,41 +47,20 @@ const WalletCardList = ({ ...restProps }) => {
     }
   };
 
-  const getCardBalance = (groupId: AssetGroup["id"]) => {
-    switch (groupId) {
-      case "cash": {
-        return cashBalanceUSD;
-      }
-      case "crypto": {
-        return cryptoBalanceUSD;
-      }
-      case "earn": {
-        return earnBalanceUSD;
-      }
-      case "stocks": {
-        return stocksBalanceUSD;
-      }
-      default: {
-        throw new Error("Invalid group id");
-      }
-    }
-  };
-
-  const cards = useMemo(() => {
-    return assetsGroups.map((group) => ({
+  const cards = assetsGroups
+    .filter((group) => group.id !== "retirement")
+    .map((group) => ({
       title: group.label,
-      balance: getCardBalance(group.id),
+      balance: group.balanceUSD,
       percentChange: group.percentChange,
       icon: getCardIcon(group.id),
       action: () =>
         dispatch(toggleGroupOverlay({ groupId: group.id, isOpen: true })),
     }));
-  }, [assetsGroups, dispatch, toggleGroupOverlay]);
 
   return (
-    <div className="wallet-card-list-container" {...restProps}>
+    <div className="wallet-card-list">
       <ul
-        className="wallet-card-list"
         css={css`
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -98,21 +68,16 @@ const WalletCardList = ({ ...restProps }) => {
         `}
       >
         {cards.map((card, i) => (
-          <li
-            className="wallet-card-wrapper"
+          <WalletCard
             key={`wallet-card-wrapper-${i}`}
-            css={css`
-              aspect-ratio: 1;
-            `}
-          >
-            <WalletCard
-              title={card.title}
-              icon={card.icon}
-              balance={card.balance}
-              percentChange={card.percentChange}
-              onPress={card.action}
-            />
-          </li>
+            title={card.title}
+            icon={card.icon}
+            balance={card.balance}
+            percentChange={card.percentChange}
+            onPress={() => {
+              card.action();
+            }}
+          />
         ))}
       </ul>
     </div>

@@ -3,7 +3,7 @@ import {
   selectAssetBalanceUSD,
   selectAssetsWithBalanceByGroup,
   toggleGroupOverlay,
-} from "@/features/assets/assetsSlice";
+} from "@/features/assets/stores/assetsSlice";
 import Stack from "@/shared/components/ui/primitives/stack/Stack";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
 import BalanceCard from "@/shared/components/ui/card/BalanceCard";
@@ -14,11 +14,10 @@ import {
   ArrowCircleUpIcon,
   ArrowsLeftRightIcon,
   CurrencyBtcIcon,
-  CurrencyDollarIcon,
 } from "@phosphor-icons/react";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
-import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
-import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/stores/sendSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/stores/receiveSlice";
 import Section from "@/shared/components/layout/section/Section";
 import PieChart3DCard from "@/shared/components/ui/charts/pie/PieChart3DCard";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -26,106 +25,59 @@ import Inline from "@/shared/components/ui/primitives/inline/Inline";
 import Heading from "@/shared/components/ui/text/Heading";
 import CTACarousel from "@/shared/components/ui/cta-carousel/CTACarousel";
 import ZeroBalanceCard from "@/shared/components/ui/card/ZeroBalanceCard";
-import { PointOptionsObject } from "highcharts";
 import btcIcon from "@/assets/icons/assets/crypto/Bitcoin.svg";
 import solIcon from "@/assets/icons/assets/crypto/Solana.svg";
-
-const generatePieChartData = (
-  btcBalanceUSD: number,
-  solBalanceUSD: number,
-  xrpBalanceUSD: number,
-  dogeBalanceUSD: number,
-  suiBalanceUSD: number
-) => {
-  const data = [];
-  if (btcBalanceUSD > 0) {
-    const btcData = {
-      name: "BTC",
-      y: btcBalanceUSD,
-      color: "var(--clr-btc)",
-    };
-    data.push(btcData);
-  }
-  if (solBalanceUSD > 0) {
-    const solData = {
-      name: "SOL",
-      y: solBalanceUSD,
-      color: "var(--clr-sol)",
-    };
-    data.push(solData);
-  }
-  if (xrpBalanceUSD > 0) {
-    const xrpData = {
-      name: "XRP",
-      y: xrpBalanceUSD,
-      color: "var(--clr-xrp)",
-    };
-    data.push(xrpData);
-  }
-  if (dogeBalanceUSD > 0) {
-    const dogeData = {
-      name: "DOGE",
-      y: dogeBalanceUSD,
-      color: "var(--clr-doge)",
-    };
-    data.push(dogeData);
-  }
-  if (suiBalanceUSD > 0) {
-    const suiData = {
-      name: "SUI",
-      y: suiBalanceUSD,
-      color: "var(--clr-sui)",
-    };
-    data.push(suiData);
-  }
-  return data satisfies PointOptionsObject[];
-};
 
 const CryptoOverlay = () => {
   const dispatch = useAppDispatch();
 
   const isOpen = useAppSelector(
-    (state) => state.assets.groups["crypto"].overlay.isOpen
+    (state) => state.assets.groups["crypto"].overlay?.isOpen
   );
 
   const assets = useAppSelector((state) =>
     selectAssetsWithBalanceByGroup(state, "crypto")
   );
 
-  const btcBalanceUSD = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "BTC")
+  const totalBalance = assets.reduce(
+    (acc, current) => acc + current.balanceUSD,
+    0
   );
 
-  const solBalanceUSD = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "SOL")
-  );
+  const pieChartData = assets.map((asset) => ({
+    name: asset.symbol,
+    y: asset.balanceUSD,
+    color: asset.color,
+  }));
 
-  const xrpBalanceUSD = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "XRP")
-  );
-
-  const dogeBalanceUSD = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "DOGE")
-  );
-
-  const suiBalanceUSD = useAppSelector((state) =>
-    selectAssetBalanceUSD(state, "SUI")
-  );
-
-  const totalBalance =
-    btcBalanceUSD +
-    solBalanceUSD +
-    xrpBalanceUSD +
-    dogeBalanceUSD +
-    suiBalanceUSD;
-
-  const pieChartData = generatePieChartData(
-    btcBalanceUSD,
-    solBalanceUSD,
-    xrpBalanceUSD,
-    dogeBalanceUSD,
-    suiBalanceUSD
-  );
+  const ctaCarouselSlides = [
+    {
+      title: "Buy Bitcoin",
+      caption: "Buy Bitcoin with Myfye",
+      icon: btcIcon,
+      action: () =>
+        dispatch(
+          toggleSwapModal({
+            isOpen: true,
+            buyAssetId: "BTC",
+            sellAssetId: "USD",
+          })
+        ),
+    },
+    {
+      title: "Buy Solana",
+      caption: "Buy Solana with Myfye",
+      icon: solIcon,
+      action: () =>
+        dispatch(
+          toggleSwapModal({
+            isOpen: true,
+            buyAssetId: "SOL",
+            sellAssetId: "USD",
+          })
+        ),
+    },
+  ];
 
   return (
     <Overlay
@@ -156,7 +108,7 @@ const CryptoOverlay = () => {
                   toggleSwapModal({
                     isOpen: true,
                     sellAssetId: "USD",
-                    buyAssetId: "QQQ",
+                    buyAssetId: "BTC",
                   })
                 )
               }
@@ -185,7 +137,7 @@ const CryptoOverlay = () => {
         </Section>
         <Section marginTop="var(--size-300)">
           {totalBalance > 0 && (
-            <PieChart3DCard data={pieChartData} name="Cash" />
+            <PieChart3DCard data={pieChartData} name="Crypto" />
           )}
           {totalBalance === 0 && (
             <ZeroBalanceCard
@@ -211,36 +163,7 @@ const CryptoOverlay = () => {
           <AssetCardList assets={assets} showOptions={true} />
         </Section>
         <Section marginBottom="var(--size-100)" padding="none">
-          <CTACarousel
-            slides={[
-              {
-                title: "Buy Bitcoin",
-                caption: "Buy Bitcoin with Myfye",
-                icon: btcIcon,
-                action: () =>
-                  dispatch(
-                    toggleSwapModal({
-                      isOpen: true,
-                      buyAssetId: "BTC",
-                      sellAssetId: "USD",
-                    })
-                  ),
-              },
-              {
-                title: "Buy Solana",
-                caption: "Buy Solana with Myfye",
-                icon: solIcon,
-                action: () =>
-                  dispatch(
-                    toggleSwapModal({
-                      isOpen: true,
-                      buyAssetId: "SOL",
-                      sellAssetId: "USD",
-                    })
-                  ),
-              },
-            ]}
-          />
+          <CTACarousel slides={ctaCarouselSlides} />
         </Section>
       </Stack>
     </Overlay>

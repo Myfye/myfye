@@ -1,8 +1,16 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../env";
-import { updateBalance, getMintAddressToAssetIdMap } from "@/features/assets/assetsSlice";
+import {
+  updateBalance,
+  getMintAddressToAssetIdMap,
+} from "@/features/assets/stores/assetsSlice";
 import { USDT_MINT_ADDRESS, PYUSD_MINT_ADDRESS } from "./MintAddress";
-import { setUSDTBalance, setPYUSDBalance, setModalOpen, testAction } from "@/features/onOffRamp/deposit/onChain/altUSD/altUSDSlice";
+import {
+  setUSDTBalance,
+  setPYUSDBalance,
+  setModalOpen,
+  testAction,
+} from "@/features/onOffRamp/deposit/onChain/altUSD/altUSDSlice";
 
 const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
   try {
@@ -13,7 +21,7 @@ const getSolanaBalances = async (pubKey: string, dispatch: Function) => {
 
     // Update balances for all assets found in the wallet
     Object.entries(tokenBalances).forEach(([assetId, balance]) => {
-      if (assetId !== 'success' && typeof balance === 'number') {
+      if (assetId !== "success" && typeof balance === "number") {
         dispatch(updateBalance({ assetId, balance }));
       }
     });
@@ -45,7 +53,7 @@ export const TokenBalances = async (
     const mintAddressToAssetId = getMintAddressToAssetIdMap();
 
     // Initialize all asset balances to 0
-    Object.values(mintAddressToAssetId).forEach(assetId => {
+    Object.values(mintAddressToAssetId).forEach((assetId) => {
       balances[assetId] = 0;
     });
 
@@ -57,19 +65,17 @@ export const TokenBalances = async (
       }
     );
 
-    const parsedToken2022Accounts = await connection.getParsedTokenAccountsByOwner(
-      publicKey,
-      {
+    const parsedToken2022Accounts =
+      await connection.getParsedTokenAccountsByOwner(publicKey, {
         programId: new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"), // Token-2022 program ID
-      }
-    );
+      });
 
     // Process all token accounts (both SPL and Token-2022)
     const processTokenAccounts = (accounts: any[], accountType: string) => {
       for (const account of accounts) {
         const mintAddress = account.account.data.parsed.info.mint;
         const amount = account.account.data.parsed.info.tokenAmount.uiAmount;
-        
+
         // Special case logging for USDT and PYUSD
         if (mintAddress === USDT_MINT_ADDRESS && accountType === "SPL") {
           console.log(`DETECT ALT USD USDT balance found! ${amount}`);
@@ -77,16 +83,19 @@ export const TokenBalances = async (
           dispatch(setUSDTBalance(amount));
           // Modal will auto-open in the slice if balance > 0.01
         }
-        if (mintAddress === PYUSD_MINT_ADDRESS && accountType === "Token-2022") {
+        if (
+          mintAddress === PYUSD_MINT_ADDRESS &&
+          accountType === "Token-2022"
+        ) {
           console.log(`DETECT ALT USD PYUSD balance found! ${amount}`);
           // Update Redux state for PYUSD balance
           dispatch(setPYUSDBalance(amount));
           // Modal will auto-open in the slice if balance > 0.01
         }
-        
+
         // Find the asset ID for this mint address
         const assetId = mintAddressToAssetId[mintAddress];
-        
+
         if (assetId) {
           console.log(`Found ${assetId} (${accountType}): ${amount}`);
           balances[assetId] = amount;

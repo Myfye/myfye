@@ -2,14 +2,14 @@ import { useState } from "react";
 
 import { css } from "@emotion/react";
 import { Bank, Wallet, CreditCard } from "@phosphor-icons/react";
-import ModalButton from "../_components/ModalButton";
+import ModalButton from "../../../shared/components/ui/button/ModalButton";
 import Modal from "@/shared/components/ui/modal/Modal";
 // import toast from "react-hot-toast/headless";
 import OnChainDepositContent from "./onChain/OnChainDepositContent";
 import { AnimatePresence, useMotionValue, animate } from "motion/react";
 import toast from "react-hot-toast/headless";
 import { toggleModal, unmount } from "./depositSlice";
-import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/stores/kycSlice";
 import {
   toggleOverlay,
   unmount as unmountOffChain,
@@ -17,7 +17,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import DepositOffChainBankAccountOverlay from "./offChain/bankAccount/DepositOffChainBankAccountOverlay";
 import DepositOffChainPrivyOverlay from "./offChain/privy/DepositOffChainPrivyOverlay";
-import EtherfuseRampOverlay from "./offChain/etherfuse/etherfuseRamp";
+import EtherfuseRampOverlay from "./offChain/etherfuse/EtherfuseRampOverlay";
 
 const DEFAULT_HEIGHT = 360;
 

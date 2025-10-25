@@ -9,9 +9,9 @@ import {
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
 import Button from "@/shared/components/ui/button/Button";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
-import { toggleModal as toggleReceiveModal } from "@/features/receive/receiveSlice";
-import { toggleModal as toggleSendModal } from "@/features/send/sendSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
+import { toggleModal as toggleReceiveModal } from "@/features/receive/stores/receiveSlice";
+import { toggleModal as toggleSendModal } from "@/features/send/stores/sendSlice";
 
 const CryptoSummary = () => {
   const dispatch = useDispatch();

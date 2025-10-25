@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { BankIcon, WalletIcon } from "@phosphor-icons/react";
-import ModalButton from "../_components/ModalButton";
+import ModalButton from "../../../shared/components/ui/button/ModalButton";
 import Modal from "@/shared/components/ui/modal/Modal";
 import { toggleModal, toggleOverlay } from "./withdrawSlice";
 import { toggleOverlay as toggleOnChainOverlay } from "./onChain/withdrawOnChainSlice";
@@ -12,7 +12,7 @@ import WithdrawOffChainBankPickerOverlay from "./offChain/WithdrawOffChainBankPi
 import WithdrawOffChainBankInputOverlay from "./offChain/WithdrawOffChainBankInputOverlay";
 import WithdrawOffChainSelectAssetOverlay from "./offChain/WithdrawOffChainSelectAssetOverlay";
 import WithdrawProcessingTransactionOverlay from "./onChain/WithdrawOnChainProcessingTransactionOverlay";
-import { toggleModal as toggleKYCModal } from "@/features/compliance/kycSlice";
+import { toggleModal as toggleKYCModal } from "@/features/compliance/stores/kycSlice";
 import EtherfuseRampOverlay from "./offChain/etherfuseRamp";
 
 const WithdrawModal = () => {

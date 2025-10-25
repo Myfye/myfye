@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { css } from "@emotion/react";
 import Button from "@/shared/components/ui/button/Button";
-import { Copy, Info } from "@phosphor-icons/react";
-import QRCode from "../../../qr-code/QRCode";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import toast from "react-hot-toast/headless";
+import { CopyIcon } from "@phosphor-icons/react";
+import QRCode from "../../../qr-code/components/QRCode";
 import { HTMLMotionProps, motion } from "motion/react";
+import { useAppSelector } from "@/redux/hooks";
 
 interface OnChainDepositContentProps extends HTMLMotionProps<"div"> {
   onAddressCopy?: (address: string) => void;
@@ -16,16 +14,15 @@ const OnChainDepositContent = ({
   onAddressCopy,
   ...restProps
 }: OnChainDepositContentProps) => {
-  const dispatch = useDispatch();
-  const evmPubKey = useSelector(
-    (state: RootState) => state.userWalletData.evmPubKey
-  );
-  const solanaPubKey = useSelector(
-    (state: RootState) => state.userWalletData.solanaPubKey
+  const evmPubKey = useAppSelector((state) => state.userWalletData.evmPubKey);
+  const solanaPubKey = useAppSelector(
+    (state) => state.userWalletData.solanaPubKey
   );
   const [selectedChain] = useState("solana"); // Disable base for now
 
   const selectedAddress = selectedChain === "base" ? evmPubKey : solanaPubKey;
+
+  console.log(selectedAddress);
 
   return (
     <motion.div
@@ -54,7 +51,7 @@ const OnChainDepositContent = ({
       >
         <Button
           expand
-          icon={Copy}
+          icon={CopyIcon}
           onPress={() => {
             onAddressCopy && onAddressCopy(selectedAddress);
           }}

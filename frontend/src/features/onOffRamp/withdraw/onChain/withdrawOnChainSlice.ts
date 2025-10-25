@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-import { Asset } from "@/features/assets/types";
+import { Asset } from "@/features/assets/types/types";
 import { parseFormattedAmount, updateFormattedAmount } from "../utils";
 import {
   PresetAmountOption,
@@ -128,7 +128,10 @@ const withdrawOnChainSlice = createSlice({
     updateSolAddress(state, action: PayloadAction<string | null>) {
       state.transaction.solAddress = action.payload;
     },
-    updateTransactionStatus(state, action: PayloadAction<"idle" | "success" | "fail">) {
+    updateTransactionStatus(
+      state,
+      action: PayloadAction<"idle" | "success" | "fail">
+    ) {
       state.transaction.status = action.payload;
     },
     unmount: () => ({ ...initialState }),

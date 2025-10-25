@@ -1,13 +1,13 @@
 import { Connection } from "@solana/web3.js";
 import { HELIUS_API_KEY } from "../../../env.ts";
-import { updateId, updateStatus } from "../swapSlice.ts";
+import { updateId, updateStatus } from "../stores/swapSlice.ts";
 import { Dispatch } from "redux";
 import { ConnectedSolanaWallet } from "@privy-io/react-auth";
-import { AssetsState } from "@/features/assets/types.ts";
-import { updateBalance } from "@/features/assets/assetsSlice.ts";
+import { AssetsState } from "@/features/assets/types/types.ts";
+import { updateBalance } from "@/features/assets/stores/assetsSlice.ts";
 import { saveNewSwapTransaction } from "@/functions/SaveNewTransaction.tsx";
-import { SwapTransaction } from "../types.ts";
-import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../../env';
+import { SwapTransaction } from "../types/types.ts";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../../env";
 import { useSelector } from "react-redux";
 
 const RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
@@ -25,8 +25,6 @@ async function verifyTransaction(
   wallet: ConnectedSolanaWallet,
   assets: AssetsState
 ) {
-  
-
   if (transactionId) {
     let transactionConfirmed = false;
     for (let attempt = 1; attempt <= 3 && !transactionConfirmed; attempt++) {
@@ -49,29 +47,35 @@ async function verifyTransaction(
             JSON.stringify(transaction, null, 2)
           );
 
-
           console.log("transaction", transaction);
           console.log("update status to success");
 
-
           // Hacked together special cases for PYUSD and USDT
-          if ((transaction.sell.assetId === "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo") ||
-          (transaction.sell.assetId === "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB")) {
+          if (
+            transaction.sell.assetId ===
+              "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo" ||
+            transaction.sell.assetId ===
+              "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+          ) {
             const balance = assets.assets["USD"].balance;
 
-            console.log("DETECT ALT USD Incrementing USDC balance", balance, "by", transaction.buy.amount);
+            console.log(
+              "DETECT ALT USD Incrementing USDC balance",
+              balance,
+              "by",
+              transaction.buy.amount
+            );
             dispatch(
               updateBalance({
                 assetId: "USD",
                 balance: balance + transaction.buy.amount,
               })
             );
-          } 
+          }
 
-                    
           saveTransaction(
-            transaction, 
-            transactionId, 
+            transaction,
+            transactionId,
             wallet,
             transaction.user_id
           );
@@ -119,7 +123,7 @@ async function saveTransaction(
   transaction: SwapTransaction,
   transactionId: string,
   wallet: ConnectedSolanaWallet,
-  user_id: string,
+  user_id: string
 ) {
   // Use the transaction's public keys or fall back to the wallet's public key
   const inputPublicKey = transaction.inputPublicKey;
@@ -132,28 +136,40 @@ async function saveTransaction(
 
   console.log(
     "Transaction: ",
-    "user_id:", user_id,
-    "input_amount:", transaction.sell.amount,
-    "output_amount:", transaction.buy.amount,
-    "input_chain:", "solana",
-    "output_chain:", "solana",
-    "input_public_key:", inputPublicKey,
-    "output_public_key:", outputPublicKey,
-    "input_currency:", transaction.sell.assetId,
-    "output_currency:", transaction.buy.assetId,
-    "transaction_type:", "solana-jupiter",
-    "transaction_hash:", transactionId,
-    "transaction_status:", "success"
+    "user_id:",
+    user_id,
+    "input_amount:",
+    transaction.sell.amount,
+    "output_amount:",
+    transaction.buy.amount,
+    "input_chain:",
+    "solana",
+    "output_chain:",
+    "solana",
+    "input_public_key:",
+    inputPublicKey,
+    "output_public_key:",
+    outputPublicKey,
+    "input_currency:",
+    transaction.sell.assetId,
+    "output_currency:",
+    transaction.buy.assetId,
+    "transaction_type:",
+    "solana-jupiter",
+    "transaction_hash:",
+    transactionId,
+    "transaction_status:",
+    "success"
   );
 
   // Call the swap transaction endpoint
   const response = await fetch(`${MYFYE_BACKEND}/create_swap_transaction`, {
-    method: 'POST',
-    mode: 'cors',
-    credentials: 'include',
+    method: "POST",
+    mode: "cors",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': MYFYE_BACKEND_KEY,
+      "Content-Type": "application/json",
+      "x-api-key": MYFYE_BACKEND_KEY,
     },
     body: JSON.stringify({
       user_id: user_id,
@@ -167,8 +183,8 @@ async function saveTransaction(
       output_currency: transaction.buy.assetId,
       transaction_type: "solana-jupiter",
       transaction_hash: transactionId,
-      transaction_status: "success"
-    })
+      transaction_status: "success",
+    }),
   });
 
   if (!response.ok) {
@@ -204,10 +220,10 @@ function updateBalances(
   const buyAsset = assets.assets[buy.assetId];
 
   if (!sellAsset || !buyAsset) {
-    console.error("Assets not found in state:", { 
-      sellAssetId: sell.assetId, 
+    console.error("Assets not found in state:", {
+      sellAssetId: sell.assetId,
       buyAssetId: buy.assetId,
-      availableAssets: Object.keys(assets.assets)
+      availableAssets: Object.keys(assets.assets),
     });
     return;
   }
@@ -220,7 +236,9 @@ function updateBalances(
       balance: newSellBalance,
     })
   );
-  console.log(`Subtracted ${sell.amount} from ${sell.assetId} balance (new balance: ${newSellBalance})`);
+  console.log(
+    `Subtracted ${sell.amount} from ${sell.assetId} balance (new balance: ${newSellBalance})`
+  );
 
   // Update buy asset balance (add the bought amount)
   const newBuyBalance = buyAsset.balance + buy.amount;
@@ -230,8 +248,7 @@ function updateBalances(
       balance: newBuyBalance,
     })
   );
-  console.log(`Added ${buy.amount} to ${buy.assetId} balance (new balance: ${newBuyBalance})`);
+  console.log(
+    `Added ${buy.amount} to ${buy.assetId} balance (new balance: ${newBuyBalance})`
+  );
 }
-
-
-

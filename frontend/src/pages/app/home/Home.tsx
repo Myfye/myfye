@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
-import HomeTabs from "./components/HomeTabs";
+import HomeTabs from "./_components/HomeTabs";
 import { Item } from "react-stately";
-import DashboardPanel from "./components/panels/dashboard/DashboardPanel";
-import CashPanel from "./components/panels/cash/CashPanel";
-import CryptoPanel from "./components/panels/crypto/CryptoPanel";
-import StocksPanel from "./components/panels/stocks/StocksPanel";
+import DashboardPanel from "./_components/panels/dashboard/DashboardPanel";
+import CashPanel from "./_components/panels/cash/CashPanel";
+import CryptoPanel from "./_components/panels/crypto/CryptoPanel";
+import StocksPanel from "./_components/panels/stocks/StocksPanel";
 import { useState } from "react";
 
 const Home = () => {

@@ -1,4 +1,4 @@
-import { FiatCurrency } from "@/features/assets/types";
+import { FiatCurrency } from "@/features/assets/types/types";
 import { css } from "@emotion/react";
 import Balance from "./Balance";
 

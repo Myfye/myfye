@@ -6,9 +6,9 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { togglePopup } from "../ctaCarouselSlice";
 import ColumnChart from "./ColumnChart";
 import Button from "@/shared/components/ui/button/Button";
-import { selectAssetsBalanceUSD } from "@/features/assets/assetsSlice";
+import { selectAssetsBalanceUSD } from "@/features/assets/stores/assetsSlice";
 import { toggleModal as toggleDepositModal } from "@/features/onOffRamp/deposit/depositSlice";
-import { toggleModal as toggleSwapModal } from "@/features/swap/swapSlice";
+import { toggleModal as toggleSwapModal } from "@/features/swap/stores/swapSlice";
 import BenefitsList from "./BenefitsList";
 import BenefitsListItem from "./BenefitsListItem";
 import {

@@ -1,5 +1,5 @@
-import { FiatCurrency } from "@/features/assets/types";
-import { formatBalance } from "@/features/assets/utils";
+import { FiatCurrency } from "@/features/assets/types/types";
+import { formatBalance } from "@/features/assets/utils/utils";
 import { css } from "@emotion/react";
 import { useMemo } from "react";
 

@@ -8,29 +8,29 @@ import {
   useWallets,
 } from "@privy-io/react-auth";
 import { Address, createWalletClient, custom } from "viem";
-import { HandleUserLogIn } from "./features/authentication/LoginService.tsx";
+import { HandleUserLogIn } from "./features/authentication/misc/LoginService.tsx";
 import logo from "@/assets/logo/myfye_logo_white.svg";
 import loginScreen from "@/assets/login/login_screen.webp";
 
 import { css } from "@emotion/react";
-import QRCodeModal from "./features/qr-code/_components/QRCodeModal.tsx";
-import LoginHeader from "./pages/app/login/LoginHeader.tsx";
-import LoginMain from "./pages/app/login/LoginMain.tsx";
-import LoginFooter from "./pages/app/login/LoginFooter.tsx";
+import QRCodeModal from "./features/qr-code/components/QRCodeModal.tsx";
+import LoginHeader from "./pages/app/login/_components/LoginHeader.tsx";
+import LoginMain from "./pages/app/login/_components/LoginMain.tsx";
+import LoginFooter from "./pages/app/login/_components/LoginFooter.tsx";
 import LoginPage from "./pages/app/login/LoginPage.tsx";
 import Router from "./pages/app/Router.tsx";
-import SendModal from "@/features/send/SendModal.tsx";
-import ReceiveModal from "@/features/receive/ReceiveModal.tsx";
+import SendModal from "@/features/send/components/SendModal.tsx";
+import ReceiveModal from "@/features/receive/components/ReceiveModal.tsx";
 import DepositModal from "@/features/onOffRamp/deposit/DepositModal.tsx";
 import WithdrawModal from "@/features/onOffRamp/withdraw/WithdrawModal.tsx";
-import SwapModal from "@/features/swap/SwapModal.tsx";
-import KYCOverlay from "@/features/compliance/KYCOverlay.tsx";
-import Toaster from "@/features/notifications/toaster/Toaster.tsx";
+import SwapModal from "@/features/swap/components/SwapModal.tsx";
+import KYCOverlay from "@/features/compliance/components/KYCOverlay.tsx";
+import Toaster from "@/features/notifications/components/toaster/Toaster.tsx";
 import AltUSDModal, {
   useAltUSDModal,
 } from "@/features/onOffRamp/deposit/onChain/altUSD/detectAltUSD.tsx";
 import LoadingScreen from "@/shared/components/ui/loading/LoadingScreen.tsx";
-import PrivyUseSolanaWallets from "./features/authentication/PrivyUseSolanaWallets.tsx";
+import PrivyUseSolanaWallets from "./features/authentication/misc/PrivyUseSolanaWallets.tsx";
 import { setEmbeddedWallet, setWalletClient } from "./redux/userWalletData.tsx";
 import { useCrossChainTransfer } from "./functions/bridge/use-cross-chain-transfer.ts";
 import { getUSDCBalanceOnBase } from "./functions/checkForEVMDeposit.ts";
@@ -44,7 +44,7 @@ import { base } from "viem/chains";
 import Button from "@/shared/components/ui/button/Button.tsx";
 import MFAOnboardingPage from "./pages/app/mfa/MFAOnboardingPage.tsx";
 import { useAppDispatch, useAppSelector } from "./redux/hooks.tsx";
-import ActivityOverlay from "./features/activity/ActivityOverlay.tsx";
+import ActivityOverlay from "./features/activity/components/ActivityOverlay.tsx";
 
 function WebAppInner() {
   window.Buffer = Buffer;

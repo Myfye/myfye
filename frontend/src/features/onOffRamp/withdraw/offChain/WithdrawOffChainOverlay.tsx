@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import Overlay from "@/shared/components/ui/overlay/Overlay";
-import { selectAssetWithBalance } from "@/features/assets/assetsSlice";
+import { selectAssetWithBalance } from "@/features/assets/stores/assetsSlice";
 import {
   toggleOverlay,
   updateAmount,
@@ -23,7 +23,7 @@ import {
 import truncateBankAccountNumber from "@/shared/utils/bankUtils";
 import WithdrawOffChainConfirmTransactionOverlay from "./WithdrawOffChainConfirmTransactionOverlay";
 import { useEffect } from "react";
-import {encodeFunctionData} from "viem";
+import { encodeFunctionData } from "viem";
 
 const WithdrawOffChainOverlay = () => {
   const dispatch = useDispatch();

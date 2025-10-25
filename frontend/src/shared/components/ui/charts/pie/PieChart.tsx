@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { selectAssetsBalanceUSD } from "@/features/assets/assetsSlice";
+import { selectAssetsBalanceUSD } from "@/features/assets/stores/assetsSlice";
 
 const headingStyle = {
   fontWeight: "500",
