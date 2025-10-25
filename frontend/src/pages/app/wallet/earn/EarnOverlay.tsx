@@ -40,7 +40,10 @@ const EarnOverlay = () => {
     selectAssetsWithBalanceByGroup(state, "earn")
   );
 
-  const totalBalance = 20;
+  const totalBalance = assets.reduce(
+    (acc, current) => acc + current.balanceUSD,
+    0
+  );
 
   const pieChartData = assets.map((asset) => ({
     name: asset.symbol,

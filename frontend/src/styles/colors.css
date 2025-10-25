@@ -68,6 +68,7 @@
 
   --clr-neutral-050: #e9ebf0;
   --clr-neutral-100: #e3e8f2;
+  --clr-neutral-200: #cacfd8;
   --clr-neutral-300: #abb1bd;
   --clr-neutral-500: #838996;
   --clr-neutral-700: #586172;
@@ -150,10 +151,10 @@
 
   --clr-surface: var(--clr-neutral-050);
   --clr-surface-raised: var(--clr-white);
-  --clr-surface-lowered: var(--clr-neutral-300);
+  --clr-surface-lowered: var(--clr-neutral-200);
 
-  --clr-border-divider: var(--clr-neutral-300);
-  --clr-border-neutral: var(--clr-neutral-300);
+  --clr-border-divider: var(--clr-neutral-200);
+  --clr-border-neutral: var(--clr-neutral-200);
   --clr-border-strong: var(--clr-neutral-300);
   --clr-border-success: var(--clr-green-300);
   --clr-border-warning: var(--clr-yellow-200);
