@@ -258,7 +258,6 @@ function WebAppInner() {
 
   if (
     !user?.wallet?.address ||
-    !user?.wallet.address.startsWith("0x") ||
     mfaStatus !== "enrolled"
   ) {
     return <MFAOnboardingPage />;
