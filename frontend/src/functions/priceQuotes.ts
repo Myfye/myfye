@@ -43,6 +43,7 @@ const getStockPrice = async (dispatch: Function): Promise<boolean> => {
       },
     });
 
+    console.log("STOCKS - Response:", response);
     if (!response.ok) {
       const errorData = await response.json();
       console.error("STOCKS - Backend error:", errorData);
@@ -50,6 +51,7 @@ const getStockPrice = async (dispatch: Function): Promise<boolean> => {
     }
 
     const result = await response.json();
+    console.log("STOCKS - Full response data:", JSON.stringify(result, null, 2));
 
     // Map through the stock data and dispatch exchange rates
     if (result.success && result.data && Array.isArray(result.data)) {

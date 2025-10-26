@@ -34,7 +34,7 @@ root.render(
         solanaClusters: [
           {
             name: "mainnet-beta",
-            rpcUrl: `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`,
+            rpcUrl: `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`,
           },
         ],
         defaultChain: base,

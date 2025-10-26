@@ -55,7 +55,8 @@ const STOCK_SYMBOLS = [
     { symbol: 'CRM', name: 'Salesforce Inc.' },
     { symbol: 'TMO', name: 'Thermo Fisher Scientific Inc.' },
     { symbol: 'MSTR', name: 'MicroStrategy Incorporated' },
-    { symbol: 'GME', name: 'GameStop Corp.' }
+    { symbol: 'GME', name: 'GameStop Corp.' },
+    { symbol: 'SPY', name: 'SPDR S&P 500 ETF Trust' }
 ];
 
 // In-memory cache for stock prices

@@ -33,10 +33,10 @@ const usePrivySolanaWallets = () => {
   );
 
   useEffect(() => {
-    if (!wallets) {
+    if (!wallets && ready) {
       createWalletAsync();
     }
-  }, []);
+  }, [wallets, ready, createWallet]);
 
   useEffect(() => {
     if (Array.isArray(wallets) && wallets.length > 0 && wallets[0].address) {
@@ -52,11 +52,11 @@ const usePrivySolanaWallets = () => {
           console.error("Error saving Solana public key:", error)
         );
       }
-    } else {
+    } else if (wallets && Array.isArray(wallets) && wallets.length === 0 && ready) {
       console.log("no wallets found:", wallets, "creating...");
       createWalletAsync();
     }
-  }, [wallets, privyUserId]);
+  }, [wallets, privyUserId, ready, createWallet, dispatch]);
 };
 
 export default usePrivySolanaWallets;
