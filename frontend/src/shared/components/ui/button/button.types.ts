@@ -1,5 +1,5 @@
 import { Icon } from "@phosphor-icons/react";
-import { ReactNode, RefObject } from "react";
+import { CSSProperties, ReactNode, RefObject } from "react";
 import { AriaButtonProps, AriaLinkOptions } from "react-aria";
 
 export type IconSize = "x-small" | "small" | "medium" | "large" | "x-large";
@@ -40,6 +40,7 @@ export interface SharedButtonAndLinkProps {
   className?: string;
   isLoading?: boolean;
   mobile?: boolean;
+  width?: "fullWidth" | CSSProperties["width"];
 }
 
 export interface ButtonProps extends AriaButtonProps, SharedButtonAndLinkProps {

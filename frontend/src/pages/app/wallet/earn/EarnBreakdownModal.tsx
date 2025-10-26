@@ -1,6 +1,11 @@
 import Modal from "@/shared/components/ui/modal/Modal";
 import { css } from "@emotion/react";
 import PieChart from "../_components/PieChart";
+import EarnBreakdownPieChartCard from "./EarnBreakdownPieChartCard";
+import Stack from "@/shared/components/ui/primitives/stack/Stack";
+import Section from "@/shared/components/layout/section/Section";
+import Card from "@/shared/components/ui/card/Card";
+
 const getPercentage = (value: number) =>
   new Intl.NumberFormat("en-EN", {
     style: "percent",
@@ -52,11 +57,6 @@ const pieChartData = [
 
 interface EarnBreakdownModelProps {
   zIndex?: number;
-  data: {
-    name: string;
-    y: number;
-    color: string;
-  }[];
   onOpenChange: (isOpen: boolean) => void;
   isOpen: boolean;
 }
@@ -64,71 +64,8 @@ interface EarnBreakdownModelProps {
 const EarnBreakdownModal = ({
   isOpen,
   onOpenChange,
-  data,
   zIndex = 1001,
 }: EarnBreakdownModelProps) => {
-  const pieChartOptions: Highcharts.Options = {
-    chart: {
-      type: "pie",
-      height: 200,
-      backgroundColor: "transparent",
-      spacingBottom: 0,
-      spacingLeft: 0,
-      spacingRight: 0,
-      spacingTop: 0,
-      marginTop: 0,
-      marginBottom: 0,
-      marginLeft: 0,
-      marginRight: 0,
-    },
-    plotOptions: {
-      pie: {
-        borderWidth: 2,
-        center: ["50%", "45%"],
-        showInLegend: true,
-        innerSize: "60%",
-        size: "90%",
-        depth: 45,
-        allowPointSelect: true,
-        cursor: "pointer",
-        dataLabels: [
-          {
-            enabled: false,
-          },
-        ],
-      },
-    },
-    title: {
-      text: "<span class='earn-breakdown-title-main'>Earn</br>Breakdown</span>",
-      floating: true,
-      x: 0,
-      y: 85,
-      style: {
-        fontSize: "17px",
-        fontWeight: "600",
-        fontFamily: "Inter",
-        color: "var(--clr-text)",
-      },
-    },
-    tooltip: {
-      enabled: true,
-      pointFormat: "Balance: <b>${point.y:.2f}</b>",
-    },
-    credits: {
-      enabled: false,
-    },
-    legend: {
-      enabled: false,
-    },
-    series: [
-      // @ts-ignore
-      {
-        name: "Earn breakdown",
-        colorByPoint: true,
-        data: pieChartData,
-      },
-    ],
-  };
   return (
     <Modal
       zIndex={zIndex}
@@ -136,97 +73,67 @@ const EarnBreakdownModal = ({
       onOpenChange={onOpenChange}
       height={667}
     >
-      <section
-        css={css`
-          padding-inline: var(--size-200);
-        `}
-      >
-        <div
-          css={css`
-            padding: var(--size-150);
-            border-radius: var(--border-radius-medium);
-            background-color: var(--clr-surface-raised);
-            overflow: hidden;
-            height: 13rem;
-          `}
-        >
-          <PieChart options={pieChartOptions} />
-        </div>
-      </section>
-      <section
-        css={css`
-          padding-inline: var(--size-200);
-          margin-block-start: var(--size-200);
-        `}
-      >
-        <div
-          className="container"
-          css={css`
-            border-radius: var(--border-radius-medium);
-            background-color: var(--clr-surface-raised);
-            padding: var(--size-200);
-          `}
-        >
-          <ul
-            css={css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--size-100);
-            `}
-          >
-            {...data.map((datum) => {
-              return (
-                <li>
-                  <div
-                    css={css`
-                      display: grid;
-                      grid-template-columns: auto 1fr;
-                      gap: var(--size-100);
-                    `}
-                  >
+      <Stack gap="medium">
+        <Section padding="small">
+          <EarnBreakdownPieChartCard />
+        </Section>
+        <Section padding="small">
+          <Card size="large">
+            <Stack as="ul" gap="small" alignInline="start">
+              {...pieChartData.map((datum) => {
+                return (
+                  <li>
                     <div
                       css={css`
-                        width: var(--size-200);
-                        aspect-ratio: 1;
-                        background-color: ${datum.color};
-                        border-radius: var(--border-radius-circle);
-                      `}
-                    ></div>
-                    <p
-                      css={css`
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
+                        display: grid;
+                        grid-template-columns: auto 1fr;
+                        gap: var(--size-100);
                       `}
                     >
-                      <span
+                      <div
                         css={css`
-                          font-size: var(--fs-small);
-                          line-height: var(--line-height-tight);
-                          font-weight: var(--fw-active);
-                          color: var(--clr-text);
+                          width: var(--size-200);
+                          aspect-ratio: 1;
+                          background-color: ${datum.color};
+                          border-radius: var(--border-radius-circle);
+                        `}
+                      ></div>
+                      <p
+                        css={css`
+                          display: flex;
+                          flex-direction: column;
+                          align-items: flex-start;
                         `}
                       >
-                        {datum.name}
-                      </span>
-                      <span
-                        css={css`
-                          color: var(--clr-text-weaker);
-                          font-size: var(--fs-x-small);
-                          line-height: var(--line-height-tight);
-                          margin-block-start: var(--size-025);
-                        `}
-                      >
-                        {getPercentage(datum.y)}
-                      </span>
-                    </p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </section>
+                        <span
+                          css={css`
+                            font-size: var(--fs-small);
+                            line-height: var(--line-height-tight);
+                            font-weight: var(--fw-active);
+                            color: var(--clr-text);
+                          `}
+                        >
+                          {datum.name}
+                        </span>
+                        <span
+                          css={css`
+                            color: var(--clr-text-weaker);
+                            font-size: var(--fs-x-small);
+                            line-height: var(--line-height-tight);
+                            margin-block-start: var(--size-025);
+                          `}
+                        >
+                          {getPercentage(datum.y)}
+                        </span>
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
+            </Stack>
+          </Card>
+        </Section>
+      </Stack>
     </Modal>
   );
 };

@@ -107,7 +107,8 @@
   font-size: var(--fs-large);
 }
 
-.caption {
+.caption,
+.caption-medium {
   line-height: var(--line-height-caption);
   font-size: var(--fs-medium);
 }

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { css } from '@emotion/react';
-import Button from '../../shared/components/ui/button/Button';
-import { Trash, Warning, ArrowLeft } from '@phosphor-icons/react';
-import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from '../../env';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { css } from "@emotion/react";
+import Button from "../../shared/components/ui/button/Button";
+import { Trash, Warning, ArrowLeft } from "@phosphor-icons/react";
+import { MYFYE_BACKEND, MYFYE_BACKEND_KEY } from "../../env";
 import { usePrivy } from "@privy-io/react-auth";
 import toast from "react-hot-toast/headless";
 
@@ -15,7 +15,6 @@ const DeleteAccountPage = () => {
   const dispatch = useDispatch();
   const { user, ready, authenticated, login } = usePrivy();
 
-
   const handleDeleteAccount = async () => {
     if (!isConfirming) {
       setIsConfirming(true);
@@ -25,14 +24,17 @@ const DeleteAccountPage = () => {
     setIsDeleting(true);
     try {
       // First, get the internal user ID from the database using the Privy user ID
-      const getUserResponse = await fetch(`${MYFYE_BACKEND}/get_user_by_privy_id`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": MYFYE_BACKEND_KEY,
-        },
-        body: JSON.stringify({ privyUserId: user.id }),
-      });
+      const getUserResponse = await fetch(
+        `${MYFYE_BACKEND}/get_user_by_privy_id`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": MYFYE_BACKEND_KEY,
+          },
+          body: JSON.stringify({ privyUserId: user.id }),
+        }
+      );
 
       if (!getUserResponse.ok) {
         throw new Error("Failed to get user from database");
@@ -59,12 +61,12 @@ const DeleteAccountPage = () => {
         throw new Error("Failed to delete user");
       }
 
-      console.log('Account deleted successfully');
-      
+      console.log("Account deleted successfully");
+
       // Redirect to login page after successful deletion
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Failed to delete account:', error);
+      console.error("Failed to delete account:", error);
       toast.error(`Error try logging in again`);
       setIsDeleting(false);
     }
@@ -146,7 +148,7 @@ const DeleteAccountPage = () => {
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
-      
+
       &:hover {
         background: white;
         transform: scale(1.05);
@@ -156,11 +158,11 @@ const DeleteAccountPage = () => {
       background: #dc3545 !important;
       color: white !important;
       border: none !important;
-      
+
       &:hover {
         background: #c82333 !important;
       }
-      
+
       &:disabled {
         background: #6c757d !important;
         cursor: not-allowed;
@@ -170,11 +172,11 @@ const DeleteAccountPage = () => {
       background: #6c757d !important;
       color: white !important;
       border: none !important;
-      
+
       &:hover {
         background: #5a6268 !important;
       }
-    `
+    `,
   };
 
   return (
@@ -182,24 +184,26 @@ const DeleteAccountPage = () => {
       <button css={styles.backButton} onClick={handleCancel}>
         <ArrowLeft size={24} color="#666" />
       </button>
-      
+
       <div css={styles.card}>
         <div css={styles.header}>
           <div css={styles.title}>
-            {isConfirming ? 'Final Confirmation' : 'Delete Account'}
+            {isConfirming ? "Final Confirmation" : "Delete Account"}
           </div>
           <div css={styles.subtitle}>
-            {isConfirming 
-              ? 'This action cannot be undone. Are you absolutely sure?'
-              : 'This action will permanently dissacociate your data. For security purposes we will not delete your embedded wallet.'
-            }
+            {isConfirming
+              ? "This action cannot be undone. Are you absolutely sure?"
+              : "This action will permanently dissacociate your data. For security purposes we will not delete your embedded wallet."}
           </div>
         </div>
 
         <div css={styles.warningSection}>
           <Warning size={24} color="#856404" weight="fill" />
           <div css={styles.warningText}>
-            <div>This will remove all of your personal data but not your passkey or financial data</div>
+            <div>
+              This will remove all of your personal data but not your passkey or
+              financial data
+            </div>
           </div>
         </div>
 
@@ -237,7 +241,7 @@ const DeleteAccountPage = () => {
                 icon={Trash}
                 isDisabled={isDeleting}
               >
-                {isDeleting ? 'Deleting Account...' : 'Yes, Delete My Account'}
+                {isDeleting ? "Deleting Account..." : "Yes, Delete My Account"}
               </Button>
               <Button
                 expand

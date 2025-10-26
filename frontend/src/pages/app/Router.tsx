@@ -12,26 +12,33 @@ import {
   Wallet as WalletIcon,
   ArrowsLeftRight as PayIcon,
   ClockCounterClockwise as ActivityIcon,
-  Scan as ScanIcon,
+  ScanIcon,
+  ChartLineUpIcon,
+  CurrencyCircleDollarIcon,
+  ClockCounterClockwiseIcon,
 } from "@phosphor-icons/react";
 
 import { css } from "@emotion/react";
 import Footer from "../../shared/components/layout/footer/Footer";
 import Header from "../../shared/components/layout/header/Header";
 import Wallet from "@/pages/app/wallet/Wallet";
-import Activity from "@/pages/app/activity/Activity";
+import Activity from "@/features/activity/ActivityOverlay";
 import { useDispatch } from "react-redux";
 import { setQRCodeModalOpen } from "@/redux/modalReducers";
 import Button from "../../shared/components/ui/button/Button";
 import { motion, AnimatePresence } from "motion/react";
 import Pay from "@/pages/app/pay/Pay";
 import NavMenu from "@/shared/components/ui/nav-menu/NavMenu";
+import RetirementPage from "./retirement/RetirementPage";
+import ButtonGroup from "@/shared/components/ui/button/ButtonGroup";
+import ButtonGroupItem from "@/shared/components/ui/button/ButtonGroupItem";
+import { toggleOverlay } from "@/features/activity/activitySlice";
 
 const tabs = [
   { id: "home", label: "Home" },
   { id: "wallet", label: "Wallet" },
   { id: "pay", label: "Pay" },
-  { id: "activity", label: "Activity" },
+  { id: "retirement", label: "Retirement" },
 ];
 
 const MotionTabLabel = motion(AriaTabPanel);
@@ -97,6 +104,18 @@ const Router = () => {
           />
         );
       }
+      case "retirement": {
+        return (
+          <CurrencyCircleDollarIcon
+            color={color}
+            weight={weight}
+            size={24}
+            css={css`
+              margin-inline: auto;
+            `}
+          />
+        );
+      }
       default: {
         throw new Error(`Tab ID ${id} is invalid.`);
       }
@@ -128,12 +147,22 @@ const Router = () => {
         >
           <Header color="var(--clr-surface)">
             <NavMenu />
-            <Button
-              iconOnly
-              icon={ScanIcon}
-              onPress={() => dispatch(setQRCodeModalOpen(true))}
-              color="white"
-            />
+            <ButtonGroup>
+              <ButtonGroupItem
+                iconOnly
+                icon={ScanIcon}
+                color="white"
+                onPress={() => dispatch(setQRCodeModalOpen(true))}
+              />
+              <ButtonGroupItem
+                iconOnly
+                icon={ClockCounterClockwiseIcon}
+                color="white"
+                onPress={() =>
+                  dispatch(toggleOverlay({ isOpen: true, type: "activity" }))
+                }
+              />
+            </ButtonGroup>
           </Header>
           <main
             css={css`
@@ -141,35 +170,33 @@ const Router = () => {
               z-index: 0;
             `}
           >
-            <AnimatePresence initial={false} mode="wait">
-              {tabs.map((tab) => (
-                <MotionTabLabel
-                  id={tab.id}
-                  key={`tab-panel-${tab.id}`}
+            {tabs.map((tab) => (
+              <MotionTabLabel
+                id={tab.id}
+                key={`tab-panel-${tab.id}`}
+                css={css`
+                  container: tab / size;
+                  min-height: 100%;
+                  height: 100%;
+                `}
+              >
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={variants}
+                  key={tab.id}
                   css={css`
-                    container: tab / size;
-                    min-height: 100%;
-                    height: 100%;
+                    height: 100cqh;
                   `}
                 >
-                  <motion.div
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={variants}
-                    key={tab.id}
-                    css={css`
-                      height: 100cqh;
-                    `}
-                  >
-                    {tab.id === "home" && <Home />}
-                    {tab.id === "wallet" && <Wallet />}
-                    {tab.id === "pay" && <Pay />}
-                    {tab.id === "activity" && <Activity />}
-                  </motion.div>
-                </MotionTabLabel>
-              ))}
-            </AnimatePresence>
+                  {tab.id === "home" && <Home />}
+                  {tab.id === "wallet" && <Wallet />}
+                  {tab.id === "pay" && <Pay />}
+                  {tab.id === "retirement" && <RetirementPage />}
+                </motion.div>
+              </MotionTabLabel>
+            ))}
           </main>
         </div>
         <Footer>
