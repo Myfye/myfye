@@ -8,6 +8,7 @@ import btcIcon from "@/assets/icons/assets/crypto/Bitcoin.svg";
 import solIcon from "@/assets/icons/assets/crypto/Solana.svg";
 import usDollarIcon from "@/assets/icons/assets/cash/US Dollar.svg";
 import pesoIcon from "@/assets/icons/assets/cash/MX peso.svg";
+import goldIcon from "@/assets/icons/assets/cash/gold.jpg";
 import euroIcon from "@/assets/icons/assets/cash/Euro.svg";
 import usDollarYieldIcon from "@/assets/icons/assets/earn/us.png";
 import mexicanPesoYieldIcon from "@/assets/icons/assets/earn/mx.png";
@@ -156,6 +157,7 @@ const initialState: AssetsState = {
     // Earn
     "USDY",
     "CETES",
+    "GOLD",
     //"EUROB",
     //"GILTS",
     //"TESOURO"
@@ -1464,6 +1466,27 @@ const initialState: AssetsState = {
       exchangeRateUSD: 0,
       icon: {
         content: mexicanPesoYieldIcon,
+        type: "image",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    GOLD: {
+      id: "GOLD",
+      label: "Gold",
+      symbol: "GOLD",
+      color: "var(--clr-cetes)",
+      mintAddress: "GoLDppdjB1vDTPSGxyMJFqdnj134yH6Prg9eqsGDiw6A",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 6,
+      dashboardId: "cash",
+      fiatCurrency: "usd",
+      groupId: "earn",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: goldIcon,
         type: "image",
       },
       overlay: {

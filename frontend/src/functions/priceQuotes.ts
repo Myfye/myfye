@@ -251,6 +251,25 @@ const getSOLPriceQuote = async (dispatch: Function): Promise<boolean> => {
   return true;
 };
 
+const getGOLDPriceQuote = async (dispatch: Function): Promise<boolean> => {
+  try {
+    const quote = await getSwapQuote(getMintAddress("GOLD"));
+    const priceInUSD = quote.outAmount / 1000000;
+
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "GOLD",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+
+    return true;
+  } catch (error) {
+    console.error("QUOTE ERROR getting GOLD price quote:", error);
+    return false;
+  }
+};
+
 // Export function that calls all price quotes with Promise.all
 export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
   try {
@@ -262,6 +281,7 @@ export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
       // Earn assets
       getUSDYPriceQuote(dispatch),
       getCETESPriceQuote(dispatch),
+      getGOLDPriceQuote(dispatch),
       //getEUROBPriceQuote(dispatch),
       //getGILTSPriceQuote(dispatch),
       //getTESOUROPriceQuote(dispatch),
