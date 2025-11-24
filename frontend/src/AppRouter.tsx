@@ -114,8 +114,6 @@ function WebAppInner() {
             dispatch(setWalletClient(client));
             dispatch(setEmbeddedWallet(wallet));
           }
-
-          await HandleUserLogIn(user, dispatch, wallets);
           setUserDataLoaded(true);
         } catch (error) {
           console.error("Error during login:", error);
