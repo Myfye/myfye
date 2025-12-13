@@ -39,6 +39,10 @@ const EtherfuseRampOverlay = () => {
     (state) => state.userWalletData.solanaPubKey
   );
 
+  const privyUserId = useAppSelector(
+    (state) => state.userWalletData.privyUserId
+  );
+
   const currentCETESBalance = assets.assets["CETES"].balance;
 
   const { wallets } = useSolanaWallets();
@@ -206,10 +210,16 @@ const EtherfuseRampOverlay = () => {
       console.log(
         "Etherfuse Sending transaction to backend for server signature..."
       );
+      
+      if (!privyUserId) {
+        throw new Error("privyUserId is required for sponsored transaction signing");
+      }
+
       const backendResponse = await axios.post(
         `${MYFYE_BACKEND}/sign_transaction`,
         {
           serializedTransaction: transactionBase64,
+          privyUserId: privyUserId,
         },
         {
           headers: {

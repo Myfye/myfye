@@ -98,6 +98,7 @@ const DepositModal = () => {
                 icon={Bank}
                 title="Bank Account"
                 description="Deposit via bank transfer"
+                badge="Mexico only"
                 onPress={() => {
                   dispatch(toggleOverlay({ type: "etherfuse", isOpen: true }));
                 }}

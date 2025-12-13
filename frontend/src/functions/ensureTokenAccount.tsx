@@ -15,7 +15,8 @@ import { getTokenProgramAddressFromMintAddress } from "../features/assets/stores
 
 async function ensureTokenAccount(
   userPublicKeyString: String,
-  mintAddress: String
+  mintAddress: String,
+  privyUserId?: string
 ) {
   // Get the token program address from the mint address
   const programId =
@@ -40,6 +41,10 @@ async function ensureTokenAccount(
 
   if (!receiverAccountInfo) {
     try {
+      if (!privyUserId) {
+        throw new Error("privyUserId is required for sponsored token account creation");
+      }
+
       const response = await fetch(
         `${MYFYE_BACKEND}/create_solana_token_account`,
         {
@@ -54,6 +59,7 @@ async function ensureTokenAccount(
             receiverPubKey: userPublicKeyString,
             mintAddress: mintAddress,
             programId: programId,
+            privyUserId: privyUserId,
           }),
         }
       );

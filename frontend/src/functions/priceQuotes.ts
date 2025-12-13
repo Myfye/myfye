@@ -139,12 +139,12 @@ const getCETESPriceQuote = async (dispatch: Function): Promise<boolean> => {
 const getCryptoPriceQuotes = async (dispatch: Function): Promise<boolean> => {
   try {
     console.log(
-      "COINGECKO - Starting batch price fetch for BTC, XRP, DOGE, SUI, SOL"
+      "COINGECKO - Starting batch price fetch for BTC, XRP, DOGE, SUI, SOL, MON"
     );
 
     // CoinGecko API endpoint for batch price lookup
     const response = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ripple,dogecoin,sui,solana&vs_currencies=usd"
+      "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ripple,dogecoin,sui,solana,monad&vs_currencies=usd"
     );
 
     if (!response.ok) {
@@ -161,6 +161,7 @@ const getCryptoPriceQuotes = async (dispatch: Function): Promise<boolean> => {
       dogecoin: "DOGE",
       sui: "SUI",
       solana: "SOL",
+      monad: "MONAD",
     };
 
     let successCount = 0;
@@ -302,5 +303,6 @@ const getHardcodedFallbackPrices = (): Record<string, number> => {
     XRP: 3,
     DOGE: 0.27,
     SUI: 3.5,
+    MONAD: 0.045,
   };
 };

@@ -36,6 +36,10 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
     (state: any) => state.userWalletData.solanaPubKey
   );
 
+  const privyUserId = useSelector(
+    (state: any) => state.userWalletData.privyUserId
+  );
+
   const transactionType = useSelector(
     (state: RootState) => state.swap.overlays.selectAsset.transactionType
   );
@@ -119,7 +123,7 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
         default:
           break;
       }
-      ensureTokenAccount(String(solanaPubKey), output_mint);
+      ensureTokenAccount(String(solanaPubKey), output_mint, privyUserId);
     } catch (error) {
       console.error("Error could not pre check token account:", error);
     }

@@ -34,6 +34,10 @@ const WithdrawOnChainPreviewTransactionOverlay = () => {
     (state) => state.userWalletData.solanaPubKey
   );
 
+  const privyUserId = useAppSelector(
+    (state) => state.userWalletData.privyUserId
+  );
+
   const headingId = useId();
 
   const handleConfirm = async () => {
@@ -63,7 +67,8 @@ const WithdrawOnChainPreviewTransactionOverlay = () => {
         transaction.solAddress,
         sendAmountMicro,
         transaction.assetId,
-        wallet
+        wallet,
+        privyUserId
       );
 
       if (result.success) {

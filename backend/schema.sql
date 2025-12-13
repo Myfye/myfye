@@ -119,6 +119,22 @@ CREATE TABLE IF NOT EXISTS etherfuse_users (
   UNIQUE(user_id)
 );
 
+CREATE TABLE IF NOT EXISTS sponsored_requests (
+  id TEXT PRIMARY KEY DEFAULT generate_unique_id(),
+  ip_address TEXT NOT NULL,
+  request_type TEXT NOT NULL,
+  privy_user_id TEXT REFERENCES users(privy_user_id),
+  transaction_signature TEXT,
+  transaction_data JSONB,
+  creation_date TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
+);
+
+CREATE INDEX ON sponsored_requests (privy_user_id);
+CREATE INDEX ON sponsored_requests (ip_address);
+CREATE INDEX ON sponsored_requests (request_type);
+CREATE INDEX ON sponsored_requests (creation_date);
+CREATE INDEX ON sponsored_requests (transaction_signature);
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE INDEX ON users USING gin (first_name gin_trgm_ops);
 CREATE INDEX ON users USING gin (last_name gin_trgm_ops);

@@ -49,6 +49,7 @@ const ConfirmSwapOverlay = ({ zIndex = 1000 }) => {
       outputCurrency: buyAssetId,
       dispatch,
       transaction,
+      privyUserId: walletData.privyUserId,
     });
 
     /*

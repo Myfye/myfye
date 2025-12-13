@@ -80,17 +80,63 @@ async function ensureTokenAccount(data) {
             throw keyError;
         }
 
-        const newTokenAccountPubKey = await Token.createAccount(
-            connection,
-            payerKeypair,
+        // Create account with server as closeAuthority to prevent users from closing and claiming rent
+        // This ensures only the server can close accounts it paid to create
+        const serverPublicKey = payerKeypair.publicKey;
+        
+        // Get the Associated Token Account address (deterministic)
+        const associatedTokenAddress = await Token.getAssociatedTokenAddress(
             mintPubKey,
             receiverPubKey,
-            null,
-            null,
+            false, // allowOwnerOffCurve
             programId
         );
+        
+        // Check if ATA already exists (shouldn't, but double-check)
+        const existingAccountInfo = await connection.getAccountInfo(associatedTokenAddress);
+        if (existingAccountInfo) {
+            console.log(`[TOKEN_ACCOUNT] ATA already exists: ${associatedTokenAddress.toString()}`);
+            return { pubkey: associatedTokenAddress.toString() };
+        }
+        
+        // Create the Associated Token Account
+        const createATAInstruction = Token.createAssociatedTokenAccountInstruction(
+            serverPublicKey, // Payer (server)
+            associatedTokenAddress, // ATA address
+            receiverPubKey, // Owner (user)
+            mintPubKey, // Mint
+            programId
+        );
+        
+        // Set close authority to server wallet AFTER creation
+        // This is critical: only the server can close the account and reclaim rent
+        // Note: We need to do this in a separate transaction because the account must exist first
+        const setAuthorityInstruction = Token.createSetAuthorityInstruction(
+            associatedTokenAddress,
+            receiverPubKey, // Current authority (owner)
+            Token.AuthorityType.CloseAccount,
+            serverPublicKey, // New authority - SERVER controls closing
+            [], // No multi-signers needed
+            programId
+        );
+        
+        // Build and send transaction with both instructions
+        const transaction = new web3.Transaction().add(
+            createATAInstruction,
+            setAuthorityInstruction
+        );
+        
+        // Send and confirm
+        const signature = await web3.sendAndConfirmTransaction(
+            connection,
+            transaction,
+            [payerKeypair], // Only server needs to sign (as payer)
+            { commitment: 'confirmed' }
+        );
+        
+        console.log(`[TOKEN_ACCOUNT] Created ATA ${associatedTokenAddress.toString()} with server as closeAuthority. Signature: ${signature}`);
 
-        return { pubkey: newTokenAccountPubKey.toString() };
+        return { pubkey: associatedTokenAddress.toString() };
     } catch (error) {
         console.error('Error handling token account:', error);
         throw error; // Re-throw the error to be handled by the caller

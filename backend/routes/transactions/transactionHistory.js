@@ -45,10 +45,10 @@ async function cleanData(sol_public_key, solanaTransfers) {
             continue;
         }
 
-        console.log(`\n=== PROCESSING TRANSACTION ${signature} ===`);
-        console.log('Complete transaction data:', JSON.stringify(transaction, null, 2));
-        console.log('Token transfers count:', tokenTransfers.length);
-        console.log('User address:', sol_public_key);
+        // console.log(`\n=== PROCESSING TRANSACTION ${signature} ===`);
+        //console.log('Complete transaction data:', JSON.stringify(transaction, null, 2));
+        //console.log('Token transfers count:', tokenTransfers.length);
+        //console.log('User address:', sol_public_key);
 
         let cleanedTransaction = {
             signature,
@@ -61,6 +61,7 @@ async function cleanData(sol_public_key, solanaTransfers) {
         };
 
         // Log all token transfers with analysis
+        /*
         console.log('\n--- TOKEN TRANSFER ANALYSIS ---');
         tokenTransfers.forEach((transfer, index) => {
             console.log(`Transfer ${index + 1}:`, {
@@ -74,16 +75,18 @@ async function cleanData(sol_public_key, solanaTransfers) {
                 isSOL: transfer.mint === 'So11111111111111111111111111111111111111112'
             });
         });
+        */
 
         if (tokenTransfers.length === 1) {
             // Single token transfer - either deposit or withdraw
             const transfer = tokenTransfers[0];
             
-            console.log("Single transfer detected - deposit or withdraw");
-            console.log("Transfer details:", transfer);
+            // console.log("Single transfer detected - deposit or withdraw");
+            //console.log("Transfer details:", transfer);
             
             if (transfer.sender === sol_public_key) {
                 // User is sending - withdraw
+                /*
                 console.log("[DEBUG] WITHDRAW - Raw transfer data:", {
                     mint: transfer.mint,
                     tokenAmount: transfer.tokenAmount,
@@ -91,12 +94,14 @@ async function cleanData(sol_public_key, solanaTransfers) {
                     receiver: transfer.receiver,
                     type: transfer.type
                 });
+                */
                 cleanedTransaction.type = 'withdraw';
                 cleanedTransaction.input_amount = transfer.tokenAmount;
                 cleanedTransaction.input_mint = transfer.mint;
                 console.log("Classified as WITHDRAW - Amount:", transfer.tokenAmount);
             } else if (transfer.receiver === sol_public_key) {
                 // User is receiving - deposit
+                /*
                 console.log("[DEBUG] DEPOSIT - Raw transfer data:", {
                     mint: transfer.mint,
                     tokenAmount: transfer.tokenAmount,
@@ -104,6 +109,7 @@ async function cleanData(sol_public_key, solanaTransfers) {
                     receiver: transfer.receiver,
                     type: transfer.type
                 });
+                */
                 cleanedTransaction.type = 'deposit';
                 cleanedTransaction.input_amount = transfer.tokenAmount;
                 cleanedTransaction.input_mint = transfer.mint;
@@ -111,13 +117,13 @@ async function cleanData(sol_public_key, solanaTransfers) {
             }
         } else {
             // Multiple token transfers - likely a swap
-            console.log("Multiple transfers detected - likely swap");
+            // console.log("Multiple transfers detected - likely swap");
             cleanedTransaction.type = 'swap';
             
             // Find what the user is sending (output) and receiving (input)
             const userSending = tokenTransfers.filter(t => t.sender === sol_public_key);
             const userReceiving = tokenTransfers.filter(t => t.receiver === sol_public_key);
-            
+            /*
             console.log('User sending transfers:', userSending.map(t => ({
                 mint: t.mint,
                 amount: t.tokenAmount,
@@ -129,11 +135,12 @@ async function cleanData(sol_public_key, solanaTransfers) {
                 amount: t.tokenAmount,
                 isSOL: t.mint === 'So11111111111111111111111111111111111111112'
             })));
-            
+            */
             // Smart algorithm to determine main swap tokens
             const smartSending = findMainSwapToken(userSending, 'sending');
             const smartReceiving = findMainSwapToken(userReceiving, 'receiving');
             
+            /*
             console.log('Smart algorithm picks:');
             console.log('  Input (user sending):', smartSending ? {
                 mint: smartSending.mint,
@@ -163,6 +170,7 @@ async function cleanData(sol_public_key, solanaTransfers) {
                 amount: userReceivingFirst.tokenAmount,
                 isSOL: userReceivingFirst.mint === 'So11111111111111111111111111111111111111112'
             } : 'None');
+             */
             
             // Use smart algorithm - sending = input, receiving = output
             if (smartSending) {
@@ -176,13 +184,13 @@ async function cleanData(sol_public_key, solanaTransfers) {
             }
         }
 
-        console.log('\n--- FINAL CLASSIFICATION ---');
-        console.log('Type:', cleanedTransaction.type);
-        console.log('Input mint:', cleanedTransaction.input_mint);
-        console.log('Input amount:', cleanedTransaction.input_amount);
-        console.log('Output mint:', cleanedTransaction.output_mint);
-        console.log('Output amount:', cleanedTransaction.output_amount);
-        console.log('=== END TRANSACTION PROCESSING ===\n');
+        //console.log('\n--- FINAL CLASSIFICATION ---');
+        //console.log('Type:', cleanedTransaction.type);
+        //console.log('Input mint:', cleanedTransaction.input_mint);
+        //console.log('Input amount:', cleanedTransaction.input_amount);
+        //console.log('Output mint:', cleanedTransaction.output_mint);
+        //console.log('Output amount:', cleanedTransaction.output_amount);
+        //console.log('=== END TRANSACTION PROCESSING ===\n');
 
         cleanedTransactions.push(cleanedTransaction);
     }
@@ -212,7 +220,7 @@ function findMainSwapToken(transfers, direction) {
         return true;
     });
     
-    console.log(`[findMainSwapToken] Direction: ${direction}, Original: ${transfers.length}, After filtering small SOL: ${nonTinySOLTransfers.length}`);
+    // console.log(`[findMainSwapToken] Direction: ${direction}, Original: ${transfers.length}, After filtering small SOL: ${nonTinySOLTransfers.length}`);
     
     // If we have transfers after filtering, use those
     const candidateTransfers = nonTinySOLTransfers.length > 0 ? nonTinySOLTransfers : transfers;

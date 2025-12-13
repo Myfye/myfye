@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const geoip = require('geoip-lite');
 const rateLimit = require('express-rate-limit');
+const web3 = require('@solana/web3.js');
 const app = express();
 const { create_new_on_ramp_path, get_all_receivers, delete_blockchain_wallet, delete_receiver, delete_blockchain_wallet_and_receiver } = require('./routes/blindPay/receiver.js');
 const { create_new_payin, get_payin_quote } = require('./routes/blindPay/payIn.js');
@@ -76,6 +77,7 @@ const { getUserEtherfuseData } = require('./routes/etherfuse/customer_data.js');
 const { handleCustomerUpdatedWebhook } = require('./routes/etherfuse/customer_updated');
 const { handleOrderUpdatedWebhook } = require('./routes/etherfuse/order_updated');
 const { handleBankAccountUpdatedWebhook } = require('./routes/etherfuse/bank_account_updated');
+const { validatePrivyUserId, logSponsoredRequest } = require('./routes/sol_transaction/sponsoredSecurity');
 
 app.set('trust proxy', true);
 
@@ -151,6 +153,15 @@ const sensitiveLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 12, // Limit each IP per windowMs
   message: { error: 'Too many sensitive operations attempted, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Very strict limiter for sensitive operations
+const sponsoredLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 4, // Limit each IP per windowMs
+  message: { error: 'Too many sponsored operations attempted, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -619,12 +630,29 @@ app.post("/get_all_bank_accounts", generalLimiter, async (req, res) => {
   }
 });
 
-app.post("/create_solana_token_account", async (req, res) => {
+app.post("/create_solana_token_account", sponsoredLimiter, async (req, res) => {
   console.log("\n=== Create Solana Token Account Request Received ===");
   console.log("Request body:", JSON.stringify(req.body, null, 2));
-
+  console.log("Request IP:", req.ip);
+  
   try {
-    const { receiverPubKey, mintAddress, programId } = req.body;
+    const { receiverPubKey, mintAddress, programId, privyUserId } = req.body;
+    
+    // Validate required fields
+    if (!privyUserId) {
+      return res.status(400).json({ 
+        error: "Missing required field: privyUserId is required" 
+      });
+    }
+    
+    // Validate privy user ID exists in database
+    const user = await validatePrivyUserId(privyUserId);
+    if (!user) {
+      console.warn(`[SECURITY] Invalid privy user ID: ${privyUserId} from IP: ${req.ip}`);
+      return res.status(403).json({ 
+        error: "Invalid user: privyUserId not found in database" 
+      });
+    }
     
     // Log environment variable status (without exposing the actual key)
     console.log(`SOL_PRIV_KEY is ${process.env.SOL_PRIV_KEY ? 'set' : 'not set'}`);
@@ -635,6 +663,21 @@ app.post("/create_solana_token_account", async (req, res) => {
       mintAddress,
       programId,
     });
+    
+    // Log the sponsored request (transaction signature will be null for account creation)
+    await logSponsoredRequest({
+      ip_address: req.ip,
+      request_type: 'create_token_account',
+      privy_user_id: privyUserId,
+      transaction_signature: null, // Account creation doesn't have a signature yet
+      transaction_data: {
+        receiverPubKey,
+        mintAddress,
+        programId,
+        result: result.pubkey
+      }
+    });
+    
     console.log(
       "Token account creation result:",
       JSON.stringify(result, null, 2)
@@ -792,13 +835,55 @@ app.post("/delete_contact", async (req, res) => {
 });
 
 /* Transaction signing endpoints */
-app.post("/sign_transaction", sensitiveLimiter, async (req, res) => {
+app.post("/sign_transaction", sponsoredLimiter, async (req, res) => {
   console.log("\n=== Sign Transaction Request Received ===");
   console.log("Request body:", JSON.stringify(req.body, null, 2));
-
+  console.log("Request IP:", req.ip);
+  
   try {
-    const data = req.body;
+    const { serializedTransaction, privyUserId } = req.body;
+    
+    // Validate required fields
+    if (!privyUserId) {
+      return res.status(400).json({ 
+        error: "Missing required field: privyUserId is required" 
+      });
+    }
+    
+    if (!serializedTransaction) {
+      return res.status(400).json({ 
+        error: "Missing required field: serializedTransaction is required" 
+      });
+    }
+    
+    // Validate privy user ID exists in database
+    const user = await validatePrivyUserId(privyUserId);
+    if (!user) {
+      console.warn(`[SECURITY] Invalid privy user ID: ${privyUserId} from IP: ${req.ip}`);
+      return res.status(403).json({ 
+        error: "Invalid user: privyUserId not found in database" 
+      });
+    }
+    
+    const data = { serializedTransaction };
     const result = await signTransaction(data);
+    
+    // Extract transaction signature from result (if available)
+    const transactionSignature = result.transactionSignature || null;
+    
+    // Log the sponsored request
+    await logSponsoredRequest({
+      ip_address: req.ip,
+      request_type: 'sign_transaction',
+      privy_user_id: privyUserId,
+      transaction_signature: transactionSignature,
+      transaction_data: {
+        serializedTransaction: serializedTransaction.substring(0, 200), // Store first 200 chars for reference
+        signedTransactionLength: result.signedTransaction ? result.signedTransaction.length : 0,
+        hasError: !!result.error
+      }
+    });
+    
     console.log("Transaction signing result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {
@@ -812,13 +897,55 @@ app.post("/sign_transaction", sensitiveLimiter, async (req, res) => {
   }
 });
 
-app.post("/sign_versioned_transaction", generalLimiter, async (req, res) => {
+app.post("/sign_versioned_transaction", sponsoredLimiter, async (req, res) => {
   console.log("\n=== Sign Versioned Transaction Request Received ===");
   console.log("Request body:", JSON.stringify(req.body, null, 2));
+  console.log("Request IP:", req.ip);
 
   try {
-    const data = req.body;
+    const { serializedTransaction, privyUserId } = req.body;
+    
+    // Validate required fields
+    if (!privyUserId) {
+      return res.status(400).json({ 
+        error: "Missing required field: privyUserId is required" 
+      });
+    }
+    
+    if (!serializedTransaction) {
+      return res.status(400).json({ 
+        error: "Missing required field: serializedTransaction is required" 
+      });
+    }
+    
+    // Validate privy user ID exists in database
+    const user = await validatePrivyUserId(privyUserId);
+    if (!user) {
+      console.warn(`[SECURITY] Invalid privy user ID: ${privyUserId} from IP: ${req.ip}`);
+      return res.status(403).json({ 
+        error: "Invalid user: privyUserId not found in database" 
+      });
+    }
+    
+    const data = { serializedTransaction };
     const result = await signVersionedTransaction(data);
+    
+    // Extract transaction signature from result (if available)
+    const transactionSignature = result.transactionSignature || null;
+    
+    // Log the sponsored request
+    await logSponsoredRequest({
+      ip_address: req.ip,
+      request_type: 'sign_versioned_transaction',
+      privy_user_id: privyUserId,
+      transaction_signature: transactionSignature,
+      transaction_data: {
+        serializedTransaction: serializedTransaction.substring(0, 200), // Store first 200 chars for reference
+        signedTransactionLength: result.signedTransaction ? result.signedTransaction.length : 0,
+        hasError: !!result.error
+      }
+    });
+    
     console.log("Versioned transaction signing result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {

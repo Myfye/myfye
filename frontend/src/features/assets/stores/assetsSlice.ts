@@ -17,6 +17,7 @@ import euroYieldIcon from "@/assets/icons/assets/earn/eu.png";
 import ukSterlingYieldIcon from "@/assets/icons/assets/earn/uk.png";
 import xrpIcon from "@/assets/icons/assets/crypto/Ripple.svg";
 import dogeIcon from "@/assets/icons/assets/crypto/Dogecoin.svg";
+import monadIcon from "@/assets/icons/assets/crypto/Monad.png";
 import suiIcon from "@/assets/icons/assets/crypto/Sui.svg";
 import usdcIcon from "@/assets/icons/assets/crypto/USDC.svg";
 import eurcIcon from "@/assets/icons/assets/crypto/EURC.svg";
@@ -149,6 +150,7 @@ const initialState: AssetsState = {
     "XRP",
     "DOGE",
     "SUI",
+    "MONAD",
     // Cash
     //"MXN",
     "MXN",
@@ -1359,6 +1361,27 @@ const initialState: AssetsState = {
       exchangeRateUSD: 0,
       icon: {
         content: suiIcon,
+        type: "svg",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    MONAD: {
+      id: "MONAD",
+      label: "Monad",
+      symbol: "MON",
+      color: "var(--clr-sui)",
+      mintAddress: "CrAr4RRJMBVwRsZtT62pEhfA9H5utymC2mVx8e7FreP2",
+      tokenProgram: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      decimals: 8,
+      dashboardId: "crypto",
+      fiatCurrency: "usd",
+      groupId: "crypto",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: monadIcon,
         type: "svg",
       },
       overlay: {

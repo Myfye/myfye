@@ -29,7 +29,8 @@ export const tokenTransfer = async (
   receiverPubKey: string,
   amountSmallestDenomination: number,
   currencySelected: string,
-  wallet: any
+  wallet: any,
+  privyUserId?: string
 ): Promise<any> => {
   try {
     console.log(
@@ -114,6 +115,10 @@ export const tokenTransfer = async (
     const userPublicKey = new PublicKey(receiverPubKey);
 
     if (!receiverAccountInfo) {
+      if (!privyUserId) {
+        throw new Error("privyUserId is required for sponsored token account creation");
+      }
+
       const response = await fetch(
         `${MYFYE_BACKEND}/create_solana_token_account`,
         {
@@ -128,6 +133,7 @@ export const tokenTransfer = async (
             receiverPubKey: receiverPubKey,
             mintAddress: mintAddress,
             programId: programId,
+            privyUserId: privyUserId,
           }),
         }
       );
@@ -223,6 +229,10 @@ export const tokenTransfer = async (
       .toString("base64");
 
     // Send to backend for signing
+    if (!privyUserId) {
+      throw new Error("privyUserId is required for sponsored transaction signing");
+    }
+
     const response = await fetch(`${MYFYE_BACKEND}/sign_transaction`, {
       method: "POST",
       headers: {
@@ -231,6 +241,7 @@ export const tokenTransfer = async (
       },
       body: JSON.stringify({
         serializedTransaction: serializedTx,
+        privyUserId: privyUserId,
       }),
     });
 

@@ -42,6 +42,10 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     (state: any) => state.userWalletData.solanaPubKey
   );
 
+  const privyUserId = useSelector(
+    (state: any) => state.userWalletData.privyUserId
+  );
+
   const transaction = useSelector((state: RootState) => state.pay.transaction);
 
   const assets = useSelector((state: RootState) => state.assets);
@@ -115,7 +119,8 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
         transaction.user.solana_pub_key,
         sendAmountMicro,
         transaction.assetId,
-        wallet
+        wallet,
+        privyUserId
       );
 
       if (result.success) {

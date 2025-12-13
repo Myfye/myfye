@@ -32,6 +32,7 @@ export const swap = async ({
   type = "deposit",
   microPlatformFeeAmount = 0,
   transaction,
+  privyUserId,
 }: {
   wallet: ConnectedSolanaWallet;
   assets: AssetsState;
@@ -43,6 +44,7 @@ export const swap = async ({
   type?: string;
   microPlatformFeeAmount?: number;
   transaction: SwapTransaction;
+  privyUserId?: string;
 }) => {
   console.log(
     "swapping",
@@ -115,7 +117,8 @@ export const swap = async ({
         type,
         platformFeeAccountData,
         transaction,
-        assets
+        assets,
+        privyUserId
       );
     })
     .catch((error) => {
@@ -240,7 +243,8 @@ const swapTransaction = async (
   type: string,
   platformFeeAccountData: any,
   transaction: any,
-  assets: AssetsState
+  assets: AssetsState,
+  privyUserId?: string
 ) => {
   // get the platform fee account
   let platformFeeAccount: PublicKey | null = null;
@@ -435,7 +439,8 @@ const swapTransaction = async (
   });
 
   const serverSignedTransaction = await signTransactionOnBackend(
-    preparedTransaction
+    preparedTransaction,
+    privyUserId
   );
   console.log("Server Signed Transaction Details:", {
     feePayer: serverSignedTransaction.message.staticAccountKeys[0].toString(),
@@ -579,12 +584,16 @@ const swapTransaction = async (
 {
   /* Sign Transaction On Backend */
 }
-async function signTransactionOnBackend(transaction: any) {
+async function signTransactionOnBackend(transaction: any, privyUserId?: string) {
   console.log("Starting server signing process");
   console.log(
     "Original transaction fee payer:",
     transaction.message.staticAccountKeys[0].toString()
   );
+
+  if (!privyUserId) {
+    throw new Error("privyUserId is required for sponsored transactions");
+  }
 
   // Serialize for server signing
   const serializedTx = Buffer.from(transaction.serialize()).toString("base64");
@@ -598,6 +607,7 @@ async function signTransactionOnBackend(transaction: any) {
     },
     body: JSON.stringify({
       serializedTransaction: serializedTx,
+      privyUserId: privyUserId,
     }),
   });
 

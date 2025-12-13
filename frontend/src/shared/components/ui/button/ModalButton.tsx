@@ -10,6 +10,7 @@ interface ModalButtonProps extends AriaButtonProps {
   icon: Icon;
   title?: string;
   description?: string;
+  badge?: string;
   ref?: RefObject<HTMLButtonElement>;
 }
 
@@ -18,6 +19,7 @@ const ModalButton = ({
   icon,
   title,
   description,
+  badge,
   ref,
   ...restProps
 }: ModalButtonProps) => {
@@ -41,6 +43,7 @@ const ModalButton = ({
       }}
       className="modal-button"
       css={css`
+        position: relative;
         display: grid;
         grid-template-columns: auto 1fr;
         column-gap: var(--size-150);
@@ -96,6 +99,23 @@ const ModalButton = ({
           {description}
         </p>
       </div>
+      {badge && (
+        <div
+          css={css`
+            position: absolute;
+            top: var(--size-100);
+            right: var(--size-100);
+            font-size: var(--fs-small);
+            color: var(--clr-text-weaker);
+            padding: var(--size-050) var(--size-100);
+            background-color: var(--clr-surface);
+            border-radius: var(--border-radius-small);
+            white-space: nowrap;
+          `}
+        >
+          {badge}
+        </div>
+      )}
     </motion.button>
   );
 };
