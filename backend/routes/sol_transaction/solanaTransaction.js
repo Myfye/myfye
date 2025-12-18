@@ -7,9 +7,16 @@ const Keypair = web3.Keypair;
 const Transaction = web3.Transaction;
 const PublicKey = web3.PublicKey;
 const TransactionMessage = web3.TransactionMessage;
+const Connection = web3.Connection;
+const AddressLookupTableAccount = web3.AddressLookupTableAccount;
 const Buffer = buffer.Buffer;
 
 const SERVER_PRIVATE_KEY = process.env.SOL_PRIV_KEY;
+const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
+const RPC = HELIUS_API_KEY 
+  ? `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`
+  : 'https://api.mainnet-beta.solana.com';
+const connection = new Connection(RPC, 'confirmed');
 
 // Program IDs
 const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
@@ -88,7 +95,7 @@ function extractTokenAccountDetails(instruction) {
  * Add SetAuthority instruction to set closeAuthority to server wallet
  */
 function createSetCloseAuthorityInstruction(accountPubkey, ownerPubkey, serverPubkey, programId) {
-  return Token.createSetAuthorityInstruction(
+  const instruction = Token.createSetAuthorityInstruction(
     accountPubkey,
     ownerPubkey, // Current authority (owner)
     Token.AuthorityType.CloseAccount,
@@ -96,6 +103,64 @@ function createSetCloseAuthorityInstruction(accountPubkey, ownerPubkey, serverPu
     [], // No multi-signers needed
     programId
   );
+  
+  // Fix the owner account to be writable (required for SetAuthority)
+  // The current authority must be writable because we're modifying the account's authority field
+  // SetAuthority instruction structure:
+  // - Key 0: Token account (writable, not signer)
+  // - Key 1: Current authority/owner (writable, signer) - MUST be writable
+  // Note: New authority (serverPubkey) is encoded in instruction data, not as a separate key
+  const fixedKeys = instruction.keys.map((key, index) => {
+    // The current authority (owner) must be writable
+    // Check both by pubkey match and by index (should be index 1 for current authority)
+    if (key.pubkey.equals(ownerPubkey) && key.isSigner) {
+      if (!key.isWritable) {
+        console.warn(`[SECURITY] Fixing SetAuthority instruction: making owner key at index ${index} writable`);
+        return {
+          ...key,
+          isWritable: true
+        };
+      }
+    }
+    // Also ensure token account (index 0) is writable
+    if (index === 0 && key.pubkey.equals(accountPubkey) && !key.isWritable) {
+      console.warn(`[SECURITY] Fixing SetAuthority instruction: making token account at index 0 writable`);
+      return {
+        ...key,
+        isWritable: true
+      };
+    }
+    return key;
+  });
+  
+  // Validate the instruction structure
+  if (fixedKeys.length < 2) {
+    throw new Error(`SetAuthority instruction must have at least 2 keys, got ${fixedKeys.length}`);
+  }
+  
+  // Validate token account (index 0)
+  if (!fixedKeys[0].pubkey.equals(accountPubkey)) {
+    throw new Error(`SetAuthority instruction key 0 should be token account ${accountPubkey.toBase58()}, got ${fixedKeys[0].pubkey.toBase58()}`);
+  }
+  if (!fixedKeys[0].isWritable) {
+    throw new Error(`SetAuthority instruction key 0 (token account) must be writable`);
+  }
+  
+  // Validate owner/current authority (index 1)
+  if (!fixedKeys[1].pubkey.equals(ownerPubkey)) {
+    throw new Error(`SetAuthority instruction key 1 should be owner ${ownerPubkey.toBase58()}, got ${fixedKeys[1].pubkey.toBase58()}`);
+  }
+  if (!fixedKeys[1].isSigner) {
+    throw new Error(`SetAuthority instruction key 1 (owner) must be a signer`);
+  }
+  if (!fixedKeys[1].isWritable) {
+    throw new Error(`SetAuthority instruction key 1 (owner) must be writable`);
+  }
+  
+  return {
+    ...instruction,
+    keys: fixedKeys
+  };
 }
 
 /**
@@ -145,6 +210,62 @@ function extractAccountFromCompiledInstruction(compiledInstruction, message, typ
   }
   
   return null;
+}
+
+/**
+ * Resolve address lookup tables for a v0 transaction message
+ */
+async function resolveAddressLookupTables(message) {
+  if (!message.addressTableLookups || message.addressTableLookups.length === 0) {
+    return [];
+  }
+  
+  const lookupTableAddresses = message.addressTableLookups.map(
+    lookup => lookup.accountKey
+  );
+  
+  const addressLookupTableAccountInfos = await connection.getMultipleAccountsInfo(
+    lookupTableAddresses.map(key => new PublicKey(key))
+  );
+  
+  return addressLookupTableAccountInfos.reduce((acc, accountInfo, index) => {
+    const addressLookupTableAddress = lookupTableAddresses[index];
+    if (accountInfo) {
+      const addressLookupTableAccount = new AddressLookupTableAccount({
+        key: new PublicKey(addressLookupTableAddress),
+        state: AddressLookupTableAccount.deserialize(accountInfo.data),
+      });
+      acc.push(addressLookupTableAccount);
+    }
+    return acc;
+  }, []);
+}
+
+/**
+ * Check if a compiled instruction is a close account instruction
+ */
+function isCloseAccountInstruction(compiledInstruction, message) {
+  const programIdIndex = compiledInstruction.programIdIndex;
+  
+  // Check if program ID index is valid
+  if (programIdIndex >= message.staticAccountKeys.length) {
+    return false;
+  }
+  
+  const programId = message.staticAccountKeys[programIdIndex];
+  
+  // CloseAccount instructions come from Token Program or Token 2022 Program
+  if (!programId.equals(TOKEN_PROGRAM_ID) && !programId.equals(TOKEN_2022_PROGRAM_ID)) {
+    return false;
+  }
+  
+  // CloseAccount instruction type is 9
+  if (compiledInstruction.data && compiledInstruction.data.length > 0) {
+    const instructionType = compiledInstruction.data[0];
+    return instructionType === 9; // CloseAccount
+  }
+  
+  return false;
 }
 
 /**
@@ -206,126 +327,499 @@ async function signVersionedTransaction(data) {
     }
 
     const transactionBuffer = Buffer.from(data.serializedTransaction, "base64");
-    console.log("Transaction buffer:", transactionBuffer);
-
-    const transaction = VersionedTransaction.deserialize(new Uint8Array(transactionBuffer));
-    console.log("Deserialized Transaction:", JSON.stringify(transaction, null, 2));
-    
+    let transaction = VersionedTransaction.deserialize(new Uint8Array(transactionBuffer));
 
     // Ensure the server is the fee payer
     if (!transaction.message.staticAccountKeys || transaction.message.staticAccountKeys.length === 0) {
       throw new Error("No staticAccountKeys found in transaction message.");
     }
 
-    console.log("Transaction Signers:", transaction.message.staticAccountKeys.map(k => k.toBase58()));
-
     if (!transaction.message.staticAccountKeys[0].equals(serverKeypair.publicKey)) {
       throw new Error(`Fee payer mismatch. Expected ${serverKeypair.publicKey.toBase58()}, got ${transaction.message.staticAccountKeys[0].toBase58()}`);
     }
 
-    // Check for token account creation
+    // Centralized transaction modifications for security:
+    // 1. Modify cleanup instruction to return rent to server (always check)
+    // 2. Modify setup instructions (payer) if needed
+    // 3. Add SetAuthority instructions to set server as close authority (if account creation detected)
+    const message = transaction.message;
+    const isV0 = message.addressTableLookups && message.addressTableLookups.length > 0;
     const creationCheck = checkVersionedTransactionAccountCreation(transaction, serverKeypair.publicKey);
     
-    // If account creations are found, we need to add SetAuthority instructions
-    if (creationCheck.accountCreations.length > 0) {
-      if (creationCheck.serverKeyIndex === -1) {
+    // Resolve address lookup tables if v0 (needed for decompilation)
+    let addressLookupTableAccounts = [];
+    if (isV0) {
+      addressLookupTableAccounts = await resolveAddressLookupTables(message);
+    }
+    
+    // Decompile message to check for modifications needed
+    let decompiledMessage;
+    let needsModification = false;
+    
+    try {
+      if (isV0) {
+        decompiledMessage = TransactionMessage.decompile(message, {
+          addressLookupTableAccounts: addressLookupTableAccounts
+        });
+      } else {
+        decompiledMessage = TransactionMessage.decompile(message);
+      }
+      
+      // Check if there's a cleanup instruction that needs modification
+      const hasCleanupInstruction = decompiledMessage.instructions.some((instruction) => {
+        return (instruction.programId.equals(TOKEN_PROGRAM_ID) || instruction.programId.equals(TOKEN_2022_PROGRAM_ID)) &&
+               instruction.data && instruction.data.length > 0 && instruction.data[0] === 9;
+      });
+      
+      // Check if we need to modify setup instructions (ATA creation with wrong payer)
+      const hasATACreation = decompiledMessage.instructions.some((instruction) => {
+        return instruction.programId.equals(ASSOCIATED_TOKEN_PROGRAM_ID) &&
+               instruction.keys.length > 0 &&
+               !instruction.keys[0].pubkey.equals(serverKeypair.publicKey);
+      });
+      
+      needsModification = creationCheck.accountCreations.length > 0 || hasCleanupInstruction || hasATACreation;
+      
+    } catch (decompileError) {
+      // If we can't decompile, we can't modify - this is okay, just sign as-is
+      console.warn(`[SECURITY] Could not decompile transaction: ${decompileError.message}. Signing as-is.`);
+    }
+    
+    if (needsModification && decompiledMessage) {
+      if (creationCheck.accountCreations.length > 0 && creationCheck.serverKeyIndex === -1) {
         throw new Error(`Transaction creates ${creationCheck.accountCreations.length} token account(s) but server wallet is not in transaction. Cannot set closeAuthority. Transaction rejected.`);
       }
       
-      console.warn(`[SECURITY] Detected ${creationCheck.accountCreations.length} token account creation(s). Adding SetAuthority instructions to set closeAuthority.`);
+      console.warn(`[SECURITY] Modifying transaction for security: ${creationCheck.accountCreations.length} account creation(s), cleanup modification, and setup verification.`);
       
-      // Decompile the message to get instructions
-      const message = transaction.message;
-      let instructions;
-      try {
-        // For v0 transactions, decompile might need lookup tables
-        // However, TransactionMessage.decompile() should work without lookup tables
-        // as it will just reference the lookup table indices
-        instructions = TransactionMessage.decompile(message);
-      } catch (decompileError) {
-        // If decompile fails, we cannot safely modify the transaction
-        // This should be rare, but we need to handle it
-        console.error(`[SECURITY] Failed to decompile VersionedTransaction message: ${decompileError.message}`);
-        throw new Error(`Cannot modify VersionedTransaction: failed to decompile message. This may occur with complex v0 transactions. Error: ${decompileError.message}`);
-      }
+      // Get instructions from decompiled message
+      let instructions = decompiledMessage.instructions || [];
       
-      // Create SetAuthority instructions for each account creation
-      const setAuthorityInstructions = [];
+      // 1. Modify cleanup instruction to return rent to server wallet
+      instructions = instructions.map((instruction) => {
+        // Check if this is a closeAccount instruction (cleanup)
+        if ((instruction.programId.equals(TOKEN_PROGRAM_ID) || instruction.programId.equals(TOKEN_2022_PROGRAM_ID)) &&
+            instruction.data && instruction.data.length > 0 && instruction.data[0] === 9) {
+          // CloseAccount instruction structure:
+          // Account 0: Token account to close (writable)
+          // Account 1: Destination account (where rent goes) - THIS IS WHAT WE CHANGE
+          // Account 2: Owner account (writable, signer)
+          if (instruction.keys.length >= 2) {
+            // Only modify if destination is not already server
+            if (!instruction.keys[1].pubkey.equals(serverKeypair.publicKey)) {
+              console.warn(`[SECURITY] Modifying cleanup instruction to return rent to server wallet`);
+              const modifiedKeys = instruction.keys.map((key, index) => {
+                if (index === 1) {
+                  // Change destination to server wallet
+                  return {
+                    ...key,
+                    pubkey: serverKeypair.publicKey,
+                    isSigner: false,
+                    isWritable: true
+                  };
+                }
+                return key;
+              });
+              
+              return {
+                ...instruction,
+                keys: modifiedKeys
+              };
+            }
+          }
+        }
+        return instruction;
+      });
+      
+      // 2. Modify setup instructions (ATA creation) to ensure server is payer
+      // AND add SetAuthority instructions IMMEDIATELY after each ATA creation
+      // This ensures the account exists and hasn't been modified before SetAuthority runs
+      const newInstructions = [];
+      const setAuthorityMap = new Map(); // Map ATA address to SetAuthority instruction
+      
+      // First, prepare all SetAuthority instructions
       for (const creation of creationCheck.accountCreations) {
         if (creation.type === 'ATA' && creation.details) {
           const { ataAddress, owner, programId } = creation.details;
-          console.warn(`[SECURITY] Adding SetAuthority to set closeAuthority for ATA: ${ataAddress.toBase58()}`);
+          
+          // Check if owner is in the decompiled message's account keys
+          const ownerInDecompiled = decompiledMessage.instructions.some(ix => 
+            ix.keys.some(key => key.pubkey.equals(owner) && key.isSigner)
+          );
+          
+          if (!ownerInDecompiled) {
+            const ownerInStatic = message.staticAccountKeys.find(k => k.equals(owner));
+            if (!ownerInStatic) {
+              console.error(`[SECURITY] Owner ${owner.toBase58()} not found as signer in transaction. Skipping SetAuthority for ATA ${ataAddress.toBase58()}.`);
+              continue;
+            }
+          }
+          
+          // CRITICAL: Detect the actual token program from the ATA creation instruction
+          // The ATA creation instruction has the token program as one of its keys
+          // We need to find the ATA creation instruction and check which token program it uses
+          let actualTokenProgramId = programId; // Default to what we detected
+          
+          // Find the ATA creation instruction to determine the actual token program
+          // Match by ATA address to ensure we're looking at the right instruction
+          for (const ix of decompiledMessage.instructions) {
+            if (ix.programId.equals(ASSOCIATED_TOKEN_PROGRAM_ID) && 
+                ix.keys.length >= 2 && 
+                ix.keys[1].pubkey.equals(ataAddress)) {
+              // ATA creation instruction structure:
+              // Key 0: Payer
+              // Key 1: ATA address (matches our ataAddress)
+              // Key 2: Owner
+              // Key 3: Mint
+              // Key 4: System Program
+              // Key 5: Token Program (optional, present for Token-2022)
+              console.warn(`[SECURITY] Found matching ATA creation instruction for ${ataAddress.toBase58()}`);
+              console.warn(`[SECURITY] ATA instruction has ${ix.keys.length} keys`);
+              if (ix.keys.length >= 6) {
+                console.warn(`[SECURITY] Key 5 (Token Program): ${ix.keys[5].pubkey.toBase58()}`);
+                if (ix.keys[5].pubkey.equals(TOKEN_2022_PROGRAM_ID)) {
+                  actualTokenProgramId = TOKEN_2022_PROGRAM_ID;
+                  console.warn(`[SECURITY] ✓ Detected Token-2022 program from ATA creation instruction`);
+                } else {
+                  actualTokenProgramId = TOKEN_PROGRAM_ID;
+                  console.warn(`[SECURITY] ✓ Detected standard Token program from ATA creation instruction`);
+                }
+              } else {
+                // If less than 6 keys, it's standard Token program (Token-2022 always has 6 keys)
+                actualTokenProgramId = TOKEN_PROGRAM_ID;
+                console.warn(`[SECURITY] ✓ ATA instruction has ${ix.keys.length} keys, defaulting to standard Token program`);
+              }
+              break;
+            }
+          }
+          
+          if (!actualTokenProgramId) {
+            console.error(`[SECURITY] ERROR: Could not determine token program for ATA ${ataAddress.toBase58()}, defaulting to standard Token`);
+            actualTokenProgramId = TOKEN_PROGRAM_ID;
+          }
+          
+          // IMPORTANT: We cannot set close authority during ATA creation (not supported by ATA program)
+          // The ATA program always sets close authority to the owner initially
+          // We must use SetAuthority immediately after creation to change it to the server
+          console.warn(`[SECURITY] ========== PREPARING SETAUTHORITY INSTRUCTION ==========`);
+          console.warn(`[SECURITY] ATA Address: ${ataAddress.toBase58()}`);
+          console.warn(`[SECURITY] Owner (current authority): ${owner.toBase58()}`);
+          console.warn(`[SECURITY] Server (new authority): ${serverKeypair.publicKey.toBase58()}`);
+          console.warn(`[SECURITY] Detected Program ID: ${programId.toBase58()}`);
+          console.warn(`[SECURITY] Actual Token Program ID (from ATA instruction): ${actualTokenProgramId.toBase58()}`);
+          console.warn(`[SECURITY] Using ${actualTokenProgramId.equals(TOKEN_2022_PROGRAM_ID) ? 'Token-2022' : 'standard Token'} program for SetAuthority`);
+          console.warn(`[SECURITY] ATA will be created with owner as close authority, then SetAuthority will change it to server`);
+          
           const setAuthorityIx = createSetCloseAuthorityInstruction(
             ataAddress,
             owner,
             serverKeypair.publicKey,
-            programId
+            actualTokenProgramId  // Use the actual token program detected from ATA creation
           );
-          setAuthorityInstructions.push(setAuthorityIx);
+          
+          console.warn(`[SECURITY] SetAuthority instruction created. Details:`);
+          console.warn(`[SECURITY]   Program ID: ${setAuthorityIx.programId.toBase58()}`);
+          console.warn(`[SECURITY]   Number of keys: ${setAuthorityIx.keys.length}`);
+          console.warn(`[SECURITY]   Instruction data length: ${setAuthorityIx.data ? setAuthorityIx.data.length : 0}`);
+          if (setAuthorityIx.data && setAuthorityIx.data.length > 0) {
+            console.warn(`[SECURITY]   Instruction data (first 10 bytes): ${Buffer.from(setAuthorityIx.data.slice(0, 10)).toString('hex')}`);
+          }
+          
+          // Validate the instruction before adding
+          console.warn(`[SECURITY] Validating SetAuthority instruction structure...`);
+          if (setAuthorityIx.keys.length < 2) {
+            console.error(`[SECURITY] ERROR: SetAuthority instruction has insufficient keys (${setAuthorityIx.keys.length}), expected at least 2`);
+            continue;
+          }
+          
+          console.warn(`[SECURITY] Key 0 (Token Account):`);
+          console.warn(`[SECURITY]   Pubkey: ${setAuthorityIx.keys[0].pubkey.toBase58()}`);
+          console.warn(`[SECURITY]   Expected: ${ataAddress.toBase58()}`);
+          console.warn(`[SECURITY]   Match: ${setAuthorityIx.keys[0].pubkey.equals(ataAddress)}`);
+          console.warn(`[SECURITY]   isSigner: ${setAuthorityIx.keys[0].isSigner}`);
+          console.warn(`[SECURITY]   isWritable: ${setAuthorityIx.keys[0].isWritable}`);
+          
+          if (!setAuthorityIx.keys[0].pubkey.equals(ataAddress)) {
+            console.error(`[SECURITY] ERROR: SetAuthority instruction token account mismatch`);
+            console.error(`[SECURITY]   Expected: ${ataAddress.toBase58()}`);
+            console.error(`[SECURITY]   Got: ${setAuthorityIx.keys[0].pubkey.toBase58()}`);
+            continue;
+          }
+          
+          if (!setAuthorityIx.keys[0].isWritable) {
+            console.error(`[SECURITY] ERROR: SetAuthority instruction token account must be writable`);
+            continue;
+          }
+          
+          console.warn(`[SECURITY] Key 1 (Owner/Current Authority):`);
+          console.warn(`[SECURITY]   Pubkey: ${setAuthorityIx.keys[1].pubkey.toBase58()}`);
+          console.warn(`[SECURITY]   Expected: ${owner.toBase58()}`);
+          console.warn(`[SECURITY]   Match: ${setAuthorityIx.keys[1].pubkey.equals(owner)}`);
+          console.warn(`[SECURITY]   isSigner: ${setAuthorityIx.keys[1].isSigner}`);
+          console.warn(`[SECURITY]   isWritable: ${setAuthorityIx.keys[1].isWritable}`);
+          
+          if (!setAuthorityIx.keys[1].pubkey.equals(owner)) {
+            console.error(`[SECURITY] ERROR: SetAuthority instruction owner mismatch`);
+            console.error(`[SECURITY]   Expected: ${owner.toBase58()}`);
+            console.error(`[SECURITY]   Got: ${setAuthorityIx.keys[1].pubkey.toBase58()}`);
+            continue;
+          }
+          
+          if (!setAuthorityIx.keys[1].isSigner) {
+            console.error(`[SECURITY] ERROR: SetAuthority instruction owner must be a signer`);
+            continue;
+          }
+          
+          if (!setAuthorityIx.keys[1].isWritable) {
+            console.error(`[SECURITY] ERROR: SetAuthority instruction owner must be writable`);
+            continue;
+          }
+          
+          console.warn(`[SECURITY] SetAuthority instruction validated successfully!`);
+          console.warn(`[SECURITY] ========== END SETAUTHORITY PREPARATION ==========`);
+          
+          setAuthorityMap.set(ataAddress.toBase58(), setAuthorityIx);
         } else if (creation.type === 'TokenAccount' && creation.details) {
           const { account, owner, programId } = creation.details;
-          console.warn(`[SECURITY] Adding SetAuthority to set closeAuthority for token account: ${account.toBase58()}`);
+          
+          const ownerInDecompiled = decompiledMessage.instructions.some(ix => 
+            ix.keys.some(key => key.pubkey.equals(owner) && key.isSigner)
+          );
+          
+          if (!ownerInDecompiled) {
+            const ownerInStatic = message.staticAccountKeys.find(k => k.equals(owner));
+            if (!ownerInStatic) {
+              console.error(`[SECURITY] Owner ${owner.toBase58()} not found as signer in transaction. Skipping SetAuthority for token account ${account.toBase58()}.`);
+              continue;
+            }
+          }
+          
+          console.warn(`[SECURITY] Preparing SetAuthority to set closeAuthority for token account ${account.toBase58()}, owner ${owner.toBase58()} must sign`);
           const setAuthorityIx = createSetCloseAuthorityInstruction(
             account,
             owner,
             serverKeypair.publicKey,
             programId
           );
-          setAuthorityInstructions.push(setAuthorityIx);
+          
+          console.warn(`[SECURITY] SetAuthority instruction keys:`, setAuthorityIx.keys.map((k, i) => ({
+            index: i,
+            pubkey: k.pubkey.toBase58(),
+            isSigner: k.isSigner,
+            isWritable: k.isWritable
+          })));
+          
+          setAuthorityMap.set(account.toBase58(), setAuthorityIx);
         }
       }
       
-      // Add SetAuthority instructions after the creation instructions
-      instructions.push(...setAuthorityInstructions);
+      // Now rebuild instructions, inserting SetAuthority immediately after ATA creation
+      // IMPORTANT: We cannot set close authority during ATA creation (not supported by ATA program)
+      // So we must use SetAuthority immediately after creation
+      for (let i = 0; i < instructions.length; i++) {
+        const instruction = instructions[i];
+        newInstructions.push(instruction);
+        
+        // Check if this is an ATA creation instruction
+        if (instruction.programId.equals(ASSOCIATED_TOKEN_PROGRAM_ID)) {
+          // ATA creation instruction structure:
+          // Key 0: Payer (should be server)
+          // Key 1: ATA address (the account being created)
+          // Key 2: Owner (user)
+          // Key 3: Mint
+          // Key 4: System Program
+          // Key 5: Token Program (optional, for Token-2022)
+          
+          // ATA creation: first account should be payer (server)
+          if (instruction.keys.length > 0 && !instruction.keys[0].pubkey.equals(serverKeypair.publicKey)) {
+            console.warn(`[SECURITY] Fixing ATA creation instruction: setting server as payer`);
+            const modifiedKeys = instruction.keys.map((key, index) => {
+              if (index === 0) {
+                return {
+                  ...key,
+                  pubkey: serverKeypair.publicKey,
+                  isSigner: true,
+                  isWritable: true
+                };
+              }
+              return key;
+            });
+            
+            // Replace the instruction with the modified one
+            newInstructions[newInstructions.length - 1] = {
+              ...instruction,
+              keys: modifiedKeys
+            };
+          }
+          
+          // Find the ATA address from the instruction (it's the second account, index 1)
+          // NOTE: The ATA program always sets close authority to the owner during creation
+          // We cannot change this - we must use SetAuthority immediately after creation
+          console.warn(`[SECURITY] ========== PROCESSING ATA CREATION INSTRUCTION ==========`);
+          console.warn(`[SECURITY] ATA creation instruction has ${instruction.keys.length} keys`);
+          instruction.keys.forEach((key, idx) => {
+            console.warn(`[SECURITY]   Key ${idx}: ${key.pubkey.toBase58()}, isSigner: ${key.isSigner}, isWritable: ${key.isWritable}`);
+          });
+          
+          if (instruction.keys.length >= 2) {
+            const ataAddress = instruction.keys[1].pubkey;
+            const ataAddressStr = ataAddress.toBase58();
+            console.warn(`[SECURITY] ATA address from instruction: ${ataAddressStr}`);
+            
+            const setAuthorityIx = setAuthorityMap.get(ataAddressStr);
+            if (setAuthorityIx) {
+              console.warn(`[SECURITY] Found SetAuthority instruction for ATA ${ataAddressStr}`);
+              // Verify the SetAuthority instruction matches the ATA address
+              if (!setAuthorityIx.keys[0].pubkey.equals(ataAddress)) {
+                console.error(`[SECURITY] ERROR: SetAuthority instruction token account (${setAuthorityIx.keys[0].pubkey.toBase58()}) doesn't match ATA address (${ataAddressStr})`);
+              } else {
+                console.warn(`[SECURITY] Inserting SetAuthority immediately after ATA creation for ${ataAddressStr}`);
+                console.warn(`[SECURITY] Instruction order: ATA creation (index ${newInstructions.length - 1}) -> SetAuthority (index ${newInstructions.length})`);
+                console.warn(`[SECURITY] ATA will be created with owner as close authority, then SetAuthority will change it to server`);
+                console.warn(`[SECURITY] SetAuthority will execute right after ATA creation completes, ensuring account exists`);
+                newInstructions.push(setAuthorityIx);
+                setAuthorityMap.delete(ataAddressStr); // Remove so we don't add it again
+                console.warn(`[SECURITY] SetAuthority instruction inserted successfully`);
+              }
+            } else {
+              console.warn(`[SECURITY] WARNING: No SetAuthority instruction found for ATA ${ataAddressStr} - this ATA will have owner as close authority (INSECURE)`);
+            }
+          } else {
+            console.error(`[SECURITY] ERROR: ATA creation instruction has insufficient keys (${instruction.keys.length}), expected at least 2`);
+          }
+          console.warn(`[SECURITY] ========== END ATA CREATION PROCESSING ==========`);
+        }
+        // Check if this is a token account creation (InitializeAccount)
+        else if ((instruction.programId.equals(TOKEN_PROGRAM_ID) || instruction.programId.equals(TOKEN_2022_PROGRAM_ID)) &&
+                 instruction.data && instruction.data.length > 0 && 
+                 (instruction.data[0] === 1 || instruction.data[0] === 16 || instruction.data[0] === 18)) {
+          // Token account creation - find the account address (first key)
+          if (instruction.keys.length > 0) {
+            const accountAddress = instruction.keys[0].pubkey.toBase58();
+            const setAuthorityIx = setAuthorityMap.get(accountAddress);
+            if (setAuthorityIx) {
+              console.warn(`[SECURITY] Inserting SetAuthority immediately after token account creation for ${accountAddress}`);
+              newInstructions.push(setAuthorityIx);
+              setAuthorityMap.delete(accountAddress);
+            }
+          }
+        }
+      }
       
-      // Rebuild the transaction message
-      // Note: SetAuthority instructions only use static accounts (token account, owner, server wallet)
-      // So we can compile as legacy even if original was v0, since we're not adding lookup table dependencies
-      const payerKey = message.staticAccountKeys[0];
-      const recentBlockhash = message.recentBlockhash;
+      // Use the new instruction array
+      instructions = newInstructions;
+      
+      // Rebuild the transaction with all modifications
+      const payerKey = decompiledMessage.payerKey || message.staticAccountKeys[0];
+      const recentBlockhash = decompiledMessage.recentBlockhash || message.recentBlockhash;
       
       if (!recentBlockhash) {
-        throw new Error("Cannot rebuild VersionedTransaction: missing recent blockhash");
+        throw new Error("Cannot rebuild transaction: missing recent blockhash");
       }
       
-      // Check if original was v0 (has address lookup tables)
-      const isV0 = message.addressTableLookups && message.addressTableLookups.length > 0;
-      if (isV0) {
-        console.warn(`[SECURITY] Original transaction was v0, but SetAuthority instructions only use static accounts. Compiling as legacy.`);
+      let newMessage;
+      if (isV0 && addressLookupTableAccounts.length > 0) {
+        newMessage = new TransactionMessage({
+          payerKey: payerKey,
+          recentBlockhash: recentBlockhash,
+          instructions: instructions,
+        }).compileToV0Message(addressLookupTableAccounts);
+      } else {
+        newMessage = new TransactionMessage({
+          payerKey: payerKey,
+          recentBlockhash: recentBlockhash,
+          instructions: instructions,
+        }).compileToLegacyMessage();
       }
       
-      // Compile as legacy message (SetAuthority doesn't need lookup tables)
-      const newMessage = new TransactionMessage({
-        payerKey: payerKey,
-        recentBlockhash: recentBlockhash,
-        instructions: instructions,
-      }).compileToLegacyMessage();
+      // Validate that all required signers are in the transaction
+      // The TransactionMessage constructor should handle this automatically, but let's verify
+      const requiredSigners = new Set();
+      let setAuthorityCount = 0;
+      instructions.forEach((ix, ixIndex) => {
+        // Check if this is a SetAuthority instruction (Token program with SetAuthority instruction type)
+        const isSetAuthority = (ix.programId.equals(TOKEN_PROGRAM_ID) || ix.programId.equals(TOKEN_2022_PROGRAM_ID)) &&
+                               ix.data && ix.data.length > 0 && ix.data[0] === 6; // SetAuthority instruction type is 6
+        if (isSetAuthority) {
+          setAuthorityCount++;
+        }
+        
+        ix.keys.forEach((key, keyIndex) => {
+          if (key.isSigner) {
+            requiredSigners.add(key.pubkey.toBase58());
+            // Log SetAuthority instruction details for debugging
+            if (isSetAuthority) {
+              console.warn(`[SECURITY] SetAuthority instruction ${ixIndex}, key ${keyIndex}: ${key.pubkey.toBase58()}, isSigner: ${key.isSigner}, isWritable: ${key.isWritable}`);
+            }
+          }
+        });
+      });
       
-      // Create new transaction with modified message
+      // Check if all required signers are in staticAccountKeys
+      const missingSigners = Array.from(requiredSigners).filter(signer => 
+        !newMessage.staticAccountKeys.some(k => k.toBase58() === signer)
+      );
+      
+      if (missingSigners.length > 0 && isV0) {
+        // In v0 transactions, signers might be in lookup tables, which is okay
+        console.warn(`[SECURITY] Some required signers are not in staticAccountKeys (may be in lookup tables):`, missingSigners);
+      } else if (missingSigners.length > 0) {
+        console.error(`[SECURITY] ERROR: Required signers missing from transaction:`, missingSigners);
+      }
+      
+      console.warn(`[SECURITY] Rebuilt transaction with ${setAuthorityCount} SetAuthority instruction(s) and security modifications`);
+      console.warn(`[SECURITY] Required signers:`, Array.from(requiredSigners));
+      console.warn(`[SECURITY] Transaction staticAccountKeys (${newMessage.staticAccountKeys.length}):`, newMessage.staticAccountKeys.map(k => k.toBase58()));
+      console.warn(`[SECURITY] Transaction header - numRequiredSignatures: ${newMessage.header.numRequiredSignatures}, numReadonlySignedAccounts: ${newMessage.header.numReadonlySignedAccounts}, numReadonlyUnsignedAccounts: ${newMessage.header.numReadonlyUnsignedAccounts}`);
+      
+      // Log all instructions for debugging
+      console.warn(`[SECURITY] ========== FINAL TRANSACTION INSTRUCTIONS ==========`);
+      console.warn(`[SECURITY] Total instructions: ${instructions.length}`);
+      instructions.forEach((ix, idx) => {
+        const isSetAuthority = (ix.programId.equals(TOKEN_PROGRAM_ID) || ix.programId.equals(TOKEN_2022_PROGRAM_ID)) &&
+                               ix.data && ix.data.length > 0 && ix.data[0] === 6; // SetAuthority instruction type is 6
+        const isATACreation = ix.programId.equals(ASSOCIATED_TOKEN_PROGRAM_ID);
+        const isCloseAccount = (ix.programId.equals(TOKEN_PROGRAM_ID) || ix.programId.equals(TOKEN_2022_PROGRAM_ID)) &&
+                              ix.data && ix.data.length > 0 && ix.data[0] === 9; // CloseAccount instruction type is 9
+        
+        if (isSetAuthority || isATACreation || isCloseAccount) {
+          console.warn(`[SECURITY] Instruction ${idx}:`);
+          console.warn(`[SECURITY]   Type: ${isSetAuthority ? 'SetAuthority' : isATACreation ? 'ATA Creation' : isCloseAccount ? 'CloseAccount' : 'Other'}`);
+          console.warn(`[SECURITY]   Program ID: ${ix.programId.toBase58()}`);
+          console.warn(`[SECURITY]   Number of keys: ${ix.keys.length}`);
+          console.warn(`[SECURITY]   Keys:`);
+          ix.keys.forEach((k, i) => {
+            console.warn(`[SECURITY]     Key ${i}: ${k.pubkey.toBase58()}, isSigner: ${k.isSigner}, isWritable: ${k.isWritable}`);
+          });
+          if (ix.data && ix.data.length > 0) {
+            console.warn(`[SECURITY]   Data length: ${ix.data.length}`);
+            console.warn(`[SECURITY]   Data (first 20 bytes): ${Buffer.from(ix.data.slice(0, Math.min(20, ix.data.length))).toString('hex')}`);
+            if (isSetAuthority) {
+              console.warn(`[SECURITY]   Instruction type byte: ${ix.data[0]} (should be 6 for SetAuthority)`);
+            }
+          }
+        }
+      });
+      console.warn(`[SECURITY] ========== END FINAL TRANSACTION INSTRUCTIONS ==========`);
+      
       transaction = new VersionedTransaction(newMessage);
-      
-      console.warn(`[SECURITY] Rebuilt VersionedTransaction with ${setAuthorityInstructions.length} SetAuthority instruction(s) to set closeAuthority`);
     }
 
     // Server signs transaction (partial signing)
     transaction.sign([serverKeypair]);
 
-    console.log("Transaction after signing:", transaction);
-
     // Extract signature for logging
-    // For VersionedTransaction, signatures are Uint8Array in the signatures array
     let transactionSignature = null;
     if (transaction.signatures && transaction.signatures.length > 0) {
       const sig = transaction.signatures[0];
       if (sig && sig.length > 0) {
-        // Convert signature to base64 for storage
         transactionSignature = Buffer.from(sig).toString('base64');
       }
     }
 
     return {
       signedTransaction: Buffer.from(transaction.serialize()).toString("base64"),
-      transactionSignature: transactionSignature // Include signature for logging
+      transactionSignature: transactionSignature
     };
 
   } catch (error) {

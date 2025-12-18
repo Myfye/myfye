@@ -77,7 +77,7 @@ const { getUserEtherfuseData } = require('./routes/etherfuse/customer_data.js');
 const { handleCustomerUpdatedWebhook } = require('./routes/etherfuse/customer_updated');
 const { handleOrderUpdatedWebhook } = require('./routes/etherfuse/order_updated');
 const { handleBankAccountUpdatedWebhook } = require('./routes/etherfuse/bank_account_updated');
-const { validatePrivyUserId, logSponsoredRequest } = require('./routes/sol_transaction/sponsoredSecurity');
+const { validatePrivyUserId, logSponsoredRequest, getAllSponsoredRequests } = require('./routes/sol_transaction/sponsoredSecurity');
 
 app.set('trust proxy', true);
 
@@ -977,6 +977,24 @@ app.post("/get_error_logs", generalLimiter, async (req, res) => {
   }
 });
 
+app.post("/get_all_sponsored_requests", generalLimiter, async (req, res) => {
+  console.log("\n=== Get All Sponsored Requests Request Received ===");
+
+  try {
+    const result = await getAllSponsoredRequests();
+    console.log(`Retrieved ${result.length} sponsored requests`);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /get_all_sponsored_requests endpoint:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: error.message || "Failed to fetch sponsored requests",
+      details: error.toString(),
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
 app.post("/get_all_users", generalLimiter, async (req, res) => {
   console.log("\n=== Get All Users Request Received ===");
 
@@ -1567,7 +1585,7 @@ app.get("/stock-prices", generalLimiter, async (req, res) => {
 
   try {
     const result = await getAllStockPrices();
-    console.log("Stock prices result:", JSON.stringify(result, null, 2));
+    // console.log("Stock prices result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {
     console.error("Error in /api/stock-prices endpoint:", error);

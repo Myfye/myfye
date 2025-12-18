@@ -332,102 +332,16 @@ const swapTransaction = async (
         console.log(
           "No existing token account found, ATA creation should proceed"
         );
-
-        // Fix ATA creation instruction for sponsored transactions
-        // Replace user as payer with server as payer
-        instructions.setupInstructions = instructions.setupInstructions.map(
-          (instruction) => {
-            if (
-              instruction.programId ===
-              "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
-            ) {
-              console.log(
-                "Modifying ATA creation instruction for sponsored transaction"
-              );
-              // The first account should be the payer (server), not the user
-              const modifiedAccounts = [...instruction.accounts];
-              modifiedAccounts[0] = {
-                ...modifiedAccounts[0],
-                pubkey: SERVER_SOLANA_PUBLIC_KEY, // Server as payer
-                isSigner: true, // Server needs to sign
-                isWritable: true,
-              };
-
-              return {
-                ...instruction,
-                accounts: modifiedAccounts,
-              };
-            }
-            return instruction;
-          }
-        );
+        // Note: Backend will handle setting server as payer and adding SetAuthority
       }
     } catch (error) {
       console.log("Error checking token account existence:", error);
     }
   }
 
-  // Modify cleanup instruction to return rent to backend wallet (fee payer)
-  // The cleanup instruction closes WSOL accounts and returns rent to the destination account
-  // We need to change the destination from user wallet to backend wallet
-  if (instructions.cleanupInstruction) {
-    console.log("Modifying cleanup instruction to return rent to backend wallet");
-    const TOKEN_PROGRAM_ID = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
-    const TOKEN_2022_PROGRAM_ID = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
-    
-    // Check if this is a closeAccount instruction (Token Program or Token 2022 Program)
-    if (
-      instructions.cleanupInstruction.programId === TOKEN_PROGRAM_ID ||
-      instructions.cleanupInstruction.programId === TOKEN_2022_PROGRAM_ID
-    ) {
-      console.log("Cleanup instruction is a closeAccount instruction");
-      console.log("Original cleanup instruction accounts:", 
-        instructions.cleanupInstruction.accounts?.map((acc: any, i: number) => ({
-          index: i,
-          pubkey: acc.pubkey,
-          isSigner: acc.isSigner,
-          isWritable: acc.isWritable,
-        }))
-      );
-
-      // The closeAccount instruction structure:
-      // Account 0: Token account to close (writable)
-      // Account 1: Destination account (where rent goes) - writable - THIS IS WHAT WE CHANGE
-      // Account 2: Owner account (writable, signer)
-      const modifiedAccounts = [...instructions.cleanupInstruction.accounts];
-      
-      if (modifiedAccounts.length >= 2) {
-        // Change the destination account (index 1) to the backend wallet
-        modifiedAccounts[1] = {
-          ...modifiedAccounts[1],
-          pubkey: SERVER_SOLANA_PUBLIC_KEY, // Backend wallet receives the rent
-          isSigner: false, // Backend doesn't need to sign for receiving
-          isWritable: true, // Must be writable to receive the rent
-        };
-
-        instructions.cleanupInstruction = {
-          ...instructions.cleanupInstruction,
-          accounts: modifiedAccounts,
-        };
-
-        console.log("Modified cleanup instruction accounts:", 
-          instructions.cleanupInstruction.accounts?.map((acc: any, i: number) => ({
-            index: i,
-            pubkey: acc.pubkey,
-            isSigner: acc.isSigner,
-            isWritable: acc.isWritable,
-          }))
-        );
-        console.log("Rent will now be returned to backend wallet:", SERVER_SOLANA_PUBLIC_KEY);
-      } else {
-        console.warn("Cleanup instruction has unexpected account structure, skipping modification");
-      }
-    } else {
-      console.log("Cleanup instruction is not a closeAccount instruction, no modification needed");
-    }
-  } else {
-    console.log("No cleanup instruction present");
-  }
+  // Note: All transaction modifications (cleanup instruction rent destination, 
+  // setup instruction payer, and SetAuthority) are now handled by the backend
+  // for centralized security and simplicity
 
   const preparedTransaction = await prepareTransaction(instructions);
   console.log("Prepared Transaction Details:", {
@@ -442,6 +356,12 @@ const swapTransaction = async (
     preparedTransaction,
     privyUserId
   );
+
+  if (!serverSignedTransaction) {
+    dispatch(updateStatus("fail"));
+    return;
+  }
+
   console.log("Server Signed Transaction Details:", {
     feePayer: serverSignedTransaction.message.staticAccountKeys[0].toString(),
     numSigners: serverSignedTransaction.message.header.numRequiredSignatures,

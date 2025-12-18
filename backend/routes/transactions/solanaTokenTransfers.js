@@ -7,11 +7,11 @@ async function getSolanaTokenTransfers({ solana_address, debug = false }) {
 
     // Debug the specific missing transaction
     if (debug) {
-        console.log('[DEBUG] Investigating specific transaction...');
+        // console.log('[DEBUG] Investigating specific transaction...');
         try {
             await debugTransaction('55WzR4x1K6uia2V2CyS45nKcknsCGwMLDy7ap2Max2nA93kmakjbzap21zRDseUzv57LLegstKS2jUtsXRwMRUaA');
         } catch (error) {
-            console.error('[DEBUG] Error investigating transaction:', error);
+            // console.error('[DEBUG] Error investigating transaction:', error);
         }
     }
 
@@ -23,7 +23,7 @@ async function getSolanaTokenTransfers({ solana_address, debug = false }) {
     const maxPages = 2000;
     let loggedFirst = false; //temp
 
-    console.log(`[HELIUS] Starting to fetch all token transfers for address: ${solana_address}`);
+    // console.log(`[HELIUS] Starting to fetch all token transfers for address: ${solana_address}`);
 
     while (keepGoing && pageCount < maxPages) {
         let url = baseUrl;
@@ -31,40 +31,24 @@ async function getSolanaTokenTransfers({ solana_address, debug = false }) {
         try {
             const { data } = await axios.get(url);
             if (!Array.isArray(data) || data.length === 0) {
-                console.log(`[HELIUS] No more transactions found after ${pageCount} pages`);
+                // console.log(`[HELIUS] No more transactions found after ${pageCount} pages`);
                 break;
             }
-            console.log(`[HELIUS] Page ${pageCount + 1}: Found ${data.length} transactions`);
+            // console.log(`[HELIUS] Page ${pageCount + 1}: Found ${data.length} transactions`);
 
             //temp
             if (!loggedFirst && data.length > 0) {
-                console.log('[HELIUS] First transaction object:', JSON.stringify(data[0], null, 2));
+                // console.log('[HELIUS] First transaction object:', JSON.stringify(data[0], null, 2));
                 loggedFirst = true;
             }
             //end temp
-
-            // Log transaction types for debugging
-            const transactionTypes = data.map(tx => ({
-                signature: tx.signature,
-                hasTokenTransfers: !!(tx.tokenTransfers && tx.tokenTransfers.length > 0),
-                hasInstructions: !!(tx.transaction && tx.transaction.message && tx.transaction.message.instructions),
-                hasMeta: !!(tx.meta && tx.meta.postTokenBalances),
-                instructionPrograms: tx.transaction?.message?.instructions?.map(inst => inst.program || inst.programId) || []
-            }));
-            
-            console.log(`[HELIUS] Page ${pageCount + 1}: Transaction analysis:`, {
-                total: data.length,
-                withTokenTransfers: transactionTypes.filter(t => t.hasTokenTransfers).length,
-                withInstructions: transactionTypes.filter(t => t.hasInstructions).length,
-                withMeta: transactionTypes.filter(t => t.hasMeta).length,
-                sampleSignatures: transactionTypes.slice(0, 3).map(t => t.signature)
-            });
 
             // Filter for token transfers and clean up the data
             const tokenTransfers = data
                 .filter(tx => {
                     // Debug specific transaction
                     if (tx.signature === '55WzR4x1K6uia2V2CyS45nKcknsCGwMLDy7ap2Max2nA93kmakjbzap21zRDseUzv57LLegstKS2jUtsXRwMRUaA') {
+                        /*
                         console.log('[DEBUG] Found target transaction in filter phase:', {
                             signature: tx.signature,
                             hasTokenTransfers: !!(tx.tokenTransfers && tx.tokenTransfers.length > 0),
@@ -72,6 +56,7 @@ async function getSolanaTokenTransfers({ solana_address, debug = false }) {
                             hasMeta: !!(tx.meta && tx.meta.postTokenBalances),
                             hasAccountKeys: !!(tx.transaction && tx.transaction.message && tx.transaction.message.accountKeys)
                         });
+                        */
                     }
                     
                     // Check for explicit tokenTransfers
@@ -106,11 +91,13 @@ async function getSolanaTokenTransfers({ solana_address, debug = false }) {
                     
                     // Debug specific transaction
                     if (tx.signature === '55WzR4x1K6uia2V2CyS45nKcknsCGwMLDy7ap2Max2nA93kmakjbzap21zRDseUzv57LLegstKS2jUtsXRwMRUaA') {
+                        /*
                         console.log('[DEBUG] Processing target transaction in map phase:', {
                             signature: tx.signature,
                             tokenTransfers: tx.tokenTransfers,
                             instructions: tx.transaction?.message?.instructions?.map(i => ({ program: i.program, programId: i.programId, parsed: i.parsed?.type }))
                         });
+                        */
                     }
                     
                     // Extract from tokenTransfers if available
@@ -166,11 +153,13 @@ async function getSolanaTokenTransfers({ solana_address, debug = false }) {
                     
                     // Debug specific transaction
                     if (tx.signature === '55WzR4x1K6uia2V2CyS45nKcknsCGwMLDy7ap2Max2nA93kmakjbzap21zRDseUzv57LLegstKS2jUtsXRwMRUaA') {
+                        /*
                         console.log('[DEBUG] Target transaction final transfers:', {
                             signature: tx.signature,
                             transfersCount: transfers.length,
                             transfers: transfers
                         });
+                        */
                     }
                     
                     return {
@@ -183,9 +172,7 @@ async function getSolanaTokenTransfers({ solana_address, debug = false }) {
                     };
                 })
                 .filter(tx => tx.tokenTransfers.length > 0); // Only include transactions with actual transfers
-            if (tokenTransfers.length > 0) {
-                console.log(`[HELIUS] Page ${pageCount + 1}: Found ${tokenTransfers.length} token transfer transactions`);
-            }
+
             allTransfers.push(...tokenTransfers);
             // Pagination: set 'before' to the last signature
             before = data[data.length - 1].signature;
@@ -195,7 +182,7 @@ async function getSolanaTokenTransfers({ solana_address, debug = false }) {
             throw new Error(`Helius API error: ${error.response?.data?.error || error.message}`);
         }
     }
-    console.log(`[HELIUS] Completed: Checked ${pageCount} pages, found ${allTransfers.length} token transfer transactions total`);
+    // console.log(`[HELIUS] Completed: Checked ${pageCount} pages, found ${allTransfers.length} token transfer transactions total`);
     return {
         success: true,
         address: solana_address,
@@ -283,7 +270,7 @@ async function getTokenTransferHistory(data) {
             sig.blockTime && sig.blockTime >= daysAgo
         );
 
-        console.log(`Found ${recentSignatures.length} transactions in the last ${days} days`);
+        // console.log(`Found ${recentSignatures.length} transactions in the last ${days} days`);
 
         // Get transaction details for recent signatures
         const transactions = await Promise.all(
@@ -356,38 +343,6 @@ async function debugTransaction(signature) {
         const { data } = await axios.post(url, {
             transactions: [signature]
         });
-        
-        if (data && data.length > 0) {
-            const tx = data[0];
-            console.log(`[DEBUG] Transaction ${signature}:`, {
-                hasTokenTransfers: !!(tx.tokenTransfers && tx.tokenTransfers.length > 0),
-                tokenTransfersCount: tx.tokenTransfers?.length || 0,
-                hasInstructions: !!(tx.transaction && tx.transaction.message && tx.transaction.message.instructions),
-                instructionCount: tx.transaction?.message?.instructions?.length || 0,
-                hasMeta: !!(tx.meta && tx.meta.postTokenBalances),
-                postTokenBalancesCount: tx.meta?.postTokenBalances?.length || 0,
-                preTokenBalancesCount: tx.meta?.preTokenBalances?.length || 0,
-                status: tx.status,
-                slot: tx.slot,
-                timestamp: tx.timestamp
-            });
-            
-            if (tx.tokenTransfers && tx.tokenTransfers.length > 0) {
-                console.log(`[DEBUG] Token transfers:`, tx.tokenTransfers);
-            }
-            
-            if (tx.meta && tx.meta.postTokenBalances) {
-                console.log(`[DEBUG] Post token balances:`, tx.meta.postTokenBalances);
-            }
-            
-            if (tx.transaction && tx.transaction.message && tx.transaction.message.instructions) {
-                const splInstructions = tx.transaction.message.instructions.filter(inst => 
-                    inst.program === 'spl-token' || 
-                    inst.programId === 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-                );
-                console.log(`[DEBUG] SPL token instructions:`, splInstructions);
-            }
-        }
         
         return data;
     } catch (error) {

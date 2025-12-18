@@ -73,9 +73,33 @@ async function logSponsoredRequest(data) {
   }
 }
 
+/**
+ * Get all sponsored requests from the database
+ * @returns {Promise<Array>} - Array of all sponsored request records
+ */
+async function getAllSponsoredRequests() {
+  // Ensure table exists before querying
+  await createSponsoredRequestsTable();
+
+  const query = `
+    SELECT * FROM sponsored_requests 
+    ORDER BY creation_date DESC
+  `;
+
+  try {
+    const result = await pool.query(query);
+    console.log(`Retrieved ${result.rows.length} sponsored requests`);
+    return result.rows;
+  } catch (error) {
+    console.error('Error fetching all sponsored requests:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   validatePrivyUserId,
-  logSponsoredRequest
+  logSponsoredRequest,
+  getAllSponsoredRequests
 };
 
 /**
@@ -130,3 +154,5 @@ async function createSponsoredRequestsTable() {
     // Don't throw - table might already exist, which is fine
   }
 }
+
+

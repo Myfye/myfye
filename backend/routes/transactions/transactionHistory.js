@@ -98,7 +98,6 @@ async function cleanData(sol_public_key, solanaTransfers) {
                 cleanedTransaction.type = 'withdraw';
                 cleanedTransaction.input_amount = transfer.tokenAmount;
                 cleanedTransaction.input_mint = transfer.mint;
-                console.log("Classified as WITHDRAW - Amount:", transfer.tokenAmount);
             } else if (transfer.receiver === sol_public_key) {
                 // User is receiving - deposit
                 /*
@@ -113,7 +112,6 @@ async function cleanData(sol_public_key, solanaTransfers) {
                 cleanedTransaction.type = 'deposit';
                 cleanedTransaction.input_amount = transfer.tokenAmount;
                 cleanedTransaction.input_mint = transfer.mint;
-                console.log("Classified as DEPOSIT - Amount:", transfer.tokenAmount);
             }
         } else {
             // Multiple token transfers - likely a swap

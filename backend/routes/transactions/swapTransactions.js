@@ -29,7 +29,6 @@ async function createSwapTransaction(data) {
     const now = new Date();
     const utcTimestamp = now.toISOString();
         
-    console.log("Creating user with UTC timestamp:", utcTimestamp);
 
     // Create new swap transaction
     const query = `
@@ -69,7 +68,6 @@ async function createSwapTransaction(data) {
 
     try {
         const result = await pool.query(query, values);
-        console.log("Swap transaction creation result:", JSON.stringify(result.rows[0], null, 2));
         return result.rows[0];
     } catch (error) {
         console.error('Error creating swap transaction:', error);
@@ -78,7 +76,6 @@ async function createSwapTransaction(data) {
 }
 
 async function getSwapTransactionsByUserId(userId) {
-    console.log(`\n=== Fetching Swap Transactions for User ID: ${userId} ===`);
     
     if (!userId) {
         throw new Error('User ID is required');
@@ -92,7 +89,6 @@ async function getSwapTransactionsByUserId(userId) {
 
     try {
         const result = await pool.query(query, [userId]);
-        console.log(`Found ${result.rows.length} swap transactions for user ${userId}`);
         return result.rows;
     } catch (error) {
         console.error('Error fetching swap transactions:', error);
@@ -101,8 +97,6 @@ async function getSwapTransactionsByUserId(userId) {
 }
 
 async function getAllSwapTransactions() {
-    console.log("\n=== Fetching All Swap Transactions ===");
-    
     const query = `
     SELECT * FROM swap_transactions 
     ORDER BY creation_date DESC
@@ -110,7 +104,6 @@ async function getAllSwapTransactions() {
 
     try {
         const result = await pool.query(query);
-        console.log(`Found ${result.rows.length} swap transactions`);
         return result.rows;
     } catch (error) {
         console.error('Error fetching all swap transactions:', error);
