@@ -300,7 +300,18 @@ const swapTransaction = async (
       });
     });
 
-    // Check if the token account already exists and filter out ATA creation instructions
+    // SECURITY NOTE: We do NOT filter out ATA creation instructions, even if the account already exists.
+    // This is because:
+    // 1. Jupiter's swap instructions are designed to work with the setup instructions it provides
+    // 2. Filtering out ATA creation causes error 6025 (InvalidTokenAccount) due to account reference mismatches
+    // 3. The backend (signVersionedTransaction) detects ATA creation instructions and automatically adds
+    //    SetAuthority instructions to set the close authority to the server, preventing users from
+    //    closing accounts and collecting rent refunds
+    // 4. Jupiter's API should check account existence and only include creation instructions when needed
+    //    If Jupiter incorrectly includes a creation instruction for an existing account, the transaction
+    //    will fail, but this is a Jupiter issue, not something we should work around by filtering
+    //
+    // Check if the token account already exists (for logging/debugging only)
     try {
       const userPublicKeyObj = new PublicKey(userPublicKey);
       const outputMintObj = new PublicKey(quoteData.outputMint);
@@ -312,31 +323,30 @@ const swapTransaction = async (
 
       if (existingTokenAccounts.value.length > 0) {
         console.log(
-          "Token account already exists, filtering out ATA creation instructions"
-        );
-        console.log(
-          "Existing token account:",
+          "Token account already exists:",
           existingTokenAccounts.value[0].pubkey.toString()
         );
-        // Filter out Associated Token Account creation instructions
-        instructions.setupInstructions = instructions.setupInstructions.filter(
-          (instruction) =>
-            instruction.programId !==
-            "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
-        );
         console.log(
-          "Filtered setup instructions:",
-          instructions.setupInstructions.length
+          "Allowing Jupiter's setup instructions to proceed (backend will handle modifications)"
         );
       } else {
         console.log(
-          "No existing token account found, ATA creation should proceed"
+          "No existing token account found, ATA creation will proceed"
         );
-        // Note: Backend will handle setting server as payer and adding SetAuthority
       }
     } catch (error) {
       console.log("Error checking token account existence:", error);
     }
+
+    // PREVIOUS FILTERING LOGIC (commented out - was causing error 6025):
+    // if (existingTokenAccounts.value.length > 0) {
+    //   // Filter out Associated Token Account creation instructions
+    //   instructions.setupInstructions = instructions.setupInstructions.filter(
+    //     (instruction) =>
+    //       instruction.programId !==
+    //       "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+    //   );
+    // }
   }
 
   // Note: All transaction modifications (cleanup instruction rent destination, 

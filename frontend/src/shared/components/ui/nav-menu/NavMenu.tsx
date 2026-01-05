@@ -222,7 +222,7 @@ const NavMenu = () => {
                       `}
                     >
                       <ButtonGroup direction="vertical" expand>
-                        {currentUserKYCStatus !== "APPROVED" && (
+                        {/* {currentUserKYCStatus !== "APPROVED" && (
                           <ButtonGroupItem
                             variant="primary"
                             icon={ShieldCheck}
@@ -230,7 +230,7 @@ const NavMenu = () => {
                           >
                             Verify KYC
                           </ButtonGroupItem>
-                        )}
+                        )} */}
                         <ButtonGroupItem
                           onPress={signOut}
                           variant="ghost"
@@ -239,14 +239,14 @@ const NavMenu = () => {
                         >
                           Sign out
                         </ButtonGroupItem>
-                        <ButtonGroupItem
+                        {/* <ButtonGroupItem
                           onPress={handleDeleteAccount}
                           variant="danger"
                           expand
                           icon={Trash}
                         >
                           Delete Account
-                        </ButtonGroupItem>
+                        </ButtonGroupItem> */}
                       </ButtonGroup>
                     </footer>
                   </div>
