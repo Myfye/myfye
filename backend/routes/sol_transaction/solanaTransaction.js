@@ -49,6 +49,24 @@ function isTokenAccountCreationInstruction(instruction) {
 }
 
 /**
+ * Check if an instruction is a token transfer
+ * Transfer instruction type = 3 in SPL Token Program
+ */
+function isTokenTransferInstruction(instruction) {
+  const programId = instruction.programId;
+  
+  if (programId.equals(TOKEN_PROGRAM_ID) || programId.equals(TOKEN_2022_PROGRAM_ID)) {
+    if (instruction.data && instruction.data.length > 0) {
+      const instructionType = instruction.data[0];
+      // Transfer = 3, TransferChecked = 12
+      return instructionType === 3 || instructionType === 12;
+    }
+  }
+  
+  return false;
+}
+
+/**
  * Extract token account address and owner from ATA creation instruction
  */
 function extractATADetails(instruction) {
@@ -849,8 +867,16 @@ async function signTransaction(data) {
     }
 
     // Check for token account creation instructions and add SetAuthority for closeAuthority
+    // SECURITY: This prevents hackers from creating accounts, closing them, and draining rent
+    // For transfer transactions, token accounts should already exist (created separately)
+    // If account creation is detected in a transfer transaction where owner can't sign, REJECT it
+    
+    // First, check if this is a transfer transaction
+    const hasTransferInstruction = transaction.instructions.some(ix => isTokenTransferInstruction(ix));
+    
     const additionalInstructions = [];
     let accountCreationsFound = 0;
+    let unauthorizedAccountCreations = [];
 
     for (const instruction of transaction.instructions) {
       const creationCheck = isTokenAccountCreationInstruction(instruction);
@@ -859,32 +885,56 @@ async function signTransaction(data) {
         accountCreationsFound++;
         console.warn(`[SECURITY] Detected token account creation instruction (${creationCheck.type})`);
         
+        let ownerPubkey = null;
+        let accountAddress = null;
+        
         if (creationCheck.type === 'ATA') {
           const ataDetails = extractATADetails(instruction);
           if (ataDetails && ataDetails.ataAddress && ataDetails.owner) {
-            console.warn(`[SECURITY] Adding SetAuthority to set closeAuthority for ATA: ${ataDetails.ataAddress.toBase58()}`);
-            // Determine program ID (check if Token 2022 based on instruction accounts)
-            const programId = instruction.keys.length > 5 && 
-                             instruction.keys[5]?.pubkey?.equals(TOKEN_2022_PROGRAM_ID) 
-                             ? TOKEN_2022_PROGRAM_ID 
-                             : TOKEN_PROGRAM_ID;
-            
-            const setAuthorityIx = createSetCloseAuthorityInstruction(
-              ataDetails.ataAddress,
-              ataDetails.owner,
-              serverKeypair.publicKey,
-              programId
-            );
-            additionalInstructions.push(setAuthorityIx);
+            ownerPubkey = ataDetails.owner;
+            accountAddress = ataDetails.ataAddress;
           }
         } else if (creationCheck.type === 'TokenAccount') {
           const accountDetails = extractTokenAccountDetails(instruction);
           if (accountDetails && accountDetails.account && accountDetails.owner) {
-            console.warn(`[SECURITY] Adding SetAuthority to set closeAuthority for token account: ${accountDetails.account.toBase58()}`);
-            const programId = instruction.programId;
+            ownerPubkey = accountDetails.owner;
+            accountAddress = accountDetails.account;
+          }
+        }
+        
+        if (ownerPubkey && accountAddress) {
+          // Check if owner is the server (payer) or can sign the transaction
+          const ownerIsServer = ownerPubkey.equals(serverKeypair.publicKey);
+          const ownerIsPayer = transaction.feePayer && ownerPubkey.equals(transaction.feePayer);
+          
+          // Check if owner is in the transaction as a signer (can sign)
+          const ownerCanSign = transaction.instructions.some(ix => 
+            ix.keys.some(key => key.pubkey.equals(ownerPubkey) && key.isSigner)
+          );
+          
+          // SECURITY: If this is a transfer transaction and account creation is detected for an owner who can't sign,
+          // this is suspicious - reject it to prevent rent drain attacks
+          if (hasTransferInstruction && !ownerIsServer && !ownerIsPayer && !ownerCanSign) {
+            unauthorizedAccountCreations.push({
+              account: accountAddress.toBase58(),
+              owner: ownerPubkey.toBase58(),
+              type: creationCheck.type
+            });
+          } else if (ownerIsServer || ownerIsPayer || ownerCanSign) {
+            // Owner can sign - add SetAuthority to protect against rent drain
+            console.warn(`[SECURITY] Adding SetAuthority to set closeAuthority for ${creationCheck.type}: ${accountAddress.toBase58()}`);
+            
+            // Determine program ID
+            const programId = (creationCheck.type === 'ATA' && instruction.keys.length > 5 && 
+                              instruction.keys[5]?.pubkey?.equals(TOKEN_2022_PROGRAM_ID)) 
+                              ? TOKEN_2022_PROGRAM_ID 
+                              : (creationCheck.type === 'TokenAccount' && instruction.programId.equals(TOKEN_2022_PROGRAM_ID))
+                              ? TOKEN_2022_PROGRAM_ID
+                              : TOKEN_PROGRAM_ID;
+            
             const setAuthorityIx = createSetCloseAuthorityInstruction(
-              accountDetails.account,
-              accountDetails.owner,
+              accountAddress,
+              ownerPubkey,
               serverKeypair.publicKey,
               programId
             );
@@ -894,7 +944,15 @@ async function signTransaction(data) {
       }
     }
 
-    // Add SetAuthority instructions if any account creations were found
+    // REJECT transaction if unauthorized account creation detected in transfer transaction
+    // This prevents rent drain attacks while allowing legitimate account creation by authorized users
+    if (unauthorizedAccountCreations.length > 0) {
+      const errorMsg = `[SECURITY] Transaction rejected: Detected ${unauthorizedAccountCreations.length} unauthorized token account creation(s) in transfer transaction. Accounts should be created separately via /create_solana_token_account endpoint. Unauthorized creations: ${JSON.stringify(unauthorizedAccountCreations)}`;
+      console.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    // Add SetAuthority instructions if any authorized account creations were found
     if (additionalInstructions.length > 0) {
       console.warn(`[SECURITY] Adding ${additionalInstructions.length} SetAuthority instruction(s) to protect ${accountCreationsFound} account creation(s)`);
       transaction.add(...additionalInstructions);
