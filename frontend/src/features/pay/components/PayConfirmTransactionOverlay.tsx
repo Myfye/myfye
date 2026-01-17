@@ -78,6 +78,16 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const handleTransactionSubmit = async () => {
     console.log("Starting transaction submission...");
 
+    if (!transaction.amount) return;
+    if (!transaction.user) return;
+    if (!transaction.assetId) return;
+
+    // First open the processing overlay to show loading
+    dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
+
+    // Add a small delay to ensure state updates are processed
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     // Get or create Solana wallet address for recipient
     let recipientSolanaPubKey = transaction.user.solana_pub_key;
     
@@ -90,8 +100,13 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
         const newUser = await pregeneratePrivyUser(transaction.user.email);
         console.log("Pregenerated Privy user:", newUser);
         
-        // Extract Solana address from response
-        recipientSolanaPubKey = newUser.solana_pub_key || newUser.dbUser?.solana_pub_key;
+        // Extract Solana address from response - check multiple possible locations
+        recipientSolanaPubKey = 
+          newUser.solana_pub_key || 
+          newUser.dbUser?.solana_pub_key ||
+          newUser.linked_accounts?.find(
+            (acc: any) => acc.type === 'wallet' && acc.chain_type === 'solana'
+          )?.address;
         
         if (!recipientSolanaPubKey) {
           throw new Error("Failed to get Solana wallet address from pregenerated user");
@@ -115,15 +130,6 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
     }
 
     try {
-      if (!transaction.amount) return;
-      if (!transaction.user) return;
-      if (!transaction.assetId) return;
-
-      // First open the processing overlay
-      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
-
-      // Add a small delay to ensure state updates are processed
-      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // next, go through transaction
       const sendAsset = assets.assets[transaction.assetId];

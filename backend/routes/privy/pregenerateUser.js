@@ -37,57 +37,21 @@ async function pregenerateUser(email) {
     const user = response.data;
     console.log('Successfully pregenerated Privy user:', user);
 
-    // Step 2: Get wallets for the user to extract Solana address
-    // Check if wallets are already in the response
-    let wallets = user.wallets || [];
-    let solanaAddress = null;
-
-    // If no wallets in response, fetch them (with retry logic)
-    if (wallets.length === 0) {
-      // Wait a moment for wallet to be created
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Try to fetch wallets with retries
-      for (let attempt = 0; attempt < 3; attempt++) {
-        try {
-          const walletsResponse = await axios.get(
-            `https://api.privy.io/v1/users/${user.id}/wallets`,
-            {
-              headers: {
-                'Authorization': `Basic ${Buffer.from(`${PRIVY_APP_ID}:${PRIVY_APP_SECRET}`).toString('base64')}`,
-                'privy-app-id': PRIVY_APP_ID,
-                'Content-Type': 'application/json',
-              },
-            }
-          );
-
-          wallets = walletsResponse.data?.data || [];
-          console.log(`Attempt ${attempt + 1}: User wallets:`, wallets);
-
-          if (wallets.length > 0) {
-            break;
-          }
-
-          // Wait before retry
-          if (attempt < 2) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-        } catch (error) {
-          console.warn(`Attempt ${attempt + 1} failed to fetch wallets:`, error.message);
-          if (attempt < 2) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-        }
-      }
-    }
-
-    // Find Solana wallet
-    const solanaWallet = wallets.find(w => w.chain_type === 'solana');
-    solanaAddress = solanaWallet?.address || null;
+    // Extract Solana wallet from linked_accounts
+    // Wallets are returned as linked_accounts with type: 'wallet'
+    const solanaWallet = user.linked_accounts?.find(
+      account => account.type === 'wallet' && account.chain_type === 'solana'
+    );
+    
+    const solanaAddress = solanaWallet?.address || null;
 
     if (!solanaAddress) {
       console.warn('No Solana wallet found for pregenerated user:', user.id);
-      console.warn('Available wallets:', wallets.map(w => ({ chain_type: w.chain_type, address: w.address })));
+      console.warn('Available linked_accounts:', user.linked_accounts?.map(acc => ({ 
+        type: acc.type, 
+        chain_type: acc.chain_type, 
+        address: acc.address 
+      })));
     } else {
       console.log('Found Solana address:', solanaAddress);
     }
