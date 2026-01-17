@@ -1,7 +1,5 @@
 import MFAOnboardingHeading from "./MFAOnboardingHeading";
 import {
-  FingerprintIcon,
-  KeyIcon,
   ShieldCheckIcon,
 } from "@phosphor-icons/react";
 import { css } from "@emotion/react";
@@ -15,10 +13,6 @@ interface MFAOnboardingSectionProps {
 const getIcon = (step: number) => {
   switch (step) {
     case 0:
-      return KeyIcon;
-    case 1:
-      return FingerprintIcon;
-    case 2:
       return ShieldCheckIcon;
     default:
       throw new Error("Cannot find MFA Step");
@@ -28,10 +22,6 @@ const getIcon = (step: number) => {
 const getTitle = (step: number) => {
   switch (step) {
     case 0:
-      return "Set your password";
-    case 1:
-      return "Create passkey";
-    case 2:
       return "Enroll in MFA";
     default:
       throw new Error("Cannot find MFA Step");
@@ -41,10 +31,6 @@ const getTitle = (step: number) => {
 const getDescription = (step: number) => {
   switch (step) {
     case 0:
-      return "Your recovery password helps you access your account if you lose your phone.";
-    case 1:
-      return "Your passkey is encrypted and adds an additional layer of security to your account.";
-    case 2:
       return "Verifying with MFA keeps your wallet safe. Once complete, you'll have access to your wallet.";
     default:
       throw new Error("Cannot find MFA Step");
@@ -53,9 +39,6 @@ const getDescription = (step: number) => {
 
 const getInactiveMarginBlockStart = (step: number, currentStep: number) => {
   if (step === 0) return "var(--size-0)";
-  if (currentStep === 2) return "var(--size-300)";
-  if (currentStep === 1 && step === 2) return "var(--size-300)";
-  if (step === 2) return "var(--size-300)";
   return "var(--size-300)";
 };
 

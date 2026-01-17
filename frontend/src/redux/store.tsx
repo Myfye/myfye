@@ -105,7 +105,16 @@ const store = configureStore({
     [activityApi.reducerPath]: activityApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action types
+        ignoredActions: ['__rtkq/focused'],
+        // Ignore these field paths in all actions
+        ignoredActionPaths: ['payload.embeddedWallet', 'payload.walletClient'],
+        // Ignore these paths in the state
+        ignoredPaths: ['userWalletData.embeddedWallet', 'userWalletData.walletClient'],
+      },
+    }).concat([
       usersApi.middleware,
       contactsApi.middleware,
       solanaApi.middleware,

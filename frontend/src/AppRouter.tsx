@@ -86,8 +86,6 @@ function WebAppInner() {
   const { user, ready, authenticated, login } = usePrivy();
   const { state, loginWithPasskey } = useLoginWithPasskey();
 
-  const mfaStatus = useAppSelector((state) => state.mfa.status);
-
   // Disable login when Privy is not ready or the user is already authenticated
   const disableLogin = !ready || (ready && authenticated);
 
@@ -254,10 +252,9 @@ function WebAppInner() {
     );
   }
 
-  if (
-    !user?.wallet?.address ||
-    mfaStatus !== "enrolled"
-  ) {
+  // Check if wallet exists - no MFA required
+  // Legacy users with passkey will still work, new TEE users use email OTP for signing
+  if (!user?.wallet?.address) {
     return <MFAOnboardingPage />;
   }
 

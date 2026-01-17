@@ -246,35 +246,15 @@ const HandleUserLogIn = async (
 const checkMFAState = async (user: User, dispatch: Dispatch) => {
   if (!user) return;
 
-  // Check mfaMethods if they exist
-  if (user.mfaMethods && Array.isArray(user.mfaMethods)) {
-    for (const mfaMethod of user.mfaMethods) {
-      if (mfaMethod === "passkey") {
-        dispatch(setMFAStatus("enrolled"));
-        return;
-      }
-    }
-  }
-
-  // Check linkedAccounts if they exist
-  if (user.linkedAccounts && Array.isArray(user.linkedAccounts)) {
-    for (const linkedAccount of user.linkedAccounts) {
-      if (linkedAccount.type === "passkey") {
-        dispatch(setMFAStatus("created_passkey"));
-        return;
-      }
-    }
-  }
-
+  // MFA is no longer required - just mark wallet as ready if it exists
+  // Legacy passkey users will still use passkey for signing (handled by Privy)
+  // New TEE users will use email OTP for signing (handled by Privy)
   if (user.wallet) {
-    if (user.wallet.recoveryMethod === "user-passcode") {
-      dispatch(setMFAStatus("created_password"));
-      return;
-    }
-    return dispatch(setMFAStatus("created_wallet"));
+    dispatch(setMFAStatus("created_wallet"));
+    return;
   }
 
-  // If no MFA is found, set empty status
+  // If no wallet is found, set empty status
   dispatch(setMFAStatus(null));
 };
 

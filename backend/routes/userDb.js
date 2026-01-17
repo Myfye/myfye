@@ -312,7 +312,17 @@ async function deleteUser(userId) {
         console.log("Deleting bank accounts...");
         await client.query('DELETE FROM blind_pay_bank_accounts WHERE user_id = $1', [userId]);
 
-        // 8. Finally, delete the user
+        // 8. Delete etherfuse users
+        console.log("Deleting etherfuse users...");
+        await client.query('DELETE FROM etherfuse_users WHERE user_id = $1', [userId]);
+
+        // 9. Delete sponsored requests (uses privy_user_id, not uid)
+        if (user.privy_user_id) {
+            console.log("Deleting sponsored requests...");
+            await client.query('DELETE FROM sponsored_requests WHERE privy_user_id = $1', [user.privy_user_id]);
+        }
+
+        // 10. Finally, delete the user
         console.log("Deleting user...");
         const deleteUserResult = await client.query('DELETE FROM users WHERE uid = $1 RETURNING *', [userId]);
         
