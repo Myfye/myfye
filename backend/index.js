@@ -77,7 +77,7 @@ const { getUserEtherfuseData } = require('./routes/etherfuse/customer_data.js');
 const { handleCustomerUpdatedWebhook } = require('./routes/etherfuse/customer_updated');
 const { handleOrderUpdatedWebhook } = require('./routes/etherfuse/order_updated');
 const { handleBankAccountUpdatedWebhook } = require('./routes/etherfuse/bank_account_updated');
-const { validatePrivyUserId, logSponsoredRequest, getAllSponsoredRequests } = require('./routes/sol_transaction/sponsoredSecurity');
+const { validatePrivyUserId, checkAccountCreationRateLimit, logSponsoredRequest, getAllSponsoredRequests } = require('./routes/sol_transaction/sponsoredSecurity');
 
 app.set('trust proxy', true);
 
@@ -645,7 +645,14 @@ app.post("/create_solana_token_account", sponsoredLimiter, async (req, res) => {
       });
     }
     
-    // Validate privy user ID exists in database
+    // Validate required fields
+    if (!receiverPubKey || !mintAddress || !programId) {
+      return res.status(400).json({ 
+        error: "Missing required fields: receiverPubKey, mintAddress, and programId are required" 
+      });
+    }
+
+    // SECURITY: Validate privy user ID exists in database
     const user = await validatePrivyUserId(privyUserId);
     if (!user) {
       console.warn(`[SECURITY] Invalid privy user ID: ${privyUserId} from IP: ${req.ip}`);
@@ -653,6 +660,19 @@ app.post("/create_solana_token_account", sponsoredLimiter, async (req, res) => {
         error: "Invalid user: privyUserId not found in database" 
       });
     }
+
+    // SECURITY: Rate limiting - max 4 token account creations per user per day
+    const rateLimitCheck = await checkAccountCreationRateLimit(privyUserId, 4);
+    if (!rateLimitCheck.allowed) {
+      console.warn(`[SECURITY] Rate limit exceeded for ${privyUserId} from IP: ${req.ip}. Current count: ${rateLimitCheck.count}/4`);
+      return res.status(429).json({ 
+        error: `Rate limit exceeded: Maximum 4 token account creations per day. You have created ${rateLimitCheck.count} account(s) in the last 24 hours.`,
+        count: rateLimitCheck.count,
+        maxPerDay: 4
+      });
+    }
+
+    console.log(`[SECURITY] Account creation allowed for user ${privyUserId} (${rateLimitCheck.count}/4 today)`);
     
     // Log environment variable status (without exposing the actual key)
     console.log(`SOL_PRIV_KEY is ${process.env.SOL_PRIV_KEY ? 'set' : 'not set'}`);
@@ -781,11 +801,11 @@ app.post("/search_users", async (req, res) => {
   try {
     const searchData = req.body;
     const result = await searchUser(searchData);
-    console.log("User search result:", JSON.stringify(result, null, 2));
+    // console.log("User search result:", JSON.stringify(result, null, 2));
     res.json(result);
   } catch (error) {
-    console.error("Error in /search_users endpoint:", error);
-    console.error("Error stack:", error.stack);
+    // console.error("Error in /search_users endpoint:", error);
+    // console.error("Error stack:", error.stack);
     res.status(500).json({ 
       error: error.message || "Failed to search users",
       details: error.toString(),

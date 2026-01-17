@@ -41,8 +41,6 @@ export const tokenTransfer = async (
       currencySelected,
       wallet
     );
-
-    console.log("SERVER_PUBLIC_KEY", SERVER_PUBLIC_KEY);
     // Validate public keys
     if (!payerPubKey || typeof payerPubKey !== "string") {
       throw new Error(`Invalid payer public key: ${payerPubKey}`);
@@ -64,7 +62,7 @@ export const tokenTransfer = async (
       throw new Error("Wallet is required");
     }
 
-    const PRIORITY_RATE = 1001000; // MICRO_LAMPORTS 1^-15 solana  250000
+    const PRIORITY_RATE = 100100; // MICRO_LAMPORTS 1^-15 solana  250000
     const PRIORITY_FEE_IX = ComputeBudgetProgram.setComputeUnitPrice({
       microLamports: PRIORITY_RATE,
     });

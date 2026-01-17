@@ -100,6 +100,9 @@ async function ensureTokenAccount(data) {
         }
         
         // Create the Associated Token Account
+        // NOTE: We cannot set closeAuthority during creation without recipient's signature.
+        // CloseAuthority will be set to server when account is used in sponsored transactions
+        // (handled in solanaTransaction.js when recipient signs).
         const createATAInstruction = Token.createAssociatedTokenAccountInstruction(
             serverPublicKey, // Payer (server)
             associatedTokenAddress, // ATA address
@@ -108,25 +111,12 @@ async function ensureTokenAccount(data) {
             programId
         );
         
-        // Set close authority to server wallet AFTER creation
-        // This is critical: only the server can close the account and reclaim rent
-        // Note: We need to do this in a separate transaction because the account must exist first
-        const setAuthorityInstruction = Token.createSetAuthorityInstruction(
-            associatedTokenAddress,
-            receiverPubKey, // Current authority (owner)
-            Token.AuthorityType.CloseAccount,
-            serverPublicKey, // New authority - SERVER controls closing
-            [], // No multi-signers needed
-            programId
-        );
-        
-        // Build and send transaction with both instructions
+        // Build and send transaction with only ATA creation
         const transaction = new web3.Transaction().add(
-            createATAInstruction,
-            setAuthorityInstruction
+            createATAInstruction
         );
         
-        // Send and confirm
+        // Send and confirm - only server signs as payer
         const signature = await web3.sendAndConfirmTransaction(
             connection,
             transaction,
@@ -134,7 +124,7 @@ async function ensureTokenAccount(data) {
             { commitment: 'confirmed' }
         );
         
-        console.log(`[TOKEN_ACCOUNT] Created ATA ${associatedTokenAddress.toString()} with server as closeAuthority. Signature: ${signature}`);
+        console.log(`[TOKEN_ACCOUNT] Created ATA ${associatedTokenAddress.toString()}. Signature: ${signature}`);
 
         return { pubkey: associatedTokenAddress.toString() };
     } catch (error) {

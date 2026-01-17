@@ -70,13 +70,13 @@ async function getContacts(data) {
 }
 
 async function searchUser(data) {
-    console.log("\n=== User Search Request Received ===");
-    console.log("Search data:", JSON.stringify(data, null, 2));
+    // console.log("\n=== User Search Request Received ===");
+    // console.log("Search data:", JSON.stringify(data, null, 2));
 
     const { current_user_id, query } = data;
     
-    console.log("searchUser - current_user_id:", current_user_id);
-    console.log("searchUser - current_user_id type:", typeof current_user_id);
+    // console.log("searchUser - current_user_id:", current_user_id);
+    //console.log("searchUser - current_user_id type:", typeof current_user_id);
 
     if (!current_user_id || !query) {
         throw new Error('Current user ID and search query are required');
@@ -105,7 +105,7 @@ async function searchUser(data) {
 
     try {
         const result = await pool.query(searchQuery, [current_user_id, query]);
-        console.log(`Found ${result.rows.length} users matching query "${query}"`);
+        // console.log(`Found ${result.rows.length} users matching query "${query}"`);
         return result.rows;
     } catch (error) {
         console.error('Error searching users:', error);

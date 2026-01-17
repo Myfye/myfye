@@ -96,8 +96,49 @@ async function getAllSponsoredRequests() {
   }
 }
 
+/**
+ * Check if user has exceeded daily rate limit for token account creation
+ * @param {string} privyUserId - The Privy user ID to check
+ * @param {number} maxPerDay - Maximum number of account creations allowed per day (default: 4)
+ * @returns {Promise<{allowed: boolean, count?: number}>} - Whether user is allowed and current count
+ */
+async function checkAccountCreationRateLimit(privyUserId, maxPerDay = 4) {
+  if (!privyUserId) {
+    return { allowed: false, count: 0 };
+  }
+
+  try {
+    // Ensure table exists
+    await createSponsoredRequestsTable();
+
+    // Count account creations in the last 24 hours for this user
+    const query = `
+      SELECT COUNT(*) as count 
+      FROM sponsored_requests 
+      WHERE privy_user_id = $1 
+        AND request_type = 'create_token_account'
+        AND creation_date >= NOW() - INTERVAL '24 hours'
+    `;
+
+    const result = await pool.query(query, [privyUserId]);
+    const count = parseInt(result.rows[0]?.count || 0);
+    const allowed = count < maxPerDay;
+
+    if (!allowed) {
+      console.warn(`[SECURITY] Rate limit exceeded for ${privyUserId}: ${count} account creations in last 24 hours (max: ${maxPerDay})`);
+    }
+
+    return { allowed, count };
+  } catch (error) {
+    console.error("Error checking account creation rate limit:", error);
+    // Fail secure - deny if check fails
+    return { allowed: false, count: 0 };
+  }
+}
+
 module.exports = {
   validatePrivyUserId,
+  checkAccountCreationRateLimit,
   logSponsoredRequest,
   getAllSponsoredRequests
 };

@@ -78,58 +78,25 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const handleTransactionSubmit = async () => {
     console.log("Starting transaction submission...");
 
-    if (!transaction.amount) return;
-    if (!transaction.user) return;
-    if (!transaction.assetId) return;
-
-    // First open the processing overlay to show loading
-    dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
-
-    // Add a small delay to ensure state updates are processed
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // Get or create Solana wallet address for recipient
-    let recipientSolanaPubKey = transaction.user.solana_pub_key;
-    
-    if (!recipientSolanaPubKey && transaction.user.email) {
+    if (!transaction.user.solana_pub_key && transaction.user.email) {
       console.log(
-        "No Solana pub key found, pregenerating Privy user for:",
-        transaction.user.email
+        "pregeneratew privy user transaction.user.solana_pub_key",
+        transaction.user.solana_pub_key
       );
-      try {
-        const newUser = await pregeneratePrivyUser(transaction.user.email);
-        console.log("Pregenerated Privy user:", newUser);
-        
-        // Extract Solana address from response - check multiple possible locations
-        recipientSolanaPubKey = 
-          newUser.solana_pub_key || 
-          newUser.dbUser?.solana_pub_key ||
-          newUser.linked_accounts?.find(
-            (acc: any) => acc.type === 'wallet' && acc.chain_type === 'solana'
-          )?.address;
-        
-        if (!recipientSolanaPubKey) {
-          throw new Error("Failed to get Solana wallet address from pregenerated user");
-        }
-        
-        console.log("Recipient Solana address:", recipientSolanaPubKey);
-      } catch (error) {
-        console.error("Error pregenerating Privy user:", error);
-        logError("Failed to pregenerate Privy user:", "pay", error);
-        dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
-        toast.error("Failed to create wallet for recipient. Please try again.");
-        return;
-      }
-    }
-
-    if (!recipientSolanaPubKey) {
-      console.error("No recipient Solana address available");
-      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
-      toast.error("Recipient wallet address is required");
-      return;
+      const newUser = await pregeneratePrivyUser(transaction.user.email);
+      console.log("newUser", newUser);
     }
 
     try {
+      if (!transaction.amount) return;
+      if (!transaction.user) return;
+      if (!transaction.assetId) return;
+
+      // First open the processing overlay
+      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: true }));
+
+      // Add a small delay to ensure state updates are processed
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // next, go through transaction
       const sendAsset = assets.assets[transaction.assetId];
@@ -149,12 +116,13 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
       const result = await tokenTransfer(
         solanaPubKey,
-        recipientSolanaPubKey,
+        transaction.user.solana_pub_key,
         sendAmountMicro,
         transaction.assetId,
         wallet,
         privyUserId
       );
+
 
       if (result.success) {
         console.log("Transaction successful:", result.transactionId);
