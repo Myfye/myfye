@@ -78,13 +78,40 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const handleTransactionSubmit = async () => {
     console.log("Starting transaction submission...");
 
-    if (!transaction.user.solana_pub_key && transaction.user.email) {
+    // Get or create Solana wallet address for recipient
+    let recipientSolanaPubKey = transaction.user.solana_pub_key;
+    
+    if (!recipientSolanaPubKey && transaction.user.email) {
       console.log(
-        "pregeneratew privy user transaction.user.solana_pub_key",
-        transaction.user.solana_pub_key
+        "No Solana pub key found, pregenerating Privy user for:",
+        transaction.user.email
       );
-      const newUser = await pregeneratePrivyUser(transaction.user.email);
-      console.log("newUser", newUser);
+      try {
+        const newUser = await pregeneratePrivyUser(transaction.user.email);
+        console.log("Pregenerated Privy user:", newUser);
+        
+        // Extract Solana address from response
+        recipientSolanaPubKey = newUser.solana_pub_key || newUser.dbUser?.solana_pub_key;
+        
+        if (!recipientSolanaPubKey) {
+          throw new Error("Failed to get Solana wallet address from pregenerated user");
+        }
+        
+        console.log("Recipient Solana address:", recipientSolanaPubKey);
+      } catch (error) {
+        console.error("Error pregenerating Privy user:", error);
+        logError("Failed to pregenerate Privy user:", "pay", error);
+        dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
+        toast.error("Failed to create wallet for recipient. Please try again.");
+        return;
+      }
+    }
+
+    if (!recipientSolanaPubKey) {
+      console.error("No recipient Solana address available");
+      dispatch(toggleOverlay({ type: "processingTransaction", isOpen: false }));
+      toast.error("Recipient wallet address is required");
+      return;
     }
 
     try {
@@ -116,7 +143,7 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
 
       const result = await tokenTransfer(
         solanaPubKey,
-        transaction.user.solana_pub_key,
+        recipientSolanaPubKey,
         sendAmountMicro,
         transaction.assetId,
         wallet,

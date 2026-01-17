@@ -1506,9 +1506,45 @@ app.post("/pregenerate_privy_user", sensitiveLimiter, async (req, res) => {
       });
     }
 
-    const result = await pregenerateUser(email);
-    console.log("Privy user pregeneration result:", JSON.stringify(result, null, 2));
-    res.json(result);
+    // Pregenerate the Privy user and get Solana wallet address
+    const privyUser = await pregenerateUser(email);
+    console.log("Privy user pregeneration result:", JSON.stringify(privyUser, null, 2));
+
+    // Check if user already exists in database
+    let dbUser = await getUserByPrivyId(privyUser.id);
+    
+    if (!dbUser) {
+      // Create user in database with Solana address
+      dbUser = await createUser({
+        email: email,
+        phoneNumber: null,
+        firstName: null,
+        lastName: null,
+        country: null,
+        evmPubKey: null,
+        solanaPubKey: privyUser.solana_pub_key,
+        privyUserId: privyUser.id,
+        personaAccountId: null,
+        blindPayReceiverId: null,
+        blindPayEvmWalletId: null,
+      });
+      console.log("Created new user in database:", dbUser.uid);
+    } else if (!dbUser.solana_pub_key && privyUser.solana_pub_key) {
+      // Update existing user with Solana address if missing
+      await updateSolanaPubKey(privyUser.id, privyUser.solana_pub_key);
+      dbUser = await getUserByPrivyId(privyUser.id);
+      console.log("Updated user with Solana address:", dbUser.uid);
+    }
+
+    // Return both Privy user data and database user data
+    res.json({
+      ...privyUser,
+      dbUser: {
+        uid: dbUser.uid,
+        email: dbUser.email,
+        solana_pub_key: dbUser.solana_pub_key,
+      }
+    });
   } catch (error) {
     console.error("Error in /pregenerate_privy_user endpoint:", error);
     console.error("Error stack:", error.stack);
