@@ -4,7 +4,7 @@ import Overlay from "@/shared/components/ui/overlay/Overlay";
 import Button from "@/shared/components/ui/button/Button";
 import { useDispatch, useSelector } from "react-redux";
 import store, { RootState } from "@/redux/store";
-import { toggleOverlay, unmount } from "../stores/paySlice";
+import { toggleOverlay, unmount, updateUser } from "../stores/paySlice";
 import PaySummary from "./PaySummary";
 import { tokenTransfer } from "@/functions/Transaction";
 import { useSolanaWallets } from "@privy-io/react-auth";
@@ -78,13 +78,40 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
   const handleTransactionSubmit = async () => {
     console.log("Starting transaction submission...");
 
-    if (!transaction.user.solana_pub_key && transaction.user.email) {
+    // Get the receiver's Solana public key, pregenerating if needed
+    let receiverSolanaPubKey = transaction.user.solana_pub_key;
+
+    // If user doesn't have a Solana public key, pregenerate the Privy user to get one
+    if (!receiverSolanaPubKey && transaction.user.email) {
       console.log(
-        "pregeneratew privy user transaction.user.solana_pub_key",
+        "Pregenerating Privy user - missing solana_pub_key:",
         transaction.user.solana_pub_key
       );
       const newUser = await pregeneratePrivyUser(transaction.user.email);
-      console.log("newUser", newUser);
+      console.log("Pregenerated Privy user:", newUser);
+      
+      // Get the solana_pub_key from the pregenerated user response
+      // It can be in newUser.solana_pub_key or newUser.dbUser.solana_pub_key
+      receiverSolanaPubKey = newUser.solana_pub_key || newUser.dbUser?.solana_pub_key;
+      
+      if (receiverSolanaPubKey) {
+        console.log("Got solana_pub_key from pregenerated user:", receiverSolanaPubKey);
+        // Update the Redux state with the new solana_pub_key
+        dispatch(updateUser({
+          ...transaction.user,
+          solana_pub_key: receiverSolanaPubKey,
+        }));
+      } else {
+        console.error("Failed to get solana_pub_key from pregenerated user:", newUser);
+        toast.error("Failed to generate wallet address for recipient");
+        return;
+      }
+    }
+
+    // Validate we have the receiver's public key
+    if (!receiverSolanaPubKey) {
+      toast.error("Recipient wallet address is required");
+      return;
     }
 
     try {
@@ -113,10 +140,11 @@ const PayConfirmTransactionOverlay = ({ zIndex = 1000 }) => {
       const sendAmountMicro = sendAmount * 1000000;
 
       console.log("PAY transaction.assetId", transaction.assetId);
+      console.log("TokenTransfer - sender:", solanaPubKey, "receiver:", receiverSolanaPubKey);
 
       const result = await tokenTransfer(
         solanaPubKey,
-        transaction.user.solana_pub_key,
+        receiverSolanaPubKey,
         sendAmountMicro,
         transaction.assetId,
         wallet,
