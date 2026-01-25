@@ -26,6 +26,10 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
     selectAssetsWithBalanceByDashboard(state, "stocks")
   );
 
+  const commoditiesAssets = useSelector((state: RootState) =>
+    selectAssetsWithBalanceByDashboard(state, "commodities")
+  );
+
   const isOpen = useSelector(
     (state: RootState) => state.swap.overlays.selectAsset.isOpen
   );
@@ -147,6 +151,7 @@ const SelectSwapAssetOverlay = ({ zIndex = 1000 }) => {
           { id: "cash", label: "Cash", assets: cashAssets },
           { id: "crypto", label: "Crypto", assets: cryptoAssets },
           { id: "stocks", label: "Stocks", assets: stocksAssets },
+          { id: "commodities", label: "Commodities", assets: commoditiesAssets },
         ]}
         onAssetSelect={onAssetSelect}
         zIndex={zIndex}

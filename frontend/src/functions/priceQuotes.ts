@@ -43,15 +43,13 @@ const getStockPrice = async (dispatch: Function): Promise<boolean> => {
       },
     });
 
-    console.log("STOCKS - Response:", response);
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("STOCKS - Backend error:", errorData);
+      
       throw new Error(`Backend error: ${errorData.error || "Unknown error"}`);
     }
 
     const result = await response.json();
-    console.log("STOCKS - Full response data:", JSON.stringify(result, null, 2));
 
     // Map through the stock data and dispatch exchange rates
     if (result.success && result.data && Array.isArray(result.data)) {
@@ -71,13 +69,7 @@ const getStockPrice = async (dispatch: Function): Promise<boolean> => {
               })
             );
           } catch (error) {
-            console.error(
-              "STOCKS - Error dispatching",
-              assetId,
-              "with price",
-              stock.price,
-              error
-            );
+            
             throw (
               ("STOCKS - Error dispatching",
               assetId,
@@ -138,9 +130,7 @@ const getCETESPriceQuote = async (dispatch: Function): Promise<boolean> => {
 // CoinGecko API batch call for crypto prices
 const getCryptoPriceQuotes = async (dispatch: Function): Promise<boolean> => {
   try {
-    console.log(
-      "COINGECKO - Starting batch price fetch for BTC, XRP, DOGE, SUI, SOL, MON"
-    );
+    
 
     // CoinGecko API endpoint for batch price lookup
     const response = await fetch(
@@ -152,7 +142,7 @@ const getCryptoPriceQuotes = async (dispatch: Function): Promise<boolean> => {
     }
 
     const data = await response.json();
-    console.log("COINGECKO - Raw API response:", data);
+    
 
     // Map CoinGecko IDs to our asset IDs and dispatch prices
     const cryptoMapping = {
@@ -185,8 +175,7 @@ const getCryptoPriceQuotes = async (dispatch: Function): Promise<boolean> => {
         );
       }
 
-      console.log(`COINGECKO - ${assetId} price: $${price} (${priceSource})`);
-
+      
       dispatch(
         updateExchangeRateUSD({
           assetId: assetId,
@@ -195,9 +184,7 @@ const getCryptoPriceQuotes = async (dispatch: Function): Promise<boolean> => {
       );
     });
 
-    console.log(
-      `COINGECKO - Successfully fetched ${successCount}/5 crypto prices`
-    );
+    
     return successCount > 0;
   } catch (error) {
     console.error("COINGECKO - Error getting crypto price quotes:", error);
@@ -209,10 +196,7 @@ const getCryptoPriceQuotes = async (dispatch: Function): Promise<boolean> => {
 
     cryptoAssets.forEach((assetId) => {
       const price = fallbackPrices[assetId];
-      console.log(
-        `COINGECKO - ${assetId} price: $${price} (Fallback - API Error)`
-      );
-
+      
       dispatch(
         updateExchangeRateUSD({
           assetId: assetId,
@@ -264,9 +248,85 @@ const getGOLDPriceQuote = async (dispatch: Function): Promise<boolean> => {
       })
     );
 
+    // update GLD too
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "GLD",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+
     return true;
   } catch (error) {
     console.error("QUOTE ERROR getting GOLD price quote:", error);
+    // Use fallback price for both GOLD and GLD
+    const fallbackPrice = getCommodityFallbackPrices().GLD;
+    console.warn(`GOLD/GLD - Using fallback price: $${fallbackPrice}`);
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "GOLD",
+        exchangeRateUSD: fallbackPrice,
+      })
+    );
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "GLD",
+        exchangeRateUSD: fallbackPrice,
+      })
+    );
+    return false;
+  }
+};
+
+const getSLVRPriceQuote = async (dispatch: Function): Promise<boolean> => {
+  try {
+    const quote = await getSwapQuote(getMintAddress("SLVR"));
+    const priceInUSD = quote.outAmount / 1000000;
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "SLVR",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+    return true;
+  } catch (error) {
+    console.error("QUOTE ERROR getting SLVR price quote:", error);
+    // Use fallback price - approximate silver price per unit
+    const fallbackPrice = getCommodityFallbackPrices().SLVR;
+    console.warn(`SLVR - Using fallback price: $${fallbackPrice}`);
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "SLVR",
+        exchangeRateUSD: fallbackPrice,
+      })
+    );
+    return false;
+  }
+};
+
+
+const getCPPRPriceQuote = async (dispatch: Function): Promise<boolean> => {
+  try {
+    const quote = await getSwapQuote(getMintAddress("CPPR"));
+    const priceInUSD = quote.outAmount / 1000000;
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "CPPR",
+        exchangeRateUSD: priceInUSD,
+      })
+    );
+    return true;
+  } catch (error) {
+    console.error("QUOTE ERROR getting CPPR price quote:", error);
+    // Use fallback price - approximate copper price per unit
+    const fallbackPrice = getCommodityFallbackPrices().CPPR;
+    console.warn(`CPPR - Using fallback price: $${fallbackPrice}`);
+    dispatch(
+      updateExchangeRateUSD({
+        assetId: "CPPR",
+        exchangeRateUSD: fallbackPrice,
+      })
+    );
     return false;
   }
 };
@@ -282,7 +342,9 @@ export const getPriceQuotes = async (dispatch: Function): Promise<void> => {
       // Earn assets
       getUSDYPriceQuote(dispatch),
       getCETESPriceQuote(dispatch),
-      getGOLDPriceQuote(dispatch),
+      getGOLDPriceQuote(dispatch), // update GLD price too
+      getSLVRPriceQuote(dispatch),
+      getCPPRPriceQuote(dispatch),
       //getEUROBPriceQuote(dispatch),
       //getGILTSPriceQuote(dispatch),
       //getTESOUROPriceQuote(dispatch),
@@ -304,5 +366,15 @@ const getHardcodedFallbackPrices = (): Record<string, number> => {
     DOGE: 0.27,
     SUI: 3.5,
     MONAD: 0.045,
+  };
+};
+
+// Hardcoded fallback prices for commodity assets (when Jupiter doesn't have liquidity)
+const getCommodityFallbackPrices = (): Record<string, number> => {
+  return {
+    // Commodities - approximate prices per share/unit
+    GLD: 250, // Gold Trust ETF approximate price
+    SLVR: 28, // Silver Trust approximate price
+    CPPR: 4.5, // Copper Trust approximate price
   };
 };

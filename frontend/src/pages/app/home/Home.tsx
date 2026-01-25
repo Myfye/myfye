@@ -5,6 +5,7 @@ import DashboardPanel from "./_components/panels/dashboard/DashboardPanel";
 import CashPanel from "./_components/panels/cash/CashPanel";
 import CryptoPanel from "./_components/panels/crypto/CryptoPanel";
 import StocksPanel from "./_components/panels/stocks/StocksPanel";
+import CommoditiesPanel from "./_components/panels/commodities/CommoditiesPanel";
 import { useState } from "react";
 
 const Home = () => {
@@ -31,6 +32,9 @@ const Home = () => {
         </Item>
         <Item key="stocks" title="Stocks">
           <StocksPanel />
+        </Item>
+        <Item key="commodities" title="Commodities">
+          <CommoditiesPanel />
         </Item>
       </HomeTabs>
     </div>

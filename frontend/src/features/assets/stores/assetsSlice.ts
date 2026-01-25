@@ -83,6 +83,9 @@ import MSTRIcon from "@/assets/icons/assets/stocks/MicroStrategy, Inc..svg";
 import KOIcon from "@/assets/icons/assets/stocks/The Coca-Cola Company.svg";
 import GMEIcon from "@/assets/icons/assets/stocks/Gamestop Corp. Class A, Inc..svg";
 import SPYIcon from "@/assets/icons/assets/stocks/S&P.png";
+import GLDIcon from "@/assets/icons/assets/commodities/GLD.png";
+import SLVRIcon from "@/assets/icons/assets/commodities/SLVR.png";
+import CPPRIcon from "@/assets/icons/assets/commodities/CPPR.png";
 
 //import SQIcon from "@/assets/icons/assets/stocks/Block, Inc..svg";
 //import DISIcon from "@/assets/icons/assets/stocks/Walt Disney Company.svg";
@@ -162,11 +165,78 @@ const initialState: AssetsState = {
     "GOLD",
     //"EUROB",
     //"GILTS",
-    //"TESOURO"
+    //"TESOURO",
+    "GLD",
+    "SLVR",
+    "CPPR",
   ],
   groupIds: ["stocks", "earn", "cash", "crypto", "retirement"],
-  dashboardIds: ["stocks", "cash", "crypto"],
+  dashboardIds: ["stocks", "cash", "crypto", "commodities"],
   assets: {
+    // Commodities
+    GLD: {
+      id: "GLD",
+      label: "Gold Trust",
+      symbol: "GLD",
+      color: "var(--clr-apple)",
+      mintAddress: "M77ZvkZ8zW5udRbuJCbuwSwavRa7bGAZYMTwru8ondo",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 9,
+      fiatCurrency: "usd",
+      dashboardId: "commodities",
+      groupId: "commodities",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: GLDIcon,
+        type: "png",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    SLVR: {
+      id: "SLVR",
+      label: "Silver Trust",
+      symbol: "SLVR",
+      color: "var(--clr-apple)",
+      mintAddress: "X7j77hTmjZJbepkXXBcsEapM8qNgdfihkFj6CZ5ondo",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 9,
+      fiatCurrency: "usd",
+      dashboardId: "commodities",
+      groupId: "commodities",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: SLVRIcon,
+        type: "png",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
+    CPPR: {
+      id: "CPPR",
+      label: "Copper Trust",
+      symbol: "CPPR",
+      color: "var(--clr-apple)",
+      mintAddress: "iy11ytbSGcUnrjE6Lfv78TFqxKyUESfku1FugS9ondo",
+      tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      decimals: 9,
+      fiatCurrency: "usd",
+      dashboardId: "commodities",
+      groupId: "commodities",
+      balance: 0,
+      exchangeRateUSD: 0,
+      icon: {
+        content: CPPRIcon,
+        type: "png",
+      },
+      overlay: {
+        isOpen: false,
+      },
+    },
     // Stocks
     AAPL: {
       id: "AAPL",
