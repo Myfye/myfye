@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { css } from "@emotion/react";
 import Modal from "@/shared/components/ui/modal/Modal";
@@ -20,6 +20,25 @@ import ConfirmSwapOverlay from "./ConfirmSwapOverlay";
 import SelectSwapAssetOverlay from "./SelectSwapAssetOverlay";
 import ProcessingTransactionOverlay from "./ProcessingTransactionOverlay";
 import { useNumberPad } from "@/shared/components/ui/number-pad/useNumberPad";
+
+// Check if current time is during weekend trading blackout
+// Friday 5pm - Monday 5am (local time)
+const isWeekendTradingBlackout = (): boolean => {
+  const now = new Date();
+  const day = now.getDay(); // 0 = Sunday, 1 = Monday, 5 = Friday, 6 = Saturday
+  const hour = now.getHours();
+
+  // Sunday (all day)
+  if (day === 0) return true;
+  // Saturday (all day)
+  if (day === 6) return true;
+  // Friday after 5pm (17-23)
+  if (day === 5 && hour >= 17) return true;
+  // Monday before 5am (0-4)
+  if (day === 1 && hour < 5) return true;
+
+  return false;
+};
 
 const SwapModal = () => {
   const [height] = useState(667);
@@ -99,6 +118,23 @@ const SwapModal = () => {
 
   const isInvalidSwapTransaction = checkIfInvalidSwapTransaction();
 
+  // Check if a commodity is selected (buy or sell)
+  const hasCommoditySelected = useMemo(() => {
+    const buyAsset = transaction.buy.assetId
+      ? assets.assets[transaction.buy.assetId]
+      : null;
+    const sellAsset = transaction.sell.assetId
+      ? assets.assets[transaction.sell.assetId]
+      : null;
+    return (
+      buyAsset?.dashboardId === "commodities" ||
+      sellAsset?.dashboardId === "commodities"
+    );
+  }, [transaction.buy.assetId, transaction.sell.assetId, assets.assets]);
+
+  const isWeekend = useMemo(() => isWeekendTradingBlackout(), []);
+  const showCommodityWarning = isWeekend && hasCommoditySelected;
+
   return (
     <>
       <Modal
@@ -121,6 +157,39 @@ const SwapModal = () => {
             justify-content: space-between;
           `}
         >
+          {showCommodityWarning && (
+            <div
+              css={css`
+                background-color: var(--clr-warning-surface, #fef3c7);
+                border: 1px solid var(--clr-warning-border, #f59e0b);
+                border-radius: var(--border-radius-medium);
+                padding: var(--size-150) var(--size-200);
+                margin-inline: var(--size-200);
+                margin-block-end: var(--size-150);
+                display: flex;
+                align-items: center;
+                gap: var(--size-100);
+              `}
+            >
+              <span
+                css={css`
+                  font-size: var(--fs-large);
+                `}
+              >
+                ⚠️
+              </span>
+              <p
+                css={css`
+                  color: var(--clr-warning-text, #92400e);
+                  font-size: var(--fs-small);
+                  font-weight: var(--fw-active);
+                  margin: 0;
+                `}
+              >
+                Commodities markets are closed on weekends.
+              </p>
+            </div>
+          )}
           <section
             css={css`
               margin-inline: var(--size-200);
