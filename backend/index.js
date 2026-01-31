@@ -77,7 +77,7 @@ const { getUserEtherfuseData } = require('./routes/etherfuse/customer_data.js');
 const { handleCustomerUpdatedWebhook } = require('./routes/etherfuse/customer_updated');
 const { handleOrderUpdatedWebhook } = require('./routes/etherfuse/order_updated');
 const { handleBankAccountUpdatedWebhook } = require('./routes/etherfuse/bank_account_updated');
-const { validatePrivyUserId, checkAccountCreationRateLimit, logSponsoredRequest, getAllSponsoredRequests } = require('./routes/sol_transaction/sponsoredSecurity');
+const { isIpBannedForOperations, getBannedOperationsErrorMessage, validatePrivyUserId, checkAccountCreationRateLimit, logSponsoredRequest, getAllSponsoredRequests } = require('./routes/sol_transaction/sponsoredSecurity');
 
 app.set('trust proxy', true);
 
@@ -166,6 +166,18 @@ const sponsoredLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Admin endpoints require ADMIN_KEY; all others require CLIENT_SIDE_KEY
+const ADMIN_PATHS = [
+  '/delete_bank_account',
+  '/get_all_pay_transactions',
+  '/get_all_swap_transactions',
+  '/get_all_bank_accounts',
+  '/get_all_users',
+  '/get_all_sponsored_requests',
+  '/delete_user',
+  '/get_all_receivers',
+];
+
 // IP blocking middleware with rate limiting
 const blockUnauthorizedIPs = (req, res, next) => {
   // Allow preflight OPTIONS requests without API key
@@ -192,8 +204,11 @@ const blockUnauthorizedIPs = (req, res, next) => {
     });
   }
 
-  // If API key is invalid, block the request
-  if (apiKey !== process.env.CLIENT_SIDE_KEY) {
+  const isAdminPath = ADMIN_PATHS.includes(req.path);
+  const expectedKey = isAdminPath ? process.env.ADMIN_KEY : process.env.CLIENT_SIDE_KEY;
+
+  // If API key is invalid for this route, block the request
+  if (apiKey !== expectedKey) {
     console.log(`Blocked request from IP: ${ip} (${geo?.country || 'Unknown Country'}, ${geo?.city || 'Unknown City'}) - Invalid API key`);
     return res.status(403).json({ 
       error: 'Forbidden',
@@ -636,6 +651,13 @@ app.post("/create_solana_token_account", sponsoredLimiter, async (req, res) => {
   console.log("Request IP:", req.ip);
   
   try {
+    const ipCheck = isIpBannedForOperations(req.ip);
+    if (ipCheck.banned) {
+      return res.status(403).json({
+        error: getBannedOperationsErrorMessage()
+      });
+    }
+
     const { receiverPubKey, mintAddress, programId, privyUserId } = req.body;
     
     // Validate required fields
@@ -661,18 +683,18 @@ app.post("/create_solana_token_account", sponsoredLimiter, async (req, res) => {
       });
     }
 
-    // SECURITY: Rate limiting - max 4 token account creations per user per day
-    const rateLimitCheck = await checkAccountCreationRateLimit(privyUserId, 4);
+    // SECURITY: Rate limiting - max 3 token account creations per user per day
+    const rateLimitCheck = await checkAccountCreationRateLimit(privyUserId, 3);
     if (!rateLimitCheck.allowed) {
-      console.warn(`[SECURITY] Rate limit exceeded for ${privyUserId} from IP: ${req.ip}. Current count: ${rateLimitCheck.count}/4`);
+      console.warn(`[SECURITY] Rate limit exceeded for ${privyUserId} from IP: ${req.ip}. Current count: ${rateLimitCheck.count}/3`);
       return res.status(429).json({ 
-        error: `Rate limit exceeded: Maximum 4 token account creations per day. You have created ${rateLimitCheck.count} account(s) in the last 24 hours.`,
+        error: `Rate limit exceeded: Maximum 3 token account creations per day. You have created ${rateLimitCheck.count} account(s) in the last 24 hours.`,
         count: rateLimitCheck.count,
-        maxPerDay: 4
+        maxPerDay: 3
       });
     }
 
-    console.log(`[SECURITY] Account creation allowed for user ${privyUserId} (${rateLimitCheck.count}/4 today)`);
+    console.log(`[SECURITY] Account creation allowed for user ${privyUserId} (${rateLimitCheck.count}/3 today)`);
     
     // Log environment variable status (without exposing the actual key)
     console.log(`SOL_PRIV_KEY is ${process.env.SOL_PRIV_KEY ? 'set' : 'not set'}`);
@@ -861,6 +883,14 @@ app.post("/sign_transaction", sponsoredLimiter, async (req, res) => {
   console.log("Request IP:", req.ip);
   
   try {
+    // Ban whole country by IP: block if IP's country is in BANNED_OPERATIONS (return hidden error from .env)
+    const ipCheck = isIpBannedForOperations(req.ip);
+    if (ipCheck.banned) {
+      return res.status(403).json({
+        error: getBannedOperationsErrorMessage()
+      });
+    }
+
     const { serializedTransaction, privyUserId } = req.body;
     
     // Validate required fields
@@ -923,6 +953,14 @@ app.post("/sign_versioned_transaction", sponsoredLimiter, async (req, res) => {
   console.log("Request IP:", req.ip);
 
   try {
+    
+    const ipCheck = isIpBannedForOperations(req.ip);
+    if (ipCheck.banned) {
+      return res.status(403).json({
+        error: getBannedOperationsErrorMessage()
+      });
+    }
+
     const { serializedTransaction, privyUserId } = req.body;
     
     // Validate required fields

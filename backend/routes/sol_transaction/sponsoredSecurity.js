@@ -1,4 +1,61 @@
 const pool = require("../../db");
+const geoip = require("geoip-lite");
+
+/**
+ * Map country names (as in BANNED_OPERATIONS) to ISO 3166-1 alpha-2 codes.
+ * geoip-lite returns 2-letter codes (e.g. "FI" for Finland).
+ */
+const COUNTRY_NAME_TO_CODE = {
+  finland: "FI",
+  // Add more as needed, e.g. united states: "US", germany: "DE"
+};
+
+/**
+ * Parse BANNED_OPERATIONS env (comma-separated country names or codes)
+ * into a Set of 2-letter ISO country codes for comparison with geoip.
+ */
+function getBannedOperationCountryCodes() {
+  const raw = process.env.BANNED_OPERATIONS;
+  if (!raw || typeof raw !== "string") return new Set();
+  const entries = raw.split(",").map((s) => s.trim()).filter(Boolean);
+  const codes = new Set();
+  for (const entry of entries) {
+    if (entry.length === 2) {
+      codes.add(entry.toUpperCase());
+    } else {
+      const code = COUNTRY_NAME_TO_CODE[entry.toLowerCase()];
+      if (code) codes.add(code);
+    }
+  }
+  return codes;
+}
+
+/**
+ * @param {string} ipAddress - Client IP (e.g. req.ip)
+ * @returns {{ banned: boolean, country?: string }} 
+ */
+function isIpBannedForOperations(ipAddress) {
+  const bannedCodes = getBannedOperationCountryCodes();
+  if (bannedCodes.size === 0) return { banned: false };
+  const geo = geoip.lookup(ipAddress);
+  const country = geo?.country || null;
+  if (!country) return { banned: false, country: "Unknown" };
+  const banned = bannedCodes.has(country.toUpperCase());
+  if (banned) {
+    console.warn(`[SECURITY] Blocked sponsored operation from banned country: ${country} (IP: ${ipAddress})`);
+  }
+  return { banned, country };
+}
+
+/**
+ * Error message returned when blocking due to BANNED_OPERATIONS.
+ * Read from BANNED_OPERATIONS_ERROR in .env so the real reason is hidden
+ * (e.g. "Insufficient funds" so it looks like a normal failure).
+ */
+function getBannedOperationsErrorMessage() {
+  const msg = process.env.BANNED_OPERATIONS_ERROR;
+  return (typeof msg === "string" && msg.trim()) ? msg.trim() : "Insufficient funds";
+}
 
 /**
  * Validate that a privy user ID exists in the database
@@ -99,10 +156,10 @@ async function getAllSponsoredRequests() {
 /**
  * Check if user has exceeded daily rate limit for token account creation
  * @param {string} privyUserId - The Privy user ID to check
- * @param {number} maxPerDay - Maximum number of account creations allowed per day (default: 4)
+ * @param {number} maxPerDay - Maximum number of account creations allowed per day (default: 3)
  * @returns {Promise<{allowed: boolean, count?: number}>} - Whether user is allowed and current count
  */
-async function checkAccountCreationRateLimit(privyUserId, maxPerDay = 4) {
+async function checkAccountCreationRateLimit(privyUserId, maxPerDay = 3) {
   if (!privyUserId) {
     return { allowed: false, count: 0 };
   }
@@ -137,6 +194,8 @@ async function checkAccountCreationRateLimit(privyUserId, maxPerDay = 4) {
 }
 
 module.exports = {
+  isIpBannedForOperations,
+  getBannedOperationsErrorMessage,
   validatePrivyUserId,
   checkAccountCreationRateLimit,
   logSponsoredRequest,
