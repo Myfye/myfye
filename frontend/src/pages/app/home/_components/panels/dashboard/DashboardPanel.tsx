@@ -99,7 +99,7 @@ const DashboardPanel = ({}) => {
         gap="none"
       >
         <Section>
-          <BalanceCard balance={totalBalance} />
+          <BalanceCard balance={totalBalance} title="Myfye Retirement Portfolio" />
         </Section>
         <Section padding="none" marginTop="var(--size-200)">
           <ButtonGroup size="x-small" expand scroll>

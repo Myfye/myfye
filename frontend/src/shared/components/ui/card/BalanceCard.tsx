@@ -9,12 +9,14 @@ type Props = {
   balance: number;
   currency?: FiatCurrency;
   titleAs?: ElementType;
+  title?: string;
 } & CardProps;
 
 const BalanceCard = ({
   balance,
   currency = "usd",
   titleAs = "h2",
+  title = "Balance",
   ...restProps
 }: Props) => (
   <Card width="fullWidth" {...restProps}>
@@ -27,7 +29,7 @@ const BalanceCard = ({
         marginBottom="var(--size-075)"
         leading="var(--line-height-tight)"
       >
-        Balance
+        {title}
       </Text>
       <Text
         as="p"
